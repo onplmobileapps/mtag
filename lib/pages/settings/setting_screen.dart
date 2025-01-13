@@ -1,0 +1,324 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+import 'package:get/get.dart';
+import 'package:mtag_flutterapp/base/app_data.dart';
+import 'package:mtag_flutterapp/controller/home_controller.dart';
+import '../../api/auth_controller.dart';
+import '../../constants/other_consts.dart';
+import 'package:share_plus/share_plus.dart';
+
+import '../../theme/app_theme.dart';
+
+class SettingScreen extends StatelessWidget {
+  SettingScreen({super.key});
+
+  final navigatorKey = GlobalKey<NavigatorState>();
+  final _otherConstants = OtherConsts();
+  @override
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {},
+      child: Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        appBar: AppBar(
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          title: const Text('Settings '),
+        ),
+        body: Container(
+          constraints: const BoxConstraints.expand(),
+          color: Theme.of(context).primaryColor,
+          height: MediaQuery.sizeOf(context).height,
+          width: MediaQuery.sizeOf(context).width,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: const BorderRadiusDirectional.only(
+                topEnd: Radius.circular(15),
+                topStart: Radius.circular(15),
+              ),
+            ),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Obx(
+                      () => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            _otherConstants.ownerName.value,
+                            style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            _otherConstants.ownerCNIC.value,
+                            style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          )
+                        ],
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Get.toNamed('/editProfile');
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Theme.of(context).highlightColor,
+                            ),
+                            borderRadius: BorderRadius.circular(8)),
+                        child: const Text('Edit'),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Expanded(
+                  child: CustomScrollView(
+                    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                    key: UniqueKey(),
+                    shrinkWrap: true,
+                    slivers: [
+                      SliverList(
+                          key: UniqueKey(),
+                          delegate: SliverChildBuilderDelegate(
+                            childCount: items.length,
+                            (context, i) => Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ListTile(
+                                  key: UniqueKey(),
+                                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                                  onTap: items[i].onTap,
+                                  horizontalTitleGap: 6.0,
+                                  dense: true,
+                                  leading: Text(
+                                    items[i].name ?? '',
+                                  ),
+                                  trailing: items[i].icon,
+                                ),
+                                const Divider(
+                                  thickness: 0.4,
+                                )
+                              ],
+                            ),
+                          ))
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SettingsModel {
+  String? name, routeName;
+  Icon? icon;
+  Function()? onTap;
+
+  SettingsModel({
+    required this.icon,
+    required this.name,
+    required this.routeName,
+    required this.onTap,
+  });
+}
+
+final List<SettingsModel> items = [
+  SettingsModel(
+      onTap: () {
+        Get.bottomSheet(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+            backgroundColor: Theme.of(Get.context!).bottomSheetTheme.backgroundColor,
+            Wrap(
+              children: [
+                ListTile(
+                  key: UniqueKey(),
+                  onTap: () {
+                    Get.changeThemeMode(ThemeMode.system);
+                    AppData.setThemeMode(null);
+                    Get.back();
+                  },
+                  dense: true,
+                  leading: const Icon(Icons.phone_android_outlined),
+                  title: const Text('System Default'),
+                ),
+                const Divider(),
+                ListTile(
+                  key: UniqueKey(),
+                  onTap: () {
+                    Get.changeThemeMode(ThemeMode.light);
+                    Get.changeTheme(appTheme);
+                    AppData.setThemeMode(false);
+                    Get.back();
+                  },
+                  dense: true,
+                  leading: const Icon(Icons.light_mode_outlined),
+                  title: const Text('Light Mode'),
+                ),
+                const Divider(),
+                ListTile(
+                  key: UniqueKey(),
+                  onTap: () {
+                    Get.changeThemeMode(ThemeMode.dark);
+                    Get.changeTheme(darkTheme);
+                    AppData.setThemeMode(true);
+                    Get.back();
+                  },
+                  dense: true,
+                  leading: const Icon(Icons.dark_mode_outlined),
+                  title: const Text('Dark Mode'),
+                )
+              ],
+            ));
+      },
+      name: 'Dark/Light Mode',
+      icon: const Icon(
+        Icons.light_mode_outlined,
+      ),
+      routeName: '/theme'),
+  SettingsModel(
+      onTap: () {
+        Get.toNamed('/smsAlert');
+      },
+      name: 'Travel SMS Alert',
+      icon: const Icon(
+        Icons.sms_outlined,
+      ),
+      routeName: '/theme'),
+  SettingsModel(
+      onTap: () {
+        Get.toNamed('/feedback');
+      },
+      name: 'Help & Feedback',
+      icon: const Icon(
+        Icons.help_outline,
+      ),
+      routeName: '/theme'),
+  // SettingsModel(
+  //     onTap: () {
+  //       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+  //         showModalBottomSheet(
+  //           useSafeArea: true,
+  //           elevation: 0.0,
+  //           constraints: BoxConstraints(maxHeight: Get.height),
+  //           backgroundColor: Colors.white,
+  //           shape: const RoundedRectangleBorder(),
+  //           isScrollControlled: true,
+  //           isDismissible: true,
+  //           enableDrag: true,
+  //           context: Get.context!,
+  //           builder: (_) => YoutubePlayer(
+  //             aspectRatio: Get.width / (Get.height / 1.13),
+  //             showVideoProgressIndicator: true,
+  //             bufferIndicator: const CircularProgressIndicator.adaptive(
+  //               backgroundColor: Colors.transparent,
+  //             ),
+  //             controller: YoutubePlayerController(
+  //               initialVideoId: 'RqqWdrTTOTI',
+  //               flags: const YoutubePlayerFlags(
+  //                 autoPlay: true,
+  //                 mute: false,
+  //                 loop: true,
+  //                 disableDragSeek: true,
+  //                 hideControls: true,
+  //               ),
+  //             ),
+  //             controlsTimeOut: Duration.zero,
+  //             topActions: const [],
+  //             bottomActions: const [],
+  //           ),
+  //         );
+  //       });
+  //     },
+  //     name: 'Latest Promotions',
+  //     icon: const Icon(
+  //       Icons.emoji_events_outlined,
+  //     ),
+  //     routeName: '/theme'),
+  SettingsModel(
+      onTap: () {
+        Get.toNamed('/faqs');
+      },
+      name: 'FAQ\'s',
+      icon: const Icon(
+        Icons.quiz_outlined,
+      ),
+      routeName: '/theme'),
+  SettingsModel(
+      onTap: () {
+        Get.toNamed('/privacyPolicy');
+      },
+      name: 'Privacy Policy',
+      icon: const Icon(
+        Icons.privacy_tip,
+      ),
+      routeName: '/theme'),
+  SettingsModel(
+      onTap: () {
+        String shareLinks = "Get the M-Tag One Network Application now for exciting features\n"
+            "Android: https://bit.ly/3nLrHNX\n"
+            "IOS: https://apple.co/3byIb6c\n"
+            "Huawei: https://bit.ly/3IFgzLf";
+        Share.share(shareLinks);
+      },
+      name: 'Share',
+      icon: const Icon(Icons.share_outlined),
+      routeName: '/theme'),
+  SettingsModel(
+      onTap: () {
+        showCupertinoModalPopup(
+          context: navigator!.context,
+          builder: (_) => CupertinoAlertDialog(
+            content: const Text('Do you want to logout?'),
+            actions: [
+              CupertinoDialogAction(
+                child: const Text(
+                  'Confirm',
+
+                ),
+                onPressed: () {
+                  Get.delete<HomeController>(force: true);
+                  Get.find<AuthController>().clearSharedData() ? Get.offAllNamed('/login') : Get.back();
+                },
+              ),
+              CupertinoDialogAction(
+                child: const Text(
+                  'Cancel',
+
+                ),
+                onPressed: () => Get.back(),
+              ),
+            ],
+          ),
+        );
+      },
+      name: 'Logout',
+      icon: const Icon(
+        Icons.logout_outlined,
+      ),
+      routeName: '/theme'),
+];

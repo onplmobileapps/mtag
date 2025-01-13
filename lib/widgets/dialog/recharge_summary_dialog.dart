@@ -1,0 +1,203 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import 'package:mtag_flutterapp/pages/recharge/model/owner_summary_model.dart';
+import 'package:mtag_flutterapp/widgets/elevated_button.dart';
+
+void showRechargeSummaryDialog(
+    {required BuildContext context,
+    required void Function()? onPressed,
+    OwnerRechargeModel? rechargeSummaryModel,
+    required bool isFleet,
+    required String payId}) {
+  showDialog(
+    barrierDismissible: false,
+    useRootNavigator: false,
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+        ),
+        elevation: 0,
+        backgroundColor: Theme.of(context).dialogBackgroundColor,
+        surfaceTintColor: Theme.of(context).dialogBackgroundColor,
+        child: Center(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      icon: SvgPicture.asset(
+                        'assets/close_round.svg',
+                        width: 20,
+                        height: 20,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Container(
+                      padding: const EdgeInsets.all(10.0),
+                      child: RechargeSummary(
+                        isFleet: isFleet,
+                        payId: payId,
+                        mtagId: rechargeSummaryModel?.data?.first.mTAGID ?? '',
+                        vehicle: rechargeSummaryModel?.data?.first.vEHNO ?? '',
+                        ballance: rechargeSummaryModel?.data?.first.mTagBalance ?? '',
+                        bankCharges: rechargeSummaryModel?.data?.first.bankCharges ?? '',
+                        total: double.parse('${rechargeSummaryModel?.data?.first.totalRechargeAmount}').toString(),
+                        ownerName: rechargeSummaryModel?.data?.first.oWNERNAME ?? '',
+                        status: rechargeSummaryModel?.data?.first.iSACTIVE ?? '',
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                    child: ElevatedButton1(
+                      onclick: onPressed,
+                      text: "Proceed",
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+// ignore: must_be_immutable
+class RechargeSummary extends StatelessWidget {
+  String vehicle;
+  String mtagId;
+  String ownerName;
+  String status;
+  String payId;
+  String ballance;
+  String bankCharges;
+  String total;
+  bool isFleet;
+
+  RechargeSummary(
+      {super.key,
+      required this.vehicle,
+      required this.ballance,
+      required this.bankCharges,
+      required this.mtagId,
+      required this.ownerName,
+      required this.payId,
+      required this.status,
+      required this.total,
+      this.isFleet = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Recharge Summary',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.redAccent),
+          ),
+          const Divider(color: Colors.grey, thickness: 1),
+          const SizedBox(height: 16),
+          Text(
+            'Vehicle Details',
+            style: Theme.of(context)
+                .textTheme
+                .displayLarge
+                ?.copyWith(color: Colors.redAccent, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 15),
+          if (isFleet == false) detailRow(context, 'Vehicle:', vehicle),
+          const Divider(color: Colors.grey, thickness: 0.5),
+          detailRow(context, isFleet ? 'Company ID: ' : 'M-TAG ID:', mtagId),
+          const Divider(color: Colors.grey, thickness: 0.5),
+          detailRow(context, 'Owner Name:', ownerName),
+          const Divider(color: Colors.grey, thickness: 0.5),
+          detailRow(
+            context,
+            //'1 for active and o for blocked
+            'Status:',
+            status == '1' ? 'Verified' : '',
+            valueColor: status == '1' ? Colors.green : Colors.grey,
+          ),
+          const Divider(color: Colors.grey, thickness: 0.5),
+          const SizedBox(height: 16),
+          Text(
+            'Transaction Summary',
+            style: Theme.of(context)
+                .textTheme
+                .displayLarge
+                ?.copyWith(color: Colors.redAccent, fontWeight: FontWeight.bold),
+          ),
+          const Divider(color: Colors.grey, thickness: 0.5),
+          detailRow(
+            context,
+            'Pay via:',
+            payId == '0' ? 'Credit/Debit Card' : 'JazzCash Wallet',
+          ),
+          const Divider(color: Colors.grey, thickness: 0.5),
+          detailRow(context, 'M-Tag Balance:', ballance, valueColor: Colors.green),
+          const Divider(color: Colors.grey, thickness: 0.5),
+          detailRow(context, 'Bank Charges:', 'PKR $bankCharges'),
+          const SizedBox(height: 20),
+          const Divider(color: Colors.grey, thickness: 0.5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Total Recharge',
+                style: Theme.of(context).textTheme.displayMedium,
+              ),
+              Text(
+                'PKR $total',
+                style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                      color: Colors.redAccent,
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget detailRow(BuildContext context, String title, String value, {Color? valueColor}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        Text(
+          value,
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium
+              ?.copyWith(color: valueColor ?? Theme.of(context).textTheme.bodyMedium?.color),
+        ),
+      ],
+    );
+  }
+}

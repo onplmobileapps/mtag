@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "981988694636",
+    "project_id": "mtagflutter",
+    "storage_bucket": "mtagflutter.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:981988694636:android:c4f7a99746a9a155cb5649",
+        "android_client_info": {
+          "package_name": "com.ls.onenetwork.mtag"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqzdX2uvMiO1jYCf9YU6bj09eqWIXhMVg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
