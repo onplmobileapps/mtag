@@ -11,7 +11,9 @@ class NotificationController extends GetxController implements GetxService {
   NotificationController({required this.userRepo});
 
   Rx<NotificationModel> notificationModel = NotificationModel().obs;
-
+  RxBool isSelectionMode = RxBool(false);
+    bool isSelectAll = false;
+  RxList<String> selectedIds = [''].obs;
   Rx<DeleteNotificationModel> deleteNotificationModel = DeleteNotificationModel().obs;
 
   //delete notification function
@@ -31,6 +33,7 @@ class NotificationController extends GetxController implements GetxService {
   }
 
   Future<Map<String, dynamic>> getNotifications() async {
+    isSelectionMode(false);
     var response = await userRepo.getNotifications();
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
@@ -42,5 +45,10 @@ class NotificationController extends GetxController implements GetxService {
     }
 
     return response;
+  }
+  @override
+  void onClose() {
+   isSelectionMode(false);
+    super.onClose();
   }
 }

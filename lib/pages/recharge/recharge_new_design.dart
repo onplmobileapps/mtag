@@ -114,7 +114,7 @@ class _RechargeSelfPageState extends State<RechargeSelfPage> {
     if (mounted) setState(() {});
     _paymentCardModel.cardsData?.clear();
     var respones = await _paymentController.getCardDetails(payId);
-
+  
     _paymentCardModel = PaymentCardModel.fromJson(respones[APIRESPONSE.SUCCESS]);
     if (payId == '1') {
       _isJazzCashVisible = true;

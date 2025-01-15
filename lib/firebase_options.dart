@@ -49,6 +49,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDqzdX2uvMiO1jYCf9YU6bj09eqWIXhMVg',
+
     appId: '1:981988694636:android:c4f7a99746a9a155cb5649',
     messagingSenderId: '981988694636',
     projectId: 'mtagflutter',

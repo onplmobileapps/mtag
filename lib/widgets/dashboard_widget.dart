@@ -58,9 +58,7 @@ Widget mtagDataWidget(BuildContext context,
     double? isBlock}) {
   log('$mtagId,$regId,$creditCode,$jazzCode');
 
-  
   return Column(
-  
     mainAxisAlignment: MainAxisAlignment.start,
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisSize: MainAxisSize.min,
@@ -96,7 +94,10 @@ Widget mtagDataWidget(BuildContext context,
                             fit: BoxFit.scaleDown,
                             child: Text(
                               userName?.toUpperCase() ?? '',
-                              style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displayMedium
+                                  ?.copyWith(
                                     fontWeight: FontWeight.w600,
                                   ),
                             ),
@@ -157,7 +158,8 @@ Widget mtagDataWidget(BuildContext context,
                           baselineType: TextBaseline.alphabetic,
                           child: SvgPicture.asset(
                             getVehicleImage(vehType ?? '').toString(),
-                            colorFilter: ColorFilter.mode(Theme.of(context).hintColor, BlendMode.srcIn),
+                            colorFilter: ColorFilter.mode(
+                                Theme.of(context).hintColor, BlendMode.srcIn),
                             width: 120,
                           ),
                         ),
@@ -182,7 +184,8 @@ Widget mtagDataWidget(BuildContext context,
                               fit: BoxFit.scaleDown,
                               child: Text(
                                 'Available Balance',
-                                style: Theme.of(context).textTheme.displayMedium,
+                                style:
+                                    Theme.of(context).textTheme.displayMedium,
                               ),
                             ),
                           ),
@@ -194,9 +197,15 @@ Widget mtagDataWidget(BuildContext context,
                                     alignment: Alignment.topLeft,
                                     fit: BoxFit.scaleDown,
                                     child: Text(
-                                      _obscured.value ? 'PKR ${ball ?? '0.00'}' : 'PKR ••••••',
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                            color: Colors.red,height: 1,
+                                      _obscured.value
+                                          ? 'PKR ${ball ?? '0.00'}'
+                                          : 'PKR ••••••',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            color: Colors.red,
+                                            height: 1,
                                           ),
                                       textAlign: TextAlign.left,
                                     ),
@@ -206,36 +215,45 @@ Widget mtagDataWidget(BuildContext context,
                                   baseline: 20,
                                   baselineType: TextBaseline.ideographic,
                                   child: InkWell(
-  onTap: () async {
-    if (!_obscured.value) {
-      await Get.find<HomeController>().pullrefreshDashBoardData();
-      _obscured(!_obscured.value);
-    } else {
-      _obscured(!_obscured.value);
-    }
-  },
-  child: Icon(
-    _obscured.value ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-    size: 20,
-    color: Colors.grey,
-  ),
-),
+                                    onTap: () async {
+                                      if (!_obscured.value) {
+                                        await Get.find<HomeController>()
+                                            .pullrefreshDashBoardData();
+                                        _obscured(!_obscured.value);
+                                      } else {
+                                        _obscured(!_obscured.value);
+                                      }
+                                    },
+                                    child: Icon(
+                                      _obscured.value
+                                          ? Icons.visibility_off_outlined
+                                          : Icons.visibility_outlined,
+                                      size: 20,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
                                 ),
                                 const Spacer(),
                                 Flexible(
                                   flex: 1,
                                   child: InkWell(
                                     onTap: () => showPaymentBottomSheet(context,
-                                        mtagId: mtagId, regId: regId, jazzCode: jazzCode, creditCode: creditCode),
+                                        mtagId: mtagId,
+                                        regId: regId,
+                                        jazzCode: jazzCode,
+                                        creditCode: creditCode),
                                     child: Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(12),
                                         color: Theme.of(context).disabledColor,
-                                        border: Border.all(color: Colors.green, width: 0.5),
+                                        border: Border.all(
+                                            color: Colors.green, width: 0.5),
                                       ),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
                                           const Icon(
                                             Icons.add_outlined,
@@ -246,8 +264,11 @@ Widget mtagDataWidget(BuildContext context,
                                             fit: BoxFit.scaleDown,
                                             child: Text(
                                               'Recharge',
-                                              style:
-                                                  Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.green),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall
+                                                  ?.copyWith(
+                                                      color: Colors.green),
                                             ),
                                           )
                                         ],
@@ -270,7 +291,8 @@ Widget mtagDataWidget(BuildContext context,
                 top: 0,
                 right: 0,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
                   decoration: const BoxDecoration(
                     color: Colors.red,
                     borderRadius: BorderRadius.only(
@@ -282,7 +304,8 @@ Widget mtagDataWidget(BuildContext context,
                     fit: BoxFit.scaleDown,
                     child: const Text(
                       'Blocked',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),

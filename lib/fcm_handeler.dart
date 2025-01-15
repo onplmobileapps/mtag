@@ -208,20 +208,26 @@ class LocalNoticationsService {
     }
   }
 
-  Future<void> onSelectNotification(NotificationResponse? notificationResponse) async {
-    if (notificationResponse != null) {
-      await Future.delayed(Duration(milliseconds: 300));
-      log("Notification clicked: ${notificationResponse.payload}");
-      final payloadParts = notificationResponse.payload?.split('|');
-      String? title = payloadParts?[0];
-      String? body = payloadParts?[1];
+ Future<void> onSelectNotification(NotificationResponse? notificationResponse) async {
+  if (notificationResponse != null) {
+    await Future.delayed(Duration(milliseconds: 500));
+    log("Notification clicked: ${notificationResponse.payload}");
 
-     Get.find<AuthController>().getLoginUserData()?.data!=null?   Get.toNamed('/notificationsExpandScreen',
-          arguments: Data(
-            body: body,
-            dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
-            title: title,
-          )):null;
+    final payloadParts = notificationResponse.payload?.split('|');
+    String? title = payloadParts?[0];
+    String? body = payloadParts?[1];
+
+    // Only navigate if the user is logged in and notification is actually clicked
+    if (Get.find<AuthController>().getLoginUserData()?.data != null) {
+      if (notificationResponse.payload != null) {
+        // This logic is triggered only when the notification is clicked
+        Get.toNamed('/notificationsExpandScreen', arguments: Data(
+          body: body,
+          dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
+          title: title,
+        ));
+      }
     }
   }
+}
 }

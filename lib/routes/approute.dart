@@ -53,7 +53,7 @@ List<GetPage<dynamic>>? getPages = [
   ),
   GetPage(
     name: '/notifications',
-    page: () => const NotificationScreen(),
+    page: () => NotificationScreen(),
   ),
   GetPage(
     name: '/smsAlert',

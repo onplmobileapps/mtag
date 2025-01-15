@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
 import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/pages/login/login_screen.dart';
+import '../../pages/login/login_screen.dart';
 import '../../api/auth_controller.dart';
 import '../../api/auth_repo.dart';
 import '../../base/app_data.dart';
@@ -22,10 +24,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppData.initialize();
 
-  // StatusBarUtils.changeBarColor();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -45,13 +45,12 @@ class MTagApp extends StatefulWidget {
 
 class _MTagAppState extends State<MTagApp> {
   final _messagingService = MessagingService();
-    static FirebaseInAppMessaging fiam = FirebaseInAppMessaging.instance;
+
 
   @override
   void initState() {
     super.initState();
-    fiam.printError();
-    fiam.triggerEvent('event');
+    FirebaseInAppMessaging.instance.triggerEvent('open_app');
     WidgetsBinding.instance.addPostFrameCallback((_) {
     if(Platform.isAndroid)  AppUpdate.checkForUpdates();
       DeviceInfo.getDeviceInfo();

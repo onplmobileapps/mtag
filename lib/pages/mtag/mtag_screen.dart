@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/constants/analytics.dart';
+import 'package:mtag_flutterapp/widgets/dashboard_widget.dart';
 import 'package:mtag_flutterapp/widgets/dialog/d_link_dialog.dart';
 import '../dashboard/model/dashboard_model.dart';
 
@@ -165,7 +166,7 @@ class MyMtagScreen extends StatelessWidget {
                                     ),
                               ),
                               const SizedBox(height: 30, width: 20),
-                              SvgPicture.asset('assets/car_dynamic.svg',
+                              SvgPicture.asset(getVehicleImage(argument[index].vehicletype??'',),height: 40,width: 50,
                                   colorFilter: ColorFilter.mode(Theme.of(context).hintColor, BlendMode.srcIn)),
                             ],
                           ),

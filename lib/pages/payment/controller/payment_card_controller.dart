@@ -45,12 +45,12 @@ class PaymentCardController extends GetxController implements GetxService {
   }
 
   Future<Map<String, dynamic>> getCardDetails(String payId) async {
-    // isLoading(true);
+
     var response = await userRepo.getCardDetails(payId: payId);
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       paymentCardModel.refresh();
       paymentCardModel.value = PaymentCardModel.fromJson(response[APIRESPONSE.SUCCESS]);
-      // isLoading(false);
+     
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () {
         Get.find<AuthController>().clearSharedData();
@@ -58,7 +58,7 @@ class PaymentCardController extends GetxController implements GetxService {
         Get.offAllNamed('/login');
       });
 
-      return response;
+      return {'Error':response};
     }
 
     return response;

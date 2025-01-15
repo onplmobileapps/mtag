@@ -2,12 +2,14 @@ class NotificationModel {
   String? code;
   String? message;
   int? cnt;
+ 
   List<Data>? data;
 
-  NotificationModel({this.code, this.message, this.cnt, this.data});
+  NotificationModel({this.code, this.message, this.cnt, this.data,});
 
   NotificationModel.fromJson(Map<String, dynamic> json) {
     code = json['Code'];
+    
     message = json['Message'];
     cnt = json['cnt'];
     if (json['Data'] != null) {
@@ -37,8 +39,9 @@ class Data {
   String? dateTime;
   String? datetimeSmall;
   String? imageLink;
+   bool? isSelected=false;
 
-  Data({this.id, this.title, this.body, this.dateTime, this.datetimeSmall, this.imageLink});
+  Data({this.id, this.title, this.body, this.dateTime, this.datetimeSmall, this.imageLink,this.isSelected});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
@@ -47,6 +50,7 @@ class Data {
     dateTime = json['DateTime'];
     datetimeSmall = json['datetime_small'];
     imageLink = json['image_link'];
+ 
   }
 
   Map<String, dynamic> toJson() {

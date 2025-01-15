@@ -8,19 +8,19 @@ class ShimmerContainer extends StatelessWidget {
   final Color color;
 
   const ShimmerContainer({
-    Key? key,
+    super.key,
     required this.width,
     required this.height,
     this.borderRadius = 4.0,
     this.color = Colors.grey,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: color,
+        color: color.withAlpha(128),
         borderRadius: BorderRadius.circular(borderRadius),
       ),
       height: height,
@@ -59,6 +59,7 @@ class ShimmerCard extends StatelessWidget {
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ShimmerContainer(width: 150, height: 10),
+                 
                     OutlinedButton.icon(
                       onPressed: () {},
                       icon: const Icon(Icons.add),
@@ -73,15 +74,17 @@ class ShimmerCard extends StatelessWidget {
                 ),
               ],
             ),
-            const Spacer(),
+          
             // Vehicle Image (SVG)
-            SvgPicture.asset(
-              'assets/f1.svg',
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).hintColor.withAlpha(139),
-                BlendMode.srcIn,
+            Flexible(
+              child: SvgPicture.asset(
+                'assets/f1.svg',
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).hintColor.withAlpha(139),
+                  BlendMode.srcIn,
+                ),
+              
               ),
-              width: 120,
             ),
           ],
         ),

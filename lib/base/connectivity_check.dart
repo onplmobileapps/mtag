@@ -12,7 +12,9 @@ sealed class ConnectionCheck {
     log(connectivityResult.toList().toString());
     if ((connectivityResult.contains(ConnectivityResult.mobile) &&
             connectivityResult.contains(ConnectivityResult.vpn)) ||
-        (connectivityResult.contains(ConnectivityResult.wifi) && connectivityResult.contains(ConnectivityResult.vpn))) {
+        (connectivityResult.contains(ConnectivityResult.wifi) 
+        && connectivityResult.contains(ConnectivityResult.vpn)
+        )) {
       return {
         APIRESPONSE.ERROR: {'Message': 'Please disable vpn in order to use app'}
       };
