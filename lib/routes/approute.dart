@@ -1,4 +1,5 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:mtag_flutterapp/pages/notification/notification_withintent.dart';
 import '../../constants/other_consts.dart';
 import '../../maintenance/maintenance_screen.dart';
 import '../../pages/alfawebview/alfla_webview.dart';
@@ -127,5 +128,9 @@ List<GetPage<dynamic>>? getPages = [
   GetPage(
     name: '/feedback',
     page: () => FeedBackScreen(),
+  ),
+  GetPage(
+    name: '/notificationIntent',
+    page: () => NotificationWithintent(),
   ),
 ];

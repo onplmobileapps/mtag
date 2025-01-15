@@ -111,8 +111,9 @@ else if(Platform.isAndroid){
                 importance: Importance.max,
               ),
             ),
-            payload: '${notification?.title}|${notification?.body}',
+            payload: '${notification?.title}|${notification?.body}|${message.data}',
           );
+         
         }
       }
     });
@@ -152,7 +153,14 @@ else if(Platform.isAndroid){
     await Future.delayed(Duration(milliseconds: 300));
     final notificationData = message.notification;
     log('Notification Data: $notificationData');
-
+if (message.data['bg_n']=='open_new_intent') {
+    Get.offAndToNamed('/notificationIntent', arguments: Data(
+      body: notificationData?.body,
+      dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
+      title: notificationData?.title,
+    ));
+    return; // No need to execute further logic if handled here
+  }
  Get.find<AuthController>().getLoginUserData()?.data!=null?   Get.toNamed('/notificationsExpandScreen',
         arguments: Data(
           body: notificationData?.body ?? '',
@@ -169,6 +177,14 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   if (notification != null) {
     await Future.delayed(Duration(milliseconds: 500));
+    if (message.data['bg_n']=='open_new_intent') {
+    Get.offAndToNamed('/notificationIntent', arguments: Data(
+      body: notification.body,
+      dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
+      title: notification.title,
+    ));
+    return; // No need to execute further logic if handled here
+  }
    Get.find<AuthController>().getLoginUserData()?.data!=null?   Get.toNamed('/notificationsExpandScreen',
         arguments: Data(
           body: notification.body ?? 'No message body',
@@ -209,25 +225,36 @@ class LocalNoticationsService {
   }
 
  Future<void> onSelectNotification(NotificationResponse? notificationResponse) async {
-  if (notificationResponse != null) {
-    await Future.delayed(Duration(milliseconds: 500));
-    log("Notification clicked: ${notificationResponse.payload}");
+  if (notificationResponse == null || notificationResponse.payload == null) return;
 
-    final payloadParts = notificationResponse.payload?.split('|');
-    String? title = payloadParts?[0];
-    String? body = payloadParts?[1];
+  await Future.delayed(const Duration(milliseconds: 500));
+  log("Notification clicked: ${notificationResponse.payload}");
 
-    // Only navigate if the user is logged in and notification is actually clicked
-    if (Get.find<AuthController>().getLoginUserData()?.data != null) {
-      if (notificationResponse.payload != null) {
-        // This logic is triggered only when the notification is clicked
-        Get.toNamed('/notificationsExpandScreen', arguments: Data(
-          body: body,
-          dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
-          title: title,
-        ));
-      }
-    }
+  final payloadParts = notificationResponse.payload!.split('|');
+ 
+
+  String title = payloadParts[0];
+  String body = payloadParts[1];
+  String actionKey = payloadParts[2];
+  log('Action: $actionKey');
+
+  if (actionKey.contains('open_new_intent')) {
+    Get.offAndToNamed('/notificationIntent', arguments: Data(
+      body: body,
+      dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
+      title: title,
+    ));
+    return; // No need to execute further logic if handled here
+  }
+
+  // Proceed only if the user is logged in
+  if (Get.find<AuthController>().getLoginUserData()?.data != null) {
+    Get.toNamed('/notificationsExpandScreen', arguments: Data(
+      body: body,
+      dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
+      title: title,
+    ));
   }
 }
+
 }

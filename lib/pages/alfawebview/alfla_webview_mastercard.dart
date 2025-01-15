@@ -18,7 +18,7 @@ class AlfaWebView2 extends StatefulWidget {
 
 class _AlfaWebViewState extends State<AlfaWebView2> {
   late final WebViewController controller;
-  late VideoPlayerController _controller;
+  late VideoPlayerController _videocontroller;
   var loadingPercentage = 0;
   bool isNoInternet = false;
   Future<void> handlePageFinished(String url) async {
@@ -51,7 +51,7 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
                   height: 120,
                   width: MediaQuery.sizeOf(context).width,
                   child: VideoPlayer(
-                    _controller..play(),
+                    _videocontroller..play(),
                   ),
                 ),
                 const SizedBox(
@@ -112,7 +112,7 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset('assets/mcsuccess.mp4',
+    _videocontroller = VideoPlayerController.asset('assets/mcsuccess.mp4',
         videoPlayerOptions: VideoPlayerOptions(
           allowBackgroundPlayback: true,
         ))
@@ -158,9 +158,6 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
           },
         ))
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
-
-        // Uri.parse('data:text/html;base64,$contentBase64'),
-
         ..platform.params
         ..scrollTo(0, 0)
         ..clearCache()
@@ -253,7 +250,7 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
   @override
   void dispose() {
     controller.clearCache();
-    _controller.dispose();
+    _videocontroller.dispose();
     super.dispose();
   }
 
@@ -266,7 +263,7 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
 
         return;
       },
-      child: Scaffold(
+      child: Scaffold(resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
@@ -294,7 +291,8 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
                       ],
                     ),
                   )
-                : WebViewWidget(
+                : 
+                WebViewWidget(
                     controller: controller,
                   ),
             if (loadingPercentage < 100)
@@ -309,13 +307,5 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
     );
   }
 
-  String? getQueryString(String? url, String? tag) {
-    try {
-      Uri uri = Uri.parse(url ?? '');
-      return uri.queryParameters[tag];
-    } catch (e) {
-      log('Webview: getQueryString() $e');
-    }
-    return '';
-  }
+
 }

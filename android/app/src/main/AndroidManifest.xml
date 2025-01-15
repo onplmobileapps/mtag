@@ -9,7 +9,9 @@
          android:usesCleartextTraffic="true"
         android:label="M-TAg"
         android:name="${applicationName}"
+        android:layerType="software"
         android:icon="@mipmap/ic_launcher">
+        
         <activity
 
             android:name=".MainActivity"

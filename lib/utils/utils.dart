@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:in_app_update/in_app_update.dart';
+import 'package:intl/intl.dart';
 
 import 'package:mtag_flutterapp/controller/home_controller.dart';
 
@@ -110,4 +111,20 @@ String? validateAmount(String? value) {
   }
 
   return null; // Return null if validation passes
+}
+String formatDateTime(String inputDateTime, {bool roundMinutes = false}) {
+  try {
+    // Parse the input date-time string
+    DateTime dateTime = DateFormat("yy-MM-dd HH:mm:ss").parse(inputDateTime);
+
+    // Optionally round the minutes to 00
+    if (roundMinutes) {
+      dateTime = DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour);
+    }
+
+    // Format the date-time to the desired output format
+    return DateFormat("dd MMM yy h:mm a").format(dateTime);
+  } catch (e) {
+    return 'Invalid date format';
+  }
 }
