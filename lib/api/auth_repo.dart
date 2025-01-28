@@ -3,11 +3,14 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:get/get.dart';
+
+
 import 'package:dio/dio.dart' as apiClient;
+import 'package:get/get.dart';
 import 'package:mtag_flutterapp/utils/utils.dart';
-import '../../api/api_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../api/api_constants.dart';
 import '../pages/login/user_model.dart';
 import 'api_structure.dart';
 import 'application_url.dart';
@@ -60,7 +63,8 @@ class AuthRepo {
     return token;
   }
 
-  Future<Map<String, dynamic>> updateFcmToken({required String fcmToken}) async {
+  Future<Map<String, dynamic>> updateFcmToken(
+      {required String fcmToken}) async {
     try {
       APISTRUCTURE apiObject = APISTRUCTURE(
         apiUrl: 'updateFcmtokenurlhere',
@@ -70,7 +74,8 @@ class AuthRepo {
           "fcm_token": fcmToken,
         }),
       );
-      return await apiObject.requestAPI(isShowLoading: false, isCheckAuthorization: true);
+      return await apiObject.requestAPI(
+          isShowLoading: false, isCheckAuthorization: true);
     } catch (e) {
       throw Exception(e);
     }
@@ -82,14 +87,19 @@ class AuthRepo {
         'Login',
       );
       log("Get time${userData.toString()}");
-      return userData != null ? UserModel.fromJson(json.decode(userData)) : null;
+      return userData != null
+          ? UserModel.fromJson(json.decode(userData))
+          : null;
     } catch (e) {
       throw Exception(e);
     }
   }
 
   Future<Map<String, dynamic>> login(
-      {required String cnic, required String mobileNumber, String? fcmToken, String? metaData}) async {
+      {required String cnic,
+      required String mobileNumber,
+      String? fcmToken,
+      String? metaData}) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
       apiUrl: ApplicationUrl.LOGIN_URL,
       apiRequestMethod: APIREQUESTMETHOD.POST,
@@ -102,12 +112,16 @@ class AuthRepo {
       },
     );
 
-    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: false);
+    return await apiObject.requestAPI(
+        isShowLoading: true, isCheckAuthorization: false);
   }
 
 // FleetLogin
   Future<Map<String, dynamic>> fleetLogin(
-      {required String comapnyId, required String password, String? fcmToken, String? metaData}) async {
+      {required String comapnyId,
+      required String password,
+      String? fcmToken,
+      String? metaData}) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
       apiUrl: ApplicationUrl.FLEET_LOGIN_URL,
       apiRequestMethod: APIREQUESTMETHOD.POST,
@@ -115,12 +129,14 @@ class AuthRepo {
       body: {
         "company_id": comapnyId,
         "password": password,
-        "meta_data": "Android__14__Google sdk_gphone64_x86_64__9a0112a0ad6ea61d__fcmToken__1.8.1",
+        "meta_data":
+            "Android__14__Google sdk_gphone64_x86_64__9a0112a0ad6ea61d__fcmToken__1.8.1",
         "fcmToken": null
       },
     );
 
-    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: false);
+    return await apiObject.requestAPI(
+        isShowLoading: true, isCheckAuthorization: false);
   }
 
 // Register
@@ -142,11 +158,13 @@ class AuthRepo {
       }),
     );
 
-    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: false);
+    return await apiObject.requestAPI(
+        isShowLoading: true, isCheckAuthorization: false);
   }
 
 // OTP Generating Api
-  Future<Map<String, dynamic>> genearateOtp({String? smsText, String? cnic, int? islogin}) async {
+  Future<Map<String, dynamic>> genearateOtp(
+      {String? smsText, String? cnic, int? islogin}) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
       apiUrl: ApplicationUrl.GENERATEOTP_URL,
       apiRequestMethod: APIREQUESTMETHOD.POST,
@@ -159,7 +177,8 @@ class AuthRepo {
       },
     );
 
-    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: false);
+    return await apiObject.requestAPI(
+        isShowLoading: true, isCheckAuthorization: false);
   }
 
   //
@@ -175,11 +194,13 @@ class AuthRepo {
               "Your authentication code for M-TAG One Network app is VERIFICATION_CODE_HERE. Never share it with anyone, ever."
         });
 
-    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: false);
+    return await apiObject.requestAPI(
+        isShowLoading: true, isCheckAuthorization: false);
   }
 
   //Verify Otp
-  Future<Map<String, dynamic>> verifyOTP({String? code, int? islogin, String? fcmToken}) async {
+  Future<Map<String, dynamic>> verifyOTP(
+      {String? code, int? islogin, String? fcmToken}) async {
     var release = await DeviceInfo.getDeviceInfo();
     APISTRUCTURE apiObject = APISTRUCTURE(
         apiUrl: ApplicationUrl.VERIFYOTP_URL,
@@ -193,22 +214,26 @@ class AuthRepo {
               '${Platform.isAndroid ? "Android" : 'iOS'} __${release['release']} __${release['manufacturer']} ${release['model']} __android_id__$fcmToken __3.1.4',
         });
 
-    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: true);
+    return await apiObject.requestAPI(
+        isShowLoading: true, isCheckAuthorization: true);
   }
 
   //FleetVerify Otp
-  Future<Map<String, dynamic>> verifyFleetOTP({String? code, int? islogin, String? fcmToken}) async {
+  Future<Map<String, dynamic>> verifyFleetOTP(
+      {String? code, int? islogin, String? fcmToken}) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
         apiUrl: ApplicationUrl.VERIFYFLEETOTP_URL,
         apiRequestMethod: APIREQUESTMETHOD.POST,
         isWantSuccessMessage: true,
         body: {
           "Code": code,
-          "meta_data": "Android__14__Google sdk_gphone64_x86_64__9a0112a0ad6ea61d__fcmToken__1.8.1",
+          "meta_data":
+              "Android__14__Google sdk_gphone64_x86_64__9a0112a0ad6ea61d__fcmToken__1.8.1",
           "fcmToken": null
         });
 
-    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: true);
+    return await apiObject.requestAPI(
+        isShowLoading: true, isCheckAuthorization: true);
   }
 
   Future<Map<String, dynamic>> logout() async {
@@ -220,7 +245,8 @@ class AuthRepo {
         "token_value": Get.find<AuthController>().authRepo.getAuthToken(),
       }),
     );
-    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: false);
+    return await apiObject.requestAPI(
+        isShowLoading: true, isCheckAuthorization: false);
   }
   //Uppdate Info
 
@@ -243,11 +269,13 @@ class AuthRepo {
         "registration_no": registerationNo,
       },
     );
-    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: true);
+    return await apiObject.requestAPI(
+        isShowLoading: true, isCheckAuthorization: true);
   }
 
   bool? isLoggedIn() {
-    if ((getLoginUserData()?.data?.iscoporate == false && getLoginUserData() != null)) {
+    if ((getLoginUserData()?.data?.iscoporate == false &&
+        getLoginUserData() != null)) {
       log('corporate');
       return true;
     }
@@ -266,7 +294,8 @@ class AuthRepo {
     return true;
   }
 
-  Future<void> saveUserNumberAndPassword(String number, String password, String countryCode) async {
+  Future<void> saveUserNumberAndPassword(
+      String number, String password, String countryCode) async {
     try {
       await sharedPreferences.setString('AppConstants.USER_PASSWORD', password);
     } catch (e) {
@@ -282,16 +311,60 @@ class AuthRepo {
     return sharedPreferences.getBool('AppConstants.NOTIFICATION') ?? true;
   }
 
-  // void setNotificationActive(bool isActive) {
-  //   // if(isActive) {
-  //   //   updateToken();
-  //   // }else {
-  //     if(!GetPlatform.isWeb) {
-  //       FirebaseMessaging.instance.unsubscribeFromTopic(AppConstants.TOPIC);
-  //       if(isLoggedIn()) {
-  //         FirebaseMessaging.instance.unsubscribeFromTopic('zone_${Get.find<LocationController>().getUserAddress().zoneId}_customer');
-  //       }
-  //     }
-  //   }
-  //   sharedPreferences.setBool(AppConstants.NOTIFICATION, isActive);
+ 
+
+  Future<Map<String, dynamic>> createPin({
+    String? cnic,
+    String? mobileNum,
+    int? isResetPin,
+     int? isForgetPin,
+      int? isCreatePin,
+    String? pin,
+    String? newPin,
+  }) async {
+    APISTRUCTURE apiObject = APISTRUCTURE(
+      apiUrl: ApplicationUrl.PINCREATEURL,
+      apiRequestMethod: APIREQUESTMETHOD.POST,
+      isWantSuccessMessage: true,
+      body: {
+        "cnic": cnic,
+        "mobile_num": mobileNum,
+        "is_reset_pin": isResetPin,
+         "is_create_pin":isCreatePin,
+          "is_forgot_pin":isForgetPin,
+        "pin": pin,
+        "new_pin": newPin
+      },
+      
+   
+    );
+    return await apiObject.requestAPI(
+        isShowLoading: true, isCheckAuthorization: true);
+  }
+    Future<Map<String, dynamic>> verifyPin({
+    String? cnic,
+    String? mobileNum,
+  String?fcm,
+   String?metaData,
+    String? pin,
+    
+  }) async {
+    var release = await DeviceInfo.getDeviceInfo();
+    APISTRUCTURE apiObject = APISTRUCTURE(
+      apiUrl: ApplicationUrl.VERIFY_PIN_URL,
+      apiRequestMethod: APIREQUESTMETHOD.POST,
+      isWantSuccessMessage: true,
+      body: {
+         "cnic": cnic,
+    "mobile_num": mobileNum,
+    "pin":pin,
+    "meta_data": '${Platform.isAndroid ? "Android" : 'iOS'} __${release['release']} __${release['manufacturer']} ${release['model']} __android_id__$fcm __3.1.4',
+    "fcmToken":fcm,
+      },
+      
+   
+    );
+    return await apiObject.requestAPI(
+        isShowLoading: true, isCheckAuthorization: true);
+  }
 }

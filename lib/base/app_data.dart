@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,6 +51,19 @@ sealed class AppData {
   static String? getFcmToken() {
     return _preferences.getString('fcm_token');
   }
+ static Future<void> savePinData({Map<String, dynamic>? pinData}) async {
+    if (pinData != null) {
+      await _preferences.setString('pin_data', jsonEncode(pinData));
+    }
+  }
+    static Map<String, dynamic>? getPinData() {
+    final String? data = _preferences.getString('pin_data');
+    if (data != null) {
+      return jsonDecode(data) as Map<String, dynamic>;
+    }
+    return null;
+  }
+
 
   static String? getDeviceId() {
     return _preferences.getString('android_id');

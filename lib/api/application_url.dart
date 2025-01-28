@@ -7,8 +7,8 @@ class ApplicationUrl {
     return _instance;
   }
   // static const String _BASE_URL = 'https://onenetworkapp.com';
-  // static const String _BASE_URL = 'http://10.0.1.127:9008';
-  static const String _BASE_URL = 'https://ocotapp.com';
+  static const String _BASE_URL = 'http://10.0.1.127:9008';
+  // static const String _BASE_URL = 'https://ocotapp.com';
   static const String _IMAGE_ULR = _BASE_URL;
   static String get IMAGE_ULR => _IMAGE_ULR;
   static const String _LOGIN_URL = '$_BASE_URL/loginUser_new';
@@ -57,7 +57,7 @@ class ApplicationUrl {
   static String get JAZZCASHRECHARGE_URL => _JAZZCASHRECHARGE_URL;
   static const String _GETNOTIFICATION_URL = '$_BASE_URL/Notification_Check_New';
   static String get GETNOTIFICATION_URL => _GETNOTIFICATION_URL;
-  static const String _DELETENOTIFICATION_URL = '$_BASE_URL/Delete_Notification';
+  static const String _DELETENOTIFICATION_URL = '$_BASE_URL/Delete_Notification/new';
   static String get DELETENOTIFICATION_URL => _DELETENOTIFICATION_URL;
   static const String _GETSMSSTATUS_URL = '$_BASE_URL/updateSmSStatus';
   static String get GETSMSSTATUS_URL => _GETSMSSTATUS_URL;
@@ -85,9 +85,13 @@ class ApplicationUrl {
   static String get GETHTML_URL => _GETHTML_URL;
   static const String _GENERATE_PSID = '$_BASE_URL/generate/consumerNumber';
   static String get GENERATE_PSID => _GENERATE_PSID;
-   static const String _GENERATE_PSIDTOPUP = '$_BASE_URL/generate/topup/consumerNumber';
+  static const String _GENERATE_PSIDTOPUP = '$_BASE_URL/generate/topup/consumerNumber';
   static String get GENERATE_PSIDTOPUP => _GENERATE_PSIDTOPUP;
-     static const String _GET_AMOUNTBREAK_DOWNURL = '$_BASE_URL/amount/breakdown';
+  static const String _GET_AMOUNTBREAK_DOWNURL = '$_BASE_URL/amount/breakdown';
   static String get GET_AMOUNTBREAK_DOWNURL => _GET_AMOUNTBREAK_DOWNURL;
+  static const String _PINCREATEURL = '$_BASE_URL/user/pin';
+  static String get PINCREATEURL => _PINCREATEURL;
+    static const String _VERIFY_PIN_URL = '$_BASE_URL/verify/pin';
+  static String get VERIFY_PIN_URL => _VERIFY_PIN_URL;
 }
 //generate/topup/consumerNumber

@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-
-import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:get/get.dart';
-import '../../api/application_url.dart';
 import '../../base/app_data.dart';
 import '../../utils/utils.dart';
 import '../widgets/dialog/promo_dialog.dart';
@@ -21,7 +18,10 @@ class HomeController extends GetxController implements GetxService {
   final UserRepo userRepo;
 
   HomeController({required this.userRepo});
+
   RxInt currentPage = 0.obs;
+  RxBool isLoading = false.obs; // Added isLoading for loading state
+
   setCurrentIndex(vale) {
     currentPage.value = vale;
   }
@@ -51,14 +51,18 @@ class HomeController extends GetxController implements GetxService {
   ];
 
   var dashboradData = DashBoardModel().obs;
+
   Future<Map<String, dynamic>> getdashBoardData({
     String? appVersion,
     String? deviceID,
   }) async {
+    isLoading.value = true; // Set loading to true before making the API call
+
     Map<String, dynamic> response = await userRepo.getdashBoardData();
 
+    isLoading.value = false; // Set loading to false once the API call completes
+
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
-      
       dashboradData.value = DashBoardModel.fromJson(response[APIRESPONSE.SUCCESS]);
       _otherConstants.ownerName.value = dashboradData.value.customerDetail?.fullName ?? '';
       _otherConstants.ownerCNIC.value = dashboradData.value.customerDetail?.cNIC ?? '';
@@ -71,13 +75,13 @@ class HomeController extends GetxController implements GetxService {
       showPopDialog('${response[APIRESPONSE.ERROR]['Message']}', () {
         Get.find<AuthController>().clearSharedData();
         Get.delete<HomeController>(force: true);
-        Get.offAllNamed('/login');
+        Get.offAllNamed('/pinPage');
       });
     } else {
       showPopDialog('Something went wrong\nTry again later.', () {
         Get.find<AuthController>().clearSharedData();
         Get.delete<HomeController>(force: true);
-        Get.offAllNamed('/login');
+        Get.offAllNamed('/pinPage');
       });
     }
 
@@ -89,37 +93,35 @@ class HomeController extends GetxController implements GetxService {
     _otherConstants.isRefresh(false);
   }
 
-pullrefreshDashBoardData() async {
-   var data= await getdashBoardData();
-   log(data.toString());
+  pullrefreshDashBoardData() async {
+    var data = await getdashBoardData();
+    log(data.toString());
     _otherConstants.isRefresh(false);
   }
- 
 
   @override
   void onReady() async {
-FirebaseInAppMessaging.instance.triggerEvent('app-open');
-    AppData.setCount(1);
-    await getdashBoardData(); // Wait for data to be loaded
-    Future.delayed(const Duration(seconds: 3), () {
-      if (dashboradData.value.promotionalPopUpImage?.code == '00') {
+    await getdashBoardData();
+    AppData.setCount(1); // Wait for data to be loaded
+    Future.delayed(const Duration(seconds: 2), () {
+      // Show promo dialog after a delay
+      log(_otherConstants.promoPopUp.value);
+      if (_otherConstants.promoPopUp.value.isNotEmpty) {
         Get.dialog(
-            PromoDialog(
-              imageUrl: "${ApplicationUrl.IMAGE_ULR}${dashboradData.value.promotionalPopUpImage?.imgURL}",
-            ),
-            barrierDismissible: false); // Show promo dialog after a delay
+          PromoDialog(
+            imageUrl: _otherConstants.promoPopUp.value,
+          ),
+          barrierDismissible: false,
+        );
       }
     });
-
-  
 
     if (AppData.getAppCount() == 5) AppReviewUtils.requestAppReview();
     if (dashboradData.value.versionCheck?.code == '01' && Platform.isIOS) {
       showUpdateDialog(dashboradData.value.versionCheck?.message ?? '');
       return;
     }
-   
+
     super.onReady();
-     
   }
 }

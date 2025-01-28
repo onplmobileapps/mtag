@@ -92,7 +92,7 @@ class TollCalculatorController extends GetxController implements GetxService {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () {
         if (response['Code'] == 450) {
           Get.delete<HomeController>(force: true);
-          Get.offAllNamed('/login');
+          Get.offAllNamed('/pinPage');
         } else {
           Get.back();
         }

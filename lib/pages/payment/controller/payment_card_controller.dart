@@ -34,7 +34,7 @@ class PaymentCardController extends GetxController implements GetxService {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () {
         Get.find<AuthController>().clearSharedData();
         Get.delete<HomeController>(force: true);
-        Get.offAllNamed('/login');
+        Get.offAllNamed('/pinPage');
       });
 
       isLoading(false);
@@ -55,7 +55,7 @@ class PaymentCardController extends GetxController implements GetxService {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () {
         Get.find<AuthController>().clearSharedData();
         Get.delete<HomeController>(force: true);
-        Get.offAllNamed('/login');
+        Get.offAllNamed('/pinPage');
       });
 
       return {'Error':response};

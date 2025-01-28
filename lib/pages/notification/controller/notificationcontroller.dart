@@ -13,7 +13,7 @@ class NotificationController extends GetxController implements GetxService {
   Rx<NotificationModel> notificationModel = NotificationModel().obs;
   RxBool isSelectionMode = RxBool(false);
     bool isSelectAll = false;
-  RxList<String> selectedIds = [''].obs;
+  RxList<String> selectedIds = <String>[].obs;
   Rx<DeleteNotificationModel> deleteNotificationModel = DeleteNotificationModel().obs;
 
   //delete notification function
@@ -22,11 +22,12 @@ class NotificationController extends GetxController implements GetxService {
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       deleteNotificationModel.value = DeleteNotificationModel.fromJson(response[APIRESPONSE.SUCCESS]);
+      selectedIds.clear();
       showPopDialog('${deleteNotificationModel.value.message}', () => Get.back());
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () => Get.back());
     } else {
-      showPopDialog('Something went wrong\nTry again later.', () => Get.offAllNamed('/login'));
+      showPopDialog('Something went wrong\nTry again later.', () => Get.offAllNamed('/pinPage'));
     }
 
     return response;
@@ -39,9 +40,9 @@ class NotificationController extends GetxController implements GetxService {
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       notificationModel.value = NotificationModel.fromJson(response[APIRESPONSE.SUCCESS]);
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
-      showPopDialog(response[APIRESPONSE.ERROR]['Message'], () => Get.offAllNamed('/login'));
+      showPopDialog(response[APIRESPONSE.ERROR]['Message'], () => Get.offAllNamed('/pinPage'));
     } else {
-      showPopDialog('Something went wrong\nTry again later.', () => Get.offAllNamed('/login'));
+      showPopDialog('Something went wrong\nTry again later.', () => Get.offAllNamed('/pinPage'));
     }
 
     return response;

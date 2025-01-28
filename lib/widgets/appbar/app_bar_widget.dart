@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-
 class BuilAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final bool isDarkTheme;
   final VoidCallback onSupportTap;
@@ -21,34 +20,31 @@ class BuilAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-     
       leading: Padding(
         padding: const EdgeInsets.only(left: 8),
-        child: isDarkTheme
-            ? Image.asset('assets/darklogo.png')
-            : SvgPicture.asset(
-                'assets/logolight.svg',
-                height: 50,
-                width: 50,
-              ),
+        child: Image.asset(
+          'assets/darklogo.png',
+          height: 50,
+          width: 50,
+        ),
       ),
-      backgroundColor: Colors.transparent,
+      backgroundColor: Theme.of(context).primaryColor,
       actions: [
-           const SizedBox(width: 8),
+        const SizedBox(width: 8),
         // _buildIconAction(
         //   context,
         //   assetPath: 'assets/helpline.svg',
         //   onTap: onSupportTap,
         //   isDarkTheme: isDarkTheme,
         // ),
-           const SizedBox(width: 8),
+        const SizedBox(width: 8),
         _buildIconAction(
           context,
           assetPath: 'assets/sms.svg',
           onTap: onSmsTap,
           isDarkTheme: isDarkTheme,
         ),
-         const SizedBox(width: 4),
+        const SizedBox(width: 4),
         _buildNotificationBadge(context),
         const SizedBox(width: 8),
       ],
@@ -67,9 +63,7 @@ class BuilAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         assetPath,
         height: 25,
         width: 20,
-        colorFilter: isDarkTheme
-            ? ColorFilter.mode(Theme.of(context).hintColor, BlendMode.srcIn)
-            : null,
+        colorFilter: ColorFilter.mode(Theme.of(context).focusColor, BlendMode.srcIn),
       ),
     );
   }
@@ -84,8 +78,9 @@ class BuilAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             padding: EdgeInsets.zero,
             count: value,
             child: Icon(
-              Icons.notifications_outlined,size: 28,
-              color: Theme.of(context).iconTheme.color,
+              Icons.notifications_outlined,
+              size: 28,
+              color: Colors.white,
             ),
           ),
         );

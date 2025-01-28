@@ -31,7 +31,7 @@ class DelinkController extends GetxController implements GetxService {
           actions: [
             CupertinoDialogAction(
               onPressed: () {
-                Get.offAllNamed('/login');
+                Get.offAllNamed('/pinPage');
                 Get.deleteAll();
               },
               child: const Text('Ok'),
@@ -55,7 +55,7 @@ class DelinkController extends GetxController implements GetxService {
     } else {
       isLoading(false);
       showPopDialog('${response['msg']}', () {
-        Get.offAllNamed('/login');
+        Get.offAllNamed('/pinPage');
         Get.deleteAll();
       });
     }

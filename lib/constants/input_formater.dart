@@ -2,7 +2,8 @@ import 'package:flutter/services.dart';
 
 class CnicMaskTextInputFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     String newText = newValue.text;
     String oldText = oldValue.text;
 
@@ -37,10 +38,14 @@ class CnicMaskTextInputFormatter extends TextInputFormatter {
 
     if (diff > 0 && selectionOffset > 0 && nonDigitChange > 0) {
       // If the user added a digit, adjust the cursor forward
-      selectionIndex = newValue.selection.end + (selectionIndex - newValue.selection.end) + 1;
+      selectionIndex = newValue.selection.end +
+          (selectionIndex - newValue.selection.end) +
+          1;
     } else if (diff < 0 && selectionOffset < 0 && nonDigitChange < 0) {
       // If the user deleted a digit, adjust the cursor backward
-      selectionIndex = newValue.selection.end + (selectionIndex - newValue.selection.end) - 1;
+      selectionIndex = newValue.selection.end +
+          (selectionIndex - newValue.selection.end) -
+          1;
     }
 
     // Ensure the selection index is within valid bounds
@@ -64,7 +69,8 @@ Map<String, List<Map<String, String>>> faqs = {
           '''M-Tag can be acquired by visiting the nearest registration and recharge facility on the toll plazas. M-Tag registration locations on M-2 include Islamabad M-2 entry, Bhera, Sialmor, Pindi Bhattiya Entry, Shekhupura, Kalashah Kaku, and Ravi. Please call 1313 for more information.''',
     },
     {
-      'question': "Q2. How to get M-Tag, Can I register multiple M-Tags on 1 CNIC?",
+      'question':
+          "Q2. How to get M-Tag, Can I register multiple M-Tags on 1 CNIC?",
       'ans':
           "You only have to bring your Vehicle, vaccination certificate, and original CNIC. Yes, you can register multiple M-Tags for different cars on one CNIC."
     },
@@ -74,7 +80,8 @@ Map<String, List<Map<String, String>>> faqs = {
           '1313 is helpline of M-Tag which is available for 24/7 to facilitate the customers. Customer can change their ownership by calling 1313 helpline and can also cancel their M-Tag. '
     },
     {
-      'question': "Q4. Is it mandatory to get M-Tag for traveling on all motorways? ",
+      'question':
+          "Q4. Is it mandatory to get M-Tag for traveling on all motorways? ",
       'ans':
           "Dear Customer, in light of Lahore High Court decision it is mandatory to get M-Tag for traveling through all toll plazas linking with the Ravi toll plaza. Please call 1313 for more information. "
     },
@@ -89,7 +96,8 @@ Map<String, List<Map<String, String>>> faqs = {
           "M-Tag one network mobile application can be used for recharge, toll history check, balance check, toll calculation, and feedback. You can also Cancel your M-Tag through Application. Please call 1313 for more information. "
     },
     {
-      'question': "Q7. Can the M-Tag of a car registered with a previous owner be shifted to my name and credentials? ",
+      'question':
+          "Q7. Can the M-Tag of a car registered with a previous owner be shifted to my name and credentials? ",
       'ans':
           "Yes, the M-Tag of a purchased car can be shifted to new credentials by calling 1313 and verifying the new information. "
     },
@@ -99,17 +107,20 @@ Map<String, List<Map<String, String>>> faqs = {
           "M-tag account can be canceled by calling through recorded helpline 1313 or can also be cancelled through M-Tag One Network Application."
     },
     {
-      'question': "Q9. What is the location of the Mobile Registration Unit for today?",
+      'question':
+          "Q9. What is the location of the Mobile Registration Unit for today?",
       'ans':
           "Dear Customer, our mobile registration unit is currently assisting in operations on main toll plazas at M-2 Motorway, however, any changes will be disseminated on our social media beforehand. Please call 1313 for more information or email us at conncet@onenetwork.pk "
     },
     {
-      'question': "Q10. I am not receiving One-time Password (OTP) for my M-Tag One Network application?",
+      'question':
+          "Q10. I am not receiving One-time Password (OTP) for my M-Tag One Network application?",
       'ans':
           '''Dear customer, please confirm if your number is ported to a different network or not? Please mention your CNIC, PHONE NUMBER, and MOBILE NETWORK, so we can resolve this issue. Please dial 1313 for any other queries or assistance'''
     },
     {
-      'question': "Q11. I cannot download M-Tag One network application on my phone?",
+      'question':
+          "Q11. I cannot download M-Tag One network application on my phone?",
       'ans':
           '''Please check region settings from play store and set the location of the region to Pakistan. Try installing the application again. If the problem persists, please email us at connect@onenetwork.pk'''
     },
@@ -130,16 +141,19 @@ Map<String, List<Map<String, String>>> faqs = {
     },
     {
       'question': "Q15. Credentials already exist during app login/signup?",
-      'ans': '''Dear customer, please provide the following details:\nCnic\nMobile number'''
+      'ans':
+          '''Dear customer, please provide the following details:\nCnic\nMobile number'''
     },
     {
-      'question': "Q16. I have entered wrong credentials entered during application sign-up?",
+      'question':
+          "Q16. I have entered wrong credentials entered during application sign-up?",
       'ans': 'Dear Customer, please provide us your '
           'Correct Mobile number  CNIC  '
           'wrong/previously entered Mobile number CNIC '
     },
     {
-      'question': "Q17. M-tag One Network application not available in your region/country error?",
+      'question':
+          "Q17. M-tag One Network application not available in your region/country error?",
       'ans':
           '''Dear Sir/Madam, please check the region settings from the Google Play store and set the location of the region to Pakistan. Try installing the application again. If the problem persists, please call 1313 for further assistance or email at connect@onenetwork.pk'''
     },
@@ -150,7 +164,8 @@ Map<String, List<Map<String, String>>> faqs = {
     },
     {
       'question': "Q19. I want to apply to One Network?",
-      'ans': '''To apply in one network send your resume to recruitement@onenetwork.pk '''
+      'ans':
+          '''To apply in one network send your resume to recruitement@onenetwork.pk '''
     },
     {
       'question': "Q20. Standard response for Complaints on Social Media?",

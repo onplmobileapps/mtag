@@ -41,7 +41,7 @@ class PromoDialog extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                backgroundColor: Colors.grey.withValues(alpha: 0.8),
+                backgroundColor: Colors.grey.withAlpha( 80),
                 mini: true,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 child: const Icon(

@@ -486,7 +486,7 @@ class _BuildDropDownFieldState extends State<BuildDropDownField> {
               constraints: const BoxConstraints(maxHeight: 35),
               suffixIconConstraints: const BoxConstraints(maxHeight: 1, minHeight: 1),
               filled: true,
-              fillColor: Colors.grey.withValues(alpha: 0.2),
+              fillColor: Colors.grey.withAlpha( 120),
               contentPadding: const EdgeInsets.only(left: 15, top: 0, bottom: 8),
             ),
             textInputAction: TextInputAction.done),

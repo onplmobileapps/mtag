@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/base/app_data.dart';
 import 'package:mtag_flutterapp/controller/home_controller.dart';
+import 'package:mtag_flutterapp/widgets/dialog/change_pin_dialog.dart';
 import '../../api/auth_controller.dart';
 import '../../constants/other_consts.dart';
 import 'package:share_plus/share_plus.dart';
@@ -56,7 +57,10 @@ class SettingScreen extends StatelessWidget {
                           ),
                           Text(
                             _otherConstants.ownerName.value,
-                            style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge
+                                ?.copyWith(
                                   fontWeight: FontWeight.w800,
                                 ),
                           ),
@@ -65,7 +69,10 @@ class SettingScreen extends StatelessWidget {
                           ),
                           Text(
                             _otherConstants.ownerCNIC.value,
-                            style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayMedium
+                                ?.copyWith(
                                   fontWeight: FontWeight.w600,
                                 ),
                           )
@@ -77,7 +84,8 @@ class SettingScreen extends StatelessWidget {
                         Get.toNamed('/editProfile');
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 4),
                         decoration: BoxDecoration(
                             border: Border.all(
                               color: Theme.of(context).highlightColor,
@@ -93,7 +101,8 @@ class SettingScreen extends StatelessWidget {
                 ),
                 Expanded(
                   child: CustomScrollView(
-                    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
                     key: UniqueKey(),
                     shrinkWrap: true,
                     slivers: [
@@ -106,7 +115,8 @@ class SettingScreen extends StatelessWidget {
                               children: [
                                 ListTile(
                                   key: UniqueKey(),
-                                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                                  visualDensity:
+                                      VisualDensity.adaptivePlatformDensity,
                                   onTap: items[i].onTap,
                                   horizontalTitleGap: 6.0,
                                   dense: true,
@@ -151,8 +161,11 @@ final List<SettingsModel> items = [
       onTap: () {
         Get.bottomSheet(
             shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-            backgroundColor: Theme.of(Get.context!).bottomSheetTheme.backgroundColor,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10))),
+            backgroundColor:
+                Theme.of(Get.context!).bottomSheetTheme.backgroundColor,
             Wrap(
               children: [
                 ListTile(
@@ -218,47 +231,13 @@ final List<SettingsModel> items = [
         Icons.help_outline,
       ),
       routeName: '/theme'),
-  // SettingsModel(
-  //     onTap: () {
-  //       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-  //         showModalBottomSheet(
-  //           useSafeArea: true,
-  //           elevation: 0.0,
-  //           constraints: BoxConstraints(maxHeight: Get.height),
-  //           backgroundColor: Colors.white,
-  //           shape: const RoundedRectangleBorder(),
-  //           isScrollControlled: true,
-  //           isDismissible: true,
-  //           enableDrag: true,
-  //           context: Get.context!,
-  //           builder: (_) => YoutubePlayer(
-  //             aspectRatio: Get.width / (Get.height / 1.13),
-  //             showVideoProgressIndicator: true,
-  //             bufferIndicator: const CircularProgressIndicator.adaptive(
-  //               backgroundColor: Colors.transparent,
-  //             ),
-  //             controller: YoutubePlayerController(
-  //               initialVideoId: 'RqqWdrTTOTI',
-  //               flags: const YoutubePlayerFlags(
-  //                 autoPlay: true,
-  //                 mute: false,
-  //                 loop: true,
-  //                 disableDragSeek: true,
-  //                 hideControls: true,
-  //               ),
-  //             ),
-  //             controlsTimeOut: Duration.zero,
-  //             topActions: const [],
-  //             bottomActions: const [],
-  //           ),
-  //         );
-  //       });
-  //     },
-  //     name: 'Latest Promotions',
-  //     icon: const Icon(
-  //       Icons.emoji_events_outlined,
-  //     ),
-  //     routeName: '/theme'),
+  SettingsModel(
+      onTap: () {
+        showChangePinDialog(Get.context!, onSubmit: (oldPin, newPin) {});
+      },
+      name: 'Change PIN',
+      icon: Icon(Icons.password_outlined),
+      routeName: ''),
   SettingsModel(
       onTap: () {
         Get.toNamed('/faqs');
@@ -279,7 +258,8 @@ final List<SettingsModel> items = [
       routeName: '/theme'),
   SettingsModel(
       onTap: () {
-        String shareLinks = "Get the M-Tag One Network Application now for exciting features\n"
+        String shareLinks =
+            "Get the M-Tag One Network Application now for exciting features\n"
             "Android: https://bit.ly/3nLrHNX\n"
             "IOS: https://apple.co/3byIb6c\n"
             "Huawei: https://bit.ly/3IFgzLf";
@@ -298,17 +278,17 @@ final List<SettingsModel> items = [
               CupertinoDialogAction(
                 child: const Text(
                   'Confirm',
-
                 ),
                 onPressed: () {
                   Get.delete<HomeController>(force: true);
-                  Get.find<AuthController>().clearSharedData() ? Get.offAllNamed('/login') : Get.back();
+                  Get.find<AuthController>().clearSharedData()
+                      ? Get.offNamedUntil('/pinPage',(v)=>false)
+                      : Get.back();
                 },
               ),
               CupertinoDialogAction(
                 child: const Text(
                   'Cancel',
-
                 ),
                 onPressed: () => Get.back(),
               ),

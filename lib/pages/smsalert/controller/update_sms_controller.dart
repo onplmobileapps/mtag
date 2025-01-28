@@ -21,12 +21,12 @@ class UpdateSmsStatusController extends GetxController implements GetxService {
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       isLoading(false);
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () {
-        Get.offAllNamed('/login');
+        Get.offAllNamed('/pinPage');
         Get.deleteAll();
       });
     } else {
       showPopDialog('Something went wrong\nTry again later.', () {
-        Get.offAllNamed('/login');
+        Get.offAllNamed('/pinPage');
         Get.deleteAll();
       });
     }

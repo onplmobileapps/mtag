@@ -14,8 +14,9 @@ ThemeData appTheme = ThemeData(
   dividerColor: Colors.black54,
   visualDensity: VisualDensity.adaptivePlatformDensity,
   colorScheme: const ColorScheme.light(
-    primary: Color(0xFF2C2E65),
-  ),
+      primary: Color(0xFF2C2E65),
+      onPrimary: Colors.white,
+      secondary: Colors.grey),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ButtonStyle(
       fixedSize: const WidgetStatePropertyAll(
@@ -58,8 +59,13 @@ ThemeData appTheme = ThemeData(
   dialogTheme: const DialogTheme(
     surfaceTintColor: Colors.white,
     backgroundColor: Colors.white,
-    contentTextStyle: TextStyle(fontFamily: 'Poppins', fontSize: 13, color: Colors.black),
-    titleTextStyle: TextStyle(fontFamily: 'Poppins', fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+    contentTextStyle:
+        TextStyle(fontFamily: 'Poppins', fontSize: 13, color: Colors.black),
+    titleTextStyle: TextStyle(
+        fontFamily: 'Poppins',
+        fontSize: 17,
+        fontWeight: FontWeight.bold,
+        color: Colors.black),
   ),
   useMaterial3: true,
   outlinedButtonTheme: OutlinedButtonThemeData(
@@ -75,7 +81,8 @@ ThemeData appTheme = ThemeData(
       maximumSize: const WidgetStatePropertyAll(Size(90, 35)),
       minimumSize: const WidgetStatePropertyAll(Size(90, 35)),
       textStyle: const WidgetStatePropertyAll(
-        TextStyle(fontSize: 11, fontWeight: FontWeight.w500, fontFamily: 'Poppins'),
+        TextStyle(
+            fontSize: 11, fontWeight: FontWeight.w500, fontFamily: 'Poppins'),
       ),
     ),
   ),
@@ -133,23 +140,36 @@ ThemeData appTheme = ThemeData(
     style: ListTileStyle.list,
     horizontalTitleGap: 0,
     minVerticalPadding: 0,
-    titleTextStyle: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400, color: Colors.black),
+    titleTextStyle: TextStyle(
+        fontFamily: 'Poppins',
+        fontWeight: FontWeight.w400,
+        color: Colors.black),
     subtitleTextStyle: TextStyle(
       fontFamily: 'Poppins',
       fontWeight: FontWeight.w400,
       color: Colors.grey,
       fontSize: 8,
     ),
-    leadingAndTrailingTextStyle: TextStyle(fontFamily: 'Poppins', color: Colors.black),
+    leadingAndTrailingTextStyle:
+        TextStyle(fontFamily: 'Poppins', color: Colors.black),
   ),
   inputDecorationTheme: InputDecorationTheme(
+    enabledBorder: UnderlineInputBorder(
+      borderSide: BorderSide(
+        width: 0.3,
+      ),
+    ),
+    focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(
+      width: 0.3,
+    )),
     labelStyle: TextStyle(color: primarSwatch),
     hintStyle: const TextStyle(
       fontFamily: 'Poppins',
-      fontSize: 11,
+      fontSize: 13,
       color: Colors.grey,
     ),
-    contentPadding: const EdgeInsets.only(left: 15, top: 0, bottom: 0),
+    contentPadding: const EdgeInsets.only(left: 4, top: 0, bottom: 0),
   ),
   expansionTileTheme: ExpansionTileThemeData(
     backgroundColor: Colors.white,
@@ -157,7 +177,8 @@ ThemeData appTheme = ThemeData(
     collapsedTextColor: primarSwatch,
     tilePadding: EdgeInsets.zero,
     childrenPadding: EdgeInsets.zero,
-    shape: RoundedRectangleBorder(side: BorderSide.none, borderRadius: BorderRadius.circular(0)),
+    shape: RoundedRectangleBorder(
+        side: BorderSide.none, borderRadius: BorderRadius.circular(0)),
     textColor: primarSwatch,
     expandedAlignment: Alignment.topLeft,
   ),
@@ -166,9 +187,12 @@ ThemeData appTheme = ThemeData(
     color: Color(0xFF2C2E65),
   ),
   scaffoldBackgroundColor: Colors.white,
-  appBarTheme: AppBarTheme(scrolledUnderElevation: 0.0,
+  appBarTheme: AppBarTheme(
+    scrolledUnderElevation: 0.0,
     systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: primarSwatch, statusBarBrightness: Brightness.dark, statusBarIconBrightness: Brightness.light),
+        statusBarColor: primarSwatch,
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.light),
     iconTheme: const IconThemeData(color: Colors.white),
     backgroundColor: const Color(0xFF2C2E65),
     titleTextStyle: const TextStyle(
@@ -275,7 +299,8 @@ ThemeData darkTheme = ThemeData(
       fontSize: 16,
     ),
   ),
-  datePickerTheme: const DatePickerThemeData(dayForegroundColor: WidgetStatePropertyAll(Colors.black)),
+  datePickerTheme: const DatePickerThemeData(
+      dayForegroundColor: WidgetStatePropertyAll(Colors.black)),
   outlinedButtonTheme: const OutlinedButtonThemeData(),
   primaryColorDark: Colors.black,
   primaryColorLight: Colors.white,
@@ -310,25 +335,45 @@ ThemeData darkTheme = ThemeData(
     ),
   ),
   useMaterial3: true,
+  indicatorColor: Colors.white,
   dialogBackgroundColor: const Color(0xff212121),
   visualDensity: VisualDensity.adaptivePlatformDensity,
   listTileTheme: ListTileThemeData(
     visualDensity: VisualDensity.adaptivePlatformDensity,
     textColor: Colors.white,
     iconColor: Colors.white,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide.none),
-    titleTextStyle: const TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400, color: Colors.white),
-    subtitleTextStyle: const TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400, color: Colors.white),
-    leadingAndTrailingTextStyle: const TextStyle(fontFamily: 'Poppins', color: Colors.white),
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8), side: BorderSide.none),
+    titleTextStyle: const TextStyle(
+        fontFamily: 'Poppins',
+        fontWeight: FontWeight.w400,
+        color: Colors.white),
+    subtitleTextStyle: const TextStyle(
+        fontFamily: 'Poppins',
+        fontWeight: FontWeight.w400,
+        color: Colors.white),
+    leadingAndTrailingTextStyle:
+        const TextStyle(fontFamily: 'Poppins', color: Colors.white),
   ),
-  inputDecorationTheme: const InputDecorationTheme(
+  inputDecorationTheme: InputDecorationTheme(
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(
+          width: 0.3,
+          color: Colors.white,
+        ),
+      ),
+      disabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(width: 0.3, color: Colors.white)),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(width: 0.3, color: Colors.white),
+      ),
       labelStyle: TextStyle(color: Colors.white),
       hintStyle: TextStyle(
         fontFamily: 'Poppins',
-        fontSize: 11,
-        color: Colors.grey,
+        fontSize: 12,
+        color: Colors.white,
       ),
-      contentPadding: EdgeInsets.only(left: 15, top: 0, bottom: 0)),
+      contentPadding: EdgeInsets.only(left: 8, top: 0, bottom: 0)),
   expansionTileTheme: ExpansionTileThemeData(
       collapsedTextColor: primarSwatchDark,
       tilePadding: EdgeInsets.zero,
@@ -339,7 +384,9 @@ ThemeData darkTheme = ThemeData(
   scaffoldBackgroundColor: Colors.black,
   appBarTheme: AppBarTheme(
     systemOverlayStyle: const SystemUiOverlayStyle(
-        statusBarColor: Colors.black, statusBarBrightness: Brightness.dark, statusBarIconBrightness: Brightness.light),
+        statusBarColor: Colors.black,
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.light),
     iconTheme: const IconThemeData(color: Colors.white),
     backgroundColor: primarSwatch,
     titleTextStyle: const TextStyle(
@@ -354,15 +401,21 @@ ThemeData darkTheme = ThemeData(
     surfaceTintColor: Colors.black,
     labelStyle: TextStyle(color: Colors.white),
   ),
-  bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: primarSwatch),
+  bottomNavigationBarTheme:
+      BottomNavigationBarThemeData(backgroundColor: primarSwatch),
   disabledColor: const Color(0xff212121),
-  floatingActionButtonTheme: const FloatingActionButtonThemeData(backgroundColor: Colors.white),
+  floatingActionButtonTheme:
+      const FloatingActionButtonThemeData(backgroundColor: Colors.white),
   bottomSheetTheme: const BottomSheetThemeData(
     backgroundColor: Color(0xff212121),
     surfaceTintColor: Color(0xff212121),
     modalBackgroundColor: Color(0xff212121),
   ),
-  colorScheme: const ColorScheme.dark(surface: Colors.black),
+  colorScheme: ColorScheme.dark(
+      surface: Colors.black,
+      onPrimary: Colors.white,
+      primary: Colors.white,
+      secondary: Colors.grey),
   primaryColor: const Color(0xff212121),
   primarySwatch: primarSwatchDark,
   textTheme: const TextTheme(
@@ -372,14 +425,25 @@ ThemeData darkTheme = ThemeData(
       fontFamily: 'Poppins',
       fontWeight: FontWeight.w500,
     ),
-    displayMedium: TextStyle(fontSize: 13, color: Colors.white, fontFamily: 'Poppins'),
-    displaySmall: TextStyle(fontSize: 11, color: Colors.white, fontFamily: 'Poppins'),
-    titleLarge: TextStyle(fontSize: 18, color: Colors.white, fontFamily: 'Poppins'),
-    titleMedium: TextStyle(fontSize: 16, color: Colors.black, fontFamily: 'Poppins'),
-    titleSmall: TextStyle(fontSize: 11, color: Colors.black, fontFamily: 'Poppins'),
-    bodyLarge: TextStyle(fontSize: 18, color: Colors.white, fontFamily: 'Poppins', fontWeight: FontWeight.w500),
-    bodyMedium: TextStyle(fontSize: 15, color: Colors.white, fontFamily: 'Poppins'),
-    bodySmall: TextStyle(fontSize: 11, color: Colors.black38, fontFamily: 'Poppins'),
+    displayMedium:
+        TextStyle(fontSize: 13, color: Colors.white, fontFamily: 'Poppins'),
+    displaySmall:
+        TextStyle(fontSize: 11, color: Colors.white, fontFamily: 'Poppins'),
+    titleLarge:
+        TextStyle(fontSize: 18, color: Colors.white, fontFamily: 'Poppins'),
+    titleMedium:
+        TextStyle(fontSize: 16, color: Colors.black, fontFamily: 'Poppins'),
+    titleSmall:
+        TextStyle(fontSize: 11, color: Colors.black, fontFamily: 'Poppins'),
+    bodyLarge: TextStyle(
+        fontSize: 18,
+        color: Colors.white,
+        fontFamily: 'Poppins',
+        fontWeight: FontWeight.w500),
+    bodyMedium:
+        TextStyle(fontSize: 15, color: Colors.white, fontFamily: 'Poppins'),
+    bodySmall:
+        TextStyle(fontSize: 11, color: Colors.black38, fontFamily: 'Poppins'),
   ),
 );
 MaterialColor primarSwatch = const MaterialColor(0xFF2C2E65, {

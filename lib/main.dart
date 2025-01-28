@@ -1,29 +1,28 @@
 import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-
-import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../pages/login/login_screen.dart';
-import '../../api/auth_controller.dart';
-import '../../api/auth_repo.dart';
-import '../../base/app_data.dart';
-import '../../pages/dashboard/home_page.dart';
-import '../../pages/splash/splash_screen.dart';
-import '../../remoteconfig/firebase_remote_config.dart';
-import '../../utils/utils.dart';
-import '../../bindings.dart';
-import '../../theme/app_theme.dart';
+import 'package:mtag_flutterapp/pages/login/create_pin_page.dart';
 import '/../fcm_handeler.dart';
+import '../../base/app_data.dart';
+import '../../bindings.dart';
 import '../../firebase_options.dart';
+import '../../remoteconfig/firebase_remote_config.dart';
 import '../../routes/approute.dart';
+import '../../theme/app_theme.dart';
+import '../../utils/utils.dart';
+import 'pages/login/auth_page.dart';
+
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppData.initialize();
-
+// SharedPreferences.getInstance().then((v)=>v.clear());
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   SystemChrome.setPreferredOrientations([
@@ -46,13 +45,12 @@ class MTagApp extends StatefulWidget {
 class _MTagAppState extends State<MTagApp> {
   final _messagingService = MessagingService();
 
-
   @override
   void initState() {
     super.initState();
-    FirebaseInAppMessaging.instance.triggerEvent('open_app');
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-    if(Platform.isAndroid)  AppUpdate.checkForUpdates();
+      if (Platform.isAndroid) AppUpdate.checkForUpdates();
       DeviceInfo.getDeviceInfo();
       FirebaseRemoteConfigService().fetchRemoteConfig();
       _messagingService.init(context);
@@ -93,11 +91,13 @@ class _MTagAppState extends State<MTagApp> {
         darkTheme: darkTheme,
         themeMode: AppData.theme == false || AppData.theme == null ? ThemeMode.light : ThemeMode.system,
         debugShowCheckedModeBanner: false,
-        home: Get.put(AuthController(authRepo: AuthRepo(sharedPreferences: AppData.preference))).isLogedIn() == true
-            ? HomePage()
-            : Platform.isIOS
-                ? const SplashScreen()
-                : LoginScreen());
+        home: AppData.getPinData()!=null?PinEntryPage(): AuthPage());
+
+        // home: Get.put(AuthController(authRepo: AuthRepo(sharedPreferences: AppData.preference))).isLogedIn() == true
+        //     ? HomePage()
+        //     : Platform.isIOS
+        //         ? const SplashScreen()
+        //         : LoginScreen());
   }
 }
 

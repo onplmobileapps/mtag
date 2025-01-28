@@ -31,4 +31,7 @@ class OtherConsts {
   RxString get discountText => _discountText;
   static final RxInt _bageCount = 0.obs;
   RxInt get bageCount => _bageCount;
+
+  static final RxString _promoPopUp = ''.obs;
+  RxString get promoPopUp => _promoPopUp;
 }

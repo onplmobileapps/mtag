@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     if (Platform.isAndroid) checkForUpdates();
     Future.delayed(const Duration(seconds: 2), () {
-      Get.offAllNamed('/login');
+      Get.offAllNamed('/pinPage');
     });
   }
 

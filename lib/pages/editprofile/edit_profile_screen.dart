@@ -184,7 +184,6 @@ class EditProfileScreen extends StatelessWidget {
                                       backgroundColor: Theme.of(context).primaryColor,
                                       width: double.infinity,
                                       onclick: () async {
-                                        Analytics.updateProfile();
                                         if (_formKey.currentState!.validate()) {
                                           var response = await Get.find<UpdateEmailController>().updateEmail(
                                               email: customerDetailsController.emailController.text.trim(),

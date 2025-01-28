@@ -124,10 +124,9 @@ SmartAuth()
               ),
               Pinput(
                 smsRetriever: smsRetriever,
-                // androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsUserConsentApi,
-                // listenForMultipleSmsOnAndroid: true,
+                
                 hapticFeedbackType: HapticFeedbackType.lightImpact,
-                autofocus: true,
+          
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 onCompleted: (value) {
                   Get.find<AuthController>().verifyOTP(value, int.parse('${args['loginKey']}'));
@@ -157,7 +156,7 @@ SmartAuth()
                   height: 50,
                   width: 50,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.1),
+                    color: Colors.white.withAlpha( 128),
                     border: Border.all(color: Colors.black12, width: 1.5),
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -167,7 +166,7 @@ SmartAuth()
                   height: 50,
                   width: 50,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.1),
+                    color: Colors.white.withAlpha(128),
                     border: Border.all(color: Colors.black12, width: 1.5),
                     borderRadius: BorderRadius.circular(8),
                   ),

@@ -344,7 +344,7 @@ void showPaymentBottomSheet(BuildContext context,
       },
     ),
     isScrollControlled: true,
-    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+    backgroundColor: Theme.of(context).bottomSheetTheme.backgroundColor,
   );
 }
 

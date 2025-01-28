@@ -38,7 +38,7 @@ class DeleteAccountController extends GetxController implements GetxService {
           actions: [
             CupertinoDialogAction(
               onPressed: () {
-                Get.offAllNamed('/login');
+                Get.offAllNamed('/pinPage');
               },
               child: const Text('Ok'),
             )

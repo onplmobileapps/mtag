@@ -19,7 +19,7 @@ class ActivityContorller extends GetxController implements GetxService {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () {
         Get.delete<HomeController>(force: true);
         Get.find<AuthController>().clearSharedData();
-        Get.offAllNamed('/login');
+        Get.offAllNamed('/pinPage');
       });
     }
   }

@@ -1,9 +1,12 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart' as dio;
+import 'package:get/get.dart';
 import 'package:mtag_flutterapp/api/application_url.dart';
 
 import '../constants/auth_utils.dart';
+import '../pages/notification/controller/notificationcontroller.dart';
 import 'api_constants.dart';
 import 'api_structure.dart';
 
@@ -66,10 +69,11 @@ class UserRepo {
   }
 
   Future<Map<String, dynamic>> deleteNotifications({List<String>? notificationId}) async {
+    log(notificationId.toString());
     APISTRUCTURE apiObject = APISTRUCTURE(
       apiUrl: ApplicationUrl.DELETENOTIFICATION_URL,
       apiRequestMethod: APIREQUESTMETHOD.POST,
-      body: {'notification_id': notificationId ?? ''},
+      body: {'notification_id': notificationId ?? '',"clear_all":Get.find<NotificationController>().isSelectAll==true?'1':'0'},
       isWantSuccessMessage: true,
     );
     return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: true);

@@ -256,7 +256,7 @@ class _RechargeSelfPageState extends State<RechargeSelfPage> {
                 maxLength: 8,
                 validator:validateAmount,
                 controller: _amountController,
-                autofocus: true,
+          
                 style: const TextStyle(height: 1),
                 decoration: const InputDecoration(
                     hintText: '0',

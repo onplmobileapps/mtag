@@ -33,7 +33,7 @@ Future<void> jazzLoader() {
                     strokeWidth: 3,
                     semanticsValue: '2323',
                     backgroundColor: Colors.grey,
-                    color: Colors.white.withValues(alpha: 0.8),
+                    color: Colors.white.withAlpha( 80),
                   ),
                 ),
               ),

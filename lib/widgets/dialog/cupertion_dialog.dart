@@ -4,18 +4,24 @@ import 'package:get/get.dart';
 void showPopDialog(String message, Function()? onPressed) {
   showCupertinoModalPopup(
     barrierDismissible: false,
-    useRootNavigator: false,
+    useRootNavigator: true,
     context: Get.context!,
     builder: (context) => PopScope(
       canPop: false,
       child: CupertinoAlertDialog(
+        content: Text(message),
         actions: [
           CupertinoDialogAction(
-            onPressed: onPressed,
+            onPressed: () {
+              if (onPressed != null) {
+                onPressed();
+              } else {
+                Navigator.of(context).pop();
+              }
+            },
             child: const Text('Ok'),
-          )
+          ),
         ],
-        content: Text(message),
       ),
     ),
   );

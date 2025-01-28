@@ -31,10 +31,9 @@ import 'package:mtag_flutterapp/controller/home_controller.dart';
 //   }
 // }
 
-sealed class AmountList{
+sealed class AmountList {
   static final List<int> amountList = [500, 1000, 1500, 2000, 3000, 4000, 5000];
 }
-
 
 sealed class DeviceInfo {
   static getDeviceInfo() async {
@@ -73,11 +72,13 @@ sealed class AppReviewUtils {
     }
   }
 }
-sealed class AppUpdate{
- static Future<void> checkForUpdates() async {
+
+sealed class AppUpdate {
+  static Future<void> checkForUpdates() async {
     try {
       final updateStatus = await InAppUpdate.checkForUpdate();
-      if (updateStatus.updateAvailability == UpdateAvailability.updateAvailable) {
+      if (updateStatus.updateAvailability ==
+          UpdateAvailability.updateAvailable) {
         await InAppUpdate.performImmediateUpdate();
       }
     } catch (e) {
@@ -86,7 +87,7 @@ sealed class AppUpdate{
     }
   }
 }
- 
+
 void startTimer(ValueNotifier<Duration> timerNotifier) {
   Timer.periodic(Duration(seconds: 1), (timer) {
     if (timerNotifier.value > Duration.zero) {
@@ -96,22 +97,39 @@ void startTimer(ValueNotifier<Duration> timerNotifier) {
     }
   });
 }
+
 String? validateAmount(String? value) {
+  // Check if the value is null or empty
   if (value == null || value.isEmpty) {
-    return 'Amount is required';
+    return 'Amount is required'; // Localizable message for "Amount required"
   }
 
+  // Try parsing the input amount value to an integer
   final parsedValue = int.tryParse(value);
   if (parsedValue == null) {
-    return 'Amount must be a valid integer';
+    return 'Amount must be a valid integer'; // Localizable message for invalid integer input
   }
 
-  if (parsedValue <int.parse('${Get.find<HomeController>().dashboradData.value.rechargeMinAmount}')||parsedValue>int.parse('${Get.find<HomeController>().dashboradData.value.rechargeMaxAmount}')) {
-    return 'Amount must be between ${Get.find<HomeController>().dashboradData.value.rechargeMinAmount} to ${Get.find<HomeController>().dashboradData.value.rechargeMaxAmount} PKR';
+  // Fetch the recharge min and max amounts from the controller
+  final homeController = Get.find<HomeController>();
+  final minAmount =
+      int.tryParse('${homeController.dashboradData.value.rechargeMinAmount}');
+  final maxAmount =
+      int.tryParse('${homeController.dashboradData.value.rechargeMaxAmount}');
+
+  // If either min or max amount is invalid, return an error message
+  if (minAmount == null || maxAmount == null) {
+    return 'Invalid amount range'; // Localizable message for invalid range
   }
 
-  return null; // Return null if validation passes
+  // Check if the parsed value is within the valid range
+  if (parsedValue < minAmount || parsedValue > maxAmount) {
+    return 'Amount must be between $minAmount and $maxAmount PKR'; // Localizable message with dynamic range
+  }
+
+  return null; // Return null if validation passes (valid amount)
 }
+
 String formatDateTime(String inputDateTime, {bool roundMinutes = false}) {
   try {
     // Parse the input date-time string
@@ -119,12 +137,13 @@ String formatDateTime(String inputDateTime, {bool roundMinutes = false}) {
 
     // Optionally round the minutes to 00
     if (roundMinutes) {
-      dateTime = DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour);
+      dateTime =
+          DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour);
     }
 
     // Format the date-time to the desired output format
     return DateFormat("dd MMM yy h:mm a").format(dateTime);
   } catch (e) {
-    return 'Invalid date format';
+    return inputDateTime;
   }
 }

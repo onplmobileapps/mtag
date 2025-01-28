@@ -32,7 +32,9 @@ class _NotificationCardState extends State<NotificationCard> {
       () {
         // If no items are selected and selection mode is false, set isSelectionMode to false
 
-        return (notificationController.notificationModel.value.data == null ||(notificationController.notificationModel.value.data?.isEmpty??false)||
+        return (notificationController.notificationModel.value.data == null ||
+                (notificationController.notificationModel.value.data?.isEmpty ??
+                    false) ||
                 notificationController.notificationModel.value.cnt == 0)
             ? Center(
                 child: Text(
@@ -142,31 +144,41 @@ class _NotificationCardState extends State<NotificationCard> {
                                   ? Checkbox(
                                       value: notificationItem?.isSelected,
                                       onChanged: (v) {
-                                         notificationItem?.isSelected = v;
+                                        notificationItem?.isSelected = v;
+
                                         for (var item in notificationController
                                             .notificationModel.value.data!) {
                                           if (item.isSelected ?? false) {
-                                            notificationController.selectedIds
-                                                .add(item.id.toString());
+                                            // Check if item.id is NOT already in the list before adding
+                                            if (!notificationController
+                                                .selectedIds
+                                                .contains(item.id.toString())) {
+                                              notificationController.selectedIds
+                                                  .add(item.id.toString());
+                                              log("ids: ${notificationController.selectedIds}");
+                                            }
                                           }
-                                         
-                                          bool isAnyItemSelected =
-                                              notificationController
-                                                      .notificationModel
-                                                      .value
-                                                      .data
-                                                      ?.any((item) =>
-                                                          item.isSelected ==
-                                                          true) ??
-                                                  false;
-                                          if (!isAnyItemSelected) {
-                                            notificationController
-                                                .isSelectionMode.value = false;
-                                          }
-
-                                          setState(() {});
                                         }
-                                      })
+
+                                        // Check if any item is selected, if none, disable selection mode
+                                        bool isAnyItemSelected =
+                                            notificationController
+                                                    .notificationModel
+                                                    .value
+                                                    .data
+                                                    ?.any((item) =>
+                                                        item.isSelected ==
+                                                        true) ??
+                                                false;
+
+                                        if (!isAnyItemSelected) {
+                                          notificationController
+                                              .isSelectionMode.value = false;
+                                        }
+
+                                        setState(() {});
+                                      },
+                                    )
                                   : InkWell(
                                       onTap: () async {
                                         showCupertinoModalPopup(
