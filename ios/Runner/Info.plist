@@ -36,7 +36,7 @@
     <true/>
     <key>NSExceptionDomains</key>
     <dict>
-        <key>www.google.com</key> <!-- Replace with the actual domain you're working with -->
+        <key>https://ocotapp.com</key> <!-- Replace with the actual domain you're working with -->
         <dict>
             <key>NSIncludesSubdomains</key>
             <true/>

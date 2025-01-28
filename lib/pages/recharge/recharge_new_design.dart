@@ -258,7 +258,7 @@ class _RechargeSelfPageState extends State<RechargeSelfPage> {
                 controller: _amountController,
           
                 style: const TextStyle(height: 1),
-                decoration: const InputDecoration(
+                decoration: const InputDecoration(contentPadding: EdgeInsets.symmetric(horizontal: 16),
                     hintText: '0',
                     hintStyle: TextStyle(fontSize: 17),
                     counterText: '',

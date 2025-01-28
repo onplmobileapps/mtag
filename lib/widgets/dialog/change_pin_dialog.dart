@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/api/auth_controller.dart';
-import 'package:mtag_flutterapp/base/app_data.dart';
+import '../../api/auth_controller.dart';
+import '../../base/app_data.dart';
 
 void showChangePinDialog(
   BuildContext context, {

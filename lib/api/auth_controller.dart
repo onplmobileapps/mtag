@@ -303,7 +303,7 @@ class AuthController extends GetxController implements GetxService {
               data: Data(
                   accessToken: response[APIRESPONSE.SUCCESS]['Data'],
                   iscoporate: false)));
-      Future.delayed(const Duration(seconds: 1), () async {
+      Future.delayed(const Duration(milliseconds: 500), () async {
         Get.off(() => PinEntryPage(isForgetPin:isForgetPin ,
               iscreatPin:response[APIRESPONSE.SUCCESS]['has_mpin']?false:true,
               cnicNumber: cnic,

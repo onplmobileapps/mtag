@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/widgets/elevated_button.dart';
+import '/widgets/elevated_button.dart';
 import '../../pages/dashboard/model/dashboard_model.dart' as m;
 import '../../pages/mtag/controller/delink_controller.dart';
 

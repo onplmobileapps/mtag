@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-
 import '../../../constants/call_helper.dart';
 
 showCustomDialog({bool? isError, String? message, BuildContext? context}) {

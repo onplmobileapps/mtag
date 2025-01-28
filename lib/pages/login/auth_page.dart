@@ -110,7 +110,7 @@ final _formKey=GlobalKey<FormState>();
 
                  Form(key: _formKey,
                    child: Column(children: [ if (value == 1)
-                      TextFormField(keyboardType: TextInputType.text,inputFormatters: [FilteringTextInputFormatter.allow(RegExp("[A-Za-z]"))],
+                      TextFormField(keyboardType: TextInputType.text,inputFormatters: [FilteringTextInputFormatter.allow(RegExp("[A-Za-z ]"))],
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         style: const TextStyle(height: 1),
                         controller: _userName,

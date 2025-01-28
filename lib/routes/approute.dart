@@ -19,10 +19,7 @@ import '../../pages/smsalert/sms_alert_screen.dart';
 import '../../pages/faqs/faqs_screen.dart';
 import '../../pages/editprofile/edit_profile_screen.dart';
 import '../../pages/feedback/feedback_screen.dart';
-
 import '../../pages/mtag/mtag_detail_screen.dart';
-import '../../pages/otp/otp_screen.dart';
-
 import '../../pages/settings/setting_screen.dart';
 import '../../pages/tolcalator/tolcalculator_screen.dart';
 import '../../pages/tollhistory/toll_history_screen.dart';
@@ -107,10 +104,7 @@ List<GetPage<dynamic>>? getPages = [
     page: () =>
         OtherConsts().emergencySwitchProd.value == '1' ? const PaymentCardsScreen() : const PaymentCardsScreen2(),
   ),
-  GetPage(
-    name: '/otp',
-    page: () => const OTPScreen(),
-  ),
+ 
  
   GetPage(
     name: '/auth',

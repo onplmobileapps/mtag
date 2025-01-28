@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
-import 'package:mtag_flutterapp/widgets/elevated_button.dart';
-
+import '../../widgets/elevated_button.dart';
 import '../../pages/payment/controller/payment_card_controller.dart';
 
 class JazzCashDialog extends StatelessWidget {

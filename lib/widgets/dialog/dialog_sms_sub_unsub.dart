@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/api/api_constants.dart';
-import 'package:mtag_flutterapp/constants/analytics.dart';
-import 'package:mtag_flutterapp/controller/home_controller.dart';
-import 'package:mtag_flutterapp/pages/smsalert/controller/update_sms_controller.dart';
-import 'package:mtag_flutterapp/theme/app_theme.dart';
-import 'package:mtag_flutterapp/widgets/elevated_button.dart';
+import '../../api/api_constants.dart';
+import '../../constants/analytics.dart';
+import '../../controller/home_controller.dart';
+import '../../pages/smsalert/controller/update_sms_controller.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/elevated_button.dart';
 
 class SubUnsubDialog extends StatelessWidget {
   final String messageTextUrdu;

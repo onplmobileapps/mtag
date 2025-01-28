@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mtag_flutterapp/widgets/bottomsheet/build_payment_options_widget.dart';
+import '../../widgets/bottomsheet/build_payment_options_widget.dart';
 
 import 'build_header_widet.dart';
 import 'psid_widget.dart';

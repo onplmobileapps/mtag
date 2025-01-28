@@ -1,12 +1,9 @@
 import 'dart:developer';
-
-
 import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
-
+import '../../api/auth_controller.dart';
 import '../../controller/home_controller.dart';
 import 'package:video_player/video_player.dart';
 
@@ -20,27 +17,24 @@ class AlfaWebView2 extends StatefulWidget {
 
 class _AlfaWebViewState extends State<AlfaWebView2> {
   final GlobalKey webViewKey = GlobalKey();
-InAppWebViewController? _appWebViewController;
-  InAppWebViewSettings settings = InAppWebViewSettings(underPageBackgroundColor: Colors.white,
-      isInspectable: false,
-      mediaPlaybackRequiresUserGesture: false,
+ InAppWebViewController? _appWebViewController;
+  InAppWebViewSettings settings = InAppWebViewSettings(
+      underPageBackgroundColor: Colors.white,
       javaScriptCanOpenWindowsAutomatically: true,
-      allowsInlineMediaPlayback: true,
-      useHybridComposition: true,
+       useHybridComposition: true,
       iframeAllow: "camera; microphone",
       javaScriptEnabled: true,
       cacheEnabled: true,
       clearCache: true,
       userAgent: "",
-      useOnDownloadStart: true,
       useOnLoadResource: true,
-      useOnNavigationResponse: true,
       horizontalScrollBarEnabled: false,
+      useShouldOverrideUrlLoading: true,
       verticalScrollBarEnabled: true,
-      safeBrowsingEnabled: false,
+      safeBrowsingEnabled: true,
       iframeAllowFullscreen: true,
-      mixedContentMode: MixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
-      pageZoom: 0);
+       mixedContentMode: MixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
+      pageZoom: 1);
   late VideoPlayerController _videocontroller;
   int loadingPercentage = 0;
   bool isNoInternet = false;
@@ -61,7 +55,7 @@ InAppWebViewController? _appWebViewController;
     }
   }
 
-//VideoPlayer(VideoPlayerController.asset('assets/video/mc_success.mp4')..play()),
+
   Future<void> showSuccessPopup() async {
     await showCupertinoModalPopup(
       barrierDismissible: false,
@@ -193,28 +187,35 @@ InAppWebViewController? _appWebViewController;
               )
             : Stack(
                 children: [
-                  InAppWebView(initialUrlRequest: URLRequest(url: WebUri('https://google.com')),
-                    // initialUrlRequest: URLRequest(
-                    //   url: WebUri(widget.url.toString()),
-                    //   headers: {
-                    //     "Accept": "application/json",
-                    //     "User-Agent":
-                    //         "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.0.0 Mobile Safari/537.36",
-                    //     "Connection": "Keep-Alive",
-                    //     "Access-Control-Allow-Origin":"*",
-                    //     "Authorization":
-                    //         "Bearer ${Get.find<AuthController>().authRepo.getAuthToken()}"
-                    //   },
-                    // ),
+                  InAppWebView(
+                    initialUrlRequest: URLRequest(
+                      url: WebUri(widget.url.toString()),
+                      headers: {
+                        "Accept": "application/json",
+                        "User-Agent":
+                            "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.0.0 Mobile Safari/537.36",
+                        "Connection": "Keep-Alive",
+                        "Access-Control-Allow-Origin":"*",
+                        "Authorization":
+                            "Bearer ${Get.find<AuthController>().authRepo.getAuthToken()}"
+                      },
+                    ),
                     initialSettings: settings,
-                    onWebViewCreated: (controller) async {},
+                    onWebViewCreated: (controller) async {
+                    if(_appWebViewController!=null){
+                      _appWebViewController?.dispose();
+                      _appWebViewController= controller;
+                    }
+                       
+
+                    },
                     onDidReceiveServerRedirectForProvisionalNavigation:
                         (controller) {
                         
-                          _appWebViewController= controller;
+                         
                         },
                     onLoadStart: (controller, url) {
-                      setState(() {});
+if(mounted)                      setState(() {});
                     },
                     onPermissionRequest: (controller, request) async {
                       return PermissionResponse(

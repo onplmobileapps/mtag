@@ -5,7 +5,9 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/pages/login/create_pin_page.dart';
+import '/pages/login/create_pin_page.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+
 import '/../fcm_handeler.dart';
 import '../../base/app_data.dart';
 import '../../bindings.dart';

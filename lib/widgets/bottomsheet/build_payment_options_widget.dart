@@ -3,8 +3,8 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/utils/utils.dart';
-import 'package:mtag_flutterapp/widgets/dialog/cupertion_dialog.dart';
+import '../../utils/utils.dart';
+import '../../widgets/dialog/cupertion_dialog.dart';
 import '../../pages/dashboard/model/dashboard_model.dart';
 import 'build_payment_card.dart';
 
