@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '/pages/login/create_pin_page.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-
 import '/../fcm_handeler.dart';
 import '../../base/app_data.dart';
 import '../../bindings.dart';
@@ -24,8 +22,9 @@ import 'pages/login/auth_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppData.initialize();
-// SharedPreferences.getInstance().then((v)=>v.clear());
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+ if (Firebase.apps.isEmpty) {
+   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  } 
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -95,11 +94,7 @@ class _MTagAppState extends State<MTagApp> {
         debugShowCheckedModeBanner: false,
         home: AppData.getPinData()!=null?PinEntryPage(): AuthPage());
 
-        // home: Get.put(AuthController(authRepo: AuthRepo(sharedPreferences: AppData.preference))).isLogedIn() == true
-        //     ? HomePage()
-        //     : Platform.isIOS
-        //         ? const SplashScreen()
-        //         : LoginScreen());
+      
   }
 }
 

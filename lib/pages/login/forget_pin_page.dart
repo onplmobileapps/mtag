@@ -103,8 +103,8 @@ final _formKey=GlobalKey<FormState>();
                           radius: 25,
                         
                           child: Icon(
-                            Icons.keyboard_arrow_right_outlined,
-                            size: 25,
+                            Icons.keyboard_arrow_right_outlined,color: colorScheme.scrim,
+                            size: 30,
                            
                           ),
                         ),

@@ -15,7 +15,7 @@ ThemeData appTheme = ThemeData(
   visualDensity: VisualDensity.adaptivePlatformDensity,
   colorScheme: const ColorScheme.light(
       primary: Color(0xFF2C2E65),
-      onPrimary: Colors.white,
+      onPrimary: Colors.white,scrim: Colors.white,
       secondary: Colors.grey),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ButtonStyle(

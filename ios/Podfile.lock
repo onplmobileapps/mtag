@@ -23,26 +23,26 @@ PODS:
   - Firebase/RemoteConfig (11.6.0):
     - Firebase/CoreOnly
     - FirebaseRemoteConfig (~> 11.6.0)
-  - firebase_analytics (11.4.0):
+  - firebase_analytics (11.4.1):
     - Firebase/Analytics (= 11.6.0)
     - firebase_core
     - Flutter
-  - firebase_core (3.10.0):
+  - firebase_core (3.10.1):
     - Firebase/CoreOnly (= 11.6.0)
     - Flutter
-  - firebase_crashlytics (4.3.0):
+  - firebase_crashlytics (4.3.1):
     - Firebase/Crashlytics (= 11.6.0)
     - firebase_core
     - Flutter
-  - firebase_messaging (15.2.0):
+  - firebase_messaging (15.2.1):
     - Firebase/Messaging (= 11.6.0)
     - firebase_core
     - Flutter
-  - firebase_performance (0.10.1):
+  - firebase_performance (0.10.1-1):
     - Firebase/Performance (= 11.6.0)
     - firebase_core
     - Flutter
-  - firebase_remote_config (5.3.0):
+  - firebase_remote_config (5.3.1):
     - Firebase/RemoteConfig (= 11.6.0)
     - firebase_core
     - Flutter
@@ -210,8 +210,6 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - smart_auth (0.0.1):
-    - Flutter
   - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
@@ -239,7 +237,6 @@ DEPENDENCIES:
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
-  - smart_auth (from `.symlinks/plugins/smart_auth/ios`)
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
@@ -303,8 +300,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/share_plus/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
-  smart_auth:
-    :path: ".symlinks/plugins/smart_auth/ios"
   sqflite_darwin:
     :path: ".symlinks/plugins/sqflite_darwin/darwin"
   url_launcher_ios:
@@ -316,12 +311,12 @@ SPEC CHECKSUMS:
   connectivity_plus: 18382e7311ba19efcaee94442b23b32507b20695
   device_info_plus: bf2e3232933866d73fe290f2942f2156cdd10342
   Firebase: 374a441a91ead896215703a674d58cdb3e9d772b
-  firebase_analytics: 07bd7cfbac54bfcdccf2bb2530f9a65486f7ef3f
-  firebase_core: feb37e79f775c2bd08dd35e02d83678291317e10
-  firebase_crashlytics: 609a5f6f4a2f5af9e40a68182e0c1be3ca2a02f6
-  firebase_messaging: e2f0ba891b1509668c07f5099761518a5af8fe3c
-  firebase_performance: d246b8e6b917420663c79f61529ee0983ddc2644
-  firebase_remote_config: e532e254ba9ad9e905946f45db65045578b62ef2
+  firebase_analytics: 13ea4ad8a42c5060bad7e6694304dabb8b02fe7e
+  firebase_core: e2aa06dbd854d961f8ce46c2e20933bee1bf2d2b
+  firebase_crashlytics: 868f9aa408c704313eebff880c26c1446081679e
+  firebase_messaging: 96cf6d67121b3f39746b2a4f29a26c0eee4af70e
+  firebase_performance: e86f6958bb1a2c95b1840b63f6d66029218faaf8
+  firebase_remote_config: 63c9a32cc875d2f66a6bd12a32ef8a9835168cce
   FirebaseABTesting: 663ece168d2d65a31f71603d71937e326020a887
   FirebaseAnalytics: 7114c698cac995602e3b1b96663473e50d54d6e7
   FirebaseCore: 48b0dd707581cf9c1a1220da68223fb0a562afaa
@@ -351,7 +346,6 @@ SPEC CHECKSUMS:
   PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
   share_plus: 8b6f8b3447e494cca5317c8c3073de39b3600d1f
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
-  smart_auth: 4bedbc118723912d0e45a07e8ab34039c19e04f2
   sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
   video_player_avfoundation: 7c6c11d8470e1675df7397027218274b6d2360b3

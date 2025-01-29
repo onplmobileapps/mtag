@@ -303,14 +303,14 @@ class AuthController extends GetxController implements GetxService {
               data: Data(
                   accessToken: response[APIRESPONSE.SUCCESS]['Data'],
                   iscoporate: false)));
-      Future.delayed(const Duration(milliseconds: 500), () async {
+      
         Get.off(() => PinEntryPage(isForgetPin:isForgetPin ,
               iscreatPin:response[APIRESPONSE.SUCCESS]['has_mpin']?false:true,
               cnicNumber: cnic,
               mobileNum: mobile,
             ));
-        // await Get.offAllNamed('/dashboard');
-      });
+      
+   
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () => Get.back());
     } else {
@@ -348,7 +348,7 @@ class AuthController extends GetxController implements GetxService {
         response[APIRESPONSE.SUCCESS]['Message'],
         () {
         
-          Future.delayed(Duration(seconds: 1),(){
+         
             if(isResetPin==1){
               Get.back();
             } 
@@ -357,7 +357,7 @@ verifyPIN(cnic: cnic,mobileNum: mobileNum,pin: AppData.getPinData()?['pin'] );
              Get.back();
              Get.back();
             } 
-          }); 
+      
         
           
         },
@@ -379,6 +379,7 @@ verifyPIN(cnic: cnic,mobileNum: mobileNum,pin: AppData.getPinData()?['pin'] );
     String? cnic,
     String? mobileNum,
     String? pin,
+    VoidCallback? onTap,
   }) async {
     var fcm = AppData.getFcmToken();
     var response = await authRepo.verifyPin(
@@ -402,9 +403,7 @@ verifyPIN(cnic: cnic,mobileNum: mobileNum,pin: AppData.getPinData()?['pin'] );
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(
         response[APIRESPONSE.ERROR]['Message'],
-        () {
-          Get.back();
-        },
+        onTap
       );
     }
   }
