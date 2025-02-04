@@ -1,6 +1,4 @@
 import 'dart:developer';
-import 'dart:io';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -105,6 +103,12 @@ class MessagingService {
   Future<void> init(BuildContext context) async {
     await _requestPermission();
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    await _fcm.setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+
 
     LocalNotificationsService(_notificationsPlugin).init();
     await _loadBadgeCount();
@@ -135,7 +139,7 @@ class MessagingService {
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       fcmToken =
-          Platform.isIOS ? await _fcm.getAPNSToken() : await _fcm.getToken();
+           await _fcm.getToken();
       if (fcmToken != null) {
         log('FCM Token: $fcmToken');
         AppData.setFcmToken(fcmToken!);

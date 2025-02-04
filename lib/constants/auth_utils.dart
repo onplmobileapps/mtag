@@ -23,21 +23,29 @@ class AuthenticationUtil {
   static Future<bool> canAuthenticate() async => await auth.canCheckBiometrics || await auth.isDeviceSupported();
   getauth() async {}
 
-  static Future<bool> authenticate() async {
-    var available = await auth.getAvailableBiometrics();
-    log(available.toString());
-    try {
-      if (!await canAuthenticate()) return false;
+ static Future<bool> authenticate() async {
+  var available = await auth.getAvailableBiometrics();
+  log(available.toString());
+  try {
+    if (!await canAuthenticate()) return false;
 
-      return await auth.authenticate(
-        localizedReason: "Scan your fingerprint to proceed.",
-        options: const AuthenticationOptions(stickyAuth: true, useErrorDialogs: true),
-      );
-    } catch (e) {
-      debugPrint('error $e');
+    final result = await auth.authenticate(
+      localizedReason: "Scan your fingerprint to proceed.",
+      options: const AuthenticationOptions(stickyAuth: true, useErrorDialogs: true),
+    );
+
+    if (result) {
+      return true;
+    } else {
+      log('User canceled authentication or it failed');
       return false;
     }
+  } catch (e) {
+    debugPrint('error $e');
+    return false;
   }
+}
+
 
   static Future<bool> isConnected() async {
     var connectivityResult = await (Connectivity().checkConnectivity());

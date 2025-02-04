@@ -56,7 +56,6 @@ class NotificationScreen extends GetView<NotificationController> {
                             notificationController.notificationModel.refresh();
                           } else {
                             log(controller.selectedIds.toString());
-                            // If no items selected, show message or handle accordingly
                             return;
                           }
                         }
@@ -74,26 +73,17 @@ class NotificationScreen extends GetView<NotificationController> {
                     (Get.find<NotificationController>().isSelectionMode.value),
                 child: InkWell(
                   onTap: () {
-                    // Access the notification controller
                     final notificationController =
                         Get.find<NotificationController>();
-
-                    // Toggle the flag
                     controller.isSelectAll = !controller.isSelectAll;
-
-                    // Set the isSelected property of each notification
                     for (var item in notificationController
                         .notificationModel.value.data!) {
                       item.isSelected = controller.isSelectAll;
                       controller.selectedIds.add(item.id.toString());
                     }
-
-                    // If unselecting all, disable selection mode
                     if (!controller.isSelectAll) {
                       notificationController.isSelectionMode(false);
                     }
-
-                    // Refresh the model to update the UI
                     notificationController.notificationModel.refresh();
                   },
                   child: Padding(
@@ -126,7 +116,7 @@ class NotificationScreen extends GetView<NotificationController> {
               ),
             ),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 5),
               child: NotificationCard(),
             ),
           ),

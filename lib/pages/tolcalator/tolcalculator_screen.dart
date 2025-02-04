@@ -417,7 +417,7 @@ class _BuildDropDownFieldState extends State<BuildDropDownField> {
       ),
       decoratorProps: DropDownDecoratorProps(
         baseStyle: const TextStyle(color: Colors.black, fontFamily: 'Poppins', fontSize: 12),
-        decoration: InputDecoration(
+        decoration: InputDecoration(hintStyle: Theme.of(context).inputDecorationTheme.hintStyle?.copyWith(color: Colors.black54),
           errorBorder: OutlineInputBorder(
             borderSide: const BorderSide(
               color: Colors.black54,
@@ -426,6 +426,7 @@ class _BuildDropDownFieldState extends State<BuildDropDownField> {
             borderRadius: BorderRadius.circular(8),
           ),
           hintText: widget.hint,
+          
           constraints: const BoxConstraints(maxHeight: 35, maxWidth: double.infinity),
           suffixIcon: const Icon(Icons.keyboard_arrow_down_outlined),
           isDense: true,
@@ -478,7 +479,7 @@ class _BuildDropDownFieldState extends State<BuildDropDownField> {
         searchFieldProps: TextFieldProps(
             scrollPadding: const EdgeInsets.all(4),
             style: const TextStyle(fontSize: 11, fontFamily: 'Poppins', height: 1),
-            decoration: InputDecoration(
+            decoration: InputDecoration(hintStyle: Theme.of(context).inputDecorationTheme.hintStyle,
               enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide.none),
               focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide.none),
               border: InputBorder.none,

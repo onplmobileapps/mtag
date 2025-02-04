@@ -11,25 +11,7 @@ import 'package:intl/intl.dart';
 
 import 'package:mtag_flutterapp/controller/home_controller.dart';
 
-// sealed class StatusBarUtils {
-//   static void changeBarColor() {
-//     var color = Colors.white;
 
-//     if (AppData.theme == true) {
-//       color = Colors.black;
-//     } else if (AppData.theme == false) {
-//       color = Colors.white;
-//     } else {
-//       if (Get.isDarkMode) {
-//         color = Colors.black;
-//       } else {
-//         color = Colors.white;
-//       }
-//     }
-//     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-//     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: color));
-//   }
-// }
 
 sealed class AmountList {
   static final List<int> amountList = [500, 1000, 1500, 2000, 3000, 4000, 5000];

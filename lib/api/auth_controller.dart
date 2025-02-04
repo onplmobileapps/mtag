@@ -240,8 +240,6 @@ class AuthController extends GetxController implements GetxService {
           user: UserModel(
               code: response[APIRESPONSE.SUCCESS]['Code'],
               data: Data(accessToken: response[APIRESPONSE.SUCCESS]['Data'])));
-      // await Get.offAllNamed('/otp',
-      //     arguments: {'mobileNum': mobile, 'loginKey': islogin, 'cnic': cnic});
       Get.dialog(OtpVerificationDialog(
         onOtpSubmit: (otp) {
           verifyOTP(otp, islogin, cnic: cnic, mobile: mobile,isForgetPin: isForgetPin);

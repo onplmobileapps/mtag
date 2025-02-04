@@ -228,10 +228,7 @@ class OtpVerificationDialog extends StatelessWidget {
                         children: <InlineSpan>[
                           TextSpan(
                             text: 'OTP not received? Call ',
-                            style: TextStyle(
-                              color: Colors.black, // Default text color
-                            ),
-                          ),
+                            style: Theme.of(context).textTheme.displayMedium                          ),
                           TextSpan(
                             recognizer: TapGestureRecognizer()
                               ..onTap = () async =>
@@ -244,7 +241,7 @@ class OtpVerificationDialog extends StatelessWidget {
                             ),
                           ),
                           TextSpan(
-                            text: ' or ',
+                            text: ' or ',style: Theme.of(context).textTheme.displayMedium
                           ),
                           WidgetSpan(
                             child: GestureDetector(

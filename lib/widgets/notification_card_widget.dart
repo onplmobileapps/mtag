@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
 import '../pages/notification/controller/notificationcontroller.dart';
 
 class NotificationCard extends StatefulWidget {
@@ -85,7 +86,7 @@ class _NotificationCardState extends State<NotificationCard> {
                           Container(
                             height: 50,
                             width: 50,
-                            margin: const EdgeInsets.all(4),
+                            margin: const EdgeInsets.only(left: 4,right: 8,top: 4),
                             padding: const EdgeInsets.all(5),
                             decoration: BoxDecoration(
                                 color: Colors.white,
@@ -121,106 +122,109 @@ class _NotificationCardState extends State<NotificationCard> {
                               ],
                             ),
                           ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                notificationItem?.datetimeSmall ?? '',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleSmall
-                                    ?.copyWith(
-                                        color: const Color(0XffE73B3E),
-                                        fontStyle: FontStyle.italic),
-                                softWrap: false,
-                                maxLines: 1,
-                              ),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              notificationController.isSelectionMode.value ==
-                                      true
-                                  ? Checkbox(
-                                      value: notificationItem?.isSelected,
-                                      onChanged: (v) {
-                                        notificationItem?.isSelected = v;
-
-                                        for (var item in notificationController
-                                            .notificationModel.value.data!) {
-                                          if (item.isSelected ?? false) {
-                                            // Check if item.id is NOT already in the list before adding
-                                            if (!notificationController
-                                                .selectedIds
-                                                .contains(item.id.toString())) {
-                                              notificationController.selectedIds
-                                                  .add(item.id.toString());
-                                              log("ids: ${notificationController.selectedIds}");
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  notificationItem?.datetimeSmall ?? '',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall
+                                      ?.copyWith(
+                                          color: const Color(0XffE73B3E),
+                                          fontStyle: FontStyle.italic),
+                                  softWrap: false,
+                                  maxLines: 1,
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                notificationController.isSelectionMode.value ==
+                                        true
+                                    ? Checkbox(activeColor: primarSwatch,
+                                        value: notificationItem?.isSelected,
+                                        onChanged: (v) {
+                                          notificationItem?.isSelected = v;
+                            
+                                          for (var item in notificationController
+                                              .notificationModel.value.data!) {
+                                            if (item.isSelected ?? false) {
+                                              // Check if item.id is NOT already in the list before adding
+                                              if (!notificationController
+                                                  .selectedIds
+                                                  .contains(item.id.toString())) {
+                                                notificationController.selectedIds
+                                                    .add(item.id.toString());
+                                                log("ids: ${notificationController.selectedIds}");
+                                              }
                                             }
                                           }
-                                        }
-
-                                        // Check if any item is selected, if none, disable selection mode
-                                        bool isAnyItemSelected =
-                                            notificationController
-                                                    .notificationModel
-                                                    .value
-                                                    .data
-                                                    ?.any((item) =>
-                                                        item.isSelected ==
-                                                        true) ??
-                                                false;
-
-                                        if (!isAnyItemSelected) {
-                                          notificationController
-                                              .isSelectionMode.value = false;
-                                        }
-
-                                        setState(() {});
-                                      },
-                                    )
-                                  : InkWell(
-                                      onTap: () async {
-                                        showCupertinoModalPopup(
-                                          context: context,
-                                          builder: (_) => CupertinoAlertDialog(
-                                            content: const Text(
-                                                'Do you want to delete?'),
-                                            actions: [
-                                              CupertinoDialogAction(
-                                                isDestructiveAction: true,
-                                                child: const Text('Cancel'),
-                                                onPressed: () =>
-                                                    Navigator.of(context)
-                                                        .pop(true),
-                                              ),
-                                              CupertinoDialogAction(
-                                                child: const Text('Ok'),
-                                                onPressed: () async {
-                                                  Get.back();
-                                                  await notificationController
-                                                      .deleteNotifications(
-                                                          notificationId: [
-                                                        "${notificationItem?.id}"
-                                                      ]);
-                                                  notificationController
+                            
+                                          // Check if any item is selected, if none, disable selection mode
+                                          bool isAnyItemSelected =
+                                              notificationController
                                                       .notificationModel
                                                       .value
                                                       .data
-                                                      ?.removeAt(index);
-                                                  notificationController
-                                                      .notificationModel
-                                                      .refresh();
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                      child: const Icon(
-                                        Icons.more_vert_outlined,
-                                      ))
-                            ],
+                                                      ?.any((item) =>
+                                                          item.isSelected ==
+                                                          true) ??
+                                                  false;
+                            
+                                          if (!isAnyItemSelected) {
+                                            notificationController
+                                                .isSelectionMode.value = false;
+                                          }
+                            
+                                          setState(() {});
+                                        },
+                                      )
+                                    : InkWell(
+                                        onTap: () async {
+                                          showCupertinoModalPopup(
+                                            context: context,
+                                            builder: (_) => CupertinoAlertDialog(
+                                              content: const Text(
+                                                  'Do you want to delete?'),
+                                              actions: [
+                                                CupertinoDialogAction(
+                                                  isDestructiveAction: true,
+                                                  child: const Text('Cancel'),
+                                                  onPressed: () =>
+                                                      Navigator.of(context)
+                                                          .pop(true),
+                                                ),
+                                                CupertinoDialogAction(
+                                                  child: const Text('Ok'),
+                                                  onPressed: () async {
+                                                    Get.back();
+                                                    await notificationController
+                                                        .deleteNotifications(
+                                                            notificationId: [
+                                                          "${notificationItem?.id}"
+                                                        ]);
+                                                    notificationController
+                                                        .notificationModel
+                                                        .value
+                                                        .data
+                                                        ?.removeAt(index);
+                                                    notificationController
+                                                        .notificationModel
+                                                        .refresh();
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                        child: const Icon(
+                                          Icons.more_vert_outlined,
+                                        ))
+                              ],
+                            ),
                           )
                         ],
                       ),
