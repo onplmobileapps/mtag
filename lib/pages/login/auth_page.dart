@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/api/auth_controller.dart';
-
-import 'package:mtag_flutterapp/constants/input_formater.dart';
-
+import '../../api/auth_controller.dart';
+import '../../constants/input_formater.dart';
 import '../../utils/utils.dart';
 
 class AuthPage extends StatelessWidget {
@@ -28,10 +26,8 @@ class AuthPage extends StatelessWidget {
         final screenWidth = constraints.maxWidth;
         final screenHeight = constraints.maxHeight;
 
-        return Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: colorScheme.surface,
-          body: Padding(
+        return Material(
+          child:  Padding(
             padding: EdgeInsets.symmetric(
               vertical: screenHeight * 0.02,
               horizontal: screenWidth * 0.09,

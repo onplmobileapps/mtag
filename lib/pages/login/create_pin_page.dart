@@ -1,12 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/api/auth_controller.dart';
-import 'package:mtag_flutterapp/base/app_data.dart';
-import 'package:mtag_flutterapp/constants/auth_utils.dart';
+import '../../api/auth_controller.dart';
+import '../../base/app_data.dart';
+import '../../constants/auth_utils.dart';
 
 class PinEntryPage extends StatefulWidget {
   final bool? iscreatPin;
@@ -51,11 +50,11 @@ class _PinEntryPageState extends State<PinEntryPage> {
 
   Future<void> _authenticateAndVerify() async {
     if (isAuthenticating) return;
-  if(mounted) {
-    setState(() {
-      isAuthenticating = true;
-    });
-  }
+    if (mounted) {
+      setState(() {
+        isAuthenticating = true;
+      });
+    }
 
     bool isAuthenticated = await AuthenticationUtil.authenticate();
 
@@ -72,186 +71,212 @@ class _PinEntryPageState extends State<PinEntryPage> {
       log("Authentication was canceled or failed.");
     }
 
-   if(mounted) {
-     setState(() {
-      isAuthenticating = false;
-    });
-   }
+    if (mounted) {
+      setState(() {
+        isAuthenticating = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    bool isDarkMode = theme.brightness == Brightness.dark;
+  
+   
+    final size = MediaQuery.of(context).size;
+   
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: colorScheme.surface,
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-
-            final double fontSize = constraints.maxHeight * 0.02;
-            final double spacing = constraints.maxHeight * 0.03;
-            final double pinFieldSize = constraints.maxWidth * 0.12;
-
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double fontSize = size.height * 0.02;
+        final double spacing = size.height * 0.03;
+        final double pinFieldSize = size.width * 0.11; // Scales with screen width
+    
+        return Material(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: spacing * 1.5),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Logo and Title Section
-                Column(
-                  children: [
-                    SizedBox(height: spacing * 1),
-                    isDarkMode
-                        ? Image.asset('assets/darklogo.png', height: 80, width: 80)
-                        : SvgPicture.asset('assets/logolight.svg', height: 50, width: 50),
-                    SizedBox(height: spacing * 2),
-                    Text(
-                      widget.iscreatPin == true || widget.isForgetPin == 1
-                          ? 'Create your Login PIN'
-                          : 'Enter your Login PIN',
-                      style: TextStyle(
-                        fontSize: fontSize * 1,
-                        fontWeight: FontWeight.bold,
-                        color: colorScheme.onSurface,
-                        letterSpacing: 1.5,
-                      ),
-                    ),
-                    SizedBox(height: spacing * 2),
-                  ],
+                SizedBox(height: spacing*3),
+                
+                // Logo & Title
+                Center(
+                  child: Get.isDarkMode
+                      ? Image.asset('assets/darklogo.png', height: size.height * 0.08)
+                      : SvgPicture.asset('assets/logolight.svg', height: size.height * 0.06),
                 ),
-
-                // PIN Entry Section
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // PIN Fields
-                      ValueListenableBuilder<String>(
-                        valueListenable: _pinNotifier,
-                        builder: (context, pin, child) {
-                          if (pin.length == 4) {
-                            var pindata = AppData.getPinData();
-
-                            Future.microtask(() async {
-                              if (widget.iscreatPin == true || widget.isForgetPin == 1) {
-                                Get.find<AuthController>().createPIN(
-                                  cnic: widget.cnicNumber,
-                                  mobileNum: widget.mobileNum,
-                                  isCreatePin: widget.iscreatPin == true ? 1 : 0,
-                                  isForgetPin: widget.isForgetPin ?? 0,
-                                  isResetPin: 0,
-                                  pin: widget.iscreatPin == true ? pin : '',
-                                  newPin: widget.isForgetPin == 1 ? pin : '',
-                                );
-                                return;
-                              } else {
-                                Get.find<AuthController>().verifyPIN(
-                                  onTap: () {
-                                    if (pin != pindata?['pin']) {
-                                      _pinNotifier.value = ''; // Reset PIN field
-                                      Future.delayed(Duration(milliseconds: 200), () {
-                                        Get.back(); // Ensures back navigation happens after state update
-                                      });
-                                    }
-                                  },
-                                  cnic: '${pindata?['cnic'] ?? widget.cnicNumber}',
-                                  mobileNum: '${pindata?['mobile'] ?? widget.mobileNum}',
-                                  pin: pin,
-                                );
-                              }
-                            });
+                SizedBox(height: spacing * 1.5),
+              
+                Center(
+                  child: Text(
+                    'Welcome to M-TAG One Network',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: fontSize * 1.3,
+                    ),
+                  ),
+                ),
+                SizedBox(height: spacing / 2),
+              
+                Center(
+                  child: Text(
+                    widget.iscreatPin == true || widget.isForgetPin == 1
+                        ? 'Create Login PIN'
+                        : 'Enter Login PIN',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+                SizedBox(height: spacing),
+              
+                // PIN Entry Field
+                Center(
+                  child: ValueListenableBuilder<String>(
+                    valueListenable: _pinNotifier,
+                    builder: (context, pin, child) {
+                      if (pin.length == 4) {
+                        var pindata = AppData.getPinData();
+              
+                        Future.microtask(() async {
+                          if (widget.iscreatPin == true ||
+                              widget.isForgetPin == 1) {
+                            Get.find<AuthController>().createPIN(
+                              cnic: widget.cnicNumber,
+                              mobileNum: widget.mobileNum,
+                              isCreatePin: widget.iscreatPin == true ? 1 : 0,
+                              isForgetPin: widget.isForgetPin ?? 0,
+                              isResetPin: 0,
+                              pin: widget.iscreatPin == true ? pin : '',
+                              newPin: widget.isForgetPin == 1 ? pin : '',
+                            );
+                            return;
+                          } else {
+                            Get.find<AuthController>().verifyPIN(
+                              onTap: () {
+                                if (pin != pindata?['pin']) {
+                                  _pinNotifier.value = ''; // Reset PIN field
+                                  Future.delayed(Duration(milliseconds: 100),
+                                      () {
+                                    Get.back(); // Ensures back navigation happens after state update
+                                  });
+                                }
+                              },
+                              cnic:
+                                  '${pindata?['cnic'] ?? widget.cnicNumber}',
+                              mobileNum:
+                                  '${pindata?['mobile'] ?? widget.mobileNum}',
+                              pin: pin,
+                            );
                           }
-
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(4, (index) {
-                              return Container(
-                                margin: EdgeInsets.symmetric(horizontal: spacing / 8),
-                                width: pinFieldSize,
-                                height: pinFieldSize,
-                                child: Center(
-                                  child: Text(
-                                    pin.length > index ? pin[index] : "-",
-                                    style: Theme.of(context).textTheme.headlineMedium,
-                                  ),
-                                ),
-                              );
-                            }),
+                        });
+                      }
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(4, (index) {
+                          return Container(
+                            width: pinFieldSize,
+                            height: pinFieldSize,
+                            margin: EdgeInsets.symmetric(horizontal: size.width * 0.030),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey, width: 0.5),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Center(
+                              child: Text(
+                                pin.length > index ? pin[index] : "",
+                                style: Theme.of(context).textTheme.headlineSmall,
+                              ),
+                            ),
                           );
-                        },
+                        }),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: spacing * 1.5),
+              
+                // Forgot PIN & Sign-in with a different account
+                Center(
+                  child: Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () => Get.toNamed('/forgetPin'),
+                        child: Text(
+                          'Forgot Login PIN?',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ),
+                      SizedBox(height: spacing / 2),
+                      InkWell(
+                        onTap: () => Get.toNamed('/auth'),
+                        child: Text(
+                          'Sign in with a different account',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
-
-                // Numeric Keyboard Section
-                Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Get.toNamed('/forgetPin');
-                      },
-                      child: Text(
-                        'Forgot PIN?',
-                        style: TextStyle(fontSize: fontSize, color: colorScheme.primary),
-                      ),
+                SizedBox(height: spacing),
+              
+                // Numeric Keyboard
+                Expanded(
+                  child: GridView.builder(
+                    padding: EdgeInsets.zero,
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: 12,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: 1.3,
                     ),
-                    SizedBox(height: spacing),
-
-                    // Numeric Keyboard
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: GridView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: 12,
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          childAspectRatio: 1.4,
-                        ),
-                        itemBuilder: (context, index) {
-                          if (index == 9) {
-                            return IconButton(
-                              onPressed: _authenticateAndVerify,
-                              icon: Icon(
-                                Platform.isIOS ? Icons.face : Icons.fingerprint,
-                                color: isDarkMode? Colors.white: Theme.of(context).primaryColor,
-                                size: 40,
-                              ),
-                            );
-                          } else if (index == 11) {
-                            return IconButton(
-                              onPressed: _onBackspaceTap,
-                              icon: Icon(
-                                Icons.backspace_outlined,
-                                color: isDarkMode? Colors.white: Theme.of(context).primaryColor,
-                                size: 25,
-                              ),
-                            );
-                          } else {
-                            final number = index == 10 ? 0 : index + 1;
-                            return IconButton(
-                              onPressed: () => _onNumberTap(number),
-                              icon: Text(
-                                '$number',
-                                style: TextStyle(
-                                  fontSize: fontSize * 1.8,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                  ],
+                    itemBuilder: (context, index) {
+                      if (index == 9) {
+                        return _buildKey(
+                          child: Icon(
+                            Platform.isIOS ? Icons.face : Icons.fingerprint,
+                            size: size.width * 0.07,
+                          ),
+                          onPressed: _authenticateAndVerify,
+                        );
+                      } else if (index == 11) {
+                        return _buildKey(
+                          child: Icon(
+                            Icons.backspace_outlined,
+                            size: size.width * 0.07,
+                          ),
+                          onPressed: _onBackspaceTap,
+                        );
+                      } else {
+                        final number = index == 10 ? 0 : index + 1;
+                        return _buildKey(
+                          child: Text(
+                            '$number',
+                            style:Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: fontSize * 1.5),
+                          ),
+                          onPressed: () => _onNumberTap(number),
+                        );
+                      }
+                    },
+                  ),
                 ),
               ],
-            );
-          },
-        ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildKey({required Widget child, required VoidCallback onPressed}) {
+    return InkWell(
+      onTap: onPressed,
+      child: Container(
+        alignment: Alignment.center,
+        child: FittedBox(child: child), // Ensures scaling on different devices
       ),
     );
   }

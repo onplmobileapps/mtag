@@ -3,9 +3,13 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../constants/other_consts.dart';
+import '../../pages/payment/controller/payment_card_controller.dart';
 import '../../utils/utils.dart';
 import '../../widgets/dialog/cupertion_dialog.dart';
 import '../../pages/dashboard/model/dashboard_model.dart';
+import '../dialog/breakdown_dialog.dart';
+import 'bottom_sheet_widget.dart';
 import 'build_payment_card.dart';
 
 class BuildPaymentOptionsWidget extends StatelessWidget {
@@ -91,74 +95,77 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
   assetPath: 'assets/jazzcash.png',
 ),
 
-            // Divider(
-            //   height: 0.5,
-            //   thickness: 0.3,
-            //   indent: 10,
-            //   endIndent: 10,
-            // ),
-            // buildPaymentOption(selectedOptionNotifier: selectedPaymentOption, onTap: () async {
-            //   if (validateAmount(amount.text) == null) {
-            //     log('Invoice/Generate PSID');
-            //    var data = await Get.find<PaymentCardController>().generatePSID(
-            //             mtagID: mtagId,
-            //             amount: amount.text.isNotEmpty ? double.parse(amount.text) : 0,
-            //             cnic: OtherConsts().ownerCNIC.value,
-            //             mobileNum: OtherConsts().mobile.value,
-            //             isBlocked: false,
-            //             isInvoice: true,
-            //           );
+            Divider(
+              height: 0.5,
+              thickness: 0.3,
+              indent: 10,
+              endIndent: 10,
+            ),
+            buildPaymentOption(selectedOptionNotifier: selectedPaymentOption, onTap: () async {
+              if (validateAmount(amount.text) == null) {
+                log('Invoice/Generate PSID');
+               var data = await Get.find<PaymentCardController>().generatePSID(
+                        mtagID: mtagId,
+                        amount: amount.text.isNotEmpty ? double.parse(amount.text) : 0,
+                        cnic: OtherConsts().ownerCNIC.value,
+                        mobileNum: OtherConsts().mobile.value,
+                        isBlocked: false,
+                        isInvoice: true,
+                      );
 
-            //     if (context.mounted&&data.isNotEmpty) {
-            //       showBreakdownDialog(psid:data['PSID'] ,
-            //         context: context,
-            //         amount: double.parse(amount.text),
-            //         fee: double.parse(data['charges'].toString()),
-            //         remaining: double.parse(amount.text) - double.parse(data['charges'].toString()),inVoicetimerNotifier: inVoicetimerNotifier
-            //       );
-            //        inVoicetimerNotifier.value = Duration(minutes: 10); // Set timer
-            //           startTimer( inVoicetimerNotifier); 
-            //     }
-            //   } else {
-            //     showPopDialog('Enter minimum  amount 50PKR.', () {
-            //       selectedPaymentOption.value = -1;
-            //       Get.back();
-            //     });
-            //   }
-            // }, context,
-            //     label: "Invoice/Generate PSID",
-            //     value: 2,
-            //     assetPath: 'assets/1linklogo.png',
-            //      timerNotifier: inVoicetimerNotifier,
-            //     ),
-            // Divider(
-            //   height: 0.5,
-            //   thickness: 0.3,
-            //   indent: 10,
-            //   endIndent: 10,
-            // ),
-            // buildPaymentOption(
-            //   selectedOptionNotifier: selectedPaymentOption,
-            //   onTap: () async {
-            //     var data = await Get.find<PaymentCardController>().generatePSIDTOPUP(
-            //       mtagID: "14508105",
-            //       cnic: OtherConsts().ownerCNIC.value,
-            //       mobileNum: OtherConsts().mobile.value,
-            //       isBlocked: false,
-            //       isInvoice: false,
-            //     );
-            //     psidController?.text = data.toString();
-            //     showPSIDField.value = true;
-            //     topUptimerNotifier.value = Duration(minutes: 10); // Set timer
-            //     startTimer( topUptimerNotifier); // Start countdown
-            //     log('Top Up');
-            //   },
-            //   context,
-            //   label: "Top Up",
-            //   value: 3,
-            //   assetPath: 'assets/1linklogo.png',
-            //   timerNotifier:  topUptimerNotifier,
-            // ),
+                if (context.mounted&&data.isNotEmpty) {
+                  showBreakdownDialog(psid:data['PSID'] ,
+                    context: context,
+                    amount: double.parse(amount.text),
+                    fee: double.parse(data['charges'].toString()),
+                    remaining: double.parse(amount.text) - double.parse(data['charges'].toString()),inVoicetimerNotifier: inVoicetimerNotifier
+                  );
+                   inVoicetimerNotifier.value = Duration(minutes: 10); // Set timer
+                      startTimer( inVoicetimerNotifier); 
+                }
+              } else {
+                showPopDialog('Enter minimum  amount 50PKR.', () {
+                  selectedPaymentOption.value = -1;
+                  Get.back();
+                });
+              }
+            }, context,
+                label: "Invoice/Generate PSID",
+                value: 2,
+                assetPath: 'assets/1linklogo.png',
+                 timerNotifier: inVoicetimerNotifier,
+                ),
+            Divider(
+              height: 0.5,
+              thickness: 0.3,
+              indent: 10,
+              endIndent: 10,
+            ),
+            buildPaymentOption(
+              selectedOptionNotifier: selectedPaymentOption,
+              onTap: () async {
+                var data = await Get.find<PaymentCardController>().generatePSIDTOPUP(
+                  mtagID: "14508105",
+                  cnic: OtherConsts().ownerCNIC.value,
+                  mobileNum: OtherConsts().mobile.value,
+                  isBlocked: false,
+                  isInvoice: false,
+                );
+                if(data.isNotEmpty){
+ psidController?.text = data.toString();
+                showPSIDField.value = true;
+                topUptimerNotifier.value = Duration(minutes: 10); // Set timer
+                startTimer( topUptimerNotifier); // Start countdown
+                log('Top Up');
+                }
+               
+              },
+              context,
+              label: "Top Up",
+              value: 3,
+              assetPath: 'assets/1linklogo.png',
+              timerNotifier:  topUptimerNotifier,
+            ),
             SizedBox(
               height: 20,
             ),

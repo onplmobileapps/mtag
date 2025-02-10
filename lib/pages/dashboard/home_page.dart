@@ -53,7 +53,8 @@ class HomePage extends GetView<HomeController> {
                       badgeCountNotifier: _messagingService.badgeCountNotifier,
                       onNotificationTap: () {
                         Get.toNamed('/notifications');
-                        _messagingService.badgeCountNotifier.value = 0;
+                        _messagingService.resetBadgeCount();
+
                       })
                   : null,
               body: controller.currentPage.value == 0
@@ -216,7 +217,7 @@ class HomePage extends GetView<HomeController> {
                                             )
                                           : SliverToBoxAdapter(child: Container(height: screenHeight / 3)),
 
-                                      // Responsive Grid for Dashboard Items
+
                                       SliverPadding(
                                         padding: const EdgeInsets.all(8.0),
                                         sliver: SliverGrid(
@@ -343,6 +344,7 @@ class HomePage extends GetView<HomeController> {
                       height: 20,
                     ),
                   ),
+                  
                 ],
               ),
             ),

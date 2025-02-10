@@ -1,52 +1,56 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/api/auth_controller.dart';
-
-import 'package:mtag_flutterapp/constants/input_formater.dart';
-
+import '../../api/auth_controller.dart';
+import '../../constants/input_formater.dart';
+import '../../widgets/elevated_button.dart';
 import '../../utils/utils.dart';
-
-
 
 class ForgetPinPage extends StatelessWidget {
   ForgetPinPage({super.key});
-
-
   final _phoneController = TextEditingController();
   final _cnicController = TextEditingController();
   final ValueNotifier<int> _authNotifier = ValueNotifier<int>(0);
 final _formKey=GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     return LayoutBuilder(
       builder: (context, constraints) {
         final screenWidth = constraints.maxWidth;
         final screenHeight = constraints.maxHeight;
-
-        return Scaffold(
-          appBar: AppBar(title: Text("Forgot PIN"),),
-          resizeToAvoidBottomInset: false,
-          backgroundColor: colorScheme.surface,
-          body: Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: screenHeight * 0.02,
-              horizontal: screenWidth * 0.09,
+        return Material(  
+          child: ValueListenableBuilder(
+            valueListenable: _authNotifier,
+            builder: (context, value, child) => Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+              SizedBox(height: screenHeight/20,),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.05,),
+                  child: IconButton(onPressed: (){
+                    Get.back();
+                  }, icon: Icon(Icons.arrow_back_ios_outlined)),
+                ),
+                SizedBox(height: 30,),
+            Padding(
+              padding:EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.09,),
+              child: Text('Forgot Login PIN',style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w500),),
             ),
-            child: ValueListenableBuilder(
-              valueListenable: _authNotifier,
-              builder: (context, value, child) => Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-              
-
-                 Form(key: _formKey,
+              SizedBox(height: 5,),
+            Padding(
+              padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.09,),
+              child: Text('Verify your information to reset your login PIN',style: Theme.of(context).textTheme.displaySmall,),
+            ),
+          
+               Padding(
+                 padding:  EdgeInsets.symmetric(vertical: screenHeight * 0.02,
+              horizontal: screenWidth * 0.09,),
+                 child: Form(key: _formKey,
                    child: Column(children: [ if (value == 1)
                       
                    
@@ -86,33 +90,18 @@ final _formKey=GlobalKey<FormState>();
                           hintText: 'Mobile Number', counterText: ""),
                     ),
                    
-                    SizedBox(height: screenHeight * 0.02),  
-                   
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                        onTap: ()async {
-                       if(_formKey.currentState?.validate()??false){
+                    SizedBox(height: screenHeight * 0.04),  
+                    ElevatedButton1(onclick: ()async{
+                                             if(_formKey.currentState?.validate()??false){
                           var release = await DeviceInfo.getDeviceInfo();
                       Get.find<AuthController>().login(cnic: _cnicController.text.trim(), mobileNumber: _phoneController.text.trim(),isForgetPin: 1, metaData: '"${Platform.isAndroid ? "Android" : 'iOS'} ""__"${release['release']} "__"${release['manufacturer']}""${release['model']} "__"android_id"__"fcmToken"__"3.1.4');
-
-                       }
-                          
-                        },
-                        child: CircleAvatar(
-                          radius: 25,
-                        
-                          child: Icon(
-                            Icons.keyboard_arrow_right_outlined,color: colorScheme.scrim,
-                            size: 30,
-                           
-                          ),
-                        ),
-                      ),
-                    )],),
+                    } },text: 'Reset PIN',width: double.infinity,backgroundColor: Theme.of(context).primaryColor,),
+                   
+                    
+                    ],),
                  ),
-                ],
-              ),
+               ),
+              ],
             ),
           ),
         );

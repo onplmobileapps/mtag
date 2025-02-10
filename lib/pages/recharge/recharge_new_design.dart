@@ -272,41 +272,43 @@ class _RechargeSelfPageState extends State<RechargeSelfPage> {
               const SizedBox(
                 height: 5,
               ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [50, 200, 500, 1000, 2500, 5000]
-                      .map((e) => InkWell(
-                            onTap: () {
-                              if (_selectedMtag != null) {
-                                _amountController.text = e.toString();
-                                FocusScope.of(context).unfocus();
-                                return;
-                              }
-
-                              showPopDialog('Select M-Tag', () {
-                                Get.back();
-                              });
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.all(4),
-                              width: 50,
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: Theme.of(context).disabledColor,
-                                  border: Border.all(width: 0.3)),
-                              child: Center(
-                                child: Text(
-                                  e.toString(),
-                                  style: Theme.of(context).textTheme.displaySmall,
-                                ),
-                              ),
+             SingleChildScrollView(scrollDirection: Axis.horizontal,
+               child: Row(
+                spacing: 4,
+                children:AmountList.amountList
+                    .map((amount) => GestureDetector(
+                          onTap: () => _amountController.text = amount.toString(),
+                          child: Chip(
+                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4), // Adds balanced padding
+                            labelPadding: const EdgeInsets.symmetric(horizontal: 4),
+                            backgroundColor: Colors.transparent, // To show gradient
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12), // Smooth rounded corners
+                              side: BorderSide(color: Theme.of(context).primaryColor, width: 0.5), // Optional border
                             ),
-                          ))
-                      .toList(),
-                ),
-              ),
+                            labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                            label: Text(
+                              "$amount",
+                              style: Theme.of(context).textTheme.displaySmall,
+                            ),
+                            elevation: 4,
+                            avatar: CircleAvatar(
+                                radius: 10,
+                                backgroundColor:
+                                    Theme.of(context).primaryColor, // Add an avatar or an icon for better aesthetics
+                                child: Text(
+                                  'Rs',
+                                  style: TextStyle(color: Colors.white, fontSize: 9),
+                                )),
+                          ),
+                        ))
+                    .toList(),
+                           ),
+             ),
+              
               const SizedBox(
                 height: 16,
               ),
