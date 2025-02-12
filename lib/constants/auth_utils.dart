@@ -29,7 +29,7 @@ class AuthenticationUtil {
   try {
     if (!await canAuthenticate()) return false;
 
-    final result = await auth.authenticate(
+    final result = await auth.authenticate(authMessages: [],
       localizedReason: "Scan your fingerprint to proceed.",
       options: const AuthenticationOptions(stickyAuth: true, useErrorDialogs: true),
     );

@@ -119,8 +119,7 @@ class HomePage extends GetView<HomeController> {
                                                               },
                                                               memCacheHeight: 600,
                                                               memCacheWidth: 600,
-                                                              maxHeightDiskCache: 600,
-                                                              maxWidthDiskCache: 600,
+                                                             
                                                             ),
                                                           ),
                                                         );

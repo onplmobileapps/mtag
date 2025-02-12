@@ -16,7 +16,7 @@ void showPopDialog(String message, Function()? onPressed) {
               if (onPressed != null) {
                 onPressed();
               } else {
-                Navigator.of(context).pop();
+               Get.back();
               }
             },
             child: const Text('Ok'),

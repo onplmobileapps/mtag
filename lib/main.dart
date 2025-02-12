@@ -103,7 +103,10 @@ const Color redAccent = Color(0XffE73B3E);
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+    final client = super.createHttpClient(context);
+    client.idleTimeout = const Duration(seconds: 30); // Increase timeout duration
+    client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+    return client;
   }
 }
+

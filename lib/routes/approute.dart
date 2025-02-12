@@ -9,7 +9,6 @@ import '../../pages/payment/payment_cards_screen_mastercard.dart';
 import '../../pages/notification/notification_screen.dart';
 import '../../pages/privacy/privacy_policy_screen.dart';
 import '../../pages/receipt/receipt_screen.dart';
-import '../../pages/recharge/recharge_screen.dart';
 import '../pages/alfawebview/alfla_webview_mastercard.dart';
 import '../pages/login/forget_pin_page.dart';
 import '../pages/recharge/recharge_new_design.dart';
@@ -81,7 +80,7 @@ List<GetPage<dynamic>>? getPages = [
   ),
   GetPage(
     name: '/recharge',
-    page: () => RechargePage(),
+    page: () => RechargeSelfPage(),
   ),
   GetPage(
     name: '/selectrecharge',

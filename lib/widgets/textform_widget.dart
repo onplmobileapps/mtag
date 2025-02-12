@@ -13,6 +13,7 @@ class CustomTExtField extends StatelessWidget {
     this.autovalidateMode,
     this.focusNode,
     this.onEditingComplete,
+    this.onFieldSubmitted,
     this.fillColor,
     this.filled,
     this.hint,
@@ -51,6 +52,7 @@ class CustomTExtField extends StatelessWidget {
   final bool? isReadOnly;
   final bool? autoFocus;
   final Function(String)? onChanged;
+  final Function(String)? onFieldSubmitted;
   final Widget? suffix;
   final TextStyle? style;
   final TextStyle? hintStyle;
@@ -62,7 +64,7 @@ class CustomTExtField extends StatelessWidget {
       autofocus: autoFocus ?? false,
       readOnly: isReadOnly ?? false,
       textInputAction: textInputAction,
-      onTapOutside: onTapOutside,
+      onTapOutside: onTapOutside,onFieldSubmitted:onFieldSubmitted ,
       maxLength: maxLength,
       style: style ?? const TextStyle(fontSize: 14, fontFamily: 'Poppins', height: 1),
       onEditingComplete: onEditingComplete,

@@ -1,8 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:local_auth/local_auth.dart';
 import '../../api/auth_controller.dart';
 import '../../base/app_data.dart';
 import '../../constants/auth_utils.dart';
@@ -28,6 +29,7 @@ class PinEntryPage extends StatefulWidget {
 class _PinEntryPageState extends State<PinEntryPage> {
   final ValueNotifier<String> _pinNotifier = ValueNotifier<String>('');
   bool isAuthenticating = false;
+ 
 
   @override
   void dispose() {
@@ -47,7 +49,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
           _pinNotifier.value.substring(0, _pinNotifier.value.length - 1);
     }
   }
-
+late bool isAuthAvailable;
   Future<void> _authenticateAndVerify() async {
     if (isAuthenticating) return;
     if (mounted) {
@@ -55,6 +57,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
         isAuthenticating = true;
       });
     }
+
 
     bool isAuthenticated = await AuthenticationUtil.authenticate();
 
@@ -77,20 +80,42 @@ class _PinEntryPageState extends State<PinEntryPage> {
       });
     }
   }
+   static final auth = LocalAuthentication();
+bool _isLoading=true;
+Future<void> checkAvailability() async {
+    setState(() => _isLoading = true); // Ensure UI updates
+
+    bool canAuthenticate = await AuthenticationUtil.canAuthenticate();
+    List<BiometricType> availableBiometrics = await auth.getAvailableBiometrics();
+
+    setState(() {
+      isAuthAvailable =  availableBiometrics.isNotEmpty&&canAuthenticate ;
+      log("is available$isAuthAvailable".toString());
+      _isLoading = false;
+    });
+  }
+ @override
+ void didChangeDependencies()async {
+await  checkAvailability();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+  
+      if (isAuthAvailable&&AppData.getPinData() != null) _authenticateAndVerify();
+    });
+    super.didChangeDependencies();
+  }
+ 
 
   @override
   Widget build(BuildContext context) {
-  
-   
     final size = MediaQuery.of(context).size;
-   
 
-    return LayoutBuilder(
+    return  LayoutBuilder(
       builder: (context, constraints) {
         final double fontSize = size.height * 0.02;
         final double spacing = size.height * 0.03;
-        final double pinFieldSize = size.width * 0.11; // Scales with screen width
-    
+        final double pinFieldSize =
+            size.width * 0.11; // Scales with screen width
+
         return Material(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: spacing * 1.5),
@@ -98,28 +123,29 @@ class _PinEntryPageState extends State<PinEntryPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: spacing*3),
-                
+                SizedBox(height: spacing * 3),
+
                 // Logo & Title
                 Center(
-                  child: Get.isDarkMode
-                      ? Image.asset('assets/darklogo.png', height: size.height * 0.08)
-                      : SvgPicture.asset('assets/logolight.svg', height: size.height * 0.06),
-                ),
+                    child: Image.asset(
+                        Get.isDarkMode
+                            ? 'assets/darklogo.png'
+                            : 'assets/logolight.png',
+                        height: size.height * 0.08)),
                 SizedBox(height: spacing * 1.5),
-              
+
                 Center(
                   child: Text(
-                    'Welcome to M-TAG One Network',
+                    'Welcome to One Network',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      fontSize: fontSize * 1.3,
-                    ),
+                          fontWeight: FontWeight.w600,
+                          fontSize: fontSize * 1.3,
+                        ),
                   ),
                 ),
                 SizedBox(height: spacing / 2),
-              
+
                 Center(
                   child: Text(
                     widget.iscreatPin == true || widget.isForgetPin == 1
@@ -129,7 +155,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
                   ),
                 ),
                 SizedBox(height: spacing),
-              
+
                 // PIN Entry Field
                 Center(
                   child: ValueListenableBuilder<String>(
@@ -137,7 +163,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
                     builder: (context, pin, child) {
                       if (pin.length == 4) {
                         var pindata = AppData.getPinData();
-              
+
                         Future.microtask(() async {
                           if (widget.iscreatPin == true ||
                               widget.isForgetPin == 1) {
@@ -156,14 +182,14 @@ class _PinEntryPageState extends State<PinEntryPage> {
                               onTap: () {
                                 if (pin != pindata?['pin']) {
                                   _pinNotifier.value = ''; // Reset PIN field
-                                  Future.delayed(Duration(milliseconds: 100),
+                                  Future.delayed(Duration(milliseconds: 200),
                                       () {
                                     Get.back(); // Ensures back navigation happens after state update
                                   });
+                                  
                                 }
                               },
-                              cnic:
-                                  '${pindata?['cnic'] ?? widget.cnicNumber}',
+                              cnic: '${pindata?['cnic'] ?? widget.cnicNumber}',
                               mobileNum:
                                   '${pindata?['mobile'] ?? widget.mobileNum}',
                               pin: pin,
@@ -177,15 +203,18 @@ class _PinEntryPageState extends State<PinEntryPage> {
                           return Container(
                             width: pinFieldSize,
                             height: pinFieldSize,
-                            margin: EdgeInsets.symmetric(horizontal: size.width * 0.030),
+                            margin: EdgeInsets.symmetric(
+                                horizontal: size.width * 0.030),
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey, width: 0.5),
+                              border:
+                                  Border.all(color: Colors.grey, width: 0.5),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Center(
                               child: Text(
                                 pin.length > index ? pin[index] : "",
-                                style: Theme.of(context).textTheme.headlineSmall,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
                               ),
                             ),
                           );
@@ -195,33 +224,74 @@ class _PinEntryPageState extends State<PinEntryPage> {
                   ),
                 ),
                 SizedBox(height: spacing * 1.5),
-              
+
                 // Forgot PIN & Sign-in with a different account
-                Center(
-                  child: Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () => Get.toNamed('/forgetPin'),
-                        child: Text(
-                          'Forgot Login PIN?',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 40),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: ()async => Get.toNamed('/forgetPin'),
+                            child: Text(
+                              'Forgot Login PIN?',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                    if (!_isLoading&&isAuthAvailable)
+  _buildKey(
+    child: Icon(
+      Platform.isIOS ? Icons.face : Icons.fingerprint,
+      size: size.width * 0.09,
+    ),
+    onPressed: () {
+      if (AppData.getPinData() == null) {
+        showCupertinoModalPopup(
+          context: Get.context!,
+          builder: (_) => CupertinoAlertDialog(
+            content: const Text(
+              'Sign in with your CNIC and Mobile Number to enable biometric login. Next time, simply tap the Biometric icon to sign in.',
+              textAlign: TextAlign.justify,
+            ),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: Get.back,
+                child: const Text('Ok'),
+              )
+            ],
+          ),
+        );
+        return;
+      } else {
+        _authenticateAndVerify();
+      }
+    },
+  ),
+
+                        ],
                       ),
-                      SizedBox(height: spacing / 2),
-                      InkWell(
+                    ),
+                    SizedBox(height: spacing / 2),
+                    Center(
+                      child: InkWell(
                         onTap: () => Get.toNamed('/auth'),
                         child: Text(
-                          'Sign in with a different account',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            decoration: TextDecoration.underline,
-                          ),
+                          'Sign-in with a different account',
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    decoration: TextDecoration.underline,
+                                  ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: spacing),
-              
+
                 // Numeric Keyboard
                 Expanded(
                   child: GridView.builder(
@@ -235,14 +305,18 @@ class _PinEntryPageState extends State<PinEntryPage> {
                     ),
                     itemBuilder: (context, index) {
                       if (index == 9) {
-                        return _buildKey(
-                          child: Icon(
-                            Platform.isIOS ? Icons.face : Icons.fingerprint,
-                            size: size.width * 0.07,
-                          ),
-                          onPressed: _authenticateAndVerify,
-                        );
-                      } else if (index == 11) {
+                        return SizedBox.shrink();
+                      }
+                      // if (index == 9) {
+                      //   return _buildKey(
+                      //     child: Icon(
+                      //       Platform.isIOS ? Icons.face : Icons.fingerprint,
+                      //       size: size.width * 0.09,
+                      //     ),
+                      //     onPressed: _authenticateAndVerify,
+                      //   );
+                      // }
+                      else if (index == 11) {
                         return _buildKey(
                           child: Icon(
                             Icons.backspace_outlined,
@@ -255,7 +329,10 @@ class _PinEntryPageState extends State<PinEntryPage> {
                         return _buildKey(
                           child: Text(
                             '$number',
-                            style:Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: fontSize * 1.5),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(fontSize: fontSize * 1.5),
                           ),
                           onPressed: () => _onNumberTap(number),
                         );
@@ -272,11 +349,21 @@ class _PinEntryPageState extends State<PinEntryPage> {
   }
 
   Widget _buildKey({required Widget child, required VoidCallback onPressed}) {
-    return InkWell(
-      onTap: onPressed,
-      child: Container(
-        alignment: Alignment.center,
-        child: FittedBox(child: child), // Ensures scaling on different devices
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(50),
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(50),
+        // splashColor: Colors.grey.shade300,
+        child: Container(
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50), // Ensures rounded shape
+          ),
+          alignment: Alignment.center,
+          child: child,
+        ),
       ),
     );
   }

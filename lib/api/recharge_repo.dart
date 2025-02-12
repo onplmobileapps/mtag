@@ -121,7 +121,7 @@ class RechargRepo implements PaymentRepo {
         "is_invoice": isInvoice,
       },
     );
-    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: false);
+    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: true);
   }
 
   @override
@@ -142,7 +142,7 @@ class RechargRepo implements PaymentRepo {
         "is_blocked": isBlocked,
       },
     );
-    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: false);
+    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: true);
   }
   @override
  Future<Map<String, dynamic>> getAmountBreakDown({

@@ -8,7 +8,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  flutter_svg: ^2.0.10+1
+  flutter_svg: ^2.0.17
   pinput: ^5.0.0
   get: 4.6.6
   share_plus: ^10.1.2

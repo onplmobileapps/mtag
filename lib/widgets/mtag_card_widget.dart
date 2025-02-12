@@ -24,7 +24,7 @@ class MTagCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        InkWell(
+        GestureDetector(
           onTap: onTap,
           child: Container(
             margin: const EdgeInsets.all(10),

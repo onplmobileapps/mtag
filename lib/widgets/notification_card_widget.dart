@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/theme/app_theme.dart';
 import '../pages/notification/controller/notificationcontroller.dart';
@@ -91,7 +90,7 @@ class _NotificationCardState extends State<NotificationCard> {
                             decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(8)),
-                            child: SvgPicture.asset('assets/logolight.svg'),
+                            child: Image.asset('assets/logolight.png'),
                           ),
                           Expanded(
                             child: Column(

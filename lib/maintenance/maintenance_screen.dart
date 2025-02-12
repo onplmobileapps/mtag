@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
+
 import 'package:lottie/lottie.dart';
 import '../../widgets/elevated_button.dart';
 
@@ -16,7 +16,7 @@ class MaintenanceScreen extends StatelessWidget {
           SizedBox(
             height: MediaQuery.sizeOf(context).height / 15,
           ),
-          SvgPicture.asset('assets/logolight.svg'),
+          Image.asset('assets/logolight.png'),
           const SizedBox(
             height: 50,
           ),

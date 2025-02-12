@@ -123,7 +123,7 @@ class PaymentCardController extends GetxController implements GetxService {
     return response;
   }
 
-  Future getRechargeSummary({
+  Future <void>getRechargeSummary({
     required String mtagId,
     required String payId,
     required String amount,
@@ -132,7 +132,7 @@ class PaymentCardController extends GetxController implements GetxService {
   }) async {
     var response =
         await UserRepo().getOwnerRechargeDetails(mtagId: mtagId, amount: amount, payId: payId, isFleet: isFleet);
-    if (response.containsKey(APIRESPONSE.SUCCESS)) {
+    if (response.containsKey(APIRESPONSE.SUCCESS)&&response[APIRESPONSE.SUCCESS]['Code']=="00") {
       rechargeSummaryModel.value = OwnerRechargeModel.fromJson(response[APIRESPONSE.SUCCESS]);
       showRechargeSummaryDialog(
         isFleet: isFleet,
@@ -156,7 +156,12 @@ class PaymentCardController extends GetxController implements GetxService {
           }
         },
       );
-      return;
+     
+    }
+    else if((response.containsKey(APIRESPONSE.SUCCESS)&&response[APIRESPONSE.SUCCESS]['Code']=="03")){
+      showPopDialog(response[APIRESPONSE.SUCCESS]['Message'], (){
+        Get.back();
+      });
     }
   }
 

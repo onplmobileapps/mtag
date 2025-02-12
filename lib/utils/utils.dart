@@ -86,6 +86,7 @@ String? validateAmount(String? value) {
     return 'Amount is required'; // Localizable message for "Amount required"
   }
 
+
   // Try parsing the input amount value to an integer
   final parsedValue = int.tryParse(value);
   if (parsedValue == null) {
@@ -128,4 +129,11 @@ String formatDateTime(String inputDateTime, {bool roundMinutes = false}) {
   } catch (e) {
     return inputDateTime;
   }
+}
+String? validateMtag(String? value) {
+  // Check if the value is null or empty
+  if (value == null || value.isEmpty||value.length<8||value.length>8) {
+    return 'Enter 8 digit value'; // Localizable message for "Amount required"
+  }
+  return null;
 }
