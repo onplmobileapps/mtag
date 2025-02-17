@@ -167,7 +167,7 @@ class APISTRUCTURE {
         child: CupertinoAlertDialog(
           actions: [
             CupertinoDialogAction(
-              onPressed: () => Get.back(),
+              onPressed: () => Get.close(1),
               child: const Text('Ok'),
             )
           ],

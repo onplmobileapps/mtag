@@ -29,7 +29,6 @@ class PinEntryPage extends StatefulWidget {
 class _PinEntryPageState extends State<PinEntryPage> {
   final ValueNotifier<String> _pinNotifier = ValueNotifier<String>('');
   bool isAuthenticating = false;
- 
 
   @override
   void dispose() {
@@ -49,7 +48,8 @@ class _PinEntryPageState extends State<PinEntryPage> {
           _pinNotifier.value.substring(0, _pinNotifier.value.length - 1);
     }
   }
-late bool isAuthAvailable;
+
+  late bool isAuthAvailable;
   Future<void> _authenticateAndVerify() async {
     if (isAuthenticating) return;
     if (mounted) {
@@ -57,7 +57,6 @@ late bool isAuthAvailable;
         isAuthenticating = true;
       });
     }
-
 
     bool isAuthenticated = await AuthenticationUtil.authenticate();
 
@@ -80,36 +79,39 @@ late bool isAuthAvailable;
       });
     }
   }
-   static final auth = LocalAuthentication();
-bool _isLoading=true;
-Future<void> checkAvailability() async {
+
+  static final auth = LocalAuthentication();
+  bool _isLoading = true;
+  Future<void> checkAvailability() async {
     setState(() => _isLoading = true); // Ensure UI updates
 
     bool canAuthenticate = await AuthenticationUtil.canAuthenticate();
-    List<BiometricType> availableBiometrics = await auth.getAvailableBiometrics();
+    List<BiometricType> availableBiometrics =
+        await auth.getAvailableBiometrics();
 
     setState(() {
-      isAuthAvailable =  availableBiometrics.isNotEmpty&&canAuthenticate ;
+      isAuthAvailable = availableBiometrics.isNotEmpty && canAuthenticate;
       log("is available$isAuthAvailable".toString());
       _isLoading = false;
     });
   }
- @override
- void didChangeDependencies()async {
-await  checkAvailability();
+
+  @override
+  void didChangeDependencies() async {
+    await checkAvailability();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-  
-      if (isAuthAvailable&&AppData.getPinData() != null) _authenticateAndVerify();
+      if (isAuthAvailable && AppData.getPinData() != null) {
+        _authenticateAndVerify();
+      }
     });
     super.didChangeDependencies();
   }
- 
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return  LayoutBuilder(
+    return LayoutBuilder(
       builder: (context, constraints) {
         final double fontSize = size.height * 0.02;
         final double spacing = size.height * 0.03;
@@ -186,7 +188,6 @@ await  checkAvailability();
                                       () {
                                     Get.back(); // Ensures back navigation happens after state update
                                   });
-                                  
                                 }
                               },
                               cnic: '${pindata?['cnic'] ?? widget.cnicNumber}',
@@ -236,42 +237,41 @@ await  checkAvailability();
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           GestureDetector(
-                            onTap: ()async => Get.toNamed('/forgetPin'),
+                            onTap: () async => Get.toNamed('/forgetPin'),
                             child: Text(
                               'Forgot Login PIN?',
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ),
-                    if (!_isLoading&&isAuthAvailable)
-  _buildKey(
-    child: Icon(
-      Platform.isIOS ? Icons.face : Icons.fingerprint,
-      size: size.width * 0.09,
-    ),
-    onPressed: () {
-      if (AppData.getPinData() == null) {
-        showCupertinoModalPopup(
-          context: Get.context!,
-          builder: (_) => CupertinoAlertDialog(
-            content: const Text(
-              'Sign in with your CNIC and Mobile Number to enable biometric login. Next time, simply tap the Biometric icon to sign in.',
-              textAlign: TextAlign.justify,
-            ),
-            actions: [
-              CupertinoDialogAction(
-                onPressed: Get.back,
-                child: const Text('Ok'),
-              )
-            ],
-          ),
-        );
-        return;
-      } else {
-        _authenticateAndVerify();
-      }
-    },
-  ),
-
+                          if (!_isLoading && isAuthAvailable)
+                            _buildKey(
+                              child: Icon(
+                                Platform.isIOS ? Icons.face : Icons.fingerprint,
+                                size: size.width * 0.09,
+                              ),
+                              onPressed: () {
+                                if (AppData.getPinData() == null) {
+                                  showCupertinoModalPopup(
+                                    context: Get.context!,
+                                    builder: (_) => CupertinoAlertDialog(
+                                      content: const Text(
+                                        'Sign in with your CNIC and Mobile Number to enable biometric login. Next time, simply tap the Biometric icon to sign in.',
+                                        textAlign: TextAlign.justify,
+                                      ),
+                                      actions: [
+                                        CupertinoDialogAction(
+                                          onPressed: Get.back,
+                                          child: const Text('Ok'),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                  return;
+                                } else {
+                                  _authenticateAndVerify();
+                                }
+                              },
+                            ),
                         ],
                       ),
                     ),

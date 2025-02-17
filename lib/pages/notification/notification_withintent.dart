@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/utils/utils.dart';
 
@@ -101,11 +101,7 @@ class NotificationWithintent extends StatelessWidget {
                       elevation: 0,
                       backgroundColor: Colors.red.shade800,
                       onPressed: () {
-                        if (Platform.isAndroid) {
-                          SystemNavigator.pop();
-                        } else if (Platform.isIOS) {
                           exit(0);
-                        }
                       },
                       label: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

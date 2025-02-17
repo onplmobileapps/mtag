@@ -8,8 +8,6 @@ import 'package:mtag_flutterapp/theme/app_theme.dart';
 import '../../pages/receipt/controller/receipt_generate_controller.dart';
 import '../../pages/tollhistory/controller/tollcontroller.dart';
 
-
-
 class TollHistoryPage extends StatefulWidget {
   const TollHistoryPage({super.key});
 
@@ -61,17 +59,25 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
       appBar: AppBar(
         title: const Text('Toll History'),
       ),
-      body: Obx(
-        () => isLoading.value
-            ? Center(
-                child: LoadingAnimationWidget.flickr(
-                    leftDotColor: Theme.of(context).primaryColor,
-                    rightDotColor: Colors.white,
-                    size: 35.0))
-            : GetX<TollController>(
-                init: TollController(userRepo: UserRepo()),
-                builder: (controller) => _buildTollHistoryContent(controller),
-              ),
+      body: Column(
+        children: [
+          _buildStickyMessage(context),
+          Expanded(
+            child: Obx(
+              () => isLoading.value
+                  ? Center(
+                      child: LoadingAnimationWidget.flickr(
+                          leftDotColor: Theme.of(context).primaryColor,
+                          rightDotColor: Colors.white,
+                          size: 35.0))
+                  : GetX<TollController>(
+                      init: TollController(userRepo: UserRepo()),
+                      builder: (controller) =>
+                          _buildTollHistoryContent(controller),
+                    ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -208,5 +214,20 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
       ],
     );
   }
+}
 
+Widget _buildStickyMessage(BuildContext context) {
+  return Container(margin: EdgeInsets.all(5),
+    width: double.infinity,
+    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+   decoration: BoxDecoration(borderRadius: BorderRadius.circular(4) ,color: Colors.grey.shade200,),
+    child: Text(
+      'Travel history displays only M-Tag transactions with balance.',
+      textAlign: TextAlign.start,
+      style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: Theme.of(context).primaryColor),
+    ),
+  );
 }

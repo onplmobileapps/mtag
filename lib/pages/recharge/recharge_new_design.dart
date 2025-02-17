@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -247,8 +249,8 @@ class _RechargeSelfPageState extends State<RechargeSelfPage> {
                                     isSelected: _selectedMtagIndex == itemIndex,
                                     onTap: () {
                                       _onMTagTap(
-                                        itemIndex, item.tokenno ?? '', false);
-                                        _isRechargeOtherTextFieldVisible = false;
+                                          itemIndex, item.tokenno ?? '', false);
+                                      _isRechargeOtherTextFieldVisible = false;
                                     },
                                   );
                                 }),
@@ -277,8 +279,14 @@ class _RechargeSelfPageState extends State<RechargeSelfPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (_isRechargeOtherTextFieldVisible)...
-                          [Text('Enter M-Tag ',style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.redAccent),),
+                          if (_isRechargeOtherTextFieldVisible) ...[
+                            Text(
+                              'Enter M-Tag ',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge
+                                  ?.copyWith(color: Colors.redAccent),
+                            ),
                             Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: CustomTExtField(
@@ -297,14 +305,14 @@ class _RechargeSelfPageState extends State<RechargeSelfPage> {
                                 ],
                                 validator: validateMtag,
                                 onChanged: (v) {
-                                  _selectedMtag =_textController.text;
+                                  _selectedMtag = _textController.text;
                                   if (mounted) {
                                     setState(() {});
                                   }
-                                  // FocusScope.of(context).unfocus();
                                 },
                               ),
-                            ),],
+                            ),
+                          ],
                           SizedBox(height: 20.0),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -437,7 +445,7 @@ class _RechargeSelfPageState extends State<RechargeSelfPage> {
                                 return;
                               }
                               showPopDialog(
-                                  _selectedMtag == null
+                                  _selectedMtag == null || _selectedMtag == ''
                                       ? 'Select M-Tag/ Enter M-Tag'
                                       : _amountController.text.isEmpty
                                           ? 'Enter Amount'
@@ -524,35 +532,55 @@ class _RechargeSelfPageState extends State<RechargeSelfPage> {
                                                 // New card widget
                                                 InkWell(
                                                   onTap: () async {
-                                                    if (_formKey.currentState!
-                                                            .validate() &&
-                                                        _selectedMtag != null &&
-                                                        _amountController
-                                                            .text.isNotEmpty) {
-                                                      await _paymentController
-                                                          .getRechargeSummary(
-                                                              isFleet: false,
-                                                              mtagId:
-                                                                  _selectedMtag
-                                                                      .toString(),
-                                                              payId: '0',
-                                                              amount:
-                                                                  _amountController
-                                                                      .text);
-
+                                                    if (!_formKey.currentState!
+                                                        .validate()) {
                                                       return;
                                                     }
-                                                    showPopDialog(
-                                                        _selectedMtag == null
-                                                            ? 'Select M-Tag/ Enter M-Tag'
-                                                            : _amountController
-                                                                    .text
-                                                                    .isEmpty
-                                                                ? 'Enter Amount'
-                                                                : 'Enter Valid Amount',
-                                                        () {
-                                                      Get.back();
-                                                    });
+
+                                                    if (_selectedMtag == null ||
+                                                        _selectedMtag!
+                                                            .trim()
+                                                            .isEmpty) {
+                                                      showPopDialog(
+                                                          'Select or Enter a valid M-Tag',
+                                                          () => Get.back());
+                                                      return;
+                                                    }
+
+                                                    if (_amountController.text
+                                                        .trim()
+                                                        .isEmpty) {
+                                                      showPopDialog(
+                                                          'Enter Amount',
+                                                          () => Get.back());
+                                                      return;
+                                                    }
+
+                                                    final amount =
+                                                        double.tryParse(
+                                                            _amountController
+                                                                .text
+                                                                .trim());
+                                                    if (amount == null ||
+                                                        amount <= 0) {
+                                                      showPopDialog(
+                                                          'Enter a Valid Amount',
+                                                          () => Get.back());
+                                                      return;
+                                                    }
+
+                                                    log('M-Tag Type: ${_selectedMtag.runtimeType}');
+
+                                                    await _paymentController
+                                                        .getRechargeSummary(
+                                                      isFleet: false,
+                                                      mtagId: _selectedMtag
+                                                          .toString(),
+                                                      payId: '0',
+                                                      amount: _amountController
+                                                          .text
+                                                          .trim(),
+                                                    );
                                                   },
                                                   child: Column(
                                                     children: [
@@ -631,37 +659,67 @@ class _RechargeSelfPageState extends State<RechargeSelfPage> {
                                                                 InkWell(
                                                                     onTap:
                                                                         () async {
-                                                                      if (_formKey
-                                                                              .currentState!
-                                                                              .validate() &&
-                                                                          _selectedMtag !=
-                                                                              null &&
-                                                                          _amountController
-                                                                              .text
-                                                                              .isNotEmpty) {
-                                                                        _onCardTap(
-                                                                            e.key);
-                                                                        await _paymentController.getRechargeSummary(
-                                                                            isFleet:
-                                                                                false,
-                                                                            token: e
-                                                                                .value.tOKEN,
-                                                                            mtagId: _selectedMtag
-                                                                                .toString(),
-                                                                            payId:
-                                                                                '0',
-                                                                            amount:
-                                                                                _amountController.text);
+                                                                      if (!_formKey
+                                                                          .currentState!
+                                                                          .validate()) {
                                                                         return;
                                                                       }
-                                                                      showPopDialog(
-                                                                          _selectedMtag == null
-                                                                              ? 'Select M-Tag/ Enter M-Tag'
-                                                                              : _amountController.text.isEmpty
-                                                                                  ? 'Enter Amount'
-                                                                                  : 'Enter Valid Amount', () {
-                                                                        Get.back();
-                                                                      });
+
+                                                                      if (_selectedMtag ==
+                                                                              null ||
+                                                                          _selectedMtag!
+                                                                              .trim()
+                                                                              .isEmpty) {
+                                                                        showPopDialog(
+                                                                            'Select or Enter a valid M-Tag',
+                                                                            () =>
+                                                                                Get.back());
+                                                                        return;
+                                                                      }
+
+                                                                      if (_amountController
+                                                                          .text
+                                                                          .trim()
+                                                                          .isEmpty) {
+                                                                        showPopDialog(
+                                                                            'Enter Amount',
+                                                                            () =>
+                                                                                Get.back());
+                                                                        return;
+                                                                      }
+
+                                                                      final amount = double.tryParse(_amountController
+                                                                          .text
+                                                                          .trim());
+                                                                      if (amount ==
+                                                                              null ||
+                                                                          amount <=
+                                                                              0) {
+                                                                        showPopDialog(
+                                                                            'Enter a Valid Amount',
+                                                                            () =>
+                                                                                Get.back());
+                                                                        return;
+                                                                      }
+
+                                                                      _onCardTap(
+                                                                          e.key);
+
+                                                                      await _paymentController
+                                                                          .getRechargeSummary(
+                                                                        isFleet:
+                                                                            false,
+                                                                        token: e
+                                                                            .value
+                                                                            .tOKEN,
+                                                                        mtagId:
+                                                                            _selectedMtag.toString(),
+                                                                        payId:
+                                                                            '0',
+                                                                        amount: _amountController
+                                                                            .text
+                                                                            .trim(),
+                                                                      );
                                                                     },
                                                                     child: Row(
                                                                       children: [
@@ -918,11 +976,9 @@ class _RechargeSelfPageState extends State<RechargeSelfPage> {
                                                           curve:
                                                               Curves.easeInOut,
                                                         );
-                                                      if(mounted) {
-                                                        setState(() {
-                                                          
-                                                        });
-                                                      }
+                                                        if (mounted) {
+                                                          setState(() {});
+                                                        }
                                                       },
                                                       child: Container(
                                                         margin: const EdgeInsets
