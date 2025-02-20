@@ -56,6 +56,12 @@ sealed class AppData {
       await _preferences.setString('pin_data', jsonEncode(pinData));
     }
   }
+ static Future<void> clearPinData() async {
+  if (_preferences.containsKey('pin_data')) {
+    await _preferences.remove('pin_data');
+  }
+}
+
     static Map<String, dynamic>? getPinData() {
     final String? data = _preferences.getString('pin_data');
     if (data != null) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mtag_flutterapp/pages/recharge/recharge_new_design.dart';
 import '../../widgets/bottomsheet/build_payment_options_widget.dart';
 
 import 'build_header_widet.dart';
@@ -35,17 +36,19 @@ class PaymentBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPersistentFrameCallback((_){ selected1linkOpt.value=-1;});
+   
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Wrap(
         children: [
           buildHandleBar(context),
-          BuildPSIDField(
+          BuildPSIDField(key: ValueKey('PSID'),
             showPSIDField: showPSIDField,
             psidController: psidController,
             onCopyPSID: onCopyPSID,
           ),
-          BuildRechargeSection(
+          BuildRechargeSection(key:ValueKey('Recharge Key'),
             amountController: amountController,
             showPSIDField: showPSIDField,
             formKey: _formKey,
@@ -55,10 +58,11 @@ class PaymentBottomSheet extends StatelessWidget {
             jazzCode: jazzCode,
             creditCode: creditCode,
           ),
-          BuildPaymentOptionsWidget(mtagId: mtagId,regId: regId,creditCode: creditCode,jazzCode: jazzCode,
+          BuildPaymentOptionsWidget(key: ValueKey('payment options'),
+            mtagId: mtagId,regId: regId,creditCode: creditCode,jazzCode: jazzCode,
             psidController: psidController,
             showPSIDField: showPSIDField,
-            selectedPaymentOption: selectedPaymentOption,
+          
             amount: amountController..text,
           ),
           const SizedBox(height: 20),

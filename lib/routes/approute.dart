@@ -5,7 +5,7 @@ import 'package:mtag_flutterapp/pages/notification/notification_withintent.dart'
 import '../../constants/other_consts.dart';
 import '../../maintenance/maintenance_screen.dart';
 import '../../pages/dashboard/home_page.dart';
-import '../../pages/payment/payment_cards_screen_mastercard.dart';
+
 import '../../pages/notification/notification_screen.dart';
 import '../../pages/privacy/privacy_policy_screen.dart';
 import '../../pages/receipt/receipt_screen.dart';
@@ -28,10 +28,6 @@ List<GetPage<dynamic>>? getPages = [
   GetPage(
     name: '/',
     page: () => HomePage(),
-  ),
-  GetPage(
-    name: '/rechargeSelf',
-    page: () => RechargeSelfPage(),
   ),
  
   GetPage(
@@ -94,11 +90,7 @@ List<GetPage<dynamic>>? getPages = [
     name: '/settings',
     page: () => SettingScreen(),
   ),
-  GetPage(
-    name: '/payment',
-    page: () =>
-        OtherConsts().emergencySwitchProd.value == '1' ? MaintenanceScreen(): const PaymentCardsScreen2(),
-  ),
+ 
  
   GetPage(
     name: '/auth',

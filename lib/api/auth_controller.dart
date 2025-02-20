@@ -294,6 +294,7 @@ class AuthController extends GetxController implements GetxService {
     Map<String, dynamic> response =
         await authRepo.verifyOTP(code: code, islogin: islogin, fcmToken: fcm);
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
+      AppData.clearPinData();
       Get.back();
       authRepo.saveLoginUserData(
           user: UserModel(

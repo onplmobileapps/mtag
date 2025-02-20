@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/pages/recharge/recharge_new_design.dart';
 
+import '../../api/api_constants.dart';
 import '../../constants/other_consts.dart';
 import '../../pages/dashboard/model/dashboard_model.dart';
 import '../../pages/payment/controller/payment_card_controller.dart';
@@ -11,42 +15,56 @@ import 'bottom_sheet_widget.dart';
 import 'build_payment_card.dart';
 
 class BuildPaymentOptionsWidget extends StatelessWidget {
-  const BuildPaymentOptionsWidget({
-    super.key,
-    required this.selectedPaymentOption,
-    required this.amount,
-    required this.showPSIDField,
-    required this.psidController,
-    this.mtagId,
-    this.regId,
-    this.creditCode,
-    this.jazzCode,
-  });
+  const BuildPaymentOptionsWidget(
+      {super.key,
+      required this.amount,
+      required this.showPSIDField,
+      required this.psidController,
+      this.mtagId,
+      this.regId,
+      this.creditCode,
+      this.jazzCode,
+      this.onChanged,
+      this.isfromMainPage = false});
 
-  final ValueNotifier<int> selectedPaymentOption;
   final ValueNotifier<bool> showPSIDField;
   final String? mtagId, regId, jazzCode, creditCode;
   final TextEditingController amount;
   final TextEditingController? psidController;
+  final Function(int paymentMethod)? onChanged;
+  final bool? isfromMainPage;
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<int>(
-      valueListenable: selectedPaymentOption,
+      valueListenable: selected1linkOpt,
       builder: (context, selectedOption, child) {
         return ListView(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           padding: EdgeInsets.zero,
           children: [
-            Text('Select Payment Method'),
+            Text(
+              'Recommended Payment Methods',
+              style: TextStyle(color: Colors.redAccent),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
             _buildPaymentOption(
               context: context,
               label: "Invoice/Generate PSID",
-              value: 2,
+              value: 0,
               assetPath: 'assets/1linklogo.png',
               timerNotifier: inVoicetimerNotifier,
               onTap: () async {
+                if (mtagId == null || mtagId == '' || mtagId!.length < 8) {
+                  showPopDialog('Select M-Tag / Enter M-Tag', () {
+                    selected1linkOpt.value = -1;
+                    Get.back();
+                  });
+                  return;
+                }
                 var data = await Get.find<PaymentCardController>().generatePSID(
                   mtagID: mtagId,
                   amount: double.parse(amount.text),
@@ -56,7 +74,9 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                   isInvoice: true,
                 );
 
-                if (context.mounted && data.isNotEmpty) {
+                if (context.mounted &&
+                    (data.containsKey('PSID'))) {
+                 
                   showBreakdownDialog(
                     psid: data['PSID'],
                     context: context,
@@ -68,16 +88,32 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                   );
                   inVoicetimerNotifier.value = Duration(minutes: 10);
                   startTimer(inVoicetimerNotifier);
+                  return;
+                }
+                if (context.mounted && data.containsKey(APIRESPONSE.ERROR)) {
+                  log('error data==>$data');
+                  showPopDialog(data[APIRESPONSE.ERROR]['Message'], () {
+                     selected1linkOpt.value=-1;
+                    Get.back();
+                 
+                  });
                 }
               },
             ),
             _buildPaymentOption(
               context: context,
               label: "Top Up",
-              value: 3,
+              value: 1,
               assetPath: 'assets/1linklogo.png',
               timerNotifier: topUptimerNotifier,
               onTap: () async {
+                if (mtagId == null || mtagId == '' || mtagId!.length < 8) {
+                  showPopDialog('Select M-Tag / Enter M-Tag', () {
+                    selected1linkOpt.value = -1;
+                    Get.back();
+                  });
+                  return;
+                }
                 var data =
                     await Get.find<PaymentCardController>().generatePSIDTOPUP(
                   mtagID: mtagId,
@@ -87,11 +123,24 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                   isInvoice: false,
                 );
 
-                if (data.isNotEmpty) {
-                  psidController?.text = data.toString();
-                  showPSIDField.value = true;
+                if (context.mounted&& data.containsKey(APIRESPONSE.SUCCESS)) {
+                  showTopUpDialog(
+                    psid:data[APIRESPONSE.SUCCESS]['Data'],
+                    context: context,
+                    amount: double.parse(amount.text),
+                    inVoicetimerNotifier: topUptimerNotifier,
+                  );
+                  psidController?.text =
+                      data[APIRESPONSE.SUCCESS]['Data'].toString();
                   topUptimerNotifier.value = Duration(minutes: 10);
                   startTimer(topUptimerNotifier);
+                  return;
+                }
+                if (data.containsKey(APIRESPONSE.ERROR)) {
+                  showPopDialog(data[APIRESPONSE.ERROR]['Message'], () {
+                    selected1linkOpt.value = -1;
+                    Get.back();
+                  });
                 }
               },
             ),
@@ -112,7 +161,12 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                     )
                   ],
                 );
-                selectedPaymentOption.value = -1;
+
+                if (onChanged != null) {
+                  onChanged!(1); // Call only if onChanged is not null
+                }
+
+                selected1linkOpt.value = 2;
               },
             ),
             _buildPaymentOption(
@@ -132,10 +186,14 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                     )
                   ],
                 );
-                selectedPaymentOption.value = -1;
+                if (onChanged != null) {
+                  onChanged!(0);
+                }
+
+                selected1linkOpt.value = 3;
               },
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
           ],
         );
       },
@@ -153,13 +211,13 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
     return Column(
       children: [
         buildPaymentOption(
-          selectedOptionNotifier: selectedPaymentOption,
+          selectedOptionNotifier: selected1linkOpt,
           onTap: () {
             if (isAmountValid(amount.text)) {
               onTap();
             } else {
               showPopDialog('Enter a minimum amount of 50 PKR.', () {
-                selectedPaymentOption.value = -1;
+                selected1linkOpt.value = -1;
                 Get.back();
               });
             }

@@ -212,7 +212,7 @@ Widget mtagDataWidget(BuildContext context,
                                   ),
                                 ),
                                 Baseline(
-                                  baseline: 20,
+                                  baseline: 27,
                                   baselineType: TextBaseline.ideographic,
                                   child: InkWell(
                                     onTap: () async {
@@ -228,8 +228,8 @@ Widget mtagDataWidget(BuildContext context,
                                       _obscured.value
                                           ? Icons.visibility_off_outlined
                                           : Icons.visibility_outlined,
-                                      size: 20,
-                                      color: Colors.grey,
+                                      size: 25,
+                                      color: Colors.redAccent,
                                     ),
                                   ),
                                 ),

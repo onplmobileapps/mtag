@@ -28,7 +28,8 @@ class PaymentCardController extends GetxController implements GetxService {
     var response = await userRepo.getCardDetails1(payId: payId);
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       paymentCardModel.refresh();
-      paymentCardModel.value = PaymentCardModel.fromJson(response[APIRESPONSE.SUCCESS]);
+      paymentCardModel.value =
+          PaymentCardModel.fromJson(response[APIRESPONSE.SUCCESS]);
       isLoading(false);
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () {
@@ -45,12 +46,11 @@ class PaymentCardController extends GetxController implements GetxService {
   }
 
   Future<Map<String, dynamic>> getCardDetails(String payId) async {
-
     var response = await userRepo.getCardDetails(payId: payId);
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       paymentCardModel.refresh();
-      paymentCardModel.value = PaymentCardModel.fromJson(response[APIRESPONSE.SUCCESS]);
-     
+      paymentCardModel.value =
+          PaymentCardModel.fromJson(response[APIRESPONSE.SUCCESS]);
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () {
         Get.find<AuthController>().clearSharedData();
@@ -58,36 +58,43 @@ class PaymentCardController extends GetxController implements GetxService {
         Get.offAllNamed('/pinPage');
       });
 
-      return {'Error':response};
+      return {'Error': response};
     }
 
     return response;
   }
 
   Future<Map<String, dynamic>> jazzCashRecharge(
-      {required String? mobile, required String? amount, required String? mtagId}) async {
+      {required String? mobile,
+      required String? amount,
+      required String? mtagId}) async {
     jazzLoader();
-    var response = await userRepo.jazzCashRecharg(mobileNumber: mobile, amount: amount, mtagID: mtagId);
+    var response = await userRepo.jazzCashRecharg(
+        mobileNumber: mobile, amount: amount, mtagID: mtagId);
 
     if (response.containsKey(APIRESPONSE.SUCCESS) &&
-        (response[APIRESPONSE.SUCCESS]['Code'] == '000' || response[APIRESPONSE.SUCCESS]['Code'] == '121')) {
+        (response[APIRESPONSE.SUCCESS]['Code'] == '000' ||
+            response[APIRESPONSE.SUCCESS]['Code'] == '121')) {
       await Get.find<HomeController>().refreshDashBoardData();
       Get.back();
       showDialog(
         barrierDismissible: false,
         context: Get.context!,
         builder: (_) => JazzResponseDialog(
-            message: response[APIRESPONSE.SUCCESS]['Message'] ?? 'Somrthing went wrong',
+            message: response[APIRESPONSE.SUCCESS]['Message'] ??
+                'Somrthing went wrong',
             isSuccess: true,
             color: Colors.green),
       );
-    } else if (response.isNotEmpty && response.containsKey(APIRESPONSE.SUCCESS)) {
+    } else if (response.isNotEmpty &&
+        response.containsKey(APIRESPONSE.SUCCESS)) {
       Get.back();
 
       showDialog(
         context: Get.context!,
         builder: (_) => JazzResponseDialog(
-            message: response[APIRESPONSE.SUCCESS]['Message'] ?? 'Something went wrong',
+            message: response[APIRESPONSE.SUCCESS]['Message'] ??
+                'Something went wrong',
             isSuccess: false,
             color: Colors.red),
       );
@@ -95,14 +102,17 @@ class PaymentCardController extends GetxController implements GetxService {
       showDialog(
         context: Get.context!,
         builder: (_) => const JazzResponseDialog(
-            message: 'Something went wrong\nTry again later.', isSuccess: false, color: Colors.red),
+            message: 'Something went wrong\nTry again later.',
+            isSuccess: false,
+            color: Colors.red),
       );
     }
 
     return response;
   }
 
-  Future<Map<String, dynamic>> deleteCardDetails({required String token, required String payId}) async {
+  Future<Map<String, dynamic>> deleteCardDetails(
+      {required String token, required String payId}) async {
     var response = await userRepo.deleteCardDetails(token: token, payId: payId);
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       showPopDialog(response[APIRESPONSE.SUCCESS]['Message'], () async {
@@ -115,25 +125,31 @@ class PaymentCardController extends GetxController implements GetxService {
   }
 
   Future<Map<String, dynamic>> getPayUUID(
-      {String? token, required String mtagId, required String amount, required bool isFleet}) async {
-    var response = await userRepo.getPayUUID(token: token, amount: amount, mtagId: mtagId, isFleet: isFleet);
+      {String? token,
+      required String mtagId,
+      required String amount,
+      required bool isFleet}) async {
+    var response = await userRepo.getPayUUID(
+        token: token, amount: amount, mtagId: mtagId, isFleet: isFleet);
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       return response;
     }
     return response;
   }
 
-  Future <void>getRechargeSummary({
+  Future<void> getRechargeSummary({
     required String mtagId,
     required String payId,
     required String amount,
     required bool isFleet,
     String? token,
   }) async {
-    var response =
-        await UserRepo().getOwnerRechargeDetails(mtagId: mtagId, amount: amount, payId: payId, isFleet: isFleet);
-    if (response.containsKey(APIRESPONSE.SUCCESS)&&response[APIRESPONSE.SUCCESS]['Code']=="00") {
-      rechargeSummaryModel.value = OwnerRechargeModel.fromJson(response[APIRESPONSE.SUCCESS]);
+    var response = await UserRepo().getOwnerRechargeDetails(
+        mtagId: mtagId, amount: amount, payId: payId, isFleet: isFleet);
+    if (response.containsKey(APIRESPONSE.SUCCESS) &&
+        response[APIRESPONSE.SUCCESS]['Code'] == "00") {
+      rechargeSummaryModel.value =
+          OwnerRechargeModel.fromJson(response[APIRESPONSE.SUCCESS]);
       showRechargeSummaryDialog(
         isFleet: isFleet,
         payId: payId,
@@ -142,75 +158,80 @@ class PaymentCardController extends GetxController implements GetxService {
         onPressed: () async {
           if (payId == '1') {
             Get.back();
-            await Get.find<PaymentCardController>().jazzCashRecharge(mobile: token, amount: amount, mtagId: mtagId);
+            await Get.find<PaymentCardController>().jazzCashRecharge(
+                mobile: token, amount: amount, mtagId: mtagId);
             return;
           }
-          var result = await Get.find<PaymentCardController>()
-              .getPayUUID(mtagId: mtagId, amount: amount, token: token ?? '', isFleet: isFleet);
+          var result = await Get.find<PaymentCardController>().getPayUUID(
+              mtagId: mtagId,
+              amount: amount,
+              token: token ?? '',
+              isFleet: isFleet);
           log(result.toString());
           if (result.isNotEmpty && result.containsKey(APIRESPONSE.SUCCESS)) {
             Get.to(() => AlfaWebView2(
                   isSaveCard: false,
-                  url: "${ApplicationUrl.IMAGE_ULR}/payment/${result[APIRESPONSE.SUCCESS]['key']}",
+                  url:
+                      "${ApplicationUrl.IMAGE_ULR}/payment/${result[APIRESPONSE.SUCCESS]['key']}",
                 ));
           }
         },
       );
-     
-    }
-    else if((response.containsKey(APIRESPONSE.SUCCESS)&&response[APIRESPONSE.SUCCESS]['Code']=="03")){
-      showPopDialog(response[APIRESPONSE.SUCCESS]['Message'], (){
+    } else if ((response.containsKey(APIRESPONSE.SUCCESS) &&
+        response[APIRESPONSE.SUCCESS]['Code'] == "03")) {
+      showPopDialog(response[APIRESPONSE.SUCCESS]['Message'], () {
         Get.back();
       });
     }
   }
 
- Future<Map<String,dynamic>> generatePSID({
-  required String? mtagID,
-  required double? amount,
-  required String? cnic,
-  required String? mobileNum,
-  required bool? isBlocked,
-  bool? isInvoice,
-}) async {
-  var response = await userRepo.genearatePSID(
-    mtagID: mtagID,
-    amount: amount,
-    cnic: cnic,
-    mobileNum: mobileNum,
-    isBlocked: isBlocked,
-    isInvoice: isInvoice,
-  );
+  Future<Map<String, dynamic>> generatePSID({
+    required String? mtagID,
+    required double? amount,
+    required String? cnic,
+    required String? mobileNum,
+    required bool? isBlocked,
+    bool? isInvoice,
+  }) async {
+    var response = await userRepo.genearatePSID(
+      mtagID: mtagID,
+      amount: amount,
+      cnic: cnic,
+      mobileNum: mobileNum,
+      isBlocked: isBlocked,
+      isInvoice: isInvoice,
+    );
 
-  // Check if the response is successful and contains the expected data
-  if (response.containsKey(APIRESPONSE.SUCCESS)) {
-   
-    return response[APIRESPONSE.SUCCESS]['Data'] ?? 'Error: No Data'; // Extract the Data field
+    // Check if the response is successful and contains the expected data
+    if (response.containsKey(APIRESPONSE.SUCCESS)) {
+      return response[APIRESPONSE.SUCCESS]['Data']; // Extract the Data field
+    }
+
+    return response;
   }
 
-  
-  return {'Error': {response['Error'] ?? 'Unknown Error'}};
-}
-
-  Future<String> generatePSIDTOPUP(
+  Future<Map<String, dynamic>> generatePSIDTOPUP(
       {required String? mtagID,
       required String? cnic,
       required String? mobileNum,
       required bool? isBlocked,
       bool? isInvoice}) async {
     var response = await userRepo.genearatePSIDTOPUP(
-        mtagID: mtagID, cnic: cnic, mobileNum: mobileNum, isBlocked: isBlocked, );
+      mtagID: mtagID,
+      cnic: cnic,
+      mobileNum: mobileNum,
+      isBlocked: isBlocked,
+    );
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
-      return response[APIRESPONSE.SUCCESS]['Data'];
+      log(response.toString());
+      return response;
     }
-    return '';
+    return response;
   }
-   Future<String> getAmountBreakDown(
-      {required String? amount,
-      
-      bool? isInvoice}) async {
-    var response = await userRepo.getAmountBreakDown(
-       amount: amount );
+
+  Future<String> getAmountBreakDown(
+      {required String? amount, bool? isInvoice}) async {
+    var response = await userRepo.getAmountBreakDown(amount: amount);
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       log(response[APIRESPONSE.SUCCESS]['Data']['charges'].toString());
       return response[APIRESPONSE.SUCCESS]['Data']['charges'].toString();

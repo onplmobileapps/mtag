@@ -1,20 +1,27 @@
   // ignore_for_file: must_be_immutable
 
-  import 'package:flutter/foundation.dart';
+  import 'dart:developer';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-class BuildPSIDField extends StatelessWidget {
+class BuildPSIDField extends StatefulWidget {
   final ValueListenable<bool> showPSIDField;
 void Function()? onCopyPSID;
 final TextEditingController ?psidController;
  BuildPSIDField({super.key,required this.showPSIDField,this.onCopyPSID,this.psidController});
 
   @override
+  State<BuildPSIDField> createState() => _BuildPSIDFieldState();
+}
+
+class _BuildPSIDFieldState extends State<BuildPSIDField> {
+  @override
   Widget build(BuildContext context) {
-   
+   log(widget.psidController?.text??'');
  
 
     return ValueListenableBuilder<bool>(
-      valueListenable: showPSIDField,
+      valueListenable: widget.showPSIDField,
       builder: (context, isVisible, child) {
         if (!isVisible) return Container();
         return Padding(
@@ -23,7 +30,7 @@ final TextEditingController ?psidController;
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextField(
-                controller: psidController,
+                controller: widget.psidController,
                 readOnly: true,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
@@ -32,7 +39,7 @@ final TextEditingController ?psidController;
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(Icons.copy,),
-                    onPressed: onCopyPSID,
+                    onPressed: widget.onCopyPSID,
                   ),
                 ),
               ),

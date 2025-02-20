@@ -25,7 +25,7 @@ class TollController extends GetxController implements GetxService {
       searchList?.value = data.data?.allTransactions ?? RxList();
     } else if (respone.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(respone[APIRESPONSE.ERROR]['Message'], () {
-        if (respone['Code'] == 450) {
+        if (respone[APIRESPONSE.ERROR]['Code'] == 450) {
           Get.delete<HomeController>(force: true);
           Get.offAllNamed('/pinPage');
         } else {

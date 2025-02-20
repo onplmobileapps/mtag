@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:get/get.dart';
 import '../../base/app_data.dart';
 import '../../utils/utils.dart';
+import '../api/application_url.dart';
 import '../widgets/dialog/promo_dialog.dart';
 import '../widgets/dialog/update_dialog.dart';
 import '../api/api_constants.dart';
@@ -35,7 +36,7 @@ class HomeController extends GetxController implements GetxService {
     ),
     MtagModel(
       routeName: '/tollHostory',
-      title: 'Toll History',
+      title: 'Toll/Recharge History',
       image: 'assets/tollhistory.svg',
     ),
     MtagModel(
@@ -63,12 +64,18 @@ class HomeController extends GetxController implements GetxService {
     isLoading.value = false; // Set loading to false once the API call completes
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
-      dashboradData.value = DashBoardModel.fromJson(response[APIRESPONSE.SUCCESS]);
-      _otherConstants.ownerName.value = dashboradData.value.customerDetail?.fullName ?? '';
-      _otherConstants.ownerCNIC.value = dashboradData.value.customerDetail?.cNIC ?? '';
-      _otherConstants.mobile.value = dashboradData.value.customerDetail?.mobileNumber ?? '';
-      _otherConstants.email.value = dashboradData.value.customerDetail?.email ?? '';
-      _otherConstants.password.value = dashboradData.value.customerDetail?.password ?? '';
+      dashboradData.value =
+          DashBoardModel.fromJson(response[APIRESPONSE.SUCCESS]);
+      _otherConstants.ownerName.value =
+          dashboradData.value.customerDetail?.fullName ?? '';
+      _otherConstants.ownerCNIC.value =
+          dashboradData.value.customerDetail?.cNIC ?? '';
+      _otherConstants.mobile.value =
+          dashboradData.value.customerDetail?.mobileNumber ?? '';
+      _otherConstants.email.value =
+          dashboradData.value.customerDetail?.email ?? '';
+      _otherConstants.password.value =
+          dashboradData.value.customerDetail?.password ?? '';
       _otherConstants.jazzCode(dashboradData.value.jazzCashRecharge);
       _otherConstants.creditCode(dashboradData.value.creditCardRecharge);
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
@@ -106,10 +113,11 @@ class HomeController extends GetxController implements GetxService {
     Future.delayed(const Duration(seconds: 2), () {
       // Show promo dialog after a delay
       log(_otherConstants.promoPopUp.value);
-      if (_otherConstants.promoPopUp.value.isNotEmpty) {
+      if (dashboradData.value.promotionalPopUpImage?.code == '00') {
         Get.dialog(
           PromoDialog(
-            imageUrl: _otherConstants.promoPopUp.value,
+            imageUrl:
+                "${ApplicationUrl.IMAGE_ULR}/${dashboradData.value.promotionalPopUpImage?.imgURL}",
           ),
           barrierDismissible: false,
         );

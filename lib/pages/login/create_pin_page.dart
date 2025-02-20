@@ -29,6 +29,7 @@ class PinEntryPage extends StatefulWidget {
 class _PinEntryPageState extends State<PinEntryPage> {
   final ValueNotifier<String> _pinNotifier = ValueNotifier<String>('');
   bool isAuthenticating = false;
+  bool isFirstVisit = true;
 
   @override
   void dispose() {
@@ -49,7 +50,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
     }
   }
 
-  late bool isAuthAvailable;
+   bool isAuthAvailable=false;
   Future<void> _authenticateAndVerify() async {
     if (isAuthenticating) return;
     if (mounted) {
@@ -97,15 +98,17 @@ class _PinEntryPageState extends State<PinEntryPage> {
   }
 
   @override
-  void didChangeDependencies() async {
-    await checkAvailability();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (isAuthAvailable && AppData.getPinData() != null) {
-        _authenticateAndVerify();
-      }
-    });
-    super.didChangeDependencies();
-  }
+void initState() {
+  super.initState();
+  checkAvailability();
+  
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (isFirstVisit && isAuthAvailable && AppData.getPinData() != null) {
+      _authenticateAndVerify();
+      isFirstVisit = false; // Prevents re-triggering on page rebuild
+    }
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -237,7 +240,10 @@ class _PinEntryPageState extends State<PinEntryPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           GestureDetector(
-                            onTap: () async => Get.toNamed('/forgetPin'),
+                            onTap: () async {
+                               isFirstVisit = false;
+                              return Get.toNamed('/forgetPin');
+                            },
                             child: Text(
                               'Forgot Login PIN?',
                               style: Theme.of(context).textTheme.bodyMedium,
@@ -268,7 +274,8 @@ class _PinEntryPageState extends State<PinEntryPage> {
                                   );
                                   return;
                                 } else {
-                                  _authenticateAndVerify();
+                                 _authenticateAndVerify();
+
                                 }
                               },
                             ),
@@ -278,7 +285,10 @@ class _PinEntryPageState extends State<PinEntryPage> {
                     SizedBox(height: spacing / 2),
                     Center(
                       child: InkWell(
-                        onTap: () => Get.toNamed('/auth'),
+                        onTap: () {
+                          Get.toNamed('/auth');
+                           isFirstVisit = false;
+                        },
                         child: Text(
                           'Sign-in with a different account',
                           style:

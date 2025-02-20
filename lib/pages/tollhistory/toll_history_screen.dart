@@ -219,15 +219,28 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
 Widget _buildStickyMessage(BuildContext context) {
   return Container(margin: EdgeInsets.all(5),
     width: double.infinity,
-    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-   decoration: BoxDecoration(borderRadius: BorderRadius.circular(4) ,color: Colors.grey.shade200,),
-    child: Text(
-      'Travel history displays only M-Tag transactions with balance.',
-      textAlign: TextAlign.start,
-      style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          color: Theme.of(context).primaryColor),
+    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+   decoration: BoxDecoration(borderRadius: BorderRadius.circular(4) ,color: Colors.yellow.shade100,),
+    child: Column(mainAxisAlignment: MainAxisAlignment.start,crossAxisAlignment: CrossAxisAlignment.start,
+      children: [Row(
+        children: [ Icon(Icons.campaign),
+          Text('Announcement',style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),),
+        ],
+      ),
+        
+        Row(mainAxisAlignment: MainAxisAlignment.start,crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+           
+            Flexible(
+              child: Text(
+                'The history section displays only M-Tag transactions, cash transactions are not included.\nہسٹری سیکشن صرف ایم ٹیگ ٹرانزیکشنز دکھاتا ہے۔ کیش لین دین شامل نہیں ہیں۔',
+                textAlign: TextAlign.justify,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          ],
+        ),
+      ],
     ),
   );
 }

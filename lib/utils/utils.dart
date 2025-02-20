@@ -11,8 +11,6 @@ import 'package:intl/intl.dart';
 
 import 'package:mtag_flutterapp/controller/home_controller.dart';
 
-
-
 sealed class AmountList {
   static final List<int> amountList = [500, 1000, 1500, 2000, 3000, 4000, 5000];
 }
@@ -75,50 +73,54 @@ void startTimer(ValueNotifier<Duration> timerNotifier) {
     if (timerNotifier.value > Duration.zero) {
       timerNotifier.value -= Duration(seconds: 1); // Decrement timer
     } else {
-      timer.cancel(); // Stop the timer when it reaches zero
+      timer.cancel();
     }
   });
 }
 
+String ?validateJazzcashNumber(String ?number){
+  if(number==null){
+    return 'Please enter valid jazzcash number';
+
+  }
+  else if(!number.startsWith('03')){
+    return 'Please enter 03XXXXXXXXX format Jazzcah Cash Number';
+  }
+  else if(number.length<11){
+   return 'Please enter your 11 digit jazzcash number';
+  }
+  return null;
+}
 String? validateAmount(String? value) {
-  // Check if the value is null or empty
   if (value == null || value.isEmpty) {
-    return 'Amount is required'; // Localizable message for "Amount required"
+    return 'Amount is required';
   }
 
-
-  // Try parsing the input amount value to an integer
   final parsedValue = int.tryParse(value);
   if (parsedValue == null) {
-    return 'Amount must be a valid integer'; // Localizable message for invalid integer input
+    return 'Amount must be a valid integer';
   }
 
-  // Fetch the recharge min and max amounts from the controller
   final homeController = Get.find<HomeController>();
   final minAmount =
       int.tryParse('${homeController.dashboradData.value.rechargeMinAmount}');
   final maxAmount =
       int.tryParse('${homeController.dashboradData.value.rechargeMaxAmount}');
 
-  // If either min or max amount is invalid, return an error message
   if (minAmount == null || maxAmount == null) {
-    return 'Invalid amount range'; // Localizable message for invalid range
+    return 'Invalid amount range';
   }
-
-  // Check if the parsed value is within the valid range
   if (parsedValue < minAmount || parsedValue > maxAmount) {
-    return 'Amount must be between $minAmount and $maxAmount PKR'; // Localizable message with dynamic range
+    return 'Amount must be between $minAmount and $maxAmount PKR';
   }
 
-  return null; // Return null if validation passes (valid amount)
+  return null;
 }
 
 String formatDateTime(String inputDateTime, {bool roundMinutes = false}) {
   try {
-    // Parse the input date-time string
     DateTime dateTime = DateFormat("yy-MM-dd HH:mm:ss").parse(inputDateTime);
 
-    // Optionally round the minutes to 00
     if (roundMinutes) {
       dateTime =
           DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour);
@@ -130,10 +132,22 @@ String formatDateTime(String inputDateTime, {bool roundMinutes = false}) {
     return inputDateTime;
   }
 }
+
 String? validateMtag(String? value) {
   // Check if the value is null or empty
-  if (value == null || value.isEmpty||value.length<8||value.length>8) {
+  if (value == null || value.isEmpty || value.length < 8 || value.length > 8) {
     return 'Enter 8 digit value'; // Localizable message for "Amount required"
   }
   return null;
+}
+String maskString(String value) {
+  if (value.isEmpty || value == '') {
+    return '';
+  }
+
+  if (value.length == 11 || value.length == 19) {
+    return value.substring(value.length - 4);
+  }
+
+  return '';
 }
