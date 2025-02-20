@@ -8,6 +8,8 @@ import 'package:mtag_flutterapp/controller/home_controller.dart';
 import 'package:mtag_flutterapp/utils/utils.dart';
 import 'package:mtag_flutterapp/widgets/bottomsheet/bottom_sheet_widget.dart';
 
+import '../pages/recharge/recharge_new_design.dart';
+
 String getVehCategory(String vehicleType) {
   Map<String, String> vehicleCategories = {
     'Car': 'F1',
@@ -325,7 +327,7 @@ void showPaymentBottomSheet(BuildContext context,
 
   final ValueNotifier<bool> showPSIDField = ValueNotifier(false);
   final ValueNotifier<int> selectedPaymentOption = ValueNotifier(-1);
-
+selected1linkOpt.value = -1;
   Get.bottomSheet(
     PaymentBottomSheet(
       mtagId: mtagId,

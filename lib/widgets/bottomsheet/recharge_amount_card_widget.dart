@@ -53,7 +53,7 @@ class BuildRechargeSection extends StatelessWidget {
                 child: RechargeAmountField(
                   keyboardType: TextInputType.numberWithOptions(signed: true),
                   controller: amountController,
-                  hintText: "0",
+                  hintText: "50",
                 ),
               ),
             ),

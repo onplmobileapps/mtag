@@ -123,7 +123,6 @@ class HomePage extends GetView<HomeController> {
                                                                   .infinity,
                                                               imageUrl:
                                                                   imageUrl,
-                                                              // 'https://ik.imagekit.io/ctbam21nb/4.jpg?updatedAt=1739947807240',
                                                               fit: BoxFit.cover,
                                                               errorWidget:
                                                                   (context,

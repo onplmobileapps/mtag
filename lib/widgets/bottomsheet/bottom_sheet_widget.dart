@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mtag_flutterapp/pages/recharge/recharge_new_design.dart';
 import '../../widgets/bottomsheet/build_payment_options_widget.dart';
 
 import 'build_header_widet.dart';
@@ -36,8 +35,7 @@ class PaymentBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPersistentFrameCallback((_){ selected1linkOpt.value=-1;});
-   
+  
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Wrap(

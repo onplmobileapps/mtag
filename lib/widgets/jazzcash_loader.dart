@@ -1,9 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import '../../constants/other_consts.dart';
-import '../../widgets/elevated_button.dart';
 
+import '../constants/other_consts.dart';
+import 'elevated_button.dart';
+
+class JazzResponseDialog extends StatelessWidget {
+  final String? message;
+  final Color? color;
+  final bool isSuccess;
+  final String? lottiepath;
+
+  const JazzResponseDialog({
+    super.key,
+    required this.message,
+    required this.isSuccess,
+    required this.color,
+    this.lottiepath,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      backgroundColor: Theme.of(context).dialogBackgroundColor,
+      surfaceTintColor: Theme.of(context).dialogBackgroundColor,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Lottie.asset(
+              isSuccess ? 'assets/lottie/done_new.json' : 'assets/lottie/cancel_1.json',
+              height: 70,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              message ?? '',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.displaySmall,
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton1(
+              backgroundColor: color,
+              width: 100,
+              onclick: () async {
+                OtherConsts().isRefresh(isSuccess);
+                Get.back(); // Close the dialog
+                // Replace the entire stack with /dashboard to clear previous routes
+                await Get.offAllNamed('/dashboard');
+              },
+              text: 'Ok',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 Future<void> jazzLoader() {
   return showDialog(
     context: Get.context!,
@@ -62,60 +116,4 @@ Future<void> jazzLoader() {
       ),
     ),
   );
-}
-
-class JazzResponseDialog extends StatelessWidget {
-  final String? message;
-  final Color? color;
-  final bool isSuccess;
-  final String? lottiepath;
-  const JazzResponseDialog({
-    super.key,
-    required this.message,
-    required this.isSuccess,
-    required this.color,
-    this.lottiepath,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      backgroundColor: Theme.of(context).dialogBackgroundColor,
-      surfaceTintColor: Theme.of(context).dialogBackgroundColor,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Lottie.asset(
-              isSuccess == false ? 'assets/lottie/cancel_1.json' : 'assets/lottie/done_new.json',
-              height: 70,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-              message ?? '',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.displaySmall,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            ElevatedButton1(
-              backgroundColor: color,
-              width: 100,
-              onclick: () async {
-                OtherConsts().isRefresh(isSuccess);
-                Get.back();
-                await Get.toNamed('/dashboard');
-              },
-              text: 'Ok',
-            )
-          ],
-        ),
-      ),
-    );
-  }
 }

@@ -105,6 +105,9 @@ class HomeController extends GetxController implements GetxService {
     log(data.toString());
     _otherConstants.isRefresh(false);
   }
+  refreshBlance(){
+    
+  }
 
   @override
   void onReady() async {
