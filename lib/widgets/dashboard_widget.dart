@@ -220,7 +220,7 @@ Widget mtagDataWidget(BuildContext context,
                                     onTap: () async {
                                       if (!_obscured.value) {
                                         await Get.find<HomeController>()
-                                            .pullrefreshDashBoardData();
+                                            .pullRefreshDashboardData();
                                         _obscured(!_obscured.value);
                                       } else {
                                         _obscured(!_obscured.value);

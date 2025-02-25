@@ -83,7 +83,7 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
             actions: [
               CupertinoDialogAction(
                 onPressed: () async {
-                  await Get.find<HomeController>().refreshDashBoardData();
+                  await Get.find<HomeController>().pullRefreshDashboardData();
                   await Get.offAllNamed('/dashboard');
                 },
                 child: const Text('Ok'),

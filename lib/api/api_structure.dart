@@ -85,7 +85,13 @@ class APISTRUCTURE {
       if (isShowLoading) ApiLoader.hide();
       return _handleException(e);
     }
+    finally{
+        if (isShowLoading) ApiLoader.hide();
+      
+    }
+    
   }
+  
 
   Map<String, dynamic> _handleResponse(apiClient.Response<dynamic> response) {
     if (response.statusCode == 200) {

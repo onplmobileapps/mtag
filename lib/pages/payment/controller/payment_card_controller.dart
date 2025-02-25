@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import 'package:mtag_flutterapp/pages/alfawebview/alfla_webview_mastercard.dart';
 import '../../../widgets/dialog/cupertion_dialog.dart';
+import '../../recharge/shared/card_shared_ui.dart';
 import '/api/api_constants.dart';
 import '/api/recharge_repo.dart';
 import '/api/user_repo.dart';
@@ -75,7 +76,7 @@ class PaymentCardController extends GetxController implements GetxService {
     if (response.containsKey(APIRESPONSE.SUCCESS) &&
         (response[APIRESPONSE.SUCCESS]['Code'] == '000' ||
             response[APIRESPONSE.SUCCESS]['Code'] == '121')) {
-      await Get.find<HomeController>().refreshDashBoardData();
+      await Get.find<HomeController>().pullRefreshDashboardData();
       Get.back();
       showDialog(
         barrierDismissible: false,
@@ -115,6 +116,9 @@ class PaymentCardController extends GetxController implements GetxService {
       {required String token, required String payId}) async {
     var response = await userRepo.deleteCardDetails(token: token, payId: payId);
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
+     
+isJazzShown.value=false;
+      isCardsVisible.value=false;
       showPopDialog(response[APIRESPONSE.SUCCESS]['Message'], () async {
         await Get.find<ActivityContorller>().getActivities();
         Get.back();

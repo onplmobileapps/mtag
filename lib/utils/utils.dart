@@ -92,8 +92,11 @@ String ?validateJazzcashNumber(String ?number){
   return null;
 }
 String? validateAmount(String? value) {
-  if (value == null || value.isEmpty) {
+  if (value == null) {
     return 'Amount is required';
+  }
+  if(value.isEmpty){
+     return 'Amount is required';
   }
 
   final parsedValue = int.tryParse(value);
@@ -134,11 +137,19 @@ String formatDateTime(String inputDateTime, {bool roundMinutes = false}) {
 }
 
 String? validateMtag(String? value) {
-  // Check if the value is null or empty
-  if (value == null || value.isEmpty || value.length < 8 || value.length > 8) {
-    return 'Enter 8 digit value'; // Localizable message for "Amount required"
+  if (value == null) {
+    return 'MTAG value cannot be null';
   }
-  return null;
+  if (value.isEmpty) {
+    return 'MTAG value is required';
+  }
+  if (value.length < 8) {
+    return 'MTAG must be at least 8 digits';
+  }
+  if (value.startsWith('0')) {
+    return 'MTAG cannot start with 0';
+  }
+  return null; // Valid input
 }
 String maskString(String value) {
   if (value.isEmpty || value == '') {

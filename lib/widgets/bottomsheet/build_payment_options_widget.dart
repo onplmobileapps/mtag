@@ -94,7 +94,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                   log('error data==>$data');
                   showPopDialog(data[APIRESPONSE.ERROR]['Message'], () {
                      selected1linkOpt.value=-1;
-                    Get.back();
+                   data[APIRESPONSE.ERROR]['Code']==450?Get.offAllNamed('/pinPage'): Get.back();
                  
                   });
                 }

@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/base/app_data.dart';
@@ -63,9 +61,7 @@ class AuthController extends GetxController implements GetxService {
     required String cnic,
     required String mobileNumber,
     required String metaData,
-  int? isForgetPin,
-
-    
+    int? isForgetPin,
   }) async {
     var fcm = AppData.getFcmToken();
 
@@ -85,48 +81,24 @@ class AuthController extends GetxController implements GetxService {
               data: Data(accessToken: result['Data']['access_token'])));
 
       if (result["Code"] == '00') {
-        await generateOTP(cnic: cnic, islogin: 1, mobile: mobileNumber,isForgetPin: isForgetPin);
+        await generateOTP(
+            cnic: cnic,
+            islogin: 1,
+            mobile: mobileNumber,
+            isForgetPin: isForgetPin);
       }
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
-      log('controll here==>$response');
-      showCupertinoModalPopup(
-        context: Get.context!,
-        builder: (_) => CupertinoAlertDialog(
-          content: Text(
-              '${response[APIRESPONSE.ERROR]['Message'] ?? 'Something went wrong\nTry again later.'}'),
-          actions: [
-            CupertinoDialogAction(
-              onPressed: Get.back,
-              child: const Text('Ok'),
-            )
-          ],
-        ),
-      );
+      showPopDialog(
+          '${response[APIRESPONSE.ERROR]['Message'] ?? 'Something went wrong\nTry again later.'}',
+          Get.back);
     } else if (response['Code'] == '02') {
-      showCupertinoModalPopup(
-          context: Get.context!,
-          builder: (_) => CupertinoAlertDialog(
-                content: Text(
-                    '${response["Message"] ?? 'Something went wrong\nTry again later.'}'),
-                actions: [
-                  CupertinoDialogAction(
-                    onPressed: Get.back,
-                    child: const Text('Ok'),
-                  )
-                ],
-              ));
+      showPopDialog(
+          '${response[APIRESPONSE.ERROR]['Message'] ?? 'Something went wrong\nTry again later.'}',
+          Get.back);
     } else {
-      showCupertinoModalPopup(
-          context: Get.context!,
-          builder: (_) => CupertinoAlertDialog(
-                content: const Text('Something went wrong\nTry again later.'),
-                actions: [
-                  CupertinoDialogAction(
-                    onPressed: Get.back,
-                    child: const Text('Ok'),
-                  )
-                ],
-              ));
+      showPopDialog(
+          '${response[APIRESPONSE.ERROR]['Message'] ?? 'Something went wrong\nTry again later.'}',
+          Get.back);
     }
     return response;
   }
@@ -171,32 +143,11 @@ class AuthController extends GetxController implements GetxService {
         ),
       );
     } else if (response.containsKey(APIRESPONSE.SUCCESS)) {
-      showCupertinoModalPopup(
-        context: Get.context!,
-        builder: (_) => CupertinoAlertDialog(
-          content: Text(
-              '${response[APIRESPONSE.SUCCESS]['Message'] ?? 'Something went wrong\nTry again later.'}'),
-          actions: [
-            CupertinoDialogAction(
-              onPressed: Get.back,
-              child: const Text('Ok'),
-            )
-          ],
-        ),
-      );
+      showPopDialog(
+          '${response[APIRESPONSE.ERROR]['Message'] ?? 'Something went wrong\nTry again later.'}',
+          Get.back);
     } else {
-      showCupertinoModalPopup(
-        context: Get.context!,
-        builder: (_) => CupertinoAlertDialog(
-          content: const Text('Something went wrong\nTry again later.'),
-          actions: [
-            CupertinoDialogAction(
-              onPressed: Get.back,
-              child: const Text('Ok'),
-            )
-          ],
-        ),
-      );
+      showPopDialog('Something went wrong\nTry again later.', () {});
     }
 
     return response;
@@ -228,8 +179,13 @@ class AuthController extends GetxController implements GetxService {
   }
 
   //Generate OTP
-  Future<Map<String, dynamic>> generateOTP(
-      {String? smsText, String? cnic, int? islogin, String? mobile,int? isForgetPin,}) async {
+  Future<Map<String, dynamic>> generateOTP({
+    String? smsText,
+    String? cnic,
+    int? islogin,
+    String? mobile,
+    int? isForgetPin,
+  }) async {
     Map<String, dynamic> response =
         await authRepo.genearateOtp(cnic: cnic, islogin: islogin);
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
@@ -242,8 +198,8 @@ class AuthController extends GetxController implements GetxService {
               data: Data(accessToken: response[APIRESPONSE.SUCCESS]['Data'])));
       Get.dialog(OtpVerificationDialog(
         onOtpSubmit: (otp) {
-          verifyOTP(otp, islogin, cnic: cnic, mobile: mobile,isForgetPin: isForgetPin);
-          
+          verifyOTP(otp, islogin,
+              cnic: cnic, mobile: mobile, isForgetPin: isForgetPin);
         },
         onResendOtp: () {
           resendOTP(cnic: cnic, islogin: islogin);
@@ -302,14 +258,14 @@ class AuthController extends GetxController implements GetxService {
               data: Data(
                   accessToken: response[APIRESPONSE.SUCCESS]['Data'],
                   iscoporate: false)));
-      
-        Get.off(() => PinEntryPage(isForgetPin:isForgetPin ,
-              iscreatPin:response[APIRESPONSE.SUCCESS]['has_mpin']?false:true,
-              cnicNumber: cnic,
-              mobileNum: mobile,
-            ));
-      
-   
+
+      Get.off(() => PinEntryPage(
+            isForgetPin: isForgetPin,
+            isCreatePin:
+                response[APIRESPONSE.SUCCESS]['has_mpin'] ? false : true,
+            cnicNumber: cnic,
+            mobileNumber: mobile,
+          ));
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () => Get.back());
     } else {
@@ -338,31 +294,29 @@ class AuthController extends GetxController implements GetxService {
         newPin: newPin);
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
-      log("new pin:${newPin}old pin$pin");
-    
-       AppData.savePinData(
-          pinData: {'mobile': mobileNum, 'cnic': cnic, 'pin':isForgetPin==1||isResetPin==1?newPin: pin});
-     
+      AppData.savePinData(pinData: {
+        'mobile': mobileNum,
+        'cnic': cnic,
+        'pin': isForgetPin == 1 || isResetPin == 1 ? newPin : pin
+      });
+
       showPopDialog(
         response[APIRESPONSE.SUCCESS]['Message'],
         () {
-        
-         
-            if(isResetPin==1){
-              Get.back();
-            } 
-            else{
-verifyPIN(cnic: cnic,mobileNum: mobileNum,pin: AppData.getPinData()?['pin'] );
-             Get.back();
-             Get.back();
-            } 
-      
-        
-          
+          if (isResetPin == 1) {
+            Get.back();
+          } else {
+            verifyPIN(
+                cnic: cnic,
+                mobileNum: mobileNum,
+                pin: AppData.getPinData()?['pin']);
+            Get.back();
+            Get.back();
+          }
         },
-        
       );
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
+      log(response.toString());
       showPopDialog(
         response[APIRESPONSE.ERROR]['Message'],
         () {
@@ -397,14 +351,13 @@ verifyPIN(cnic: cnic,mobileNum: mobileNum,pin: AppData.getPinData()?['pin'] );
                   accessToken: response[APIRESPONSE.SUCCESS]['Data']
                       ['access_token'],
                   iscoporate: false)));
-                  AppData.savePinData(
+      AppData.savePinData(
           pinData: {'mobile': mobileNum, 'cnic': cnic, 'pin': pin});
-      Get.offAllNamed('/home',);
-    } else if (response.containsKey(APIRESPONSE.ERROR)) {
-      showPopDialog(
-        response[APIRESPONSE.ERROR]['Message'],
-        onTap
+      Get.offAllNamed(
+        '/home',
       );
+    } else if (response.containsKey(APIRESPONSE.ERROR)) {
+      showPopDialog(response[APIRESPONSE.ERROR]['Message'], onTap);
     }
   }
 }

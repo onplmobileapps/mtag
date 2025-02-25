@@ -105,7 +105,7 @@ class SubUnsubDialog extends StatelessWidget {
                                         Navigator.of(Get.context!).pop(true);
                                         Get.back();
                                         final controller = Get.find<HomeController>();
-                                        await controller.refreshDashBoardData();
+                                        await controller.pullRefreshDashboardData();
                                         controller.dashboradData.refresh();
                                       },
                                     )

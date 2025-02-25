@@ -28,20 +28,22 @@ sealed class AppData {
     return result;
   }
 
-  static setCount(int? val) {
+ static Future<void> setCount(int? val) async {
+    int count = _preferences.getInt('app_count') ?? 0; 
     if (val != null) {
-      var count = _preferences.getInt('app_count');
-      if (count != null && count < 5) {
-        count = 1 + count;
-      }
-      _preferences.setInt('app_count', count ?? 0);
-      return;
+      count = val;
+    } else {
+      count++;
     }
+    await _preferences.setInt('app_count', count);
   }
 
-  static int? getAppCount() {
-    return _preferences.getInt('app_count');
+  static int getAppCount() {
+   int? c=  _preferences.getInt('app_count');
+    log('$c');
+    return _preferences.getInt('app_count') ?? 0; 
   }
+
 
   static void setFcmToken(String fcmToken) async {
     log(fcmToken);

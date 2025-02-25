@@ -82,7 +82,7 @@ class _CardListSection extends StatelessWidget {
           children: [
             if (paymentHead != null)
               Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
+                padding: const EdgeInsets.only(bottom: 5.0),
                 child: Text(
                   paymentHead!,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -189,13 +189,26 @@ class _ScrollButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => controller.animateTo(
-        controller.offset + offset,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      ),
+      onTap: () {
+        // Check if the controller is attached to a scrollable widget
+        if (controller.hasClients) {
+          // Ensure the scroll position is valid before animating
+          final currentOffset = controller.offset;
+          final maxScrollExtent = controller.position.maxScrollExtent;
+          final minScrollExtent = controller.position.minScrollExtent;
+
+          // Calculate new offset and clamp it within bounds
+          final newOffset = (currentOffset + offset).clamp(minScrollExtent, maxScrollExtent);
+
+          controller.animateTo(
+            newOffset,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        }
+      },
       child: Transform.translate(
-        offset: Offset(0, -8),
+        offset: const Offset(0, -25),
         child: Icon(icon),
       ),
     );
@@ -314,7 +327,7 @@ class _CardTile extends StatelessWidget {
                 token: card.tOKEN ?? '',
                 payId: payId == 1 ? '0' : '1',
               );
-              // Note: cardListData is immutable here; consider a callback to update parent state
+          
             },
             child: const Text('Confirm'),
           ),
@@ -440,7 +453,7 @@ class _JazzCashInputSection extends StatelessWidget {
               ),
               CustomTExtField(
                 hint: 'Enter JazzCash Account Number',
-                maxLength: 11,
+                maxLength: 11,keyboardType: TextInputType.number,
                 validator: validateJazzcashNumber,
                 controller: _jazzCashController,
                 onTapOutside: (_) => FocusScope.of(context).unfocus(),

@@ -127,10 +127,12 @@ class RechargeSelfController extends GetxController {
   }
 
   void _setupInitialValues() {
-    if (arguments.isNotEmpty) {
-      selectedMtagIndex.value = 0;
       isJazzShown.value=false;
-      selectedMtag.value = arguments.first.tokenno ?? '';
+      isCardsVisible.value=false;
+    if (arguments.isNotEmpty) {
+      selectedMtagIndex.value = arguments.length==1?0: -1;
+    
+      selectedMtag.value = arguments.length==1? arguments.first.tokenno ?? '':'';
       amountController.text = arguments.first.amount ?? '';
       
       _handleInitialPayment();

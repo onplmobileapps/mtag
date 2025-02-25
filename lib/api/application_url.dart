@@ -7,8 +7,8 @@ class ApplicationUrl {
     return _instance;
   }
 
-  static const String _BASE_URL = 'http://10.0.1.127:9008';
-  // static const String _BASE_URL = 'https://ocotapp.com';
+  // static const String _BASE_URL = 'http://10.0.1.127:9008';
+  static const String _BASE_URL = 'https://ocotapp.com';
   static const String _IMAGE_ULR = _BASE_URL;
   static String get IMAGE_ULR => _IMAGE_ULR;
   static const String _LOGIN_URL = '$_BASE_URL/loginUser_new';
@@ -95,3 +95,4 @@ class ApplicationUrl {
   static String get VERIFY_PIN_URL => _VERIFY_PIN_URL;
 }
 //generate/topup/consumerNumber
+ 

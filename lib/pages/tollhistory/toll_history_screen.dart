@@ -233,7 +233,7 @@ Widget _buildStickyMessage(BuildContext context) {
            
             Flexible(
               child: Text(
-                'The history section displays only M-Tag transactions, cash transactions are not included.\nہسٹری سیکشن صرف ایم ٹیگ ٹرانزیکشنز دکھاتا ہے۔ کیش لین دین شامل نہیں ہیں۔',
+                'The history section displays only M-Tag transactions, cash transactions are not included.',
                 textAlign: TextAlign.justify,
                 style: Theme.of(context).textTheme.bodySmall,
               ),

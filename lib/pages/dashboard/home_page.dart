@@ -71,7 +71,7 @@ class HomePage extends GetView<HomeController> {
                   ? RefreshIndicator.adaptive(
                       displacement: 60,
                       onRefresh: () async {
-                        controller.pullrefreshDashBoardData();
+                        controller.pullRefreshDashboardData();
                       },
                       child: LayoutBuilder(
                         builder: (context, constraints) {
@@ -180,7 +180,7 @@ class HomePage extends GetView<HomeController> {
                                                           ),
                                                         );
                                                       }).toList(),
-                                                      options: CarouselOptions(
+                                                      options: CarouselOptions(autoPlayInterval: Duration(seconds: 10),
                                                         height:
                                                             screenHeight * 0.38,
                                                         autoPlay: true,
@@ -426,7 +426,7 @@ class HomePage extends GetView<HomeController> {
 
                 onTap: (value) {
                   (value == 0 && _otherConstants.isRefresh.value)
-                      ? controller.refreshDashBoardData()
+                      ? controller.pullRefreshDashboardData()
                       : null;
                   controller.setCurrentIndex(value);
                 },
