@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 class DashBoardModel {
   List<ActiveMtags>? activeMtags;
   String? code;
@@ -91,6 +93,7 @@ class ActiveMtags {
   String? vehicletype;
   String? amount;
   String? payId;
+  RxBool ?isObscured;
 
   ActiveMtags({
     this.balance,
@@ -104,7 +107,7 @@ class ActiveMtags {
     this.tokenno,
     this.vehicletype,
     this.amount,
-    this.payId,
+    this.payId, this.isObscured
   });
 
   ActiveMtags.fromJson(Map<String, dynamic> json) {

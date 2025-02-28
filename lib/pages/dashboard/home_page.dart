@@ -106,7 +106,7 @@ class HomePage extends GetView<HomeController> {
                                                           .imgs
                                                           ?.map((e) {
                                                         final imageUrl =
-                                                            '${ApplicationUrl.IMAGE_ULR}${e.name}?v=${DateTime.now().millisecondsSinceEpoch}';
+                                                            '${ApplicationUrl.IMAGE_ULR}${e.name}';
 
                                                         return Padding(
                                                           padding:
@@ -313,6 +313,7 @@ class HomePage extends GetView<HomeController> {
                                                         userName: e.ownername,
                                                         regId: e.registration,
                                                         ball: e.balance,
+                                                       
                                                       ),
                                                     );
                                                   },

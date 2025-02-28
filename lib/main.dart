@@ -1,10 +1,13 @@
+
 import 'dart:io';
+
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:upgrader/upgrader.dart';
 import '/pages/login/create_pin_page.dart';
 import '/../fcm_handeler.dart';
 import '../../base/app_data.dart';
@@ -63,38 +66,58 @@ class _MTagAppState extends State<MTagApp> {
   void dispose() {
     super.dispose();
   }
-
-  @override
+@override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-        smartManagement: SmartManagement.keepFactory,
-        defaultTransition: Transition.fadeIn,
-        transitionDuration: const Duration(milliseconds: 30),
-        popGesture: false,
-        useInheritedMediaQuery: true,
-        builder: (context, child) {
-          final MediaQueryData data = MediaQuery.of(context);
+    // Base GetMaterialApp widget
+    final app = GetMaterialApp(
+      smartManagement: SmartManagement.keepFactory,
+      defaultTransition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 30),
+      popGesture: false,
+      useInheritedMediaQuery: true,
+      builder: (context, child) {
+        final MediaQueryData data = MediaQuery.of(context);
+        return MediaQuery(
+          data: data.copyWith(
+            textScaler: const TextScaler.linear(1),
+          ),
+          child: child!,
+        );
+      },
+      initialBinding: Binding(),
+      getPages: getPages,
+      theme: (AppData.theme == null || AppData.theme == false)
+          ? appTheme
+          : AppData.theme == true
+              ? darkTheme
+              : appTheme,
+      darkTheme: darkTheme,
+      themeMode: AppData.theme == false || AppData.theme == null
+          ? ThemeMode.light
+          : ThemeMode.system,
+      debugShowCheckedModeBanner: false,
+      home: AppData.getPinData() != null ? PinEntryPage() : AuthPage(),
+    );
 
-          return MediaQuery(
-            data: data.copyWith(
-              textScaler: const TextScaler.linear(1),
-            ),
-            child: child!,
-          );
-        },
-        initialBinding: Binding(),
-        getPages: getPages,
-        theme: (AppData.theme == null || AppData.theme == false)
-            ? appTheme
-            : AppData.theme == true
-                ? darkTheme
-                : appTheme,
-        darkTheme: darkTheme,
-        themeMode: AppData.theme == false || AppData.theme == null ? ThemeMode.light : ThemeMode.system,
-        debugShowCheckedModeBanner: false,
-        home: AppData.getPinData()!=null?PinEntryPage(): AuthPage());
-
-      
+    // Apply UpgradeAlert only for iOS
+    if (Platform.isIOS) {
+      return MaterialApp(debugShowCheckedModeBanner: false,
+        home: UpgradeAlert(
+         
+        upgrader: Upgrader(upgraderOS: UpgraderOS(),
+          languageCode: "en",countryCode: "US",debugLogging: true,willDisplayUpgrade: ({required display, installedVersion, versionInfo}) => display,),
+          
+          dialogStyle: UpgradeDialogStyle.cupertino,cupertinoButtonTextStyle: TextStyle(fontFamily: 'Poppins'),
+          barrierDismissible: false,
+          showIgnore: false,
+          showLater: false,
+          showReleaseNotes: true,
+          child: app,
+        ),
+      );
+    } else {
+      return app; // Android and other platforms skip UpgradeAlert
+    }
   }
 }
 

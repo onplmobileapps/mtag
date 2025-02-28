@@ -1,80 +1,92 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:mtag_flutterapp/pages/recharge/model/owner_summary_model.dart';
-import 'package:mtag_flutterapp/widgets/elevated_button.dart';
+import '../../pages/recharge/model/owner_summary_model.dart';
+import '../../widgets/elevated_button.dart';
 
-void showRechargeSummaryDialog(
-    {required BuildContext context,
-    required void Function()? onPressed,
-    OwnerRechargeModel? rechargeSummaryModel,
-    required bool isFleet,
-    required String payId}) {
+
+
+// Replace with your actual paths
+
+
+void showRechargeSummaryDialog({
+  required BuildContext context,
+  required void Function()? onPressed,
+  OwnerRechargeModel? rechargeSummaryModel,
+  required bool isFleet,
+  required String payId,
+}) {
   showDialog(
     barrierDismissible: false,
     useRootNavigator: false,
     context: context,
     builder: (BuildContext context) {
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
-        ),
-        elevation: 0,
-        backgroundColor: Theme.of(context).dialogBackgroundColor,
-        surfaceTintColor: Theme.of(context).dialogBackgroundColor,
-        child: Center(
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      icon: SvgPicture.asset(
-                        'assets/close_round.svg',
-                        width: 20,
-                        height: 20,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
+      // Responsive sizing
+      final screenSize = MediaQuery.of(context).size;
+      final dialogWidth = screenSize.width * 0.85;
+      final dialogHeight = screenSize.height * 0.6;
+
+      return Dialog.fullscreen(
+        // No need for shape or elevation; handled by adaptive
+        child: Container(margin: EdgeInsets.all(16),
+          width: dialogWidth,
+          height: dialogHeight,
+          padding: const EdgeInsets.all(8.0), // Minimal padding, adaptive adds more if needed
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Close button
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: SvgPicture.asset(
+                      'assets/close_round.svg',
+                      width: 20,
+                      height: 20,
                     ),
-                  ],
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Container(
-                      padding: const EdgeInsets.all(10.0),
-                      child: RechargeSummary(
-                        isFleet: isFleet,
-                        payId: payId,
-                        mtagId: rechargeSummaryModel?.data?.first.mTAGID ?? '',
-                        vehicle: rechargeSummaryModel?.data?.first.vEHNO ?? '',
-                        ballance: rechargeSummaryModel?.data?.first.mTagBalance ?? '',
-                        bankCharges: rechargeSummaryModel?.data?.first.bankCharges ?? '',
-                        total: double.parse('${rechargeSummaryModel?.data?.first.totalRechargeAmount}').toString(),
-                        ownerName: rechargeSummaryModel?.data?.first.oWNERNAME ?? '',
-                        status: rechargeSummaryModel?.data?.first.iSACTIVE ?? '',
-                      ),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
+              // Scrollable content
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Container(
+                    padding: const EdgeInsets.all(10.0),
+                    child: RechargeSummary(
+                      isFleet: isFleet,
+                      payId: payId,
+                      mtagId: rechargeSummaryModel?.data?.first.mTAGID ?? '',
+                      vehicle: rechargeSummaryModel?.data?.first.vEHNO ?? '',
+                      ballance:
+                          rechargeSummaryModel?.data?.first.mTagBalance ?? '',
+                      bankCharges:
+                          rechargeSummaryModel?.data?.first.bankCharges ?? '',
+                      total: double.parse(
+                              '${rechargeSummaryModel?.data?.first.totalRechargeAmount}')
+                          .toString(),
+                      ownerName:
+                          rechargeSummaryModel?.data?.first.oWNERNAME ?? '',
+                      status:
+                          rechargeSummaryModel?.data?.first.iSACTIVE ?? '',
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Center(
-                    child: ElevatedButton1(
-                      onclick: onPressed,
-                      text: "Proceed",
-                    ),
+              ),
+              // Proceed button
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Center(
+                  child: ElevatedButton1(
+                    onclick: onPressed,
+                    text: "Proceed",
+                    // Full-width adaptive
+                    
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       );
@@ -115,16 +127,17 @@ class RechargeSummary extends StatelessWidget {
         children: [
           Text(
             'Recharge Summary',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.redAccent),
+            style: Theme.of(context)
+                .textTheme
+                .headlineSmall
+                ?.copyWith(color: Colors.redAccent),
           ),
           const Divider(color: Colors.grey, thickness: 1),
           const SizedBox(height: 16),
           Text(
             'Vehicle Details',
-            style: Theme.of(context)
-                .textTheme
-                .displayLarge
-                ?.copyWith(color: Colors.redAccent, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                color: Colors.redAccent, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 15),
           if (isFleet == false) detailRow(context, 'Vehicle:', vehicle),
@@ -144,10 +157,8 @@ class RechargeSummary extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             'Transaction Summary',
-            style: Theme.of(context)
-                .textTheme
-                .displayLarge
-                ?.copyWith(color: Colors.redAccent, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                color: Colors.redAccent, fontWeight: FontWeight.bold),
           ),
           const Divider(color: Colors.grey, thickness: 0.5),
           detailRow(
@@ -156,7 +167,8 @@ class RechargeSummary extends StatelessWidget {
             payId == '0' ? 'Credit/Debit Card' : 'JazzCash Wallet',
           ),
           const Divider(color: Colors.grey, thickness: 0.5),
-          detailRow(context, 'M-Tag Balance:', ballance, valueColor: Colors.green),
+          detailRow(context, 'M-Tag Balance:', ballance,
+              valueColor: Colors.green),
           const Divider(color: Colors.grey, thickness: 0.5),
           detailRow(context, 'Bank Charges:', 'PKR $bankCharges'),
           const SizedBox(height: 20),
@@ -182,7 +194,8 @@ class RechargeSummary extends StatelessWidget {
     );
   }
 
-  Widget detailRow(BuildContext context, String title, String value, {Color? valueColor}) {
+  Widget detailRow(BuildContext context, String title, String value,
+      {Color? valueColor}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -192,10 +205,9 @@ class RechargeSummary extends StatelessWidget {
         ),
         Text(
           value,
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium
-              ?.copyWith(color: valueColor ?? Theme.of(context).textTheme.bodyMedium?.color),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color:
+                  valueColor ?? Theme.of(context).textTheme.bodyMedium?.color),
         ),
       ],
     );
