@@ -1,0 +1,2 @@
+/home/muhammadhaseebjavaid/Desktop/mtag_app/android/app/.cxx/Debug/5g2cb336/x86/CMakeFiles/edit_cache.dir
+/home/muhammadhaseebjavaid/Desktop/mtag_app/android/app/.cxx/Debug/5g2cb336/x86/CMakeFiles/rebuild_cache.dir

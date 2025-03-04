@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../pages/tolcalator/build_bullet_widget.dart';
+import '../build_bullet_widget.dart';
 
 void showBreakdownDialog({
   required BuildContext context,
@@ -111,19 +111,19 @@ void showBreakdownDialog({
                     ),
                     const SizedBox(height: 8),
                     // Payment Instructions as Bullet Points
-                    buildBulletPoint(
-                        "Copy the above PSID.", Theme.of(context).primaryColor),
+                    buildBulletPoint(context,
+                        "Copy the above PSID.", ),
                     const SizedBox(height: 5),
-                    buildBulletPoint(
+                    buildBulletPoint(context,
                         "Open your banking app, go to 1Bill and select Invoice.",
-                        Theme.of(context).primaryColor),
+                        ),
                     const SizedBox(height: 5),
-                    buildBulletPoint("Paste the PSID and confirm.",
-                        Theme.of(context).primaryColor),
+                    buildBulletPoint(context,"Paste the PSID and confirm.",
+                        ),
                     const SizedBox(height: 5),
-                    buildBulletPoint(
+                    buildBulletPoint(context,
                         "Your balance will be updated within a few minutes.",
-                        Theme.of(context).primaryColor),
+                        ),
                     const SizedBox(height: 5),
                     // Timer
                     ValueListenableBuilder(
@@ -263,19 +263,19 @@ void showTopUpDialog({
                     ),
                     const SizedBox(height: 8),
                     // Payment Instructions as Bullet Points
-                    buildBulletPoint(
-                        "Copy the above PSID.", Theme.of(context).primaryColor),
+                    buildBulletPoint(context,
+                        "Copy the above PSID.", ),
                     const SizedBox(height: 5),
-                    buildBulletPoint(
+                    buildBulletPoint(context,
                         "Open your banking app, go to 1Bill and select Top Up.",
-                        Theme.of(context).primaryColor),
+                        ),
                     const SizedBox(height: 5),
-                    buildBulletPoint("Paste the PSID and confirm.",
-                        Theme.of(context).primaryColor),
+                    buildBulletPoint(context,"Paste the PSID and confirm.",
+                        ),
                     const SizedBox(height: 5),
-                    buildBulletPoint(
+                    buildBulletPoint(context,
                         "Your balance will be updated within a few minutes.",
-                        Theme.of(context).primaryColor),
+                        ),
                     const SizedBox(height: 5),
                     // Timer
                     ValueListenableBuilder(

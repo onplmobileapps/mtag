@@ -3,18 +3,18 @@
 
 import 'package:flutter/material.dart';
 
-Widget buildBulletPoint(String text, Color textColor) {
+Widget buildBulletPoint(BuildContext context, String text,) {
   return Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      const Text(
+     Text(
         "• ",
-        style: TextStyle(fontSize: 14, color: Colors.redAccent),
+        style: Theme.of(context).textTheme.displayMedium?.copyWith(color: Colors.redAccent),
       ),
       Expanded(
         child: Text(
           text,
-          style: TextStyle(fontSize: 12, color: textColor),
+          style: Theme.of(context).textTheme.displayMedium,
         ),
       ),
     ],
