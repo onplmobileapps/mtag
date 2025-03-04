@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../pages/tolcalator/build_bullet_widget.dart';
+
 void showBreakdownDialog({
   required BuildContext context,
   required double amount,
@@ -99,16 +101,56 @@ void showBreakdownDialog({
                     SizedBox(
                       height: 10,
                     ),
+                    Text(
+                      "Recharge Instructions",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.redAccent,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    // Payment Instructions as Bullet Points
+                    buildBulletPoint(
+                        "Copy the above PSID.", Theme.of(context).primaryColor),
+                    const SizedBox(height: 5),
+                    buildBulletPoint(
+                        "Open your banking app, go to 1Bill and select Invoice.",
+                        Theme.of(context).primaryColor),
+                    const SizedBox(height: 5),
+                    buildBulletPoint("Paste the PSID and confirm.",
+                        Theme.of(context).primaryColor),
+                    const SizedBox(height: 5),
+                    buildBulletPoint(
+                        "Your balance will be updated within a few minutes.",
+                        Theme.of(context).primaryColor),
+                    const SizedBox(height: 5),
+                    // Timer
                     ValueListenableBuilder(
                       valueListenable: inVoicetimerNotifier!,
-                      builder: (context, remainingTime, child) => Text(
-                        '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(fontSize: 15, color: Colors.red),
+                      builder: (context, remainingTime, child) => Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'PSID will expire in: ',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(fontSize: 14, color: Colors.red),
+                          ),
+                          Text(
+                            '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                    fontSize: 16,
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -211,22 +253,62 @@ void showTopUpDialog({
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: 10,
+                      Text(
+                      "Recharge Instructions",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.redAccent,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
+                    const SizedBox(height: 8),
+                    // Payment Instructions as Bullet Points
+                    buildBulletPoint(
+                        "Copy the above PSID.", Theme.of(context).primaryColor),
+                    const SizedBox(height: 5),
+                    buildBulletPoint(
+                        "Open your banking app, go to 1Bill and select Top Up.",
+                        Theme.of(context).primaryColor),
+                    const SizedBox(height: 5),
+                    buildBulletPoint("Paste the PSID and confirm.",
+                        Theme.of(context).primaryColor),
+                    const SizedBox(height: 5),
+                    buildBulletPoint(
+                        "Your balance will be updated within a few minutes.",
+                        Theme.of(context).primaryColor),
+                    const SizedBox(height: 5),
+                    // Timer
                     ValueListenableBuilder(
                       valueListenable: inVoicetimerNotifier!,
-                      builder: (context, remainingTime, child) => Text(
-                        '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(fontSize: 15, color: Colors.red),
+                      builder: (context, remainingTime, child) => Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'PSID will expire in: ',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(fontSize: 14, color: Colors.red),
+                          ),
+                          Text(
+                            '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                    fontSize: 16,
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
+                   
+            
+
               // Close Button
               Positioned(
                 top: 8,

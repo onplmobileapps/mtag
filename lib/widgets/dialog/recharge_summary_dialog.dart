@@ -13,7 +13,7 @@ void showRechargeSummaryDialog({
   required BuildContext context,
   required void Function()? onPressed,
   OwnerRechargeModel? rechargeSummaryModel,
-  required bool isFleet,
+ 
   required String payId,
 }) {
   showDialog(
@@ -50,12 +50,12 @@ void showRechargeSummaryDialog({
                 ],
               ),
               // Scrollable content
-              Expanded(
+              Expanded(flex: 1,
                 child: SingleChildScrollView(
                   child: Container(
                     padding: const EdgeInsets.all(10.0),
                     child: RechargeSummary(
-                      isFleet: isFleet,
+                    
                       payId: payId,
                       mtagId: rechargeSummaryModel?.data?.first.mTAGID ?? '',
                       vehicle: rechargeSummaryModel?.data?.first.vEHNO ?? '',
@@ -104,7 +104,7 @@ class RechargeSummary extends StatelessWidget {
   String ballance;
   String bankCharges;
   String total;
-  bool isFleet;
+ 
 
   RechargeSummary(
       {super.key,
@@ -116,7 +116,7 @@ class RechargeSummary extends StatelessWidget {
       required this.payId,
       required this.status,
       required this.total,
-      this.isFleet = false});
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -140,9 +140,9 @@ class RechargeSummary extends StatelessWidget {
                 color: Colors.redAccent, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 15),
-          if (isFleet == false) detailRow(context, 'Vehicle:', vehicle),
+          detailRow(context, 'Vehicle:', vehicle),
           const Divider(color: Colors.grey, thickness: 0.5),
-          detailRow(context, isFleet ? 'Company ID: ' : 'M-TAG ID:', mtagId),
+          detailRow(context,  'M-TAG ID:', mtagId),
           const Divider(color: Colors.grey, thickness: 0.5),
           detailRow(context, 'Owner Name:', ownerName),
           const Divider(color: Colors.grey, thickness: 0.5),

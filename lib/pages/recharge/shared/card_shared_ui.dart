@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -453,8 +454,8 @@ class _JazzCashInputSection extends StatelessWidget {
               ),
               CustomTExtField(
                 hint: 'Enter JazzCash Account Number',
-                maxLength: 11,keyboardType: TextInputType.number,
-                validator: validateJazzcashNumber,
+                maxLength: 11,keyboardType: TextInputType.numberWithOptions(signed: true),
+                validator: validateJazzcashNumber,inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 controller: _jazzCashController,
                 onTapOutside: (_) => FocusScope.of(context).unfocus(),
                 onEditingComplete: () async {

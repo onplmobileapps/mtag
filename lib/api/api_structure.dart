@@ -163,23 +163,34 @@ class APISTRUCTURE {
     }
   }
 
-  void _showDialog(String message) {
-    showCupertinoModalPopup(
-      barrierDismissible: false,
-      useRootNavigator: false,
-      context: Get.context!,
-      builder: (context) => PopScope(
-        canPop: false,
-        child: CupertinoAlertDialog(
-          actions: [
-            CupertinoDialogAction(
+ void _showDialog(String message) {
+  showCupertinoModalPopup(
+    barrierDismissible: false,
+    useRootNavigator: false,
+    context: Get.context!,
+    builder: (context) => PopScope(
+      canPop: false,
+      child: CupertinoAlertDialog(
+        actions: [
+          GestureDetector(onTap: () => Get.close(1) ,
+            child: CupertinoDialogAction(
               onPressed: () => Get.close(1),
-              child: const Text('Ok'),
-            )
-          ],
-          content: Text(message),
-        ),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0, // Increase horizontal tap area
+                  vertical: 10.0,   // Increase vertical tap area
+                ),
+                child: const Text(
+                  'Ok',
+                  style: TextStyle(fontSize: 17), // Optional: Adjust font size if needed
+                ),
+              ),
+            ),
+          ),
+        ],
+        content: Center(child: Text(message)),
       ),
-    );
-  }
+    ),
+  );
+}
 }

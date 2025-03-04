@@ -1,31 +1,27 @@
+import 'package:flutter/cupertino.dart';
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 void showPopDialog(String message, Function()? onPressed) {
-  showDialog(
+  showCupertinoModalPopup(
     context: Get.context!,
     barrierDismissible: false,
-    useRootNavigator: true,
-    builder: (context) => PopScope(
-      canPop: false,
-      child: AlertDialog.adaptive(
+    builder: (context) {
+      return CupertinoAlertDialog(
         content: Text(message),
         actions: [
-          Center(
-            child: TextButton(
-              onPressed: () {
-                if (onPressed != null) {
-                  onPressed();
-                } else {
-                  Get.back();
-                }
-              },
-              child: const Text('OK'),
-            ),
+          CupertinoDialogAction(
+            onPressed: () {
+              if (onPressed != null) {
+                onPressed();
+              } else {
+                Get.back();
+              }
+            },
+            child: const Text('OK'),
           ),
         ],
-      ),
-    ),
+      );
+    },
   );
 }

@@ -69,7 +69,7 @@ class _MTagAppState extends State<MTagApp> {
 @override
   Widget build(BuildContext context) {
     // Base GetMaterialApp widget
-    final app = GetMaterialApp(
+    return GetMaterialApp(
       smartManagement: SmartManagement.keepFactory,
       defaultTransition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 30),
@@ -96,28 +96,31 @@ class _MTagAppState extends State<MTagApp> {
           ? ThemeMode.light
           : ThemeMode.system,
       debugShowCheckedModeBanner: false,
-      home: AppData.getPinData() != null ? PinEntryPage() : AuthPage(),
-    );
+      home:Platform.isIOS // Check if the platform is iOS
+                ? UpgradeAlert(
+                    upgrader: Upgrader(
+                      upgraderOS: UpgraderOS(),
+                      languageCode: "en",
+                      countryCode: "US",
+                      debugLogging: true,
+                      willDisplayUpgrade: ({required display, installedVersion, versionInfo}) => display,
+                    ),
+                    dialogStyle: UpgradeDialogStyle.cupertino,
+                    cupertinoButtonTextStyle: const TextStyle(fontFamily: 'Poppins'),
+                    barrierDismissible: false,
+                    showIgnore: false,
+                    showLater: false,
+                    showReleaseNotes: true,
+                    child:
+                  
+                
+      
+      
+       AppData.getPinData() != null ? PinEntryPage() : AuthPage(),
+    ):AppData.getPinData() != null ? const PinEntryPage() :  AuthPage());
 
     // Apply UpgradeAlert only for iOS
-    if (Platform.isIOS) {
-      return MaterialApp(debugShowCheckedModeBanner: false,
-        home: UpgradeAlert(
-         
-        upgrader: Upgrader(upgraderOS: UpgraderOS(),
-          languageCode: "en",countryCode: "US",debugLogging: true,willDisplayUpgrade: ({required display, installedVersion, versionInfo}) => display,),
-          
-          dialogStyle: UpgradeDialogStyle.cupertino,cupertinoButtonTextStyle: TextStyle(fontFamily: 'Poppins'),
-          barrierDismissible: false,
-          showIgnore: false,
-          showLater: false,
-          showReleaseNotes: true,
-          child: app,
-        ),
-      );
-    } else {
-      return app; // Android and other platforms skip UpgradeAlert
-    }
+    
   }
 }
 

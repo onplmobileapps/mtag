@@ -155,7 +155,7 @@ isJazzShown.value=false;
       rechargeSummaryModel.value =
           OwnerRechargeModel.fromJson(response[APIRESPONSE.SUCCESS]);
       showRechargeSummaryDialog(
-        isFleet: isFleet,
+      
         payId: payId,
         rechargeSummaryModel: rechargeSummaryModel.value,
         context: Get.context!,
@@ -208,6 +208,7 @@ isJazzShown.value=false;
 
     // Check if the response is successful and contains the expected data
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
+      
       return response[APIRESPONSE.SUCCESS]['Data']; // Extract the Data field
     }
 
