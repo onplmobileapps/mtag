@@ -212,6 +212,7 @@ class FirebaseRemoteConfigService {
       importance: Importance.max,
     );
 
+
     final androidPlugin = _notificationsPlugin
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
