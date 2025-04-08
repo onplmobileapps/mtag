@@ -34,36 +34,36 @@ class AuthPage extends StatelessWidget {
           focusNode: _cnicFocusNode,
           toolbarButtons: [
             (node) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextButton(
-                onPressed: () => node.unfocus(),
-                child: Text(
-                  'Done',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold,
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: TextButton(
+                    onPressed: () => node.unfocus(),
+                    child: Text(
+                      'Done',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
           ],
         ),
         KeyboardActionsItem(
           focusNode: _phoneFocusNode,
           toolbarButtons: [
             (node) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextButton(
-                onPressed: () => node.unfocus(),
-                child: Text(
-                  'Done',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold,
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: TextButton(
+                    onPressed: () => node.unfocus(),
+                    child: Text(
+                      'Done',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
           ],
         ),
       ],
@@ -87,7 +87,8 @@ class AuthPage extends StatelessWidget {
               horizontal: screenWidth * 0.09,
             ),
             child: KeyboardActions(
-              config: _buildKeyboardConfig(context), // Wrap entire column with KeyboardActions
+              config: _buildKeyboardConfig(
+                  context), // Wrap entire column with KeyboardActions
               child: ValueListenableBuilder(
                 valueListenable: _authNotifier,
                 builder: (context, value, child) => Column(
@@ -190,7 +191,8 @@ class AuthPage extends StatelessWidget {
                           SizedBox(height: screenHeight * 0.02),
                           TextFormField(
                             focusNode: _cnicFocusNode, // Assign focus node
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             keyboardType: TextInputType.number,
                             inputFormatters: [CnicMaskTextInputFormatter()],
                             style: const TextStyle(height: 1),
@@ -208,9 +210,9 @@ class AuthPage extends StatelessWidget {
                           SizedBox(height: screenHeight * 0.02),
                           TextFormField(
                             focusNode: _phoneFocusNode, // Assign focus node
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            keyboardType:
-                               TextInputType.number,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            keyboardType: TextInputType.number,
                             // textInputAction: TextInputAction.done,
                             inputFormatters: numberInputFormatters,
                             maxLength: 11,
@@ -229,19 +231,23 @@ class AuthPage extends StatelessWidget {
                               hintText: 'Mobile Number',
                               counterText: "",
                             ),
-                            onEditingComplete: () => FocusScope.of(context).unfocus(),
+                            onEditingComplete: () =>
+                                FocusScope.of(context).unfocus(),
                           ),
                           SizedBox(height: screenHeight * 0.02),
                           Align(
                             alignment: Alignment.topRight,
                             child: GestureDetector(
                               onTap: () async {
-                                if (_formKey.currentState?.validate() ?? false) {
-                                  var release = await DeviceInfo.getDeviceInfo();
+                                if (_formKey.currentState?.validate() ??
+                                    false) {
+                                  var release =
+                                      await DeviceInfo.getDeviceInfo();
                                   if (value == 0) {
                                     Get.find<AuthController>().login(
                                       cnic: _cnicController.text.trim(),
-                                      mobileNumber: _phoneController.text.trim(),
+                                      mobileNumber:
+                                          _phoneController.text.trim(),
                                       metaData:
                                           '"${Platform.isAndroid ? "Android" : 'iOS'} ""__"${release['release']} "__"${release['manufacturer']}""${release['model']} "__"android_id"__"fcmToken"__"3.1.4"',
                                     );

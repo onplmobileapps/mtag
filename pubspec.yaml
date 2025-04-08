@@ -45,6 +45,9 @@ dependencies:
   shimmer: ^3.0.0
   upgrader: ^11.3.1
   keyboard_actions: ^4.2.0
+  sqflite: ^2.4.2
+  path: ^1.9.1
+  csv: ^6.0.0
   
 
 dev_dependencies:
@@ -57,6 +60,7 @@ flutter:
   assets:
     - assets/
     - assets/lottie/
+    - assets/data/
     - shorebird.yaml
 
   #   - images/a_dot_ham.jpeg

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/pages/tolcalator/controller/toll_calculator_static_controller.dart';
 import '../../api/recharge_repo.dart';
 import '../../controller/home_controller.dart';
 import '../../pages/activity/controller/activity_controller.dart';
@@ -32,7 +33,8 @@ class Binding extends Bindings {
     Get.lazyPut(() => NotificationController(userRepo: UserRepo()));
     Get.lazyPut(() => UpdateEmailController(userRepo: UserRepo()));
     Get.lazyPut(() => RechargeController(userRepo: UserRepo()));
-    Get.lazyPut(() => TollCalculatorController(userRepo: UserRepo()));
+    // Get.lazyPut(() => TollCalculatorController(userRepo: UserRepo()));
+    Get.lazyPut(() => MotorwayStaticController(userRepo: UserRepo()));
     Get.lazyPut(() => TollController(userRepo: UserRepo()));
     Get.lazyPut(() => UpdateSmsStatusController(userRepo: UserRepo()));
     Get.lazyPut(() => ActivityContorller(UserRepo()));

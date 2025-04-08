@@ -1,6 +1,6 @@
 class StationsModel {
   String? code;
-  List<Data>? data;
+  List<StData>? data;
   String? message;
 
   StationsModel({this.code, this.data, this.message});
@@ -8,9 +8,9 @@ class StationsModel {
   StationsModel.fromJson(Map<String, dynamic> json) {
     code = json['Code'];
     if (json['Data'] != null) {
-      data = <Data>[];
+      data = <StData>[];
       json['Data'].forEach((v) {
-        data?.add(Data.fromJson(v));
+        data?.add(StData.fromJson(v));
       });
     }
     message = json['Message'];
@@ -27,15 +27,15 @@ class StationsModel {
   }
 }
 
-class Data {
+class StData {
   String? stid;
   String? stname;
 
-  Data({this.stid, this.stname});
+  StData({this.stid, this.stname});
 
-  Data.fromJson(Map<String, dynamic> json) {
-    stid = json['stid'];
-    stname = json['stname'];
+  StData.fromJson(Map<String, dynamic> json) {
+    stid = json['stid']?.toString();
+    stname = json['stname']?.toString();
   }
 
   Map<String, dynamic> toJson() {

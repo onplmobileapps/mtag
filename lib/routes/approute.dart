@@ -2,6 +2,7 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:mtag_flutterapp/pages/login/auth_page.dart';
 import 'package:mtag_flutterapp/pages/login/create_pin_page.dart';
 import 'package:mtag_flutterapp/pages/notification/notification_withintent.dart';
+import 'package:mtag_flutterapp/pages/tolcalator/toll_calculator_local.dart';
 import '../../constants/other_consts.dart';
 import '../../maintenance/maintenance_screen.dart';
 import '../../pages/dashboard/home_page.dart';
@@ -29,7 +30,6 @@ List<GetPage<dynamic>>? getPages = [
     name: '/',
     page: () => HomePage(),
   ),
- 
   GetPage(
     name: '/notificationsExpandScreen',
     page: () => NotificationsExpandScreen(),
@@ -40,7 +40,9 @@ List<GetPage<dynamic>>? getPages = [
   ),
   GetPage(
     name: '/alflahwebview',
-    page: () => OtherConsts().emergencySwitchProd.value == '1' ? MaintenanceScreen(): const AlfaWebView2(),
+    page: () => OtherConsts().emergencySwitchProd.value == '1'
+        ? MaintenanceScreen()
+        : const AlfaWebView2(),
   ),
   GetPage(
     name: '/notifications',
@@ -60,7 +62,8 @@ List<GetPage<dynamic>>? getPages = [
   ),
   GetPage(
     name: '/tollCalculator',
-    page: () => const TolCalCulatorScreen(),
+    // page: () => const TolCalCulatorScreen(),
+    page: () => const TollCalculatorLocal(),
   ),
   GetPage(
     name: '/maintenancePage',
@@ -90,8 +93,6 @@ List<GetPage<dynamic>>? getPages = [
     name: '/settings',
     page: () => SettingScreen(),
   ),
- 
- 
   GetPage(
     name: '/auth',
     page: () => AuthPage(),
@@ -100,8 +101,7 @@ List<GetPage<dynamic>>? getPages = [
     name: '/pinPage',
     page: () => PinEntryPage(),
   ),
-  GetPage(name: '/forgetPin', page: ()=>ForgetPinPage()),
-
+  GetPage(name: '/forgetPin', page: () => ForgetPinPage()),
   GetPage(
     name: '/mtagDetails',
     page: () => MatagDetailScreen(),
