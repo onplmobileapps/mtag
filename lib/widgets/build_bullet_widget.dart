@@ -14,7 +14,7 @@ Widget buildBulletPoint(BuildContext context, String text,) {
       Expanded(
         child: Text(
           text,
-          style: Theme.of(context).textTheme.displayMedium,
+          style: Theme.of(context).textTheme.displaySmall,
         ),
       ),
     ],

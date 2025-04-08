@@ -55,7 +55,7 @@ class _MTagAppState extends State<MTagApp> {
       DeviceInfo.getDeviceInfo();
       FirebaseRemoteConfigService().fetchRemoteConfig();
       _messagingService.init(context);
-      await FirebaseRemoteConfigService().initializeNotifications();
+      // await FirebaseRemoteConfigService().initializeNotifications();
 
       AppData.setCount(1);
 

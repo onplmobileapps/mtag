@@ -1,12 +1,9 @@
 // Import Platform to check OS
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-
-
 import '../../fcm_handeler.dart';
 import '../../widgets/appbar/app_bar_widget.dart';
 import '../../api/user_repo.dart';
@@ -14,7 +11,7 @@ import '../../base/app_data.dart';
 import '../../constants/call_helper.dart';
 import '../../controller/home_controller.dart';
 import '../../widgets/dashboard_widget.dart';
-import '../../api/application_url.dart';
+
 import '../../constants/other_consts.dart';
 import '../../widgets/dialog/chat_support_dialog.dart';
 import '../../widgets/shimmer_dashboard.dart';
@@ -88,64 +85,64 @@ class HomePage extends GetView<HomeController> {
                         : CustomScrollView(
                             slivers: [
                               // Responsive Carousel
-                              controller.dashboradData.value.picturesURL != null &&
-                                      controller.dashboradData.value.picturesURL!.imgs!.isNotEmpty
-                                  ? SliverToBoxAdapter(
+                               SliverToBoxAdapter(
                                       child: SizedBox(
                                         height: screenHeight * 0.38,
                                         child: Stack(
                                           children: [
                                             CarouselSlider(
-                                              carouselController: _carouselController,
-                                              items: controller.dashboradData.value.picturesURL!.imgs?.map((e) {
-                                                final imageUrl = '${ApplicationUrl.IMAGE_ULR}${e.name}';
-                                                return Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: ClipRRect(
-                                                    borderRadius: BorderRadius.circular(8),
-                                                    child: CachedNetworkImage(
-                                                      width: double.infinity,
-                                                      imageUrl: imageUrl,
-                                                      fit: BoxFit.cover,
-                                                      errorWidget: (context, error, stackTrace) {
-                                                        return Container(
-                                                          color: Colors.grey[300],
-                                                          child: Center(
-                                                            child: Image.asset(
-                                                              'assets/placeholder.png',
-                                                              width: screenWidth * 0.3,
-                                                              height: screenHeight * 0.15,
-                                                              fit: BoxFit.contain,
-                                                            ),
-                                                          ),
-                                                        );
-                                                      },
-                                                      placeholder: (context, url) {
-                                                        return Container(
-                                                          color: Colors.grey[200],
-                                                          child: Image.asset(
-                                                            'assets/placeholder.png',
-                                                            width: double.infinity,
-                                                            height: screenHeight * 0.15,
-                                                            fit: BoxFit.contain,
-                                                          ),
-                                                        );
-                                                      },
-                                                      memCacheHeight: 600,
-                                                      memCacheWidth: 600,
-                                                      maxHeightDiskCache: 600,
-                                                      maxWidthDiskCache: 600,
-                                                    ),
-                                                  ),
-                                                );
-                                              }).toList(),
-                                              options: CarouselOptions(
-                                                autoPlayInterval: const Duration(seconds: 10),
-                                                height: screenHeight * 0.38,
-                                                autoPlay: true,
-                                                viewportFraction: 1.0,
-                                              ),
-                                            ),
+      carouselController: _carouselController,
+      items: OtherConsts.sliderImages.map((e) {
+        final imageUrl = 'assets/slider/$e';
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset(
+              imageUrl,
+              width: screenWidth,
+              fit: BoxFit.fill,
+            
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: Colors.grey[300],
+                  child: Center(
+                    child: Image.asset(
+                      'assets/placeholder.png',
+                      width: screenWidth * 0.3,
+                      height: screenHeight * 0.15,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                );
+              },
+              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                if (frame == null) {
+                  return Container(
+                    color: Colors.grey[200],
+                    child: Image.asset(
+                      'assets/placeholder.png',
+                      width: double.infinity,
+                      height: screenHeight * 0.15,
+                      fit: BoxFit.contain,
+                    ),
+                  );
+                }
+                return child;
+              },
+              cacheHeight: 600, // Optional: for memory caching
+              cacheWidth: 600,  // Optional: for memory caching
+            ),
+          ),
+        );
+      }).toList(),
+      options: CarouselOptions(
+        autoPlayInterval: const Duration(seconds: 10),
+        height: screenHeight * 0.38,
+        autoPlay: true,
+        viewportFraction: 1.0,
+      ),
+    ),
                                             Positioned(
                                               right: 0,
                                               bottom: 100,
@@ -182,21 +179,7 @@ class HomePage extends GetView<HomeController> {
                                         ),
                                       ),
                                     )
-                                  : SliverToBoxAdapter(
-                                      child: Container(
-                                        width: double.infinity,
-                                        height: screenHeight * 0.25,
-                                        color: Colors.grey[300],
-                                        child: Center(
-                                          child: Image.asset(
-                                            'assets/placeholder.png',
-                                            width: screenWidth * 0.3,
-                                            height: screenHeight * 0.15,
-                                            fit: BoxFit.contain,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                  ,
 
                               // Responsive Horizontal Scroll for Active Tags
                               controller.dashboradData.value.activeMtags != null &&

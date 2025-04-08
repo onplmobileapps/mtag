@@ -50,8 +50,8 @@ class StationsDatabase {
       final db = await database;
       String mwidQuery = '';
 
-      if (mwid == 6 || mwid == 7 || mwid == 11) {
-        mwidQuery = 'IN (7, 6, 11)';
+      if (mwid == 6 || mwid == 7 || mwid == 11 || mwid == 5) {
+        mwidQuery = 'IN (7, 6, 11,5)';
       } else if (mwid == 4 || mwid == 10 || mwid == 14) {
         mwidQuery = 'IN (4, 10, 14)';
       } else {
