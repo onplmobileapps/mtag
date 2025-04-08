@@ -78,25 +78,23 @@ void startTimer(ValueNotifier<Duration> timerNotifier) {
   });
 }
 
-String ?validateJazzcashNumber(String ?number){
-  if(number==null){
+String? validateJazzcashNumber(String? number) {
+  if (number == null) {
     return 'Please enter valid jazzcash number';
-
-  }
-  else if(!number.startsWith('03')){
+  } else if (!number.startsWith('03')) {
     return 'Please enter 03XXXXXXXXX format Jazzcah Cash Number';
-  }
-  else if(number.length<11){
-   return 'Please enter your 11 digit jazzcash number';
+  } else if (number.length < 11) {
+    return 'Please enter your 11 digit jazzcash number';
   }
   return null;
 }
+
 String? validateAmount(String? value) {
   if (value == null) {
     return 'Amount is required';
   }
-  if(value.isEmpty){
-     return 'Amount is required';
+  if (value.isEmpty) {
+    return 'Amount is required';
   }
 
   final parsedValue = int.tryParse(value);
@@ -122,7 +120,7 @@ String? validateAmount(String? value) {
 
 String formatDateTime(String inputDateTime, {bool roundMinutes = false}) {
   try {
-    DateTime dateTime = DateFormat("yy-MM-dd HH:mm:ss").parse(inputDateTime);
+    DateTime dateTime = DateFormat("dd-MM-yy HH:mm:ss").parse(inputDateTime);
 
     if (roundMinutes) {
       dateTime =
@@ -130,7 +128,7 @@ String formatDateTime(String inputDateTime, {bool roundMinutes = false}) {
     }
 
     // Format the date-time to the desired output format
-    return DateFormat("dd MMM yy h:mm a").format(dateTime);
+    return DateFormat("dd MMM yy - h:mm a").format(dateTime);
   } catch (e) {
     return inputDateTime;
   }
@@ -151,6 +149,7 @@ String? validateMtag(String? value) {
   }
   return null; // Valid input
 }
+
 String maskString(String value) {
   if (value.isEmpty || value == '') {
     return '';
