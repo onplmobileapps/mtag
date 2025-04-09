@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'controller/toll_calculator_static_controller.dart';
-import 'model/stations_model.dart';
 
 class TollCalculatorLocal extends StatefulWidget {
   const TollCalculatorLocal({super.key});
+
   static const String title = 'Toll Calculator';
 
   @override
@@ -173,7 +173,7 @@ class _TollCalculatorLocalState extends State<TollCalculatorLocal>
           padding: EdgeInsets.symmetric(horizontal: padding),
           child: ConstrainedBox(
             constraints:
-            BoxConstraints(maxWidth: 800, minHeight: constraints.maxHeight),
+                BoxConstraints(maxWidth: 800, minHeight: constraints.maxHeight),
             child: Column(
               children: [
                 const SizedBox(height: 8),
@@ -199,77 +199,84 @@ class _TollCalculatorLocalState extends State<TollCalculatorLocal>
   }
 
   Widget _buildSection(Widget child, BuildContext context) => Container(
-    decoration: BoxDecoration(
-      color: Theme.of(context).disabledColor,
-      borderRadius: BorderRadius.circular(12),
-    ),
-    child: child,
-  );
+        decoration: BoxDecoration(
+          color: Theme.of(context).disabledColor,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: child,
+      );
 
   Widget _buildMotorwaySelector(bool isLargeScreen) => Card(
-    elevation: 0,
-    color: Colors.transparent,
-    child: Padding(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        children: [
-          const Text('Step 1: Select Motorway',
-              style: TextStyle(fontSize: 16)),
-          const SizedBox(height: 12),
-          SizedBox(
-            height: isLargeScreen ? 160 : 140,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: controller.mwNameList.length,
-              itemBuilder: (context, index) =>
-                  _buildMotorwayItem(index, isLargeScreen),
-            ),
+        elevation: 0,
+        color: Colors.transparent,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            children: [
+              const Text('Step 1: Select Motorway',
+                  style: TextStyle(fontSize: 16)),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: isLargeScreen ? 160 : 140,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: controller.mwNameList.length,
+                  itemBuilder: (context, index) =>
+                      _buildMotorwayItem(index, isLargeScreen),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    ),
-  );
+        ),
+      );
 
   Widget _buildMotorwayItem(int index, bool isLargeScreen) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDarkMode ? Colors.redAccent : Theme.of(context).primaryColor;
+    final borderColor =
+        isDarkMode ? Colors.redAccent : Theme.of(context).primaryColor;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: isLargeScreen ? 8 : 6),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () => setState(() {
-          controller.fetchStations(controller.mwNameList[index].motorwayID!);
-          _selectedMotorway = index;
-          _selectedVehicle = -1;
-          _showToll = false;
-          _entryStation = _exitStation = null;
-        }),
+        onTap: () => setState(
+          () {
+            controller.fetchStations(controller.mwNameList[index].motorwayID!);
+            _selectedMotorway = index;
+            _selectedVehicle = -1;
+            _showToll = false;
+            _entryStation = _exitStation = null;
+          },
+        ),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           width: isLargeScreen ? 160 : 120,
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(
-              color: _selectedMotorway == index ? borderColor : Colors.transparent,
-              width:  1,
+              color:
+                  _selectedMotorway == index ? borderColor : Colors.transparent,
+              width: 1,
             ),
             borderRadius: BorderRadius.circular(12),
             boxShadow: _selectedMotorway == index
                 ? [
-              BoxShadow(
-                  color: borderColor.withOpacity(0.2),
-                  blurRadius: 8,
-                  spreadRadius: 2)
-            ]
+                    BoxShadow(
+                        color: borderColor.withValues(alpha: 20),
+                        blurRadius: 0,
+                        spreadRadius: 0)
+                  ]
                 : null,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset('assets/line.svg',
-                  height: isLargeScreen ? 48 : 40,
-                  color: Theme.of(context).primaryColor),
+              SvgPicture.asset(
+                'assets/line.svg',
+                height: isLargeScreen ? 48 : 40,
+                colorFilter: ColorFilter.mode(
+                    Theme.of(context).primaryColor, BlendMode.srcIn),
+              ),
               Text(controller.mwNameList[index].motorwayAbbrivation!,
                   style: TextStyle(
                       fontSize: isLargeScreen ? 14 : 12,
@@ -286,28 +293,29 @@ class _TollCalculatorLocalState extends State<TollCalculatorLocal>
   }
 
   Widget _buildStationSelector(double padding) => Card(
-    elevation: 0,
-    color: Colors.transparent,
-    child: Padding(
-      padding: EdgeInsets.all(padding),
-      child: Column(
-        children: [
-          const Text('Step 2: Select Interchange',
-              style: TextStyle(fontSize: 16)),
-          const SizedBox(height: 16),
-          _buildDropdown('Select Entry Station', _entryStation,
+        elevation: 0,
+        color: Colors.transparent,
+        child: Padding(
+          padding: EdgeInsets.all(padding),
+          child: Column(
+            children: [
+              const Text('Step 2: Select Interchange',
+                  style: TextStyle(fontSize: 16)),
+              const SizedBox(height: 16),
+              _buildDropdown('Select Entry Station', _entryStation,
                   () => _showStationSelectionDialog(true)),
-          const SizedBox(height: 16),
-          _buildDropdown('Select Exit Station', _exitStation,
+              const SizedBox(height: 16),
+              _buildDropdown('Select Exit Station', _exitStation,
                   () => _showStationSelectionDialog(false)),
-        ],
-      ),
-    ),
-  );
+            ],
+          ),
+        ),
+      );
 
   Widget _buildDropdown(String label, String? value, VoidCallback onTap) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDarkMode ? Colors.redAccent : Theme.of(context).primaryColor;
+    final borderColor =
+        isDarkMode ? Colors.redAccent : Theme.of(context).primaryColor;
     final textColor = value != null
         ? (isDarkMode ? Colors.white : Theme.of(context).primaryColor)
         : Colors.grey[600];
@@ -323,7 +331,8 @@ class _TollCalculatorLocalState extends State<TollCalculatorLocal>
             duration: const Duration(milliseconds: 200),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
-              border: Border.all(color: value == null ? Colors.grey : borderColor),
+              border:
+                  Border.all(color: value == null ? Colors.grey : borderColor),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -334,7 +343,10 @@ class _TollCalculatorLocalState extends State<TollCalculatorLocal>
                     style: TextStyle(color: textColor),
                   ),
                 ),
-                Icon(Icons.arrow_drop_down_circle_outlined, color: isDarkMode ? Colors.grey : Theme.of(context).primaryColor),
+                Icon(Icons.arrow_drop_down_circle_outlined,
+                    color: isDarkMode
+                        ? Colors.grey
+                        : Theme.of(context).primaryColor),
               ],
             ),
           ),
@@ -344,32 +356,33 @@ class _TollCalculatorLocalState extends State<TollCalculatorLocal>
   }
 
   Widget _buildVehicleSelector(bool isLargeScreen) => Card(
-    elevation: 0,
-    color: Colors.transparent,
-    child: Padding(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        children: [
-          const Text('Step 3: Select Vehicle Type',
-              style: TextStyle(fontSize: 16)),
-          const SizedBox(height: 12),
-          SizedBox(
-            height: isLargeScreen ? 160 : 140,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: controller.vehicleList.length,
-              itemBuilder: (context, index) =>
-                  _buildVehicleItem(index, isLargeScreen),
-            ),
+        elevation: 0,
+        color: Colors.transparent,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            children: [
+              const Text('Step 3: Select Vehicle Type',
+                  style: TextStyle(fontSize: 16)),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: isLargeScreen ? 160 : 140,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: controller.vehicleList.length,
+                  itemBuilder: (context, index) =>
+                      _buildVehicleItem(index, isLargeScreen),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    ),
-  );
+        ),
+      );
 
   Widget _buildVehicleItem(int index, bool isLargeScreen) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDarkMode ? Colors.redAccent : Theme.of(context).primaryColor;
+    final borderColor =
+        isDarkMode ? Colors.redAccent : Theme.of(context).primaryColor;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: isLargeScreen ? 8 : 6),
@@ -393,25 +406,29 @@ class _TollCalculatorLocalState extends State<TollCalculatorLocal>
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(
-              color: _selectedVehicle == index ? borderColor : Colors.transparent,
-              width:  1,
+              color:
+                  _selectedVehicle == index ? borderColor : Colors.transparent,
+              width: 1,
             ),
             borderRadius: BorderRadius.circular(12),
             boxShadow: _selectedVehicle == index
                 ? [
-              BoxShadow(
-                  color: borderColor.withOpacity(0.2),
-                  blurRadius: 8,
-                  spreadRadius: 2)
-            ]
+                    BoxShadow(
+                        color: borderColor.withValues(alpha: 20),
+                        blurRadius: 0,
+                        spreadRadius: 0)
+                  ]
                 : null,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(controller.vehicleList[index].image!,
-                  height: isLargeScreen ? 48 : 40,
-                  color: Theme.of(context).primaryColor),
+              SvgPicture.asset(
+                controller.vehicleList[index].image!,
+                height: isLargeScreen ? 48 : 40,
+                colorFilter: ColorFilter.mode(
+                    Theme.of(context).primaryColor, BlendMode.srcIn),
+              ),
               Text(controller.vehicleList[index].name!,
                   style: TextStyle(
                       fontSize: isLargeScreen ? 18 : 16,
@@ -424,26 +441,26 @@ class _TollCalculatorLocalState extends State<TollCalculatorLocal>
   }
 
   Widget _buildTollDisplay(double padding) => Card(
-    elevation: 0,
-    color: Colors.transparent,
-    child: Padding(
-      padding: EdgeInsets.all(padding),
-      child: Column(
-        children: [
-          const Text('Toll Details', style: TextStyle(fontSize: 18)),
-          const SizedBox(height: 16),
-          _buildDetailRow('Route', '$_entryStation - $_exitStation'),
-          _buildDetailRow('Vehicle',
-              controller.vehicleList[_selectedVehicle].name ?? 'Unknown'),
-          const Divider(height: 24),
-          _isCalculating
-              ? const CircularProgressIndicator()
-              : _buildDetailRow('Total Toll', '$_calculatedToll PKR',
-              isTotal: true),
-        ],
-      ),
-    ),
-  );
+        elevation: 0,
+        color: Colors.transparent,
+        child: Padding(
+          padding: EdgeInsets.all(padding),
+          child: Column(
+            children: [
+              const Text('Toll Details', style: TextStyle(fontSize: 18)),
+              const SizedBox(height: 16),
+              _buildDetailRow('Route', '$_entryStation - $_exitStation'),
+              _buildDetailRow('Vehicle',
+                  controller.vehicleList[_selectedVehicle].name ?? 'Unknown'),
+              const Divider(height: 24),
+              _isCalculating
+                  ? const CircularProgressIndicator()
+                  : _buildDetailRow('Total Toll', '$_calculatedToll PKR',
+                      isTotal: true),
+            ],
+          ),
+        ),
+      );
 
   Widget _buildDetailRow(String label, String? value, {bool isTotal = false}) =>
       Padding(
@@ -481,6 +498,9 @@ class _StationSearchDialogState extends State<_StationSearchDialog> {
   @override
   void initState() {
     super.initState();
+    if (!Get.isRegistered<MotorwayStaticController>()) {
+      Get.put(MotorwayStaticController);
+    }
     _filteredStations = widget.stations;
   }
 
@@ -491,15 +511,16 @@ class _StationSearchDialogState extends State<_StationSearchDialog> {
   }
 
   void _filterStations(String query) => setState(() {
-    _filteredStations = widget.stations
-        .where((s) => s.toLowerCase().contains(query.toLowerCase()))
-        .toList();
-  });
+        _filteredStations = widget.stations
+            .where((s) => s.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      });
 
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDarkMode ? Colors.redAccent : Theme.of(context).primaryColor;
+    final borderColor =
+        isDarkMode ? Colors.redAccent : Theme.of(context).primaryColor;
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -507,7 +528,7 @@ class _StationSearchDialogState extends State<_StationSearchDialog> {
         constraints: BoxConstraints(
             maxHeight: MediaQuery.of(context).size.height * 0.7, maxWidth: 500),
         child: Obx(
-              () => Column(
+          () => Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
@@ -549,10 +570,20 @@ class _StationSearchDialogState extends State<_StationSearchDialog> {
                   itemBuilder: (_, index) {
                     final station = _filteredStations[index];
                     return ListTile(
-                      title: Text(station, style: TextStyle(color: isDarkMode ? Colors.grey : Theme.of(context).primaryColor)),
-                      leading: Icon(Icons.location_on, color:  isDarkMode ? Colors.grey : Theme.of(context).primaryColor),
+                      title: Text(station,
+                          style: TextStyle(
+                              color: isDarkMode
+                                  ? Colors.grey
+                                  : Theme.of(context).primaryColor)),
+                      leading: Icon(Icons.location_on,
+                          color: isDarkMode
+                              ? Colors.grey
+                              : Theme.of(context).primaryColor),
                       trailing: widget.selectedStation == station
-                          ? Icon(Icons.check, color: isDarkMode ? Colors.grey : Theme.of(context).primaryColor)
+                          ? Icon(Icons.check,
+                              color: isDarkMode
+                                  ? Colors.grey
+                                  : Theme.of(context).primaryColor)
                           : null,
                       onTap: () => Navigator.pop(context, station),
                     );

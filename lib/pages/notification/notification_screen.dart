@@ -1,14 +1,11 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../pages/notification/controller/notificationcontroller.dart';
 import '../../widgets/notification_card_widget.dart';
 
-// ignore: must_be_immutable
 class NotificationScreen extends GetView<NotificationController> {
   NotificationScreen({super.key});
-  Function(bool value)? onChange;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +14,7 @@ class NotificationScreen extends GetView<NotificationController> {
       onPopInvokedWithResult: (didPop, result) {
         controller.isSelectAll = false;
         controller.selectedIds.clear();
-        Get.find<NotificationController>().isSelectionMode(false);
+        controller.isSelectionMode(false);
       },
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -27,41 +24,18 @@ class NotificationScreen extends GetView<NotificationController> {
           actions: [
             Obx(
               () => Visibility(
-                visible:
-                    Get.find<NotificationController>().isSelectionMode.value,
+                visible: controller.isSelectionMode.value,
                 child: InkWell(
                   onTap: controller.selectedIds.isNotEmpty
-                      ? () {
-                          final notificationController =
-                              Get.find<NotificationController>();
-
-                          for (var item in notificationController
-                              .notificationModel.value.data!) {
-                            if (item.isSelected ?? false) {
-                              controller.selectedIds.add(item.id.toString());
-                            }
-                          }
-                          if (controller.selectedIds.isNotEmpty) {
-                            log(controller.selectedIds.toString());
-
-                            notificationController.deleteNotifications(
-                                notificationId: controller.selectedIds);
-                            notificationController.notificationModel.value.data
-                                ?.removeWhere(
-                              (item) =>
-                                  controller.selectedIds.contains(item.id),
-                            );
-
-                            notificationController.isSelectionMode(false);
-                            notificationController.notificationModel.refresh();
-                          } else {
-                            log(controller.selectedIds.toString());
-                            return;
-                          }
+                      ? () async {
+                          log('Deleting IDs: ${controller.selectedIds}');
+                          await controller.deleteNotifications(
+                              notificationId: controller.selectedIds.toList());
+                          controller.notificationModel.refresh();
                         }
                       : null,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
+                  child: const Padding(
+                    padding: EdgeInsets.only(right: 8.0),
                     child: Icon(Icons.delete_outline),
                   ),
                 ),
@@ -69,22 +43,10 @@ class NotificationScreen extends GetView<NotificationController> {
             ),
             Obx(
               () => Visibility(
-                visible:
-                    (Get.find<NotificationController>().isSelectionMode.value),
+                visible: controller.isSelectionMode.value,
                 child: InkWell(
                   onTap: () {
-                    final notificationController =
-                        Get.find<NotificationController>();
-                    controller.isSelectAll = !controller.isSelectAll;
-                    for (var item in notificationController
-                        .notificationModel.value.data!) {
-                      item.isSelected = controller.isSelectAll;
-                      controller.selectedIds.add(item.id.toString());
-                    }
-                    if (!controller.isSelectAll) {
-                      notificationController.isSelectionMode(false);
-                    }
-                    notificationController.notificationModel.refresh();
+                    controller.selectAll();
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(right: 8.0),
@@ -115,7 +77,7 @@ class NotificationScreen extends GetView<NotificationController> {
                 topRight: Radius.circular(12),
               ),
             ),
-            child: Padding(
+            child: const Padding(
               padding: EdgeInsets.symmetric(horizontal: 4, vertical: 5),
               child: NotificationCard(),
             ),

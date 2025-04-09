@@ -30,7 +30,7 @@ class Binding extends Bindings {
         permanent: true);
     Get.lazyPut(() => HomeController(userRepo: UserRepo()));
     Get.lazyPut(() => PaymentCardController(userRepo: RechargRepo()));
-    Get.lazyPut(() => NotificationController(userRepo: UserRepo()));
+    Get.lazyPut(() => NotificationController());
     Get.lazyPut(() => UpdateEmailController(userRepo: UserRepo()));
     Get.lazyPut(() => RechargeController(userRepo: UserRepo()));
     // Get.lazyPut(() => TollCalculatorController(userRepo: UserRepo()));

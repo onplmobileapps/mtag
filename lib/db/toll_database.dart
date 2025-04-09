@@ -103,6 +103,7 @@ class TollDatabase {
     try {
       final db = await database;
       await db.delete('veh_toll_cal_7');
+
       print('Existing data deleted');
 
       final csvString = await rootBundle.loadString('assets/data/data.csv');

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -6,9 +7,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import '/pages/notification/controller/notificationcontroller.dart';
+import '/pages/notification/model/notification_model.dart';
 import '../../base/app_data.dart';
-import '../../pages/notification/model/notification_model.dart';
 
 class LocalNotificationsService {
   final FlutterLocalNotificationsPlugin _notificationsPlugin;
@@ -51,11 +52,9 @@ class LocalNotificationsService {
 
     log('Notification clicked: $actionKey');
 
-    // If bg_n is present and 'open_new_intent', remove the back stack
     if (actionKey == 'open_new_intent') {
       _navigateWithoutBackStack('/notificationIntent', title, body);
     } else {
-      // If bg_n is not present, navigate with back stack
       _navigateWithBackStack('/notificationsExpandScreen', title, body);
     }
   }
@@ -86,7 +85,9 @@ class LocalNotificationsService {
 class MessagingService {
   static String? fcmToken;
   static final MessagingService _instance = MessagingService._internal();
+
   factory MessagingService() => _instance;
+
   MessagingService._internal();
 
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
@@ -94,39 +95,39 @@ class MessagingService {
       FlutterLocalNotificationsPlugin();
   final badgeCountNotifier = ValueNotifier<int>(0);
   final _badgeCountKey = 'badge_count';
+  static const String _pendingNotificationKey = 'pending_notification';
 
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
-  bool isAppInitialized = false; // Flag to track app initialization
-  bool isAppKilled = false; // Flag to track if app was opened from killed state
+  bool isAppInitialized = false;
 
   Future<void> init(BuildContext context) async {
     await _requestPermission();
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     await _fcm.setForegroundNotificationPresentationOptions(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
-
+      alert: true,
+      badge: true,
+      sound: true,
+    );
 
     LocalNotificationsService(_notificationsPlugin).init();
     await _loadBadgeCount();
 
-    // Handling app launch from killed state
     _fcm.getInitialMessage().then((message) {
-      if (message != null&&context.mounted) _handleNotificationClick(context, message);
+      if (message != null && context.mounted)
+        _handleNotificationClick(context, message);
     });
 
     FirebaseMessaging.onMessage.listen(_handleForegroundNotification);
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-     if(context.mounted) _handleNotificationClick(context, message);
+      if (context.mounted) _handleNotificationClick(context, message);
       resetBadgeCount();
     });
 
-    // Ensure the app is fully initialized before handling any notification clicks
     await Firebase.initializeApp();
-    isAppInitialized = true; // Mark as initialized
+    isAppInitialized = true;
+
+    await _processPendingNotifications();
   }
 
   Future<void> _requestPermission() async {
@@ -138,8 +139,7 @@ class MessagingService {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      fcmToken =
-           await _fcm.getToken();
+      fcmToken = await _fcm.getToken();
       if (fcmToken != null) {
         log('FCM Token: $fcmToken');
         AppData.setFcmToken(fcmToken!);
@@ -153,7 +153,6 @@ class MessagingService {
     badgeCountNotifier.value++;
     _updateBadgeCountInUI();
 
-    // Create the Android Notification channel
     const androidChannel = AndroidNotificationChannel(
       'high_importance_channel',
       'High Importance Notifications',
@@ -183,16 +182,26 @@ class MessagingService {
         payload:
             '${notification?.title}|${notification?.body}|${message.data['bg_n']}',
       );
+
+      final controller = Get.find<NotificationController>();
+      await controller.addNotification(Data(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        title: notification?.title ?? '',
+        body: notification?.body ?? '',
+        dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
+        datetimeSmall: DateFormat('dd-MM HH:mm').format(DateTime.now()),
+        imageLink: message.data['image_link'],
+        isSelected: false,
+      ));
     }
   }
 
   void _handleNotificationClick(
       BuildContext context, RemoteMessage message) async {
     if (!isAppInitialized) {
-      // Wait until the app is initialized before processing the notification click
       log('App is not initialized yet. Waiting...');
       Future.delayed(Duration(seconds: 2), () {
-      if(context.mounted)  _handleNotificationClick(context, message); // Retry handling
+        if (context.mounted) _handleNotificationClick(context, message);
       });
       return;
     }
@@ -202,7 +211,6 @@ class MessagingService {
 
     final actionKey = message.data['bg_n'];
 
-    // If the action key is 'open_new_intent', navigate with no back stack
     if (actionKey != null && actionKey == 'open_new_intent') {
       log('Navigating to /notificationIntent with no back stack');
       Get.offAllNamed(
@@ -214,10 +222,7 @@ class MessagingService {
         ),
       );
     } else {
-      // For notifications without 'bg_n', navigate to /notificationsExpandScreen and preserve the back stack
       log('Navigating to /notificationsExpandScreen with back stack');
-
-      // Adding a small delay before navigation to ensure proper initialization
       Future.delayed(Duration(seconds: 1), () {
         if (navigatorKey.currentState != null) {
           Get.toNamed(
@@ -234,16 +239,12 @@ class MessagingService {
   }
 
   Future<void> _loadBadgeCount() async {
-   
     final prefs = await SharedPreferences.getInstance();
     badgeCountNotifier.value = prefs.getInt(_badgeCountKey) ?? 0;
-    log("count==>${badgeCountNotifier.value}".toString());
-    
   }
 
   Future<void> _updateBadgeCountInUI() async {
     final prefs = await SharedPreferences.getInstance();
-
     await prefs.setInt(_badgeCountKey, badgeCountNotifier.value);
   }
 
@@ -251,34 +252,36 @@ class MessagingService {
     badgeCountNotifier.value = 0;
     await _updateBadgeCountInUI();
   }
+
+  Future<void> _processPendingNotifications() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? pendingJson = prefs.getString(_pendingNotificationKey);
+    if (pendingJson != null) {
+      final Map<String, dynamic> messageData = jsonDecode(pendingJson);
+      final controller = Get.find<NotificationController>();
+      await controller.addNotification(Data(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        title: messageData['notification']?['title'] ?? '',
+        body: messageData['notification']?['body'] ?? '',
+        dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
+        datetimeSmall: DateFormat('dd-MM HH:mm').format(DateTime.now()),
+        imageLink: messageData['data']?['image_link'],
+        isSelected: false,
+      ));
+      await prefs.remove(_pendingNotificationKey);
+    }
+  }
 }
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-
   RemoteNotification? notification = message.notification;
   if (notification == null) return;
 
-  final actionKey = message.data['bg_n'];
-
-  // If the action key is 'open_new_intent', navigate with no back stack
-  if (actionKey != null && actionKey == 'open_new_intent') {
-    Get.offAllNamed('/notificationIntent',
-        arguments: Data(
-          title: notification.title ?? '',
-          body: notification.body ?? '',
-          dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
-        ));
-    return;
-  }
-
-  // For notifications without 'bg_n', navigate to notificationsExpandScreen and preserve the back stack
-  log('Navigating to /notificationsExpandScreen with back stack in background');
-  Get.toNamed('/notificationsExpandScreen',
-      arguments: Data(
-        title: notification.title ?? '',
-        body: notification.body ?? '',
-        dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
-      ));
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString(
+    MessagingService._pendingNotificationKey,
+    jsonEncode(message.toMap()),
+  );
 }
