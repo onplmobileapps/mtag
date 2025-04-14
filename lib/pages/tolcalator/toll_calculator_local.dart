@@ -213,8 +213,7 @@ class _TollCalculatorLocalState extends State<TollCalculatorLocal>
           padding: const EdgeInsets.all(12),
           child: Column(
             children: [
-              const Text('Step 1: Select Motorway',
-                  style: TextStyle(fontSize: 16)),
+              const Text('Select Motorway', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 12),
               SizedBox(
                 height: isLargeScreen ? 160 : 140,
@@ -299,8 +298,7 @@ class _TollCalculatorLocalState extends State<TollCalculatorLocal>
           padding: EdgeInsets.all(padding),
           child: Column(
             children: [
-              const Text('Step 2: Select Interchange',
-                  style: TextStyle(fontSize: 16)),
+              const Text('Select Interchange', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 16),
               _buildDropdown('Select Entry Station', _entryStation,
                   () => _showStationSelectionDialog(true)),
@@ -362,8 +360,7 @@ class _TollCalculatorLocalState extends State<TollCalculatorLocal>
           padding: const EdgeInsets.all(12),
           child: Column(
             children: [
-              const Text('Step 3: Select Vehicle Type',
-                  style: TextStyle(fontSize: 16)),
+              const Text('Select Vehicle Type', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 12),
               SizedBox(
                 height: isLargeScreen ? 160 : 140,

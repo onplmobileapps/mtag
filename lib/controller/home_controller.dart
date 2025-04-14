@@ -27,9 +27,18 @@ class HomeController extends GetxController implements GetxService {
   final _otherConstants = OtherConsts();
   final List<MtagModel> dashBoardModel = [
     MtagModel(routeName: '/mTag', title: 'M-TAG', image: 'assets/my_tag.svg'),
-    MtagModel(routeName: '/tollHostory', title: 'Toll/Recharge History', image: 'assets/tollhistory.svg'),
-    MtagModel(routeName: '/tollCalculator', title: 'Toll Calculator', image: 'assets/toll_calc.svg'),
-    MtagModel(routeName: '/recharge', title: 'Recharge', image: 'assets/recharge2.svg'),
+    MtagModel(
+        routeName: '/tollHostory',
+        title: 'Toll/Recharge History',
+        image: 'assets/tollhistory.svg'),
+    MtagModel(
+        routeName: '/tollCalculator',
+        title: 'Toll Calculator',
+        image: 'assets/toll_calc.svg'),
+    MtagModel(
+        routeName: '/recharge',
+        title: 'Recharge',
+        image: 'assets/recharge2.svg'),
   ];
 
   final dashboradData = DashBoardModel().obs;
@@ -108,7 +117,7 @@ class HomeController extends GetxController implements GetxService {
     await AppData.setCount(null); // Increment count
     final count = AppData.getAppCount();
     if (count == 5) {
-   AppReviewUtils.requestAppReview();
+      AppReviewUtils.requestAppReview();
       await AppData.setCount(0); // Reset count after review
     }
   }
@@ -117,14 +126,15 @@ class HomeController extends GetxController implements GetxService {
     if (dashboradData.value.promotionalPopUpImage?.code == '00') {
       Get.dialog(
         PromoDialog(
-          imageUrl: "${ApplicationUrl.IMAGE_ULR}/${dashboradData.value.promotionalPopUpImage?.imgURL}",
+          imageUrl:
+              "${ApplicationUrl.IMAGE_ULR}/${dashboradData.value.promotionalPopUpImage?.imgURL}",
         ),
         barrierDismissible: false,
       );
     }
 
-    if (dashboradData.value.versionCheck?.code == '01' && Platform.isIOS) {
-      showUpdateDialog(dashboradData.value.versionCheck?.message ?? '');
-    }
+    // if (dashboradData.value.versionCheck?.code == '01' && Platform.isIOS) {
+    //   showUpdateDialog(dashboradData.value.versionCheck?.message ?? '');
+    // }
   }
 }

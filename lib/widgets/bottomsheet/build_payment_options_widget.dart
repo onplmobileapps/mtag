@@ -15,7 +15,7 @@ import 'bottom_sheet_widget.dart';
 import 'build_payment_card.dart';
 
 class BuildPaymentOptionsWidget extends StatelessWidget {
-  const BuildPaymentOptionsWidget(
+  BuildPaymentOptionsWidget(
       {super.key,
       required this.amount,
       required this.showPSIDField,
@@ -33,6 +33,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
   final TextEditingController? psidController;
   final Function(int paymentMethod)? onChanged;
   final bool? isfromMainPage;
+  final _otherConstants = OtherConsts();
 
   @override
   Widget build(BuildContext context) {
@@ -74,9 +75,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                   isInvoice: true,
                 );
 
-                if (context.mounted &&
-                    (data.containsKey('PSID'))) {
-                 
+                if (context.mounted && (data.containsKey('PSID'))) {
                   showBreakdownDialog(
                     psid: data['PSID'],
                     context: context,
@@ -93,9 +92,10 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                 if (context.mounted && data.containsKey(APIRESPONSE.ERROR)) {
                   log('error data==>$data');
                   showPopDialog(data[APIRESPONSE.ERROR]['Message'], () {
-                     selected1linkOpt.value=-1;
-                   data[APIRESPONSE.ERROR]['Code']==450?Get.offAllNamed('/pinPage'): Get.back();
-                 
+                    selected1linkOpt.value = -1;
+                    data[APIRESPONSE.ERROR]['Code'] == 450
+                        ? Get.offAllNamed('/pinPage')
+                        : Get.back();
                   });
                 }
               },
@@ -123,9 +123,9 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                   isInvoice: false,
                 );
 
-                if (context.mounted&& data.containsKey(APIRESPONSE.SUCCESS)) {
+                if (context.mounted && data.containsKey(APIRESPONSE.SUCCESS)) {
                   showTopUpDialog(
-                    psid:data[APIRESPONSE.SUCCESS]['Data'],
+                    psid: data[APIRESPONSE.SUCCESS]['Data'],
                     context: context,
                     amount: double.parse(amount.text),
                     inVoicetimerNotifier: topUptimerNotifier,
@@ -144,55 +144,59 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                 }
               },
             ),
-            _buildPaymentOption(
-              context: context,
-              label: "JazzCash",
-              value: 2,
-              assetPath: 'assets/jazzcash.png',
-              onTap: () async {
-                await Get.toNamed(
-                  '/recharge',
-                  arguments: [
-                    ActiveMtags(
-                      tokenno: mtagId,
-                      registration: regId,
-                      amount: amount.text,
-                      payId: '1',
-                    )
-                  ],
-                );
+            _otherConstants.jazzCode.value == 1
+                ? _buildPaymentOption(
+                    context: context,
+                    label: "JazzCash",
+                    value: 2,
+                    assetPath: 'assets/jazzcash.png',
+                    onTap: () async {
+                      await Get.toNamed(
+                        '/recharge',
+                        arguments: [
+                          ActiveMtags(
+                            tokenno: mtagId,
+                            registration: regId,
+                            amount: amount.text,
+                            payId: '1',
+                          )
+                        ],
+                      );
 
-                if (onChanged != null) {
-                  onChanged!(1); // Call only if onChanged is not null
-                }
+                      if (onChanged != null) {
+                        onChanged!(1); // Call only if onChanged is not null
+                      }
 
-                selected1linkOpt.value = 2;
-              },
-            ),
-            _buildPaymentOption(
-              context: context,
-              label: "Credit/Debit Card",
-              value: 3,
-              assetPath: 'assets/creditcard.png',
-              onTap: () async {
-                await Get.toNamed(
-                  '/recharge',
-                  arguments: [
-                    ActiveMtags(
-                      tokenno: mtagId,
-                      registration: regId,
-                      amount: amount.text,
-                      payId: '0',
-                    )
-                  ],
-                );
-                if (onChanged != null) {
-                  onChanged!(0);
-                }
+                      selected1linkOpt.value = 2;
+                    },
+                  )
+                : Container(),
+            _otherConstants.creditCode.value == 1
+                ? _buildPaymentOption(
+                    context: context,
+                    label: "Credit/Debit Card",
+                    value: 3,
+                    assetPath: 'assets/creditcard.png',
+                    onTap: () async {
+                      await Get.toNamed(
+                        '/recharge',
+                        arguments: [
+                          ActiveMtags(
+                            tokenno: mtagId,
+                            registration: regId,
+                            amount: amount.text,
+                            payId: '0',
+                          )
+                        ],
+                      );
+                      if (onChanged != null) {
+                        onChanged!(0);
+                      }
 
-                selected1linkOpt.value = 3;
-              },
-            ),
+                      selected1linkOpt.value = 3;
+                    },
+                  )
+                : Container(),
             SizedBox(height: 10),
           ],
         );
