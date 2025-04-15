@@ -26,6 +26,7 @@ class StationsDatabase {
   }
 
   Future _createDB(Database db, int version) async {
+    // First create the table if it doesn't exist
     await db.execute('''
       CREATE TABLE IF NOT EXISTS motorway_kms (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,6 +43,136 @@ class StationsDatabase {
         is_sta_active BOOLEAN
       )
     ''');
+
+    // Then check if we need to import data
+    await _checkAndImportData(db);
+  }
+
+  Future<bool> _isDatabaseEmpty(Database db) async {
+    try {
+      final count = Sqflite.firstIntValue(
+              await db.rawQuery('SELECT COUNT(*) FROM motorway_kms')) ??
+          0;
+      return count == 0;
+    } catch (e) {
+      // If table doesn't exist yet, consider it empty
+      return true;
+    }
+  }
+
+  Future<bool> _isDataComplete(Database db) async {
+    try {
+      // Check if we have at least one complete record
+      final result = await db.rawQuery('''
+        SELECT COUNT(*) FROM motorway_kms 
+        WHERE motorway_name IS NOT NULL 
+          AND motorway_id IS NOT NULL 
+          AND station_name IS NOT NULL 
+          AND station_id IS NOT NULL
+      ''');
+
+      final completeRecords = Sqflite.firstIntValue(result) ?? 0;
+      return completeRecords > 0;
+    } catch (e) {
+      // If there's any error checking completeness, consider data incomplete
+      return false;
+    }
+  }
+
+  Future<void> _checkAndImportData(Database db) async {
+    try {
+      final isEmpty = await _isDatabaseEmpty(db);
+      final isComplete = isEmpty ? false : await _isDataComplete(db);
+
+      if (isEmpty || !isComplete) {
+        print('Database is empty or incomplete, importing stations data...');
+        await _loadStationsFromCsv(db);
+      } else {
+        print(
+            'Database already contains complete stations data, skipping import.');
+      }
+    } catch (e) {
+      print('Error checking/importing data: $e');
+      // If there's an error, try to import data anyway
+      await _loadStationsFromCsv(db);
+    }
+  }
+
+  Future<void> _loadStationsFromCsv(Database db) async {
+    try {
+      // First ensure the table exists
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS motorway_kms (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          motorway_name TEXT,
+          motorway_id INTEGER,
+          station_name TEXT,
+          station_id INTEGER UNIQUE NOT NULL,
+          station_km REAL,
+          total_lane INTEGER,
+          seq_id INTEGER,
+          img_server TEXT,
+          entry_lane INTEGER,
+          lat_lng TEXT,
+          is_sta_active BOOLEAN
+        )
+      ''');
+
+      await db.delete('motorway_kms');
+      print('Old data cleared.');
+
+      final csvString = await rootBundle.loadString('assets/data/stations.csv');
+      final csvData = CsvToListConverter(
+        eol: '\n',
+        shouldParseNumbers: true,
+      ).convert(csvString);
+
+      if (csvData.isEmpty || csvData.length < 2) {
+        print('CSV data is empty or invalid.');
+        return;
+      }
+
+      final dataRows = csvData.sublist(1); // Skip header
+
+      await db.transaction((txn) async {
+        final batch = txn.batch();
+
+        for (final row in dataRows) {
+          if (row.length < 12) continue;
+
+          batch.insert(
+            'motorway_kms',
+            {
+              'motorway_name': row[1]?.toString(),
+              'motorway_id': row[2],
+              'station_name': row[3]?.toString(),
+              'station_id': row[4],
+              'station_km': double.tryParse(row[5].toString()) ?? 0.0,
+              'total_lane': row[6],
+              'seq_id': row[7],
+              'img_server': row[8]?.toString(),
+              'entry_lane': row[9],
+              'lat_lng': row[10]?.toString(),
+              'is_sta_active':
+                  row[11].toString().toLowerCase() == 'true' ? 1 : 0,
+            },
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+        }
+
+        await batch.commit(noResult: true);
+        print('Stations loaded: ${dataRows.length}');
+      });
+    } catch (e) {
+      print('Failed to load CSV data: $e');
+      rethrow; // Re-throw to handle in calling function
+    }
+  }
+
+  // Public method to manually trigger data import if needed
+  Future<void> importDataIfNeeded() async {
+    final db = await database;
+    await _checkAndImportData(db);
   }
 
   // Function to fetch stations based on motorway ID (mwid)
@@ -85,78 +216,6 @@ class StationsDatabase {
         "Message": "Database error: ${e.toString()}",
         "Data": []
       };
-    }
-  }
-
-  // Function to load stations from a CSV file (existing functionality)
-  Future<void> loadStationsFromCsv() async {
-    try {
-      final db = await database;
-
-      // Ensure table exists (in case DB already existed)
-      await db.execute('''
-        CREATE TABLE IF NOT EXISTS motorway_kms (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          motorway_name TEXT,
-          motorway_id INTEGER,
-          station_name TEXT,
-          station_id INTEGER UNIQUE NOT NULL,
-          station_km REAL,
-          total_lane INTEGER,
-          seq_id INTEGER,
-          img_server TEXT,
-          entry_lane INTEGER,
-          lat_lng TEXT,
-          is_sta_active BOOLEAN
-        )
-      ''');
-
-      await db.delete('motorway_kms');
-      print('Old data cleared.');
-
-      final csvString = await rootBundle.loadString('assets/data/stations.csv');
-      final csvData = CsvToListConverter(
-        eol: '\n',
-        shouldParseNumbers: true,
-      ).convert(csvString);
-
-      if (csvData.isEmpty || csvData.length < 2) {
-        print('CSV data is empty or invalid.');
-        return;
-      }
-
-      final dataRows = csvData.sublist(1); // Skip header
-
-      await db.transaction((txn) async {
-        final batch = txn.batch();
-
-        for (final row in dataRows) {
-          if (row.length < 12) continue;
-
-          batch.insert(
-              'motorway_kms',
-              {
-                'motorway_name': row[1]?.toString(),
-                'motorway_id': row[2],
-                'station_name': row[3]?.toString(),
-                'station_id': row[4],
-                'station_km': double.tryParse(row[5].toString()) ?? 0.0,
-                'total_lane': row[6],
-                'seq_id': row[7],
-                'img_server': row[8]?.toString(),
-                'entry_lane': row[9],
-                'lat_lng': row[10]?.toString(),
-                'is_sta_active':
-                    row[11].toString().toLowerCase() == 'true' ? 1 : 0,
-              },
-              conflictAlgorithm: ConflictAlgorithm.replace);
-        }
-
-        await batch.commit(noResult: true);
-        print('Stations loaded: ${dataRows.length}');
-      });
-    } catch (e) {
-      print('Failed to load CSV data: $e');
     }
   }
 }

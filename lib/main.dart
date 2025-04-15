@@ -60,8 +60,11 @@ class _MTagAppState extends State<MTagApp> {
       AppData.setCount(1);
 
       //load toll data
-      await TollDatabase.instance.loadDataFromCsvAndInsert();
-      await StationsDatabase.instance.loadStationsFromCsv();
+      // await TollDatabase.instance.loadDataFromCsvAndInsert();
+      await TollDatabase.instance.importDataIfNeeded();
+
+      // await StationsDatabase.instance.loadStationsFromCsv();
+      await StationsDatabase.instance.importDataIfNeeded();
     });
   }
 

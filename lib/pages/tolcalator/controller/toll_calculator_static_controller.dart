@@ -1,3 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:csv/csv.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/db/stations_database.dart';
 import 'package:sqflite/sqflite.dart';
@@ -7,9 +12,11 @@ import '../../../db/toll_database.dart';
 import '../model/static_mw_model.dart';
 import '../model/stations_model.dart';
 import '../model/vehicle_model.dart';
+import '../assets/data/toll_data.dart';
 
 class MotorwayStaticController extends GetxController implements GetxService {
   final UserRepo userRepo;
+
   MotorwayStaticController({required this.userRepo});
 
   // Rx variable for MotorwayStations
@@ -31,23 +38,33 @@ class MotorwayStaticController extends GetxController implements GetxService {
 
   // List of static motorways
   List<StaticMotorwayModel> mwNameList = [
-    StaticMotorwayModel(motorwayName: "M1", motorwayAbbrivation: "Isb-Psh", motorwayID: 4),
-    StaticMotorwayModel(motorwayName: "M2", motorwayAbbrivation: "Lhr-Isb", motorwayID: 7),
-    StaticMotorwayModel(motorwayName: "M3", motorwayAbbrivation: "Lhr-Abhk", motorwayID: 6),
-    StaticMotorwayModel(motorwayName: "M4", motorwayAbbrivation: "Fsd-Pbht", motorwayID: 11),
-    StaticMotorwayModel(motorwayName: "M5", motorwayAbbrivation: "Mlt-Skr", motorwayID: 5),
-    StaticMotorwayModel(motorwayName: "M9", motorwayAbbrivation: "Kar-Hyd", motorwayID: 1),
-    StaticMotorwayModel(motorwayName: "M11-LSM", motorwayAbbrivation: "Lhr-Siak", motorwayID: 2),
-    StaticMotorwayModel(motorwayName: "M14", motorwayAbbrivation: "Yrk-Hak", motorwayID: 14),
-    StaticMotorwayModel(motorwayName: "M15", motorwayAbbrivation: "Hazara", motorwayID: 10),
-    StaticMotorwayModel(motorwayName: "M16-SMP", motorwayAbbrivation: "Swat", motorwayID: 3),
+    StaticMotorwayModel(
+        motorwayName: "M1", motorwayAbbrivation: "Isb-Psh", motorwayID: 4),
+    StaticMotorwayModel(
+        motorwayName: "M2", motorwayAbbrivation: "Lhr-Isb", motorwayID: 7),
+    StaticMotorwayModel(
+        motorwayName: "M3", motorwayAbbrivation: "Lhr-Abhk", motorwayID: 6),
+    StaticMotorwayModel(
+        motorwayName: "M4", motorwayAbbrivation: "Fsd-Pbht", motorwayID: 11),
+    StaticMotorwayModel(
+        motorwayName: "M5", motorwayAbbrivation: "Mlt-Skr", motorwayID: 5),
+    StaticMotorwayModel(
+        motorwayName: "M9", motorwayAbbrivation: "Kar-Hyd", motorwayID: 1),
+    StaticMotorwayModel(
+        motorwayName: "M11-LSM",
+        motorwayAbbrivation: "Lhr-Siak",
+        motorwayID: 2),
+    StaticMotorwayModel(
+        motorwayName: "M14", motorwayAbbrivation: "Yrk-Hak", motorwayID: 14),
+    StaticMotorwayModel(
+        motorwayName: "M15", motorwayAbbrivation: "Hazara", motorwayID: 10),
+    StaticMotorwayModel(
+        motorwayName: "M16-SMP", motorwayAbbrivation: "Swat", motorwayID: 3),
   ].obs;
-
 
   Future<void> fetchStations(int mwid) async {
     try {
       final response = await stationsDb.getMotStations(mwid);
-
 
       if (response["Code"] == "00") {
         stations.clear();
@@ -64,11 +81,11 @@ class MotorwayStaticController extends GetxController implements GetxService {
               // Update name list for dropdown
               stations.add(item['stname'].toString());
 
-              fullStationsList.add(StData.fromJson(Map<String, dynamic>.from(item)));
+              fullStationsList
+                  .add(StData.fromJson(Map<String, dynamic>.from(item)));
             }
           }
         }
-
       } else {
         stations.clear();
         fullStationsList.clear();
@@ -79,7 +96,6 @@ class MotorwayStaticController extends GetxController implements GetxService {
       rethrow;
     }
   }
-
 
   //calculate toll
   Future<Map<String, dynamic>> calculateToll({
@@ -94,10 +110,10 @@ class MotorwayStaticController extends GetxController implements GetxService {
       // Prepare the query
       // Using parameterized query to prevent SQL injection
       String sqlToll = '''
-        SELECT t_toll_r 
-        FROM veh_toll_cal_7 
-        WHERE e_sta_id = ? 
-        AND x_sta_id = ? 
+        SELECT t_toll_r
+        FROM veh_toll_cal_7
+        WHERE e_sta_id = ?
+        AND x_sta_id = ?
         AND v_cat = ?
       ''';
 
@@ -107,7 +123,6 @@ class MotorwayStaticController extends GetxController implements GetxService {
         [entry, exit, type],
       );
 
-
       if (result.isNotEmpty) {
         String tollCalc = result[0]['t_toll_r'].toString();
         return {
@@ -116,23 +131,49 @@ class MotorwayStaticController extends GetxController implements GetxService {
           "Data": {"toll": tollCalc}
         };
       } else {
-        return {
-          "Code": "00",
-          "Message": "Record Doesn't Exist!",
-          "Data": ""
-        };
+        return {"Code": "00", "Message": "Record Doesn't Exist!", "Data": ""};
       }
     } catch (e) {
       // Log error (you might want to use a proper logging package)
-      return {
-        "Code": "01",
-        "Message": "An Error Occurred!",
-        "Data": ""
-      };
+      return {"Code": "01", "Message": "An Error Occurred!", "Data": ""};
     }
   }
+
+//calculate toll directly
+
+// Future<Map<String, dynamic>> calculateTollDirect({
+//   required String entry,
+//   required String exit,
+//   required String type,
+// }) async {
+//   try {
+//     // Load CSV file (adjust path or loading method as needed)
+//     final File file = File('assets/data/data.csv');
+//     final String csvString = await file.readAsString();
+//
+//     // Parse CSV
+//     List<List<dynamic>> csvData =
+//         const CsvToListConverter().convert(csvString);
+//
+//     // Skip header row and search for matching record
+//     for (var row in csvData.skip(1)) {
+//       if (row[0].toString() == entry &&
+//           row[1].toString() == exit &&
+//           row[2].toString() == type) {
+//         String tollCalc = row[3].toString();
+//         return {
+//           "Code": "00",
+//           "Message": "Record Exists",
+//           "Data": {"toll": tollCalc}
+//         };
+//       }
+//     }
+//
+//     // If no match found
+//     return {"Code": "00", "Message": "Record Doesn't Exist!", "Data": ""};
+//   } catch (e) {
+//     // Handle errors (e.g., file not found, parsing issues)
+//     return {"Code": "01", "Message": "An Error Occurred! $e", "Data": ""};
+//   }
+// }
 }
-
-
-
-

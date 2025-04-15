@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:mtag_flutterapp/base/app_data.dart';
 import 'package:mtag_flutterapp/controller/home_controller.dart';
 import 'package:mtag_flutterapp/widgets/dialog/change_pin_dialog.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../../api/auth_controller.dart';
 import '../../constants/other_consts.dart';
 import 'package:share_plus/share_plus.dart';
@@ -16,6 +17,12 @@ class SettingScreen extends StatelessWidget {
 
   final navigatorKey = GlobalKey<NavigatorState>();
   final _otherConstants = OtherConsts();
+
+  Future<String> _getAppVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    return packageInfo.version;
+  }
+
   @override
   @override
   Widget build(BuildContext context) {
@@ -107,33 +114,56 @@ class SettingScreen extends StatelessWidget {
                     shrinkWrap: true,
                     slivers: [
                       SliverList(
-                          key: UniqueKey(),
-                          delegate: SliverChildBuilderDelegate(
-                            childCount: items.length,
-                            (context, i) => Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ListTile(
-                                  key: UniqueKey(),
-                                  visualDensity:
-                                      VisualDensity.adaptivePlatformDensity,
-                                  onTap: items[i].onTap,
-                                  horizontalTitleGap: 6.0,
-                                  dense: true,
-                                  leading: Text(
-                                    items[i].name ?? '',
-                                  ),
-                                  trailing: items[i].icon,
+                        key: UniqueKey(),
+                        delegate: SliverChildBuilderDelegate(
+                          childCount: items.length,
+                          (context, i) => Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ListTile(
+                                key: UniqueKey(),
+                                visualDensity:
+                                    VisualDensity.adaptivePlatformDensity,
+                                onTap: items[i].onTap,
+                                horizontalTitleGap: 6.0,
+                                dense: true,
+                                leading: Text(
+                                  items[i].name ?? '',
                                 ),
-                                const Divider(
-                                  thickness: 0.4,
-                                )
-                              ],
-                            ),
-                          ))
+                                trailing: items[i].icon,
+                              ),
+                              const Divider(
+                                thickness: 0.4,
+                              )
+                            ],
+                          ),
+                        ),
+                      )
                     ],
                   ),
-                )
+                ),
+                FutureBuilder<String>(
+                  future: _getAppVersion(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: Text(
+                          'App-Version ${snapshot.data}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                ),
               ],
             ),
           ),
@@ -282,7 +312,7 @@ final List<SettingsModel> items = [
                 onPressed: () {
                   Get.delete<HomeController>(force: true);
                   Get.find<AuthController>().clearSharedData()
-                      ? Get.offNamedUntil('/pinPage',(v)=>false)
+                      ? Get.offNamedUntil('/pinPage', (v) => false)
                       : Get.back();
                 },
               ),

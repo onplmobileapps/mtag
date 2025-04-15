@@ -28,12 +28,23 @@ class _NotificationCardState extends State<NotificationCard> {
       () {
         final data = notificationController.notificationModel.value.data;
         if (data == null || data.isEmpty) {
-          return Center(
-            child: Text(
-              'Looks like you’re all caught up! No notifications yet.',
-              style: Theme.of(context).textTheme.displayMedium,
-              textAlign: TextAlign.center,
-            ),
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                size: 100.0,
+                Icons.notifications_off_outlined,
+              ),
+              SizedBox(
+                height: 20.0,
+              ),
+              Text(
+                'No notifications yet!',
+                style: Theme.of(context).textTheme.displayLarge,
+                textAlign: TextAlign.center,
+              ),
+            ],
           );
         }
 
