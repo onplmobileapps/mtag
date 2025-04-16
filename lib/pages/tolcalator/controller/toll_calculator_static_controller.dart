@@ -1,24 +1,13 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:csv/csv.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/db/stations_database.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../../api/user_repo.dart';
 import '../../../db/toll_database.dart';
 import '../model/static_mw_model.dart';
 import '../model/stations_model.dart';
 import '../model/vehicle_model.dart';
-import '../assets/data/toll_data.dart';
 
 class MotorwayStaticController extends GetxController implements GetxService {
-  final UserRepo userRepo;
-
-  MotorwayStaticController({required this.userRepo});
-
   // Rx variable for MotorwayStations
   final RxList<String> stations = <String>[].obs;
   List<StData> fullStationsList = []; // Stores stid and stname
@@ -41,7 +30,7 @@ class MotorwayStaticController extends GetxController implements GetxService {
     StaticMotorwayModel(
         motorwayName: "M1", motorwayAbbrivation: "Isb-Psh", motorwayID: 4),
     StaticMotorwayModel(
-        motorwayName: "M2", motorwayAbbrivation: "Lhr-Isb", motorwayID: 7),
+        motorwayName: "M2", motorwayAbbrivation: "Isb-Lhr", motorwayID: 7),
     StaticMotorwayModel(
         motorwayName: "M3", motorwayAbbrivation: "Lhr-Abhk", motorwayID: 6),
     StaticMotorwayModel(
@@ -138,42 +127,4 @@ class MotorwayStaticController extends GetxController implements GetxService {
       return {"Code": "01", "Message": "An Error Occurred!", "Data": ""};
     }
   }
-
-//calculate toll directly
-
-// Future<Map<String, dynamic>> calculateTollDirect({
-//   required String entry,
-//   required String exit,
-//   required String type,
-// }) async {
-//   try {
-//     // Load CSV file (adjust path or loading method as needed)
-//     final File file = File('assets/data/data.csv');
-//     final String csvString = await file.readAsString();
-//
-//     // Parse CSV
-//     List<List<dynamic>> csvData =
-//         const CsvToListConverter().convert(csvString);
-//
-//     // Skip header row and search for matching record
-//     for (var row in csvData.skip(1)) {
-//       if (row[0].toString() == entry &&
-//           row[1].toString() == exit &&
-//           row[2].toString() == type) {
-//         String tollCalc = row[3].toString();
-//         return {
-//           "Code": "00",
-//           "Message": "Record Exists",
-//           "Data": {"toll": tollCalc}
-//         };
-//       }
-//     }
-//
-//     // If no match found
-//     return {"Code": "00", "Message": "Record Doesn't Exist!", "Data": ""};
-//   } catch (e) {
-//     // Handle errors (e.g., file not found, parsing issues)
-//     return {"Code": "01", "Message": "An Error Occurred! $e", "Data": ""};
-//   }
-// }
 }

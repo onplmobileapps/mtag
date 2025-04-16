@@ -34,7 +34,7 @@ class Binding extends Bindings {
     Get.lazyPut(() => UpdateEmailController(userRepo: UserRepo()));
     Get.lazyPut(() => RechargeController(userRepo: UserRepo()));
     // Get.lazyPut(() => TollCalculatorController(userRepo: UserRepo()));
-    Get.lazyPut(() => MotorwayStaticController(userRepo: UserRepo()));
+    Get.lazyPut(() => MotorwayStaticController());
     Get.lazyPut(() => TollController(userRepo: UserRepo()));
     Get.lazyPut(() => UpdateSmsStatusController(userRepo: UserRepo()));
     Get.lazyPut(() => ActivityContorller(UserRepo()));

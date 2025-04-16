@@ -94,11 +94,13 @@ class TollDatabase {
           return;
         }
 
-        // Expect 4 columns: e_sta_id, x_sta_id, v_cat, t_toll_r
-        if (csvData[0].length != 4) {
-          print('Error: Expected 4 columns, found ${csvData[0].length}');
+        if (csvData[0].length < 5) {
+          print(
+              'Error: Expected at least 5 columns, found ${csvData[0].length}');
           return;
         }
+
+        csvData = csvData.sublist(1);
       } catch (parseError) {
         print('CSV parsing failed: $parseError');
         return;
@@ -110,31 +112,19 @@ class TollDatabase {
 
         for (var row in csvData) {
           try {
-            // Handle missing or null values
-            final eStaId = row[0] is int ? row[0] : null;
-            final xStaId = row[1] is int ? row[1] : null;
-            final vCat = row[2] is int ? row[2] : null;
-            final tTollR = row[3] is int ? row[3] : 0;
-
-            // Skip rows where critical fields are missing
-            if (vCat == null || tTollR == null) {
-              print('Skipping row with missing v_cat or t_toll_r: $row');
-              continue;
-            }
-
             batch.insert(
               'veh_toll_cal_7',
               {
-                'e_sta_id': eStaId,
-                'x_sta_id': xStaId,
-                'v_cat': vCat,
-                't_toll_r': tTollR,
+                'e_sta_id': row[1],
+                'x_sta_id': row[2],
+                'v_cat': row[3],
+                't_toll_r': row[4]
               },
               conflictAlgorithm: ConflictAlgorithm.replace,
             );
             insertedRows++;
           } catch (e) {
-            print('Error inserting row $row: $e');
+            print('Error inserting row: $e');
           }
         }
 
