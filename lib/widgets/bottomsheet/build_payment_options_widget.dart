@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/pages/recharge/recharge_new_design.dart';
+import 'package:mtag_flutterapp/pages/recharge/recharge_page.dart';
 
 import '../../api/api_constants.dart';
 import '../../constants/other_consts.dart';

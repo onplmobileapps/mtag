@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:get/get.dart';
 import '../../base/app_data.dart';
 import '../../utils/utils.dart';
 import '../api/application_url.dart';
 import '../widgets/dialog/promo_dialog.dart';
-import '../widgets/dialog/update_dialog.dart';
+
 import '../api/api_constants.dart';
 import '../api/auth_controller.dart';
 import '../api/user_repo.dart';

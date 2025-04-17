@@ -17,7 +17,7 @@ import '../../widgets/dialog/chat_support_dialog.dart';
 import '../../widgets/shimmer_dashboard.dart';
 import '../activity/activity_screen.dart';
 import '../recharge/controller/recharge_controller.dart';
-import '../recharge/recharge_new_design.dart';
+import '../recharge/recharge_page.dart';
 import '../settings/setting_screen.dart';
 
 class HomePage extends GetView<HomeController> {

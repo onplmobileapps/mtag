@@ -15,7 +15,6 @@ import 'api/auth_controller.dart';
 import 'api/auth_repo.dart';
 import 'api/user_repo.dart';
 import 'pages/recharge/controller/recharge_controller.dart';
-import 'pages/tolcalator/controller/toll_calculator_controller.dart';
 import 'pages/tollhistory/controller/tollcontroller.dart';
 
 class Binding extends Bindings {

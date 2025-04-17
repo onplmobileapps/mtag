@@ -26,7 +26,7 @@ void showRechargeSummaryDialog({
       final dialogWidth = screenSize.width * 0.85;
       final dialogHeight = screenSize.height * 0.6;
 
-      return Dialog.fullscreen(
+      return Dialog.fullscreen(backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
         // No need for shape or elevation; handled by adaptive
         child: Container(margin: EdgeInsets.all(16),
           width: dialogWidth,

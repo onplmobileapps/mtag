@@ -114,8 +114,9 @@ class MessagingService {
     await _loadBadgeCount();
 
     _fcm.getInitialMessage().then((message) {
-      if (message != null && context.mounted)
+      if (message != null && context.mounted) {
         _handleNotificationClick(context, message);
+      }
     });
 
     FirebaseMessaging.onMessage.listen(_handleForegroundNotification);

@@ -12,7 +12,7 @@ import '../../pages/privacy/privacy_policy_screen.dart';
 import '../../pages/receipt/receipt_screen.dart';
 import '../pages/alfawebview/alfla_webview_mastercard.dart';
 import '../pages/login/forget_pin_page.dart';
-import '../pages/recharge/recharge_new_design.dart';
+import '../pages/recharge/recharge_page.dart';
 import '../pages/recharge/select_mtag.dart';
 import '../../pages/smsalert/sms_alert_screen.dart';
 import '../../pages/faqs/faqs_screen.dart';
@@ -20,7 +20,7 @@ import '../../pages/editprofile/edit_profile_screen.dart';
 import '../../pages/feedback/feedback_screen.dart';
 import '../../pages/mtag/mtag_detail_screen.dart';
 import '../../pages/settings/setting_screen.dart';
-import '../../pages/tolcalator/tolcalculator_screen.dart';
+
 import '../../pages/tollhistory/toll_history_screen.dart';
 import '../../pages/mtag/mtag_screen.dart';
 import '../../pages/notification/notification_expand_screen.dart';

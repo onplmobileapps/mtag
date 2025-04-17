@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -87,7 +89,7 @@ class _TollCalculatorLocalState extends State<TollCalculatorLocal>
         exit: exitId,
         type: controller.vehicleList[_selectedVehicle].id.toString(),
       );
-
+log(result.toString());
       if (result['Code'] == '00' && result['Data'] != null) {
         _animationController.reset();
         setState(() {
@@ -97,7 +99,7 @@ class _TollCalculatorLocalState extends State<TollCalculatorLocal>
         _animationController.forward();
         _scrollToBottom();
       } else {
-        _showSnackBar(result['Message'] ?? 'Failed to calculate toll');
+        _showSnackBar("${result['Message'] ?? 'Failed to calculate toll'}");
       }
     } catch (e) {
       _showSnackBar('Calculation failed: ${e.toString()}');

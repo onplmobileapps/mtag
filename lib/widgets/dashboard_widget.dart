@@ -8,7 +8,7 @@ import 'package:mtag_flutterapp/controller/home_controller.dart';
 import 'package:mtag_flutterapp/utils/utils.dart';
 import 'package:mtag_flutterapp/widgets/bottomsheet/bottom_sheet_widget.dart';
 
-import '../pages/recharge/recharge_new_design.dart';
+import '../pages/recharge/recharge_page.dart';
 
 String getVehCategory(String vehicleType) {
   Map<String, String> vehicleCategories = {
