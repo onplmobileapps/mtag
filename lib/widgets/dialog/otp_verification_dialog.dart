@@ -42,8 +42,8 @@ class OtpVerificationDialog extends StatelessWidget {
     return PopScope(
       canPop: false,
       child: Dialog(
-        surfaceTintColor: Theme.of(context).dialogBackgroundColor,
-        backgroundColor: Theme.of(context).dialogBackgroundColor,
+        surfaceTintColor: Theme.of(context).dialogTheme.surfaceTintColor,
+        backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
         insetPadding: const EdgeInsets.symmetric(horizontal: 20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Stack(

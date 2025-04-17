@@ -22,7 +22,7 @@ void showBreakdownDialog({
         canPop: false,
         child: Dialog(
           surfaceTintColor: Theme.of(context).dialogTheme.surfaceTintColor,
-          backgroundColor: Theme.of(context).dialogBackgroundColor,
+          backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -199,7 +199,7 @@ void showTopUpDialog({
         canPop: false,
         child: Dialog(
           surfaceTintColor: Theme.of(context).dialogTheme.surfaceTintColor,
-          backgroundColor: Theme.of(context).dialogBackgroundColor,
+          backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),

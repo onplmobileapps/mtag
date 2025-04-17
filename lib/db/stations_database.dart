@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:csv/csv.dart';
 import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
@@ -85,14 +87,14 @@ class StationsDatabase {
       final isComplete = isEmpty ? false : await _isDataComplete(db);
 
       if (isEmpty || !isComplete) {
-        print('Database is empty or incomplete, importing stations data...');
+        log('Database is empty or incomplete, importing stations data...');
         await _loadStationsFromCsv(db);
       } else {
-        print(
+        log(
             'Database already contains complete stations data, skipping import.');
       }
     } catch (e) {
-      print('Error checking/importing data: $e');
+      log('Error checking/importing data: $e');
       // If there's an error, try to import data anyway
       await _loadStationsFromCsv(db);
     }
@@ -119,7 +121,7 @@ class StationsDatabase {
       ''');
 
       await db.delete('motorway_kms');
-      print('Old data cleared.');
+      log('Old data cleared.');
 
       final csvString = await rootBundle.loadString('assets/data/stations.csv');
       final csvData = CsvToListConverter(
@@ -128,7 +130,7 @@ class StationsDatabase {
       ).convert(csvString);
 
       if (csvData.isEmpty || csvData.length < 2) {
-        print('CSV data is empty or invalid.');
+        log('CSV data is empty or invalid.');
         return;
       }
 
@@ -161,10 +163,10 @@ class StationsDatabase {
         }
 
         await batch.commit(noResult: true);
-        print('Stations loaded: ${dataRows.length}');
+        log('Stations loaded: ${dataRows.length}');
       });
     } catch (e) {
-      print('Failed to load CSV data: $e');
+      log('Failed to load CSV data: $e');
       rethrow; // Re-throw to handle in calling function
     }
   }
@@ -210,7 +212,7 @@ class StationsDatabase {
         "Data": result,
       };
     } catch (e) {
-      print('Database error: $e');
+      log('Database error: $e');
       return {
         "Code": "02",
         "Message": "Database error: ${e.toString()}",

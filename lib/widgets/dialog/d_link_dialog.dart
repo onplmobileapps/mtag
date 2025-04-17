@@ -24,8 +24,8 @@ class _DelinkVehicleDialogState extends State<DelinkVehicleDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      surfaceTintColor: Theme.of(context).dialogBackgroundColor,
-      backgroundColor: Theme.of(context).dialogBackgroundColor,
+      surfaceTintColor: Theme.of(context).dialogTheme.surfaceTintColor,
+      backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),

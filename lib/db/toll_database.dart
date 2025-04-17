@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -62,23 +64,23 @@ class TollDatabase {
     final isComplete = isEmpty ? false : await _isDataComplete(db);
 
     if (isEmpty || !isComplete) {
-      print('Database is empty or incomplete, importing data...');
+      log('Database is empty or incomplete, importing data...');
       await _loadDataFromCsvAndInsert(db);
     } else {
-      print('Database already contains complete data, skipping import.');
+      log('Database already contains complete data, skipping import.');
     }
   }
 
   Future<void> _loadDataFromCsvAndInsert(Database db) async {
     try {
       await db.delete('veh_toll_cal_7');
-      print('Existing data deleted');
+      log('Existing data deleted');
 
       final csvString = await rootBundle.loadString('assets/data/data.csv');
-      print('Raw CSV length: ${csvString.length} characters');
+      log('Raw CSV length: ${csvString.length} characters');
 
       if (csvString.isEmpty) {
-        print('Error: CSV file is empty');
+        log('Error: CSV file is empty');
         return;
       }
 
@@ -90,13 +92,13 @@ class TollDatabase {
         ).convert(csvString);
 
         if (csvData.isEmpty) {
-          print('Error: No rows found in CSV');
+          log('Error: No rows found in CSV');
           return;
         }
 
         // Verify the CSV has the expected 4 columns
         if (csvData[0].length != 4) {
-          print(
+          log(
               'Error: Expected 4 columns (e_sta_id, x_sta_id, v_cat, t_toll_r), found ${csvData[0].length}');
           return;
         }
@@ -106,7 +108,7 @@ class TollDatabase {
           csvData = csvData.sublist(1);
         }
       } catch (parseError) {
-        print('CSV parsing failed: $parseError');
+        log('CSV parsing failed: $parseError');
         return;
       }
 
@@ -139,17 +141,17 @@ class TollDatabase {
               }
             }
           } catch (e) {
-            print('Error inserting row: $e');
+            log('Error inserting row: $e');
           }
         }
 
         await batch.commit(noResult: true);
-        print('Inserted $insertedRows rows');
+        log('Inserted $insertedRows rows');
       });
 
-      print('Data insertion complete!');
+      log('Data insertion complete!');
     } catch (e) {
-      print('Error loading data from CSV: $e');
+      log('Error loading data from CSV: $e');
     }
   }
 

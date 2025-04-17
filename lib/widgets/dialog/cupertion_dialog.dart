@@ -13,7 +13,7 @@ void showPopDialog(String message, Function()? onPressed) {
       actions: [
         CupertinoDialogAction(
           onPressed: () {
-            Navigator.pop(dialogContext);
+            
             onPressed?.call();
           },
           child: const Text('OK'),

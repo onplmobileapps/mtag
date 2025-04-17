@@ -88,7 +88,6 @@ ThemeData appTheme = ThemeData(
   ),
   fontFamily: 'Poppins',
   disabledColor: const Color(0xfff5f5f5),
-  dialogBackgroundColor: Colors.white,
   datePickerTheme: const DatePickerThemeData(
     dayForegroundColor: WidgetStatePropertyAll(Colors.black),
     shape: RoundedRectangleBorder(),
@@ -287,7 +286,7 @@ ThemeData darkTheme = ThemeData(
   dividerTheme: const DividerThemeData(color: Colors.white),
   dividerColor: Colors.white70,
   dialogTheme: const DialogTheme(
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.black,
     contentTextStyle: TextStyle(
       color: Colors.white,
       fontSize: 14,
@@ -336,7 +335,6 @@ ThemeData darkTheme = ThemeData(
   ),
   useMaterial3: true,
   indicatorColor: Colors.white,
-  dialogBackgroundColor: const Color(0xff212121),
   visualDensity: VisualDensity.adaptivePlatformDensity,
   listTileTheme: ListTileThemeData(
     visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -394,6 +392,7 @@ ThemeData darkTheme = ThemeData(
       fontSize: 18,
     ),
   ),
+  
   chipTheme: const ChipThemeData(
     brightness: Brightness.dark,
     disabledColor: Colors.black,

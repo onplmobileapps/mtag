@@ -48,7 +48,7 @@ class _ChangePinDialogState extends State<ChangePinDialog> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      child: Dialog(backgroundColor: Theme.of(context).dialogBackgroundColor,surfaceTintColor: Theme.of(context).dialogTheme.surfaceTintColor,
+      child: Dialog(backgroundColor: Theme.of(context).dialogTheme.backgroundColor,surfaceTintColor: Theme.of(context).dialogTheme.surfaceTintColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Stack(
           clipBehavior: Clip.none,

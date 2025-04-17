@@ -23,8 +23,8 @@ class JazzResponseDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      backgroundColor: Theme.of(context).dialogBackgroundColor,
-      surfaceTintColor: Theme.of(context).dialogBackgroundColor,
+      backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
+      surfaceTintColor: Theme.of(context).dialogTheme.surfaceTintColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
         child: Column(
@@ -63,7 +63,7 @@ Future<void> jazzLoader() {
     context: Get.context!,
     barrierDismissible: false,
     builder: (context) => Dialog(
-      backgroundColor: Theme.of(context).dialogBackgroundColor,
+      backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),

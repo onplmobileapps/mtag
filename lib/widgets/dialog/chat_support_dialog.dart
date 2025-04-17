@@ -8,7 +8,7 @@ showCustomDialog({bool? isError, String? message, BuildContext? context}) {
       barrierDismissible: false,
       context: context!,
       builder: (_) => AlertDialog(
-            backgroundColor: Theme.of(context).dialogBackgroundColor,
+            backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
             contentPadding: EdgeInsets.zero,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
             title: Row(

@@ -13,8 +13,7 @@ Future<DateTime?> showDatePickerDialog(BuildContext context) async {
             onPrimary: Colors.white, // Text color in header buttons
             surface: Colors.white, // Background color of the calendar
             onSurface: Colors.black, // Default text color in the calendar
-          ),
-          dialogBackgroundColor: Colors.white, // Background of the dialog
+          ), // Background of the dialog
           textTheme: const TextTheme(
             headlineSmall: TextStyle(color: Colors.indigo), // Header title text style
           ),
@@ -42,7 +41,7 @@ Future<DateTime?> showDatePickerDialog(BuildContext context) async {
           ),
           iconTheme: IconThemeData(
             color: Colors.indigo.shade900, // Arrow icon color
-          ),
+          ), dialogTheme: DialogThemeData(backgroundColor: Colors.white),
         ),
         child: child!,
       );

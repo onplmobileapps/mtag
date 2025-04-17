@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/constants/other_consts.dart';
 import 'controller/toll_calculator_static_controller.dart';
 
 class TollCalculatorLocal extends StatefulWidget {
@@ -102,7 +103,7 @@ log(result.toString());
         _showSnackBar("${result['Message'] ?? 'Failed to calculate toll'}");
       }
     } catch (e) {
-      _showSnackBar('Calculation failed: ${e.toString()}');
+      _showSnackBar('Calculation failed: ${OtherConsts.exception}');
     } finally {
       setState(() => _isCalculating = false);
     }
