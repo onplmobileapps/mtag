@@ -84,7 +84,7 @@ class TollDatabase {
 
       List<List<dynamic>> csvData;
       try {
-        csvData = CsvToListConverter(
+        csvData = const CsvToListConverter(
           eol: '\n',
           shouldParseNumbers: true,
         ).convert(csvString);
@@ -94,13 +94,17 @@ class TollDatabase {
           return;
         }
 
-        if (csvData[0].length < 5) {
+        // Verify the CSV has the expected 4 columns
+        if (csvData[0].length != 4) {
           print(
-              'Error: Expected at least 5 columns, found ${csvData[0].length}');
+              'Error: Expected 4 columns (e_sta_id, x_sta_id, v_cat, t_toll_r), found ${csvData[0].length}');
           return;
         }
 
-        csvData = csvData.sublist(1);
+        // Remove header row if present
+        if (csvData[0][0] == 'e_sta_id') {
+          csvData = csvData.sublist(1);
+        }
       } catch (parseError) {
         print('CSV parsing failed: $parseError');
         return;
@@ -112,17 +116,28 @@ class TollDatabase {
 
         for (var row in csvData) {
           try {
-            batch.insert(
-              'veh_toll_cal_7',
-              {
-                'e_sta_id': row[1],
-                'x_sta_id': row[2],
-                'v_cat': row[3],
-                't_toll_r': row[4]
-              },
-              conflictAlgorithm: ConflictAlgorithm.replace,
-            );
-            insertedRows++;
+            // Ensure row has exactly 4 columns and handle null/empty values
+            if (row.length == 4) {
+              final eStaId = row[0] is int ? row[0] : null;
+              final xStaId = row[1] is int ? row[1] : null;
+              final vCat = row[2] is int ? row[2] : null;
+              final tTollR = row[3] is int ? row[3] : 0;
+
+              // Only insert if critical fields are not null
+              if (eStaId != null && xStaId != null && vCat != null) {
+                batch.insert(
+                  'veh_toll_cal_7',
+                  {
+                    'e_sta_id': eStaId,
+                    'x_sta_id': xStaId,
+                    'v_cat': vCat,
+                    't_toll_r': tTollR,
+                  },
+                  conflictAlgorithm: ConflictAlgorithm.replace,
+                );
+                insertedRows++;
+              }
+            }
           } catch (e) {
             print('Error inserting row: $e');
           }
