@@ -12,10 +12,7 @@ void showPopDialog(String message, Function()? onPressed) {
       content: Text(message),
       actions: [
         CupertinoDialogAction(
-          onPressed: () {
-            
-            onPressed?.call();
-          },
+          onPressed:onPressed,
           child: const Text('OK'),
         ),
       ],

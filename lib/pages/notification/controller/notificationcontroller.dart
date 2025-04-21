@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '/pages/notification/model/notification_model.dart';
@@ -103,6 +104,7 @@ class NotificationController extends GetxController implements GetxService {
   }
 
   Future<void> addNotification(Data newNotification) async {
+    log('called at receive time${newNotification.body}');
     notificationModel.value.data ??= [];
     notificationModel.value.data!.add(newNotification);
     notificationModel.value.cnt = notificationModel.value.data!.length;

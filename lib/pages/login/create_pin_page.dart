@@ -115,10 +115,12 @@ class _PinEntryPageState extends State<PinEntryPage> {
     } else {
       await authController.verifyPIN(
         onTap: () {
-          if (_pin.value != pinData?['pin']) {
+        
+        
             _pin.value = '';
-            Future.delayed(const Duration(milliseconds: 200), Get.back);
-          }
+   Future.delayed(const Duration(milliseconds: 200), ()=>Get.back());
+           
+      
         },
         cnic: pinData?['cnic'] ?? widget.cnicNumber ?? '',
         mobileNum: pinData?['mobile'] ?? widget.mobileNumber ?? '',

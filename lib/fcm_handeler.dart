@@ -167,6 +167,18 @@ class MessagingService {
         ?.createNotificationChannel(androidChannel);
 
     final notification = message.notification;
+    final controller = Get.find<NotificationController>();
+     if(notification?.body!=null) {
+       await controller.addNotification(Data(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        title: notification?.title ?? '',
+        body: notification?.body ?? '',
+        dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
+        datetimeSmall: DateFormat('dd-MM HH:mm').format(DateTime.now()),
+        imageLink: message.data['image_link'],
+        isSelected: false,
+      ));
+     }
     if (notification?.android != null) {
       _notificationsPlugin.show(
         notification.hashCode,
@@ -184,16 +196,6 @@ class MessagingService {
             '${notification?.title}|${notification?.body}|${message.data['bg_n']}',
       );
 
-      final controller = Get.find<NotificationController>();
-      await controller.addNotification(Data(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        title: notification?.title ?? '',
-        body: notification?.body ?? '',
-        dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
-        datetimeSmall: DateFormat('dd-MM HH:mm').format(DateTime.now()),
-        imageLink: message.data['image_link'],
-        isSelected: false,
-      ));
     }
   }
 

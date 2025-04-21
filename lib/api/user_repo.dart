@@ -92,7 +92,7 @@ class UserRepo {
 
   Future<Map<String, dynamic>> getDlinkOptions() async {
     APISTRUCTURE apiObject = APISTRUCTURE(
-      apiUrl: ApplicationUrl.GETDLINKOPTIONS_URL,
+      apiUrl: ApplicationUrl.GETDLINKOPTIONS_URL, 
       apiRequestMethod: APIREQUESTMETHOD.POST,
       isWantSuccessMessage: true,
     );

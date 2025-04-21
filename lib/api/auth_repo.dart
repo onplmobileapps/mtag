@@ -86,7 +86,7 @@ class AuthRepo {
       String? userData = sharedPreferences.getString(
         'Login',
       );
-      log("Get time${userData.toString()}");
+      
       return userData != null
           ? UserModel.fromJson(json.decode(userData))
           : null;
@@ -276,7 +276,7 @@ class AuthRepo {
   bool? isLoggedIn() {
     if ((getLoginUserData()?.data?.iscoporate == false &&
         getLoginUserData() != null)) {
-      log('corporate');
+   
       return true;
     }
     return false;

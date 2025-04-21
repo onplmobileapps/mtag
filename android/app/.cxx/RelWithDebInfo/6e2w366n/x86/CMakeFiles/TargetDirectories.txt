@@ -1,0 +1,2 @@
+/Users/fwo/StudioProjects/mtag_app/android/app/.cxx/RelWithDebInfo/6e2w366n/x86/CMakeFiles/edit_cache.dir
+/Users/fwo/StudioProjects/mtag_app/android/app/.cxx/RelWithDebInfo/6e2w366n/x86/CMakeFiles/rebuild_cache.dir

@@ -213,14 +213,14 @@ log(result.toString());
         elevation: 0,
         color: Colors.transparent,
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.only(top: 12,bottom: 12),
           child: Column(
             children: [
               const Text('Select Motorway', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 12),
               SizedBox(
-                height: isLargeScreen ? 160 : 140,
-                child: ListView.builder(
+                height: isLargeScreen ? 140 : 120,
+                child: ListView.builder(padding: EdgeInsets.zero,
                   scrollDirection: Axis.horizontal,
                   itemCount: controller.mwNameList.length,
                   itemBuilder: (context, index) =>
@@ -238,12 +238,12 @@ log(result.toString());
         isDarkMode ? Colors.redAccent : Theme.of(context).primaryColor;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: isLargeScreen ? 8 : 6),
+      padding: EdgeInsets.symmetric(horizontal: isLargeScreen ? 5 : 4),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () => setState(
           () {
-            controller.fetchStations(controller.mwNameList[index].motorwayID!);
+            controller.fetchStations(controller.mwNameList[index].motorwayID??-1);
             _selectedMotorway = index;
             _selectedVehicle = -1;
             _showToll = false;
@@ -279,11 +279,11 @@ log(result.toString());
                 colorFilter: ColorFilter.mode(
                     Theme.of(context).primaryColor, BlendMode.srcIn),
               ),
-              Text(controller.mwNameList[index].motorwayAbbrivation!,
+              Text(controller.mwNameList[index].motorwayAbbrivation??'',
                   style: TextStyle(
                       fontSize: isLargeScreen ? 14 : 12,
                       color: Theme.of(context).primaryColor)),
-              Text(controller.mwNameList[index].motorwayName!,
+              Text(controller.mwNameList[index].motorwayName??'',
                   style: TextStyle(
                       fontSize: isLargeScreen ? 20 : 18,
                       color: Theme.of(context).primaryColor)),
@@ -303,34 +303,31 @@ log(result.toString());
             children: [
               const Text('Select Interchange', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 16),
-              _buildDropdown('Select Entry Station', _entryStation,
-                  () => _showStationSelectionDialog(true)),
+              _buildDropdown('Entry Station', _entryStation,
+                  () => _showStationSelectionDialog(true),'Select Entry Station'),
               const SizedBox(height: 16),
-              _buildDropdown('Select Exit Station', _exitStation,
-                  () => _showStationSelectionDialog(false)),
+              _buildDropdown('Exit Station', _exitStation,
+                  () => _showStationSelectionDialog(false),'Select Entry Station'),
             ],
           ),
         ),
       );
 
-  Widget _buildDropdown(String label, String? value, VoidCallback onTap) {
+  Widget _buildDropdown(String label, String? value, VoidCallback onTap,String hint) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final borderColor =
         isDarkMode ? Colors.redAccent : Theme.of(context).primaryColor;
-    final textColor = value != null
-        ? (isDarkMode ? Colors.white : Theme.of(context).primaryColor)
-        : Colors.grey[600];
-
+Text(label,style: Theme.of(context).textTheme.labelMedium,);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label),
+        Text(label,style: Theme.of(context).textTheme.bodySmall,),
         const SizedBox(height: 6),
         InkWell(
           onTap: onTap,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
               border:
                   Border.all(color: value == null ? Colors.grey : borderColor),
@@ -340,8 +337,8 @@ log(result.toString());
               children: [
                 Expanded(
                   child: Text(
-                    value ?? label,
-                    style: TextStyle(color: textColor),
+                    value ?? hint,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
                 Icon(Icons.arrow_drop_down_circle_outlined,
@@ -360,14 +357,14 @@ log(result.toString());
         elevation: 0,
         color: Colors.transparent,
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.only(top: 12,bottom: 12),
           child: Column(
             children: [
               const Text('Select Vehicle Type', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 12),
               SizedBox(
-                height: isLargeScreen ? 160 : 140,
-                child: ListView.builder(
+                height: isLargeScreen ? 140 : 120,
+                child: ListView.builder(padding: EdgeInsets.zero,
                   scrollDirection: Axis.horizontal,
                   itemCount: controller.vehicleList.length,
                   itemBuilder: (context, index) =>
@@ -423,13 +420,16 @@ log(result.toString());
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(
-                controller.vehicleList[index].image!,
-                height: isLargeScreen ? 48 : 40,
-                colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColor, BlendMode.srcIn),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SvgPicture.asset(
+                  controller.vehicleList[index].image??'',fit: BoxFit.fill,
+                  height: isLargeScreen ? 48 : 40,
+                  colorFilter: ColorFilter.mode(
+                      Theme.of(context).primaryColor, BlendMode.srcIn),
+                ),
               ),
-              Text(controller.vehicleList[index].name!,
+              Text(controller.vehicleList[index].name??'',
                   style: TextStyle(
                       fontSize: isLargeScreen ? 18 : 16,
                       color: Theme.of(context).primaryColor)),
@@ -564,7 +564,7 @@ class _StationSearchDialogState extends State<_StationSearchDialog> {
                 ),
               ),
               Expanded(
-                child: ListView.builder(
+                child: ListView.builder(padding: EdgeInsets.zero,
                   shrinkWrap: true,
                   itemCount: _filteredStations.length,
                   itemBuilder: (_, index) {
@@ -577,8 +577,8 @@ class _StationSearchDialogState extends State<_StationSearchDialog> {
                                   : Theme.of(context).primaryColor)),
                       leading: Icon(Icons.location_on,
                           color: isDarkMode
-                              ? Colors.grey
-                              : Theme.of(context).primaryColor),
+                              ? Colors.grey.shade500
+                              : Theme.of(context).primaryColor,size: 18,),
                       trailing: widget.selectedStation == station
                           ? Icon(Icons.check,
                               color: isDarkMode

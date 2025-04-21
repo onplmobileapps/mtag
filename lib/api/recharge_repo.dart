@@ -1,10 +1,7 @@
-import 'dart:developer';
 
 import 'package:mtag_flutterapp/api/application_url.dart';
-
 import 'api_constants.dart';
 import 'api_structure.dart';
-
 abstract class PaymentRepo {
   jazzCashRecharg() {}
   getCardDetails() {}
@@ -20,7 +17,7 @@ abstract class PaymentRepo {
 class RechargRepo implements PaymentRepo {
   @override
   Future<Map<String, dynamic>> jazzCashRecharg({String? mobileNumber, String? mtagID, String? amount}) async {
-    log('jazzcash value==>{$amount,$mobileNumber,$mtagID}');
+
     APISTRUCTURE apiObject = APISTRUCTURE(
       apiUrl: ApplicationUrl.JAZZCASHRECHARGE_URL,
       apiRequestMethod: APIREQUESTMETHOD.POST,

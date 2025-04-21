@@ -1,188 +1,175 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../pages/notification/controller/notificationcontroller.dart';
 
-class NotificationCard extends StatefulWidget {
+class NotificationCard extends StatelessWidget {
   const NotificationCard({super.key});
 
   @override
-  State<NotificationCard> createState() => _NotificationCardState();
-}
-
-class _NotificationCardState extends State<NotificationCard> {
-  final notificationController = Get.find<NotificationController>();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      notificationController.getNotifications();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    // Get the controller instance
+    final NotificationController controller = Get.find<NotificationController>();
+
+    // Fetch notifications on widget initialization
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.getNotifications();
+    });
+
     return Obx(
       () {
-        final data = notificationController.notificationModel.value.data;
+        final data = controller.notificationModel.value.data;
         if (data == null || data.isEmpty) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                size: 100.0,
-                Icons.notifications_off_outlined,
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              Text(
-                'No notifications yet!',
-                style: Theme.of(context).textTheme.displayLarge,
-                textAlign: TextAlign.center,
-              ),
-            ],
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.notifications_off_outlined,
+                  size: 80.0,
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                ),
+                const SizedBox(height: 16.0),
+                Text(
+                  'No Notifications',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                ),
+              ],
+            ),
           );
         }
 
         return ListView.builder(
-          itemCount: data.length,
-          itemBuilder: (context, index) {
-            final notificationItem = data[index];
+  padding: const EdgeInsets.all(8.0),
+  itemCount: data.length,
+  itemBuilder: (context, index) {
+    // Reverse the data to show the last inserted notification first
+    final notification = data.reversed.toList()[index];
 
-            return InkWell(
-              onLongPress: () {
-                if (!notificationController.isSelectionMode.value) {
-                  notificationController.isSelectionMode.value = true;
-                  notificationController.toggleSelection(notificationItem.id!);
-                }
-              },
-              onTap: () {
-                if (notificationController.isSelectionMode.value) {
-                  notificationController.toggleSelection(notificationItem.id!);
-                } else {
-                  Get.toNamed('/notificationsExpandScreen',
-                      arguments: notificationItem);
-                }
-              },
-              child: Container(
-                key: UniqueKey(),
-                margin: const EdgeInsets.all(5),
-                padding: const EdgeInsets.all(5),
+    return Card(
+      elevation: 0.1,
+      margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      color: notification.isSelected ?? false
+          ? Theme.of(context).colorScheme.primary.withAlpha(80)
+          : null,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10.0),
+        onLongPress: () {
+          if (!controller.isSelectionMode.value) {
+            controller.isSelectionMode.value = true;
+            controller.toggleSelection(notification.id!);
+          }
+        },
+        onTap: () {
+          if (controller.isSelectionMode.value) {
+            controller.toggleSelection(notification.id!);
+          } else {
+            Get.toNamed('/notificationsExpandScreen',
+                arguments: notification);
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              // Icon
+              Container(
+                height: 40,
+                width: 40,
+                margin: const EdgeInsets.only(right: 12.0),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).disabledColor,
-                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                child: Image.asset(
+                  'assets/logolight.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
+              // Content
+              Expanded(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      height: 50,
-                      width: 50,
-                      margin: const EdgeInsets.only(left: 4, right: 8, top: 4),
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Image.asset('assets/logolight.png'),
+                    Text(
+                      notification.title ?? '',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 5),
-                          Text(
-                            notificationItem.title ?? '',
-                            softWrap: false,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.displaySmall,
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            notificationItem.body ?? '',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.displaySmall,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            notificationItem.datetimeSmall ?? '',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall
-                                ?.copyWith(
-                                  color: const Color(0XffE73B3E),
-                                  fontStyle: FontStyle.italic,
-                                ),
-                            softWrap: false,
-                            maxLines: 1,
-                          ),
-                          const SizedBox(height: 8),
-                          notificationController.isSelectionMode.value
-                              ? Checkbox(
-                                  activeColor: Colors.blue,
-                                  value: notificationItem.isSelected ?? false,
-                                  onChanged: (v) {
-                                    notificationController
-                                        .toggleSelection(notificationItem.id!);
-                                  },
-                                )
-                              : InkWell(
-                                  onTap: () async {
-                                    showCupertinoModalPopup(
-                                      context: context,
-                                      builder: (_) => CupertinoAlertDialog(
-                                        content: const Text(
-                                            'Do you want to delete?'),
-                                        actions: [
-                                          CupertinoDialogAction(
-                                            isDestructiveAction: true,
-                                            child: const Text('Cancel'),
-                                            onPressed: () =>
-                                                Navigator.of(context).pop(),
-                                          ),
-                                          CupertinoDialogAction(
-                                            child: const Text('Ok'),
-                                            onPressed: () async {
-                                              Get.back();
-                                              await notificationController
-                                                  .deleteNotifications(
-                                                notificationId: [
-                                                  notificationItem.id!
-                                                ],
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                  child: const Icon(Icons.more_vert_outlined),
-                                ),
-                        ],
-                      ),
+                    const SizedBox(height: 4.0),
+                    Text(
+                      notification.body ?? '',
+                      style: Theme.of(context).textTheme.bodySmall,
+                      // No maxLines to allow dynamic expansion
                     ),
                   ],
                 ),
               ),
-            );
-          },
-        );
+              // Action and Date
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  controller.isSelectionMode.value
+                      ? Checkbox(
+                          value: notification.isSelected ?? false,
+                          onChanged: (_) =>
+                              controller.toggleSelection(notification.id!),
+                        )
+                      : IconButton(
+                          icon: const Icon(Icons.more_vert),
+                          onPressed: () {
+                            showCupertinoModalPopup(
+                              context: context,
+                              builder: (_) => CupertinoAlertDialog(
+                                title: const Text('Delete Notification'),
+                                content: const Text(
+                                    'Are you sure you want to delete this notification?'),
+                                actions: [
+                                  CupertinoDialogAction(
+                                    isDestructiveAction: true,
+                                    child: const Text('Cancel'),
+                                    onPressed: () => Get.back(),
+                                  ),
+                                  CupertinoDialogAction(
+                                    child: const Text('Delete'),
+                                    onPressed: () async {
+                                      Get.back();
+                                      await controller.deleteNotifications(
+                                        notificationId: [notification.id!],
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                  Text(
+                    notification.datetimeSmall ?? '',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.redAccent,
+                          fontStyle: FontStyle.italic,
+                        ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  },
+);
       },
     );
   }

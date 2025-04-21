@@ -1,0 +1,1 @@
+/Users/fwo/StudioProjects/mtag_app/build/app/intermediates/cxx/RelWithDebInfo/6e2w366n/obj/arm64-v8a
