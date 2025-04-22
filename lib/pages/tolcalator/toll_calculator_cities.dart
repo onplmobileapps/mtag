@@ -33,6 +33,16 @@ class _CitiesTabState extends State<CitiesTab> {
   List<Map<String, dynamic>>? _tollData;
   final RxList<String> _majorCities = RxList<String>();
 
+  // Define vehicle categories mapping to CSV columns
+  final List<String> _vehicleCategories = [
+    'Car',
+    'Wagon',
+    'Coaster',
+    'Bus',
+    'Truck',
+    'Trailer'
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -63,7 +73,17 @@ class _CitiesTabState extends State<CitiesTab> {
       final headers = csvTable.first
           .map((h) => h?.toString().trim().toLowerCase() ?? '')
           .toList();
-      final expectedHeaders = ['entry_city', 'exit_city', 'toll'];
+      final expectedHeaders = [
+        'entry_city',
+        'exit_city',
+        'car',
+        'wagon',
+        'coaster',
+        'bus',
+        'truck',
+        'trailer',
+        'route'
+      ];
       if (!expectedHeaders.every((h) => headers.contains(h))) {
         throw Exception(
             'Invalid CSV headers: Expected $expectedHeaders, got $headers');
@@ -95,18 +115,21 @@ class _CitiesTabState extends State<CitiesTab> {
           debugPrint('Skipping row with empty cities: $entry');
           continue;
         }
-        // Parse toll
-        if (entry['toll'] != null && entry['toll'].isNotEmpty) {
-          try {
-            entry['toll'] = num.parse(entry['toll']).toInt();
-          } catch (e) {
-            debugPrint(
-                'Invalid toll for $entryCity-$exitCity: ${entry['toll']}');
-            entry['toll'] = 0;
+        // Parse tolls for each vehicle category
+        for (var vehicle in _vehicleCategories) {
+          final tollKey = vehicle.toLowerCase();
+          if (entry[tollKey] != null && entry[tollKey].isNotEmpty) {
+            try {
+              entry[tollKey] = num.parse(entry[tollKey]).toInt();
+            } catch (e) {
+              debugPrint(
+                  'Invalid toll for $entryCity-$exitCity ($vehicle): ${entry[tollKey]}');
+              entry[tollKey] = 0;
+            }
+          } else {
+            debugPrint('Missing toll for $entryCity-$exitCity ($vehicle)');
+            entry[tollKey] = 0;
           }
-        } else {
-          debugPrint('Missing toll for $entryCity-$exitCity');
-          entry['toll'] = 0;
         }
         parsedData.add(entry);
         citySet.add(entryCity);
@@ -200,12 +223,16 @@ class _CitiesTabState extends State<CitiesTab> {
         throw Exception('No toll data found for $_entryCity to $_exitCity');
       }
 
+      // Get the toll for the selected vehicle
+      final vehicleName = controller.vehicleList[_selectedVehicle].name;
+      final vehicleKey = vehicleName!.toLowerCase();
+      final tollValue = tollEntry[vehicleKey] ?? 0;
+
       widget.animationController.reset();
       setState(() {
-        _calculatedToll = tollEntry['toll'].toString();
-        _calculatedRoute = tollEntry['route']?.toString().isNotEmpty == true
-            ? tollEntry['route']
-            : '$_entryCity - $_exitCity';
+        _calculatedToll = tollValue.toString();
+        _calculatedRoute =
+            '$_entryCity - $_exitCity'; // Show only entry and exit cities
         _showToll = true;
       });
       widget.animationController.forward();

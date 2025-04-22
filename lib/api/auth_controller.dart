@@ -14,17 +14,22 @@ import './auth_repo.dart';
 
 class AuthController extends GetxController implements GetxService {
   final AuthRepo authRepo;
+
   AuthController({required this.authRepo});
 
   int? forgotUserId;
   String? forgotUserPhoneNo;
   final bool _notification = true;
   final bool _acceptTerms = true;
+
   bool get notification => _notification;
+
   bool get acceptTerms => _acceptTerms;
   String? _userPhoneNo;
   String? _userCountryCode;
+
   String? get userPhoneNo => _userPhoneNo;
+
   String? get userCountryCode => _userCountryCode;
 
   UserModel? getLoginUserData() {
@@ -55,6 +60,7 @@ class AuthController extends GetxController implements GetxService {
     authRepo.clearSharedData();
     return true;
   }
+
   //Login Api
 
   Future<Map<String, dynamic>> login({
@@ -267,9 +273,9 @@ class AuthController extends GetxController implements GetxService {
             mobileNumber: mobile,
           ));
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
-      showPopDialog(response[APIRESPONSE.ERROR]['Message'], () => Get.back());
+      showPopDialog(response[APIRESPONSE.ERROR]['Message'], () => ());
     } else {
-      showPopDialog('Something went wrong\nTry again later.', () => Get.back());
+      showPopDialog('Something went wrong\nTry again later.', () => ());
     }
 
     return response;

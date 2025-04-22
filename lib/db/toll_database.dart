@@ -98,7 +98,11 @@ class TollDatabase {
 
         // Verify the CSV has the expected 4 columns
         if (csvData[0].length != 4) {
+<<<<<<< HEAD
           log(
+=======
+          print(
+>>>>>>> refs/remotes/origin/offline_and_optimization_branch
               'Error: Expected 4 columns (e_sta_id, x_sta_id, v_cat, t_toll_r), found ${csvData[0].length}');
           return;
         }

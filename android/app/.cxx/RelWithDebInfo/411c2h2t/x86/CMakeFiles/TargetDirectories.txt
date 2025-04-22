@@ -1,0 +1,2 @@
+/home/muhammadhaseebjavaid/StudioProjects/mtag_flutter/android/app/.cxx/RelWithDebInfo/411c2h2t/x86/CMakeFiles/edit_cache.dir
+/home/muhammadhaseebjavaid/StudioProjects/mtag_flutter/android/app/.cxx/RelWithDebInfo/411c2h2t/x86/CMakeFiles/rebuild_cache.dir

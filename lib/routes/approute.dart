@@ -24,6 +24,7 @@ import '../../pages/settings/setting_screen.dart';
 import '../../pages/tollhistory/toll_history_screen.dart';
 import '../../pages/mtag/mtag_screen.dart';
 import '../../pages/notification/notification_expand_screen.dart';
+import '../pages/tolcalator/toll_calculator_local_tabs.dart';
 
 List<GetPage<dynamic>>? getPages = [
   GetPage(
@@ -62,8 +63,8 @@ List<GetPage<dynamic>>? getPages = [
   ),
   GetPage(
     name: '/tollCalculator',
-    // page: () => const TolCalCulatorScreen(),
-    page: () => const TollCalculatorLocal(),
+    // page: () => const TollCalculatorLocal(),
+    page: () => const TollCalculatorLocalTabs(),
   ),
   GetPage(
     name: '/maintenancePage',
