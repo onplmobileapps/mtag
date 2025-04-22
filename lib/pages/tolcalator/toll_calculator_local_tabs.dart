@@ -74,14 +74,14 @@ class _TollCalculatorLocalState extends State<TollCalculatorLocalTabs>
         isDarkMode ? Colors.redAccent : Theme.of(context).primaryColor;
 
     return Container(
-      height: 50,
+      height: 35,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Theme.of(context).disabledColor.withOpacity(0.2),
+        color: Theme.of(context).disabledColor.withAlpha(28),
         borderRadius: BorderRadius.circular(25),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withAlpha(18),
             blurRadius: 0,
             offset: const Offset(0, 2),
           ),
@@ -107,17 +107,17 @@ class _TollCalculatorLocalState extends State<TollCalculatorLocalTabs>
         overlayColor: WidgetStateProperty.all(Colors.transparent),
         splashBorderRadius: BorderRadius.circular(25),
         dividerColor: Colors.transparent,
-        tabs: const [
+        tabs:  [
           Tab(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 4),
-              child: Text('Calculate Toll by Plazas'),
+              child: Text('Calculate Toll by Plazas',style: Theme.of(context).tabBarTheme.labelStyle,),
             ),
           ),
           Tab(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 4),
-              child: Text('Calculate Toll by Cities'),
+              child: Text('Calculate Toll by Cities',style: Theme.of(context).tabBarTheme.labelStyle,),
             ),
           ),
         ],
@@ -292,7 +292,7 @@ class _TollPlazaTabState extends State<TollPlazaTab> {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       final isLargeScreen = constraints.maxWidth > 600;
-      final padding = isLargeScreen ? 24.0 : 16.0;
+      final padding = isLargeScreen ? 18.0 : 10.0;
       return SingleChildScrollView(
         controller: _scrollController,
         padding: EdgeInsets.symmetric(horizontal: padding),
@@ -345,23 +345,21 @@ class _TollPlazaTabState extends State<TollPlazaTab> {
   Widget _buildMotorwaySelector(bool isLargeScreen) => Card(
         elevation: 0,
         color: Colors.transparent,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            children: [
-              const Text('Select Motorway', style: TextStyle(fontSize: 16)),
-              const SizedBox(height: 12),
-              SizedBox(
-                height: isLargeScreen ? 160 : 140,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: controller.mwNameList.length,
-                  itemBuilder: (context, index) =>
-                      _buildMotorwayItem(index, isLargeScreen),
-                ),
+        child: Column(
+          children: [
+           Text('Select Motorway', style: Theme.of(context).textTheme.labelLarge),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: isLargeScreen ? 120 : 110,
+              child: ListView.builder(padding: EdgeInsets.zero,
+                scrollDirection: Axis.horizontal,
+                itemCount: controller.mwNameList.length,
+                itemBuilder: (context, index) =>
+                    _buildMotorwayItem(index, isLargeScreen),
               ),
-            ],
-          ),
+            ),
+                const SizedBox(height: 12),
+          ],
         ),
       );
 
@@ -386,7 +384,7 @@ class _TollPlazaTabState extends State<TollPlazaTab> {
         ),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          width: isLargeScreen ? 160 : 120,
+          width: isLargeScreen ? 150 : 120,
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(
@@ -409,7 +407,7 @@ class _TollPlazaTabState extends State<TollPlazaTab> {
             children: [
               SvgPicture.asset(
                 'assets/line.svg',
-                height: isLargeScreen ? 48 : 40,
+                height: isLargeScreen ? 45 : 35,
                 colorFilter: ColorFilter.mode(
                     Theme.of(context).primaryColor, BlendMode.srcIn),
               ),
@@ -431,96 +429,107 @@ class _TollPlazaTabState extends State<TollPlazaTab> {
       ),
     );
   }
+Widget _buildStationSelector(double padding) => Card(
+      elevation: 0,
+      color: Colors.transparent,
+      child: Padding(
+        padding: EdgeInsets.all(padding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(child: Text('Select InterChange', style: Theme.of(context).textTheme.labelLarge)),
+            const SizedBox(height: 10),
+            _buildDropdownField(
+              icon: Icon( Icons.location_on_outlined,color: Colors.green,),
+              label: 'Entry Station',
+              value: _entryStation,
+              hint: 'Enter starting point',
+              onTap: () => _showStationSelectionDialog(true),
+            ),
+            if (_entryStation != null) ...[
+              const SizedBox(height: 10),
+              _buildDropdownField(
+                icon: Icon(Icons.location_on,color: Colors.redAccent,),
+                label: 'Exit Station',
+                value: _exitStation,
+                hint: 'Enter destination',
+                onTap: () => _showStationSelectionDialog(false),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
 
-  Widget _buildStationSelector(double padding) => Card(
-        elevation: 0,
-        color: Colors.transparent,
-        child: Padding(
-          padding: EdgeInsets.all(padding),
-          child: Column(
+Widget _buildDropdownField({
+  required Widget icon,
+  required String label,
+  required String? value,
+  required String hint,
+  required VoidCallback onTap,
+}) {
+  final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+  final borderColor =
+      value == null ? Colors.grey : Theme.of(context).primaryColor;
+  final textColor = value != null
+      ? (isDarkMode ? Colors.white : Theme.of(context).primaryColor)
+      : Colors.grey[600];
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(label, style: Theme.of(context).textTheme.labelSmall),
+      const SizedBox(height: 6),
+      InkWell(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            border: Border.all(color: borderColor, width: 0.5),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
             children: [
-              const Text('Select Interchange', style: TextStyle(fontSize: 16)),
-              const SizedBox(height: 16),
-              _buildDropdown(
-                'Select Entry Station',
-                _entryStation,
-                () => _showStationSelectionDialog(true),
+            icon,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  value ?? hint,
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: 16,
+                  ),
+                ),
               ),
-              const SizedBox(height: 16),
-              _buildDropdown(
-                'Select Exit Station',
-                _exitStation,
-                () => _showStationSelectionDialog(false),
-              ),
+              Icon(Icons.arrow_drop_down, color: textColor),
             ],
           ),
         ),
-      );
+      ),
+    ],
+  );
+}
 
-  Widget _buildDropdown(String label, String? value, VoidCallback onTap) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final borderColor =
-        isDarkMode ? Colors.redAccent : Theme.of(context).primaryColor;
-    final textColor = value != null
-        ? (isDarkMode ? Colors.white : Theme.of(context).primaryColor)
-        : Colors.grey[600];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label),
-        const SizedBox(height: 6),
-        InkWell(
-          onTap: onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            decoration: BoxDecoration(
-              border:
-                  Border.all(color: value == null ? Colors.grey : borderColor),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    value ?? label,
-                    style: TextStyle(color: textColor),
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_drop_down_circle_outlined,
-                  color:
-                      isDarkMode ? Colors.grey : Theme.of(context).primaryColor,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
   Widget _buildVehicleSelector(bool isLargeScreen) => Card(
         elevation: 0,
         color: Colors.transparent,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            children: [
-              const Text('Select Vehicle Type', style: TextStyle(fontSize: 16)),
-              const SizedBox(height: 12),
-              SizedBox(
-                height: isLargeScreen ? 160 : 140,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: controller.vehicleList.length,
-                  itemBuilder: (context, index) =>
-                      _buildVehicleItem(index, isLargeScreen),
-                ),
+        child: Column(
+          children: [
+             Text('Select Vehicle Type', style:Theme.of(context).textTheme.labelLarge ),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: isLargeScreen ? 160 : 120,
+              child: ListView.builder(padding: EdgeInsets.zero,
+                scrollDirection: Axis.horizontal,
+                itemCount: controller.vehicleList.length,
+                itemBuilder: (context, index) =>
+                    _buildVehicleItem(index, isLargeScreen),
               ),
-            ],
-          ),
+            ),
+            SizedBox(height: 10,)
+          ],
         ),
       );
 
@@ -568,11 +577,14 @@ class _TollPlazaTabState extends State<TollPlazaTab> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(
-                controller.vehicleList[index].image!,
-                height: isLargeScreen ? 48 : 40,
-                colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColor, BlendMode.srcIn),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SvgPicture.asset(
+                  controller.vehicleList[index].image!,
+                  height: isLargeScreen ? 48 : 40,
+                  colorFilter: ColorFilter.mode(
+                      Theme.of(context).primaryColor, BlendMode.srcIn),
+                ),
               ),
               Text(
                 controller.vehicleList[index].name!,

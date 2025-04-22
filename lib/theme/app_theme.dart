@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-ThemeData appTheme = ThemeData(
+ThemeData appTheme = ThemeData(tabBarTheme: TabBarThemeData(labelStyle: TextStyle(fontSize: 11,fontFamily: 'Poppins')),
   pageTransitionsTheme: const PageTransitionsTheme(builders: {}), //add later
   brightness: Brightness.light,
   bannerTheme: const MaterialBannerThemeData(

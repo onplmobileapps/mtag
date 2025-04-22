@@ -2,7 +2,6 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:mtag_flutterapp/pages/login/auth_page.dart';
 import 'package:mtag_flutterapp/pages/login/create_pin_page.dart';
 import 'package:mtag_flutterapp/pages/notification/notification_withintent.dart';
-import 'package:mtag_flutterapp/pages/tolcalator/toll_calculator_local.dart';
 import '../../constants/other_consts.dart';
 import '../../maintenance/maintenance_screen.dart';
 import '../../pages/dashboard/home_page.dart';

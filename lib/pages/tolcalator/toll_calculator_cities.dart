@@ -357,94 +357,105 @@ class _CitiesTabState extends State<CitiesTab> {
       );
 
   Widget _buildCitySelector(double padding) => Card(
-        elevation: 0,
-        color: Colors.transparent,
-        child: Padding(
-          padding: EdgeInsets.all(padding),
-          child: Column(
+      elevation: 0,
+      color: Colors.transparent,
+      child: Padding(
+        padding: EdgeInsets.all(padding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(child: Text('Select Your Route', style: Theme.of(context).textTheme.labelLarge)),
+            const SizedBox(height: 16),
+            _buildCityDropdownField(
+              icon: Icons.location_city_outlined,
+              label: 'Entry City',
+              value: _entryCity,
+              hint: 'Select Entry City',
+              onTap: () => _showCitySelectionDialog(true),
+            ),
+            if (_entryCity != null) ...[
+              const SizedBox(height: 16),
+              _buildCityDropdownField(
+                icon: Icons.location_city,
+                label: 'Exit City',
+                value: _exitCity,
+                hint: 'Select Exit City',
+                onTap: () => _showCitySelectionDialog(false),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+
+Widget _buildCityDropdownField({
+  required IconData icon,
+  required String label,
+  required String? value,
+  required String hint,
+  required VoidCallback onTap,
+}) {
+  final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+  final borderColor = value == null ? Colors.grey : Theme.of(context).primaryColor;
+  final textColor = value != null
+      ? (isDarkMode ? Colors.white : Theme.of(context).primaryColor)
+      : Colors.grey[600];
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(label, style: Theme.of(context).textTheme.labelSmall),
+      const SizedBox(height: 6),
+      InkWell(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            border: Border.all(color: borderColor, width: 0.5),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
             children: [
-              const Text('Select City', style: TextStyle(fontSize: 16)),
-              const SizedBox(height: 16),
-              _buildDropdown(
-                'Select Entry City',
-                _entryCity,
-                () => _showCitySelectionDialog(true),
+              Icon(icon, color: textColor, size: 20),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  value ?? hint,
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: 16,
+                  ),
+                ),
               ),
-              const SizedBox(height: 16),
-              _buildDropdown(
-                'Select Exit City',
-                _exitCity,
-                () => _showCitySelectionDialog(false),
-              ),
+              Icon(Icons.arrow_drop_down, color: textColor),
             ],
           ),
         ),
-      );
+      ),
+    ],
+  );
+}
 
-  Widget _buildDropdown(String label, String? value, VoidCallback onTap) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final borderColor =
-        isDarkMode ? Colors.redAccent : Theme.of(context).primaryColor;
-    final textColor = value != null
-        ? (isDarkMode ? Colors.white : Theme.of(context).primaryColor)
-        : Colors.grey[600];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label),
-        const SizedBox(height: 6),
-        InkWell(
-          onTap: onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            decoration: BoxDecoration(
-              border:
-                  Border.all(color: value == null ? Colors.grey : borderColor),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    value ?? label,
-                    style: TextStyle(color: textColor),
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_drop_down_circle_outlined,
-                  color:
-                      isDarkMode ? Colors.grey : Theme.of(context).primaryColor,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
   Widget _buildVehicleSelector(bool isLargeScreen) => Card(
         elevation: 0,
         color: Colors.transparent,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            children: [
-              const Text('Select Vehicle Type', style: TextStyle(fontSize: 16)),
-              const SizedBox(height: 12),
-              SizedBox(
-                height: isLargeScreen ? 160 : 140,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: controller.vehicleList.length,
-                  itemBuilder: (context, index) =>
-                      _buildVehicleItem(index, isLargeScreen),
-                ),
+        child: Column(
+          children: [
+             Text('Select Vehicle Type', style: Theme.of(context).textTheme.labelLarge),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: isLargeScreen ? 140 : 120,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: controller.vehicleList.length,
+                itemBuilder: (context, index) =>
+                    _buildVehicleItem(index, isLargeScreen),
               ),
-            ],
-          ),
+            ),
+            SizedBox(height: 12,)
+          ],
         ),
       );
 
@@ -490,15 +501,13 @@ class _CitiesTabState extends State<CitiesTab> {
             children: [
               SvgPicture.asset(
                 controller.vehicleList[index].image!,
-                height: isLargeScreen ? 48 : 40,
+                height: isLargeScreen ? 45 : 35,
                 colorFilter: ColorFilter.mode(
                     Theme.of(context).primaryColor, BlendMode.srcIn),
               ),
               Text(
                 controller.vehicleList[index].name!,
-                style: TextStyle(
-                    fontSize: isLargeScreen ? 18 : 16,
-                    color: Theme.of(context).primaryColor),
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ],
           ),
@@ -537,11 +546,11 @@ class TollDisplay extends StatelessWidget {
         padding: EdgeInsets.all(padding),
         child: Column(
           children: [
-            const Text('Toll Details', style: TextStyle(fontSize: 18)),
-            const SizedBox(height: 16),
+             Text('Toll Details', style: Theme.of(context).textTheme.labelLarge),
+            const SizedBox(height: 6),
             _buildDetailRow('Route', route ?? '$entry - $exit'),
             _buildDetailRow('Vehicle', vehicleName ?? 'Unknown'),
-            const Divider(height: 24),
+            const Divider(height: 1,color: Colors.grey,),
             isCalculating
                 ? const CircularProgressIndicator()
                 : _buildDetailRow('Total Toll', '$toll PKR', isTotal: true),
@@ -551,25 +560,39 @@ class TollDisplay extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailRow(String label, String value, {bool isTotal = false}) =>
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(label, style: const TextStyle(color: Colors.redAccent)),
-            Flexible(
-              child: Text(
-                value,
-                style: TextStyle(
-                  fontSize: isTotal ? 18 : 14,
-                  fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-                  color: Colors.green,
-                ),
-                textAlign: TextAlign.end,
-              ),
+Widget _buildDetailRow(String label, String value,  {bool isTotal = false,}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 2.0),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: isTotal ? 12 : 11,
+              fontWeight: isTotal ? FontWeight.w600 : FontWeight.w400,
+              color: Colors.black,
             ),
-          ],
+          ),
         ),
-      );
+     
+        Flexible(
+          child: Text(
+            value,
+            style: TextStyle(
+              fontSize: isTotal ? 16 : 13,
+              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+              color: isTotal ? Colors.red : Colors.grey.shade800,
+            ),
+            textAlign: TextAlign.right,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+          ),
+        ),
+      ],
+    ),
+  );
+}
 }

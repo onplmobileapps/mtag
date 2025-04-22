@@ -1,7 +1,8 @@
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/controller/home_controller.dart';
 import 'package:mtag_flutterapp/pages/tolcalator/controller/toll_calculator_static_controller.dart';
 import '../../api/recharge_repo.dart';
-import '../../controller/home_controller.dart';
+
 import '../../pages/activity/controller/activity_controller.dart';
 import '../../pages/editprofile/controller/update_emai_controller.dart';
 import '../../pages/faqs/controller/delete_account_controller.dart';

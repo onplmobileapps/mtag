@@ -252,7 +252,7 @@ log(result.toString());
         ),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          width: isLargeScreen ? 160 : 120,
+          width: isLargeScreen ? 140 : 100,
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(
@@ -275,7 +275,7 @@ log(result.toString());
             children: [
               SvgPicture.asset(
                 'assets/line.svg',
-                height: isLargeScreen ? 48 : 40,
+                height: isLargeScreen ? 38 : 30,
                 colorFilter: ColorFilter.mode(
                     Theme.of(context).primaryColor, BlendMode.srcIn),
               ),
@@ -363,7 +363,7 @@ Text(label,style: Theme.of(context).textTheme.labelMedium,);
               const Text('Select Vehicle Type', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 12),
               SizedBox(
-                height: isLargeScreen ? 140 : 120,
+                height: isLargeScreen ? 130 : 120,
                 child: ListView.builder(padding: EdgeInsets.zero,
                   scrollDirection: Axis.horizontal,
                   itemCount: controller.vehicleList.length,
@@ -381,60 +381,52 @@ Text(label,style: Theme.of(context).textTheme.labelMedium,);
     final borderColor =
         isDarkMode ? Colors.redAccent : Theme.of(context).primaryColor;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: isLargeScreen ? 8 : 6),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: () {
-          if (_selectedMotorway == -1) {
-            _showSnackBar('Please select a motorway first');
-            return;
-          }
-          if (_entryStation == null || _exitStation == null) {
-            _showSnackBar('Please select entry and exit stations first');
-            return;
-          }
-          setState(() => _selectedVehicle = index);
-          _calculateToll();
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          width: isLargeScreen ? 160 : 120,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(
-              color:
-                  _selectedVehicle == index ? borderColor : Colors.transparent,
-              width: 1,
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: () {
+        if (_selectedMotorway == -1) {
+          _showSnackBar('Please select a motorway first');
+          return;
+        }
+        if (_entryStation == null || _exitStation == null) {
+          _showSnackBar('Please select entry and exit stations first');
+          return;
+        }
+        setState(() => _selectedVehicle = index);
+        _calculateToll();
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+      
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(
+            color:
+                _selectedVehicle == index ? borderColor : Colors.transparent,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: _selectedVehicle == index
+              ? [
+                  BoxShadow(
+                      color: borderColor.withValues(alpha: 20),
+                      blurRadius: 0,
+                      spreadRadius: 0)
+                ]
+              : null,
+        ),
+        child: Column(
+        
+          children: [
+            SvgPicture.asset(
+              controller.vehicleList[index].image??'',fit: BoxFit.contain,
+             height: 30,
+              colorFilter: ColorFilter.mode(
+                  Theme.of(context).primaryColor, BlendMode.srcIn),
             ),
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: _selectedVehicle == index
-                ? [
-                    BoxShadow(
-                        color: borderColor.withValues(alpha: 20),
-                        blurRadius: 0,
-                        spreadRadius: 0)
-                  ]
-                : null,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset(
-                  controller.vehicleList[index].image??'',fit: BoxFit.fill,
-                  height: isLargeScreen ? 48 : 40,
-                  colorFilter: ColorFilter.mode(
-                      Theme.of(context).primaryColor, BlendMode.srcIn),
-                ),
-              ),
-              Text(controller.vehicleList[index].name??'',
-                  style: TextStyle(
-                      fontSize: isLargeScreen ? 18 : 16,
-                      color: Theme.of(context).primaryColor)),
-            ],
-          ),
+            Text(controller.vehicleList[index].name??'',
+                style: Theme.of(context).textTheme.displayMedium),
+          ],
         ),
       ),
     );
