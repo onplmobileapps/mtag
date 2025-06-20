@@ -46,7 +46,7 @@ class _TollCalculatorLocalState extends State<TollCalculatorLocalTabs>
       appBar: AppBar(title: const Text(TollCalculatorLocalTabs.title)),
       body: Column(
         children: [
-          _buildTabBar(),
+
           Expanded(
             child: TabBarView(
               controller: _tabController,
@@ -68,62 +68,6 @@ class _TollCalculatorLocalState extends State<TollCalculatorLocalTabs>
     );
   }
 
-  Widget _buildTabBar() {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final borderColor =
-        isDarkMode ? Colors.redAccent : Theme.of(context).primaryColor;
-
-    return Container(
-      height: 35,
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: Theme.of(context).disabledColor.withAlpha(28),
-        borderRadius: BorderRadius.circular(25),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(18),
-            blurRadius: 0,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: TabBar(
-        controller: _tabController,
-        indicator: BoxDecoration(
-          color: borderColor,
-          borderRadius: BorderRadius.circular(25),
-        ),
-        indicatorSize: TabBarIndicatorSize.tab,
-        labelColor: Colors.white,
-        unselectedLabelColor: isDarkMode ? Colors.grey[400] : borderColor,
-        labelStyle: const TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 14,
-        ),
-        unselectedLabelStyle: const TextStyle(
-          fontWeight: FontWeight.w400,
-          fontSize: 14,
-        ),
-        overlayColor: WidgetStateProperty.all(Colors.transparent),
-        splashBorderRadius: BorderRadius.circular(25),
-        dividerColor: Colors.transparent,
-        tabs:  [
-          Tab(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4),
-              child: Text('Calculate Toll by Plazas',style: Theme.of(context).tabBarTheme.labelStyle,),
-            ),
-          ),
-          Tab(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4),
-              child: Text('Calculate Toll by Cities',style: Theme.of(context).tabBarTheme.labelStyle,),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class TollPlazaTab extends StatefulWidget {

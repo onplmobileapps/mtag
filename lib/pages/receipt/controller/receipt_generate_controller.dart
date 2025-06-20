@@ -10,7 +10,7 @@ class ReceiptController extends GetxController implements GetxService {
   RxBool isTravel = false.obs;
   Rx<ReceiptModel> receiptModel = ReceiptModel().obs;
 
-  getrechargeDetails({required String? cr, required String? uID, String? itoken}) async {
+  Future<void> getrechargeDetails({required String? cr, required String? uID, String? itoken}) async {
     var response = isTravel.value
         ? await userRepo.getTransacDetails(cr: cr, uID: uID, itoken: itoken)
         : await userRepo.getRechargeDetails(cr: cr, uID: uID);
@@ -22,7 +22,7 @@ class ReceiptController extends GetxController implements GetxService {
     }
   }
 
-  chechTravel(bool istravel) {
+  bool chechTravel(bool istravel) {
     return isTravel(istravel);
   }
 }

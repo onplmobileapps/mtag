@@ -8,7 +8,6 @@ ThemeData appTheme = ThemeData(tabBarTheme: TabBarThemeData(labelStyle: TextStyl
     padding: EdgeInsets.zero,
     leadingPadding: EdgeInsets.zero,
   ),
-  indicatorColor: Colors.black,
   hintColor: Colors.grey,
   highlightColor: const Color(0xFF2C2E65),
   dividerColor: Colors.black54,
@@ -56,7 +55,7 @@ ThemeData appTheme = ThemeData(tabBarTheme: TabBarThemeData(labelStyle: TextStyl
           topRight: Radius.circular(12),
         ),
       )),
-  dialogTheme: const DialogTheme(
+  dialogTheme:  DialogThemeData(
     surfaceTintColor: Colors.white,
     backgroundColor: Colors.white,
     contentTextStyle:
@@ -285,7 +284,7 @@ ThemeData darkTheme = ThemeData(
   hintColor: Colors.grey,
   dividerTheme: const DividerThemeData(color: Colors.white),
   dividerColor: Colors.white70,
-  dialogTheme: const DialogTheme(
+  dialogTheme: const DialogThemeData(
     backgroundColor: Colors.black,
     contentTextStyle: TextStyle(
       color: Colors.white,
@@ -334,7 +333,6 @@ ThemeData darkTheme = ThemeData(
     ),
   ),
   useMaterial3: true,
-  indicatorColor: Colors.white,
   visualDensity: VisualDensity.adaptivePlatformDensity,
   listTileTheme: ListTileThemeData(
     visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -365,6 +363,7 @@ ThemeData darkTheme = ThemeData(
       focusedBorder: UnderlineInputBorder(
         borderSide: BorderSide(width: 0.3, color: Colors.white),
       ),
+      
       labelStyle: TextStyle(color: Colors.white),
       hintStyle: TextStyle(
         fontFamily: 'Poppins',
@@ -442,8 +441,8 @@ ThemeData darkTheme = ThemeData(
     bodyMedium:
         TextStyle(fontSize: 15, color: Colors.white, fontFamily: 'Poppins'),
     bodySmall:
-        TextStyle(fontSize: 11, color: Colors.black38, fontFamily: 'Poppins'),
-  ),
+        TextStyle(fontSize: 11, color: Colors.white, fontFamily: 'Poppins'),
+  ), tabBarTheme: TabBarThemeData(indicatorColor: Colors.white),
 );
 MaterialColor primarSwatch = const MaterialColor(0xFF2C2E65, {
   50: Color(0xFF2C2E65),

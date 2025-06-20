@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import '../../../constants/call_helper.dart';
 
-showCustomDialog({bool? isError, String? message, BuildContext? context}) {
+Future showCustomDialog({bool? isError, String? message, BuildContext? context}) {
   return showDialog(
       barrierDismissible: false,
       context: context!,

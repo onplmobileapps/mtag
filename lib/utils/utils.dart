@@ -16,7 +16,7 @@ sealed class AmountList {
 }
 
 sealed class DeviceInfo {
-  static getDeviceInfo() async {
+  static Future<Map<String, dynamic>> getDeviceInfo() async {
     final deviceInfoPlugin = DeviceInfoPlugin();
 
     Map<String, dynamic> deviceData = <String, dynamic>{};

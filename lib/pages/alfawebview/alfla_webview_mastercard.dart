@@ -178,7 +178,7 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
                       size: 100,
                     ),
                     Text(
-                      'Something went wrong\n Try again later.',
+                      'We couldn’t complete your request\n Try again or contact assistance.\n Try again later.',
                       style: TextStyle(color: Colors.black),
                       textAlign: TextAlign.center,
                     )

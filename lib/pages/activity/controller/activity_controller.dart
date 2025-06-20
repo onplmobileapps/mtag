@@ -10,7 +10,7 @@ class ActivityContorller extends GetxController implements GetxService {
   final UserRepo userRepo;
   ActivityContorller(this.userRepo);
   Rx<ActivitiesModel> activitiesModel = ActivitiesModel().obs;
-  getActivities() async {
+  Future<void> getActivities() async {
     Map<String, dynamic> response = await userRepo.getActivities();
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       activitiesModel.value = ActivitiesModel.fromJson(response[APIRESPONSE.SUCCESS]);

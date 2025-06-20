@@ -1,3 +1,5 @@
+// ignore_for_file: strict_top_level_inference
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -20,7 +22,8 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
   final isLoading = false.obs;
   final startDate = DateTime.now().obs;
   final endDate = DateTime.now().obs;
-  void onListTileTap(arguments) async {
+
+  void onListTileTap( arguments) async {
     _receiptController.chechTravel(arguments.cR == '-');
     await _receiptController.getrechargeDetails(
         cr: arguments.cR, uID: arguments.uID, itoken: arguments.iTOKKENNO);
@@ -144,7 +147,7 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
     return InkWell(
       onTap: () async {
         controller.isSlected.value = value;
-        await controller.serchData(searchData);
+         controller.serchData(searchData);
         if (value == 2) {
           Get.find<ReceiptController>().chechTravel(true);
         }

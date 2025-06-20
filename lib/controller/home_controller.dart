@@ -75,7 +75,7 @@ class HomeController extends GetxController implements GetxService {
   void _handleError(Map<String, dynamic> response) {
     final message = response.containsKey(APIRESPONSE.ERROR)
         ? response[APIRESPONSE.ERROR]['Message']
-        : 'Something went wrong\nTry again later.';
+        : 'We couldn’t complete your request\n Try again or contact assistance.\nTry again later.';
     showPopDialog(message, _resetAndNavigate);
   }
 

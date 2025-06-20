@@ -149,12 +149,12 @@ class SettingScreen extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 20),
                         child: Text(
-                          'App-Version ${snapshot.data}',
+                          'Version ${snapshot.data}',
                           style: Theme.of(context)
                               .textTheme
                               .displaySmall
                               ?.copyWith(
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w100,
                               ),
                           textAlign: TextAlign.center,
                         ),
@@ -283,7 +283,7 @@ final List<SettingsModel> items = [
       },
       name: 'Privacy Policy',
       icon: const Icon(
-        Icons.privacy_tip,
+        Icons.privacy_tip_outlined,
       ),
       routeName: '/theme'),
   SettingsModel(
@@ -293,7 +293,7 @@ final List<SettingsModel> items = [
             "Android: https://bit.ly/3nLrHNX\n"
             "IOS: https://apple.co/3byIb6c\n"
             "Huawei: https://bit.ly/3IFgzLf";
-        Share.share(shareLinks);
+        SharePlus.instance.share(ShareParams(text:  shareLinks));
       },
       name: 'Share',
       icon: const Icon(Icons.share_outlined),

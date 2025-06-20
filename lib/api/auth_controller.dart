@@ -95,15 +95,15 @@ class AuthController extends GetxController implements GetxService {
       }
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(
-          '${response[APIRESPONSE.ERROR]['Message'] ?? 'Something went wrong\nTry again later.'}',
+          '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.\nTry again later.'}',
           Get.back);
     } else if (response['Code'] == '02') {
       showPopDialog(
-          '${response[APIRESPONSE.ERROR]['Message'] ?? 'Something went wrong\nTry again later.'}',
+          '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.\nTry again later.'}',
           Get.back);
     } else {
       showPopDialog(
-          '${response[APIRESPONSE.ERROR]['Message'] ?? 'Something went wrong\nTry again later.'}',
+          '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.\nTry again later.'}',
           Get.back);
     }
     return response;
@@ -139,7 +139,7 @@ class AuthController extends GetxController implements GetxService {
         context: Get.context!,
         builder: (_) => CupertinoAlertDialog(
           content: Text(
-              '${response[APIRESPONSE.ERROR]['Message'] ?? 'Something went wrong\nTry again later.'}'),
+              '${response[APIRESPONSE.ERROR]['Message']}'),
           actions: [
             CupertinoDialogAction(
               onPressed: Get.back,
@@ -150,10 +150,10 @@ class AuthController extends GetxController implements GetxService {
       );
     } else if (response.containsKey(APIRESPONSE.SUCCESS)) {
       showPopDialog(
-          '${response[APIRESPONSE.ERROR]['Message'] ?? 'Something went wrong\nTry again later.'}',
+          '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.\nTry again later.'}',
           Get.back);
     } else {
-      showPopDialog('Something went wrong\nTry again later.', () {});
+      showPopDialog('We couldn’t complete your request\n Try again or contact assistance.\nTry again later.', () {});
     }
 
     return response;
@@ -215,7 +215,7 @@ class AuthController extends GetxController implements GetxService {
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () => Get.back());
     } else {
-      showPopDialog('Something went wrong\nTry again later.', () => Get.back());
+      showPopDialog('We couldn’t complete your request\n Try again or contact assistance.\nTry again later.', () => Get.back());
     }
 
     return response;
@@ -237,7 +237,7 @@ class AuthController extends GetxController implements GetxService {
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () => Get.back());
     } else {
-      showPopDialog('Something went wrong\nTry again later.', () => Get.back());
+      showPopDialog('We couldn’t complete your request\n Try again or contact assistance.\nTry again later.', () => Get.back());
     }
 
     return response;
@@ -275,7 +275,7 @@ class AuthController extends GetxController implements GetxService {
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () => ());
     } else {
-      showPopDialog('Something went wrong\nTry again later.', () => ());
+      showPopDialog('We couldn’t complete your request\n Try again or contact assistance.\nTry again later.', () => ());
     }
 
     return response;

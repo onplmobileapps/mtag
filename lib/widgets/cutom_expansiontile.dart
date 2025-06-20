@@ -8,7 +8,7 @@ class MyCustomExpansionTile extends StatefulWidget {
   final bool initiallyExpanded;
   final List<Widget>? children;
   final Function(bool)? onExpansionChanged;
-  ExpansionTileController? controller;
+  ExpansibleController? controller;
   MyCustomExpansionTile({
     super.key,
     required this.title,
@@ -27,7 +27,7 @@ class _MyCustomExpansionTileState extends State<MyCustomExpansionTile> {
   @override
   void initState() {
     super.initState();
-    widget.controller = ExpansionTileController();
+    widget.controller = ExpansibleController();
   }
 
   @override

@@ -3,15 +3,15 @@ import 'package:mtag_flutterapp/api/application_url.dart';
 import 'api_constants.dart';
 import 'api_structure.dart';
 abstract class PaymentRepo {
-  jazzCashRecharg() {}
-  getCardDetails() {}
-  getCardDetails1() {}
-  deleteCardDetails() {}
-  getPayUUID() {}
-  getHtMLURL() {}
-  genearatePSID() {}
-  genearatePSIDTOPUP() {}
-  getAmountBreakDown(){}
+  void jazzCashRecharg() {}
+  void getCardDetails() {}
+  void getCardDetails1() {}
+  void deleteCardDetails() {}
+  void getPayUUID() {}
+
+  void genearatePSID() {}
+  void genearatePSIDTOPUP() {}
+  void getAmountBreakDown(){}
 }
 
 class RechargRepo implements PaymentRepo {
@@ -92,15 +92,7 @@ class RechargRepo implements PaymentRepo {
     return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: true);
   }
 
-  @override
-  getHtMLURL({String? security, String? uuid}) async {
-    APISTRUCTURE apiObject = APISTRUCTURE(
-        apiUrl: ApplicationUrl.GETHTML_URL,
-        apiRequestMethod: APIREQUESTMETHOD.POST,
-        isWantSuccessMessage: true,
-        body: {"_id": uuid, "security_code": security});
-    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: true);
-  }
+ 
 
   @override
   Future<Map<String, dynamic>> genearatePSID(

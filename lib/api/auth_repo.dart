@@ -282,7 +282,7 @@ class AuthRepo {
     return false;
   }
 
-  clearSharedData() async {
+  Future<bool> clearSharedData() async {
     // await sharedPreferences.clear();
 
     try {

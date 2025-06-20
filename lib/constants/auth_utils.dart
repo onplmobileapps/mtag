@@ -21,7 +21,7 @@ class AuthenticationUtil {
   static final auth = LocalAuthentication();
 
   static Future<bool> canAuthenticate() async => await auth.canCheckBiometrics || await auth.isDeviceSupported();
-  getauth() async {}
+  Future<void> getauth() async {}
 
  static Future<bool> authenticate() async {
   var available = await auth.getAvailableBiometrics();

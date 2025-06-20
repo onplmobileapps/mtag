@@ -7,7 +7,7 @@ class PromoDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
-        dialogTheme: const DialogTheme(elevation: 0),
+        dialogTheme: const DialogThemeData(elevation: 0),
       ),
       child: Dialog(
         backgroundColor: Colors.transparent,

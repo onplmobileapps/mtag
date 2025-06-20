@@ -42,7 +42,7 @@ class ReceiptScreen extends StatelessWidget {
                                     final imagePath = await File('${directory.path}/receipt.png').create();
                                     await imagePath.writeAsBytes(image);
 
-                                    await Share.shareXFiles([XFile(imagePath.path)]);
+                                    await SharePlus.instance.share(ShareParams(files:  [XFile(imagePath.path)]));
                                   }
                                 });
                               } catch (e) {
@@ -259,7 +259,7 @@ class ReceiptScreen extends StatelessWidget {
                               File pdfFile = File('$documentPath/${data?.uID}.pdf');
 
                               pdfFile.writeAsBytesSync(await pdf.save());
-                              Share.shareXFiles([XFile(pdfFile.path)]);
+                              SharePlus.instance.share(ShareParams(files: [XFile(pdfFile.path)]));
                             },
                             dense: true,
                             leading: const Icon(

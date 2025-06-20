@@ -102,19 +102,23 @@ class APISTRUCTURE {
         response.statusCode == 522 ||
         response.statusCode == 429) {
       return {
-        APIRESPONSE.ERROR: {'Message': 'Something went wrong\nTry again later.'}
+        APIRESPONSE.ERROR: {'Message': 'We couldn’t complete your request\n Try again or contact assistance.\nTry again later.'}
       };
     } else if (response.statusCode == 502) {
       return {
         APIRESPONSE.ERROR: {'Message': 'Cannot process right now\nTry again later.'}
       };
     } else if (response.statusMessage == 'CONFLICT') {
+      log('controll here1${response.statusCode}');
+     
       return {APIRESPONSE.ERROR: response.data};
-    } else if (response.statusCode == 400 || response.statusCode == 404 || response.statusCode == 450) {
+    } else if (response.statusCode == 400 || response.statusCode == 404 || response.statusCode == 450||response.statusCode==409) {
       return {APIRESPONSE.ERROR: response.data};
     } else {
+      log('controll here2${response.statusCode}');
       return {
-        APIRESPONSE.ERROR: {"Message": "Something went wrong\nTry again later."}
+        
+        APIRESPONSE.ERROR: {"Message": "We couldn’t complete your request\n Try again or contact assistance.\nTry again later."}
       };
     }
   }
@@ -130,7 +134,7 @@ class APISTRUCTURE {
       _showDialog('Server Bad response');
       return {APIRESPONSE.EXCEPTION: APIEXCEPTION.FORMAT};
     } else if (e is apiClient.DioException) {
-      _showDialog('Something went wrong,\nTry again later.');
+      _showDialog('We couldn’t complete your request\n Try again or contact assistance.,\nTry again later.');
       return _handleDioException(e);
     } else {
       _showDialog(e.toString().contains("SocketException") ? "Internet Connection Error" : "Unknown error occurred");

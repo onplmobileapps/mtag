@@ -26,10 +26,16 @@ void main() async {
         options: DefaultFirebaseOptions.currentPlatform);
   }
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        systemNavigationBarColor: Colors.transparent));
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
+
   ]);
+      
+
   HttpOverrides.global = MyHttpOverrides();
   runApp(
     const MTagApp(),
@@ -124,9 +130,9 @@ class _MTagAppState extends State<MTagApp> {
             : AppData.getPinData() != null
                 ? const PinEntryPage()
                 : AuthPage());
-    // : KisokLogin());
+ 
 
-    // Apply UpgradeAlert only for iOS
+   
   }
 }
 

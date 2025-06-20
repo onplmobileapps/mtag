@@ -87,12 +87,12 @@ class CustomTExtField extends StatelessWidget {
         fillColor: fillColor,
         focusColor: const Color(0xffF0F0F0),
         focusedBorder:
-            UnderlineInputBorder(borderSide: BorderSide(width: 0.3, color: Theme.of(context).indicatorColor)),
+            UnderlineInputBorder(borderSide: BorderSide(width: 0.3,)),
         enabledBorder:
-            UnderlineInputBorder(borderSide: BorderSide(width: 0.3, color: Theme.of(context).indicatorColor)),
-        border: UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).indicatorColor, width: 0.3)),
+            UnderlineInputBorder(borderSide: BorderSide(width: 0.3, )),
+        border: UnderlineInputBorder(borderSide: BorderSide( width: 0.3)),
         contentPadding: contentPadding ?? EdgeInsets.zero,
-        label: Text(label ?? ''),
+        label: Text(label ?? ''),    
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
     );

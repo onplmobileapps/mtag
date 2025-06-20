@@ -36,7 +36,7 @@ class TollController extends GetxController implements GetxService {
     return respone;
   }
 
-  serchData(String cr) {
+ void serchData(String cr) {
     if (cr == '') {
       searchList?.value = tollHistoryModel.value?.data?.allTransactions ?? [];
     } else {

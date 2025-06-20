@@ -25,7 +25,7 @@ class UpdateSmsStatusController extends GetxController implements GetxService {
         Get.deleteAll();
       });
     } else {
-      showPopDialog('Something went wrong\nTry again later.', () {
+      showPopDialog('We couldn’t complete your request\n Try again or contact assistance.\nTry again later.', () {
         Get.offAllNamed('/pinPage');
         Get.deleteAll();
       });
