@@ -1,9 +1,9 @@
 name: mtag_flutterapp
 description: "M-Tag A Prime Product of One Network Solutions(FWO)."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 4.1.5+223
+version: 4.2.1+235
 environment:
-  sdk: ^3.6.0
+  sdk: 3.8.1
 dependencies:
   flutter:
     sdk: flutter
@@ -30,7 +30,7 @@ dependencies:
   carousel_slider: ^5.1.1
   firebase_crashlytics: ^4.0.2
   firebase_remote_config: ^5.0.2
-  device_info_plus: ^11.1.1
+  device_info_plus: ^11.5.0
   connectivity_plus: ^6.0.3
   firebase_performance: ^0.10.0+2
   cached_network_image: ^3.3.1

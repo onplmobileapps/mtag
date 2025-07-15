@@ -21,13 +21,13 @@ import 'pages/login/auth_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppData.initialize();
-  if (Firebase.apps.isEmpty) {
+ 
     await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
-  }
+        options: DefaultFirebaseOptions.currentPlatform,name: 'mtagFlutter');
+  
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        systemNavigationBarColor: Colors.transparent));
+        systemNavigationBarColor: Colors.transparent,statusBarColor: Colors.transparent,));
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

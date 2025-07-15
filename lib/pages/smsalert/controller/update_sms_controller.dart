@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/api/api_constants.dart';
 import 'package:mtag_flutterapp/pages/smsalert/model/update_sms_status.dart';
-import 'package:mtag_flutterapp/widgets/dialog/cupertion_dialog.dart';
+import 'package:mtag_flutterapp/widgets/dialog/cupertino_dialog.dart';
 import '../../../api/user_repo.dart';
 
 class UpdateSmsStatusController extends GetxController implements GetxService {

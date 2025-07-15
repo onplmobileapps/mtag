@@ -21,6 +21,7 @@ class FirebaseRemoteConfigService {
   );
   Future<void> fetchRemoteConfig() async {
     try {
+  
       await _remoteConfig.ensureInitialized();
       await _remoteConfig.fetch();
       await _remoteConfig.activate();

@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/base/app_data.dart';
-import 'package:mtag_flutterapp/widgets/dialog/cupertion_dialog.dart';
+import 'package:mtag_flutterapp/widgets/dialog/cupertino_dialog.dart';
 
 import '../../api/api_constants.dart';
 import '../pages/login/create_pin_page.dart';
@@ -95,15 +95,15 @@ class AuthController extends GetxController implements GetxService {
       }
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(
-          '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.\nTry again later.'}',
+          '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.'}',
           Get.back);
     } else if (response['Code'] == '02') {
       showPopDialog(
-          '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.\nTry again later.'}',
+          '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.'}',
           Get.back);
     } else {
       showPopDialog(
-          '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.\nTry again later.'}',
+          '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.'}',
           Get.back);
     }
     return response;
@@ -150,10 +150,10 @@ class AuthController extends GetxController implements GetxService {
       );
     } else if (response.containsKey(APIRESPONSE.SUCCESS)) {
       showPopDialog(
-          '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.\nTry again later.'}',
+          '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.'}',
           Get.back);
     } else {
-      showPopDialog('We couldn’t complete your request\n Try again or contact assistance.\nTry again later.', () {});
+      showPopDialog('We couldn’t complete your request\n Try again or contact assistance.', () {});
     }
 
     return response;
@@ -215,7 +215,7 @@ class AuthController extends GetxController implements GetxService {
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () => Get.back());
     } else {
-      showPopDialog('We couldn’t complete your request\n Try again or contact assistance.\nTry again later.', () => Get.back());
+      showPopDialog('We couldn’t complete your request\n Try again or contact assistance.', () => Get.back());
     }
 
     return response;
@@ -237,7 +237,7 @@ class AuthController extends GetxController implements GetxService {
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () => Get.back());
     } else {
-      showPopDialog('We couldn’t complete your request\n Try again or contact assistance.\nTry again later.', () => Get.back());
+      showPopDialog('We couldn’t complete your request\n Try again or contact assistance.', () => Get.back());
     }
 
     return response;
@@ -273,9 +273,9 @@ class AuthController extends GetxController implements GetxService {
             mobileNumber: mobile,
           ));
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
-      showPopDialog(response[APIRESPONSE.ERROR]['Message'], () => ());
+      showPopDialog(response[APIRESPONSE.ERROR]['Message'], null,otpVerificationError: true);
     } else {
-      showPopDialog('We couldn’t complete your request\n Try again or contact assistance.\nTry again later.', () => ());
+      showPopDialog('We couldn’t complete your request\n Try again or contact assistance.',null,otpVerificationError: true);
     }
 
     return response;

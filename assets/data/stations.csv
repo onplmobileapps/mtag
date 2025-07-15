@@ -1,158 +1,159 @@
-id,motorway_name,motorway_id,station_name,station_id,,,,,,,is_sta_active
-97,M5,5,Start_M5,48,,,,,,,false
-2,M1,4,Fateh Jang,4010,,,,,,,true
-3,M1,4,Hakla TP,4015,,,,,,,false
-4,M1,4,AWT Sangjani,4020,,,,,,,true
-5,M1,4,Brahma Bahatar,4025,,,,,,,true
-6,M1,4,Burhan,4030,,,,,,,true
-7,M1,4,Hazara/Segregation Interchange,4035,,,,,,,false
-8,M1,4,Ghazi,4040,,,,,,,true
-9,M1,4,Chach,4045,,,,,,,true
-10,M1,4,Sawabi,4050,,,,,,,true
-11,M1,4,Col Sher Khan,4055,,,,,,,true
-12,M1,4,Wali,4060,,,,,,,true
-13,M1,4,Rashakai,4065,,,,,,,true
-14,M1,4,Charsada,4070,,,,,,,true
-107,M5,5,JalalPur Pir Wala,58,,,,,,,true
-16,M15-E35,10,Mansehra Main Line,10005,,,,,,,false
-17,M15-E35,10,Mansehra,10010,,,,,,,true
-18,M15-E35,10,Abbottabad,10015,,,,,,,true
-19,M15-E35,10,Havelian,10020,,,,,,,true
-20,M15-E35,10,Shah Maqsood,10025,,,,,,,true
-21,M15-E35,10,Khan Pur,10030,,,,,,,true
-22,M15-E35,10,Kot Najeebullah,10035,,,,,,,true
-23,M15-E35,10,Jharikas,10040,,,,,,,true
-24,M15-E35,10,Segregation Toll Plaza,10045,,,,,,,false
-25,M9,1,Karachi,12,,,,,,,true
-26,M9,1,Dumba Goth,11,,,,,,,true
-27,M9,1,BTK,8,,,,,,,true
-28,M9,1,Kathore,10,,,,,,,true
-30,M9,1,Edhi Village,9,,,,,,,true
-31,M9,1,Bijar Interchange,7,,,,,,,true
-32,M9,1,Panjal Khan,5,,,,,,,true
-33,M9,1,Nooriabad,4,,,,,,,true
-34,M9,1,Thana Bola Khan,3,,,,,,,true
-35,M9,1,Loni Kot Interchange,2,,,,,,,true
-37,M11-LSM,2,Sambrial,19,,,,,,,true
-38,M11-LSM,2,Narowal,15,,,,,,,true
-39,M11-LSM,2,Daska,18,,,,,,,true
-40,M11-LSM,2,Gujranwala,16,,,,,,,true
-41,M11-LSM,2,Kala Shah Kaku,13,,,,,,,true
-42,M11-LSM,2,Pasrur,17,,,,,,,true
-43,M11-LSM,2,Muridke,14,,,,,,,true
-45,M3,6,M3Start,6005,,,,,,,false
-46,M3,6,Sharaqpur,6010,,,,,,,true
-47,M3,6,Nankana Sahib,6015,,,,,,,true
-48,M3,6,Jaranwala,6020,,,,,,,true
-49,M3,6,Samundri,6025,,,,,,,true
-50,M3,6,Rajana,6030,,,,,,,true
-51,M3,6,Pir Mahal,6035,,,,,,,true
-52,M3,6,M3End,6040,,,,,,,false
-53,M2,7,Islamabad,7005,,,,,,,true
-54,M2,7,Thallian,7010,,,,,,,true
-55,M2,7,Chakri,7015,,,,,,,true
-56,M2,7,Neela Dullah,7020,,,,,,,true
-57,M2,7,Balkasar,7025,,,,,,,true
-58,M2,7,Kallar Kahar,7030,,,,,,,true
-59,M2,7,Lilla,7035,,,,,,,true
-60,M2,7,Bhera,7040,,,,,,,true
-61,M2,7,Salam,7045,,,,,,,true
-62,M2,7,Kot Momin,7050,,,,,,,true
-36,M9,1,HyderAbad,1,,,,,,,true
-29,M9,1,DCK,6,,,,,,,true
-63,M2,7,Sial Mor,7055,,,,,,,true
-64,M2,7,Pindi Bhattian,7060,,,,,,,true
-65,M2,7,M2M4STP-S,7062,,,,,,,false
-66,M2,7,M2M4STP-N,7063,,,,,,,false
-67,M2,7,Kot Sarwar,7065,,,,,,,true
-68,M2,7,KQD,7070,,,,,,,true
-69,M2,7,Hiran Minar,7075,,,,,,,true
-70,M2,7,Sheikhupura,7080,,,,,,,true
-71,M2,7,KalashahKakoo,7085,,,,,,,true
-72,M2,7,Kot Abdulmaalik,7090,,,,,,,true
-73,M2,7,Faiz Pur,7095,,,,,,,true
-74,M2,7,M2M3STP,7097,,,,,,,false
-77,M4,11,M4Start,11005,,,,,,,false
-78,M4,11,Sangla Hill,11010,,,,,,,true
-79,M4,11,Dar-ul-Ehsan,11015,,,,,,,true
-80,M4,11,Millat,11020,,,,,,,true
-81,M4,11,Faisalabad,11025,,,,,,,true
-82,M4,11,Aminpur,11030,,,,,,,true
-83,M4,11,Charaghabad,11035,,,,,,,true
-84,M4,11,Gojra,11040,,,,,,,true
-85,M4,11,Toba Tek Singh,11045,,,,,,,true
-86,M4,11,Waryamwala,11050,,,,,,,true
-87,M4,11,Shorkot,11055,,,,,,,true
-88,M4,11,M4M3STP(Darkhana)-S,11057,,,,,,,false
-89,M4,11,M4M3STP(Darkhana)-N,11058,,,,,,,false
-90,M4,11,Abdul Hakeem,11060,,,,,,,true
-91,M4,11,Makhdumpur,11065,,,,,,,true
-92,M4,11,Kabirwala,11070,,,,,,,true
-93,M4,11,Khanewal/Shamkot,11075,,,,,,,true
-94,M4,11,Shah Rukne Alam,11080,,,,,,,true
-95,M4,11,Shah Shams Tabraiz,11085,,,,,,,true
-119,LRR,8,Gulshan Ravi,8005,,,,,,,true
-44,M9,1,Lucky,61,,,,,,,false
-207,M2,7,Kot Pindi Das,7083,,,,,,,true
-76,M2,7,Babu Sabu,7105,,,,,,,true
-75,M2,7,Ravi,7100,,,,,,,true
-112,M16-SMP,3,Karnal Sher K-SMP,3005,,,,,,,true
-113,M16-SMP,3,Dobian,3010,,,,,,,true
-114,M16-SMP,3,Ismaila,3015,,,,,,,true
-115,M16-SMP,3,Bakhshali,3020,,,,,,,true
-116,M16-SMP,3,Katlang,3025,,,,,,,true
-117,M16-SMP,3,Palai,3030,,,,,,,true
-118,M16-SMP,3,Chakdara,3035,,,,,,,true
-120,LRR,8,Saggiyan,8010,,,,,,,true
-121,LRR,8,Sabzi Mandi,8015,,,,,,,true
-122,LRR,8,Naizi,8020,,,,,,,true
-123,LRR,8,Shadbag,8025,,,,,,,true
-124,LRR,8,Koral Ghatti,8030,,,,,,,true
-125,LRR,8,Mehmood Booti,8035,,,,,,,true
-126,LRR,8,Sharif Pura,8040,,,,,,,true
-127,LRR,8,Quaid-e-Azam,8045,,,,,,,true
-128,LRR,8,Harbans Pura,8050,,,,,,,true
-129,LRR,8,Airport,8055,,,,,,,true
-105,M5,5,Uch Shareef,56,,,,,,,true
-131,LRR,8,Bhatta Chowk/Ghazi,8065,,,,,,,true
-133,LRR,8,Kamaha,8075,,,,,,,true
-134,LRR,8,Col Arif Shaheed,8080,,,,,,,true
-135,LRR,8,Bulleh Shah,8085,,,,,,,true
-136,LRR,8,Kahna,8090,,,,,,,true
-137,LRR,8,Haloki,8095,,,,,,,true
-138,LRR,8,Khayban-e-Amen,8100,,,,,,,true
-139,LRR,8,Fazaia,8105,,,,,,,true
-140,Habibabad,12,Patokki,12005,,,,,,,true
-145,lafco,9,tp5,9025,,,,,,,true
-146,lafco,9,tp4,9020,,,,,,,true
-147,lafco,9,tp2,9010,,,,,,,true
-148,lafco,9,tp3,9015,,,,,,,true
-149,lafco,9,tp1,9005,,,,,,,true
-173,Wahndo,15,Whandu,15005,,,,,,,true
-174,Wahndo,15,Gujranwala,15010,,,,,,,true
-132,LRR,8,Nawaz Sharif,8070,,,,,,,true
-101,M5,5,Guddu,52,,,,,,,true
-15,M1,4,Peshawar,4075,,,,,,,true
-1,M1,4,Islamabad,4005,,,,,,,true
-206,M2,7,Capital Smart City,7012,,,,,,,true
-100,M5,5,Ghotki,51,,,,,,,true
-98,M5,5,Rohri,49,,,,,,,true
-162,M14,14,Kharapa,14015,,,,,,,true
-160,M14,14,Dhok Syedan,14005,,,,,,,true
-164,M14,14,Daud Khel,14025,,,,,,,true
-170,M14,14,Hakla M14,14003,,,,,,,false
-168,M14,14,Abdul Khel,14045,,,,,,,true
-161,M14,14,Thatti Kalran,14010,,,,,,,true
-163,M14,14,Tarap,14020,,,,,,,true
-165,M14,14,Kot Balian,14030,,,,,,,true
-169,M14,14,Yarik,14050,,,,,,,true
-166,M14,14,Essa Khel,14035,,,,,,,true
-167,M14,14,Kundal,14040,,,,,,,true
-104,M5,5,Tarinda,55,,,,,,,true
-106,M5,5,BahawalPur,57,,,,,,,true
-108,M5,5,Shujabad,59,,,,,,,true
-109,M5,5,Shershah,60,,,,,,,true
-103,M5,5,Zahir Pir,54,,,,,,,true
-102,M5,5,Rahim Yar Khan,53,,,,,,,true
-99,M5,5,Pano Aqil,50,,,,,,,true
-130,LRR,8,A Gul,8060,,,,,,,true
+id,motorway_name,motorway_id,station_name,station_id,is_sta_active
+97,M5,5,Start_M5,48,FALSE
+2,M1,4,Fateh Jang,4010,TRUE
+3,M1,4,Hakla TP,4015,FALSE
+4,M1,4,AWT Sangjani,4020,TRUE
+5,M1,4,Brahma Bahatar,4025,TRUE
+6,M1,4,Burhan,4030,TRUE
+7,M1,4,Hazara/Segregation Interchange,4035,FALSE
+8,M1,4,Ghazi,4040,TRUE
+9,M1,4,Chach,4045,TRUE
+10,M1,4,Sawabi,4050,TRUE
+11,M1,4,Col Sher Khan,4055,TRUE
+12,M1,4,Wali,4060,TRUE
+13,M1,4,Rashakai,4065,TRUE
+14,M1,4,Charsada,4070,TRUE
+107,M5,5,JalalPur Pir Wala,58,TRUE
+16,M15-E35,10,Mansehra Main Line,10005,FALSE
+17,M15-E35,10,Mansehra,10010,TRUE
+18,M15-E35,10,Abbottabad,10015,TRUE
+19,M15-E35,10,Havelian,10020,TRUE
+20,M15-E35,10,Shah Maqsood,10025,TRUE
+21,M15-E35,10,Khan Pur,10030,TRUE
+22,M15-E35,10,Kot Najeebullah,10035,TRUE
+23,M15-E35,10,Jharikas,10040,TRUE
+24,M15-E35,10,Segregation Toll Plaza,10045,FALSE
+25,M9,1,Karachi,12,TRUE
+26,M9,1,Dumba Goth,11,TRUE
+27,M9,1,BTK,8,TRUE
+28,M9,1,Kathore,10,TRUE
+30,M9,1,Edhi Village,9,TRUE
+31,M9,1,Bijar Interchange,7,TRUE
+32,M9,1,Panjal Khan,5,TRUE
+33,M9,1,Nooriabad,4,TRUE
+34,M9,1,Thana Bola Khan,3,TRUE
+35,M9,1,Loni Kot Interchange,2,TRUE
+37,M11-LSM,2,Sambrial,19,TRUE
+38,M11-LSM,2,Narowal,15,TRUE
+39,M11-LSM,2,Daska,18,TRUE
+40,M11-LSM,2,Gujranwala,16,TRUE
+41,M11-LSM,2,Kala Shah Kaku,13,TRUE
+42,M11-LSM,2,Pasrur,17,TRUE
+43,M11-LSM,2,Muridke,14,TRUE
+45,M3,6,M3Start,6005,FALSE
+46,M3,6,Sharaqpur,6010,TRUE
+47,M3,6,Nankana Sahib,6015,TRUE
+48,M3,6,Jaranwala,6020,TRUE
+49,M3,6,Samundri,6025,TRUE
+50,M3,6,Rajana,6030,TRUE
+51,M3,6,Pir Mahal,6035,TRUE
+52,M3,6,M3End,6040,FALSE
+53,M2,7,Islamabad,7005,TRUE
+54,M2,7,Thallian,7010,TRUE
+55,M2,7,Chakri,7015,TRUE
+56,M2,7,Neela Dullah,7020,TRUE
+57,M2,7,Balkasar,7025,TRUE
+58,M2,7,Kallar Kahar,7030,TRUE
+59,M2,7,Lilla,7035,TRUE
+60,M2,7,Bhera,7040,TRUE
+61,M2,7,Salam,7045,TRUE
+62,M2,7,Kot Momin,7050,TRUE
+36,M9,1,HyderAbad,1,TRUE
+29,M9,1,DCK,6,TRUE
+63,M2,7,Sial Mor,7055,TRUE
+64,M2,7,Pindi Bhattian,7060,TRUE
+65,M2,7,M2M4STP-S,7062,FALSE
+66,M2,7,M2M4STP-N,7063,FALSE
+67,M2,7,Kot Sarwar,7065,TRUE
+68,M2,7,KQD,7070,TRUE
+69,M2,7,Hiran Minar,7075,TRUE
+70,M2,7,Sheikhupura,7080,TRUE
+71,M2,7,KalashahKakoo,7085,TRUE
+72,M2,7,Kot Abdulmaalik,7090,TRUE
+73,M2,7,Faiz Pur,7095,TRUE
+74,M2,7,M2M3STP,7097,FALSE
+77,M4,11,M4Start,11005,FALSE
+78,M4,11,Sangla Hill,11010,TRUE
+79,M4,11,Dar-ul-Ehsan,11015,TRUE
+80,M4,11,Millat,11020,TRUE
+81,M4,11,Faisalabad,11025,TRUE
+82,M4,11,Aminpur,11030,TRUE
+83,M4,11,Charaghabad,11035,TRUE
+84,M4,11,Gojra,11040,TRUE
+85,M4,11,Toba Tek Singh,11045,TRUE
+86,M4,11,Waryamwala,11050,TRUE
+87,M4,11,Shorkot,11055,TRUE
+88,M4,11,M4M3STP(Darkhana)-S,11057,FALSE
+89,M4,11,M4M3STP(Darkhana)-N,11058,FALSE
+90,M4,11,Abdul Hakeem,11060,TRUE
+91,M4,11,Makhdumpur,11065,TRUE
+92,M4,11,Kabirwala,11070,TRUE
+93,M4,11,Khanewal/Shamkot,11075,TRUE
+94,M4,11,Shah Rukne Alam,11080,TRUE
+95,M4,11,Shah Shams Tabraiz,11085,TRUE
+119,LRR,8,Gulshan Ravi,8005,TRUE
+44,M9,1,Lucky,61,FALSE
+207,M2,7,Kot Pindi Das,7083,TRUE
+76,M2,7,Babu Sabu,7105,TRUE
+75,M2,7,Ravi,7100,TRUE
+112,M16-SMP,3,Karnal Sher K-SMP,3005,TRUE
+113,M16-SMP,3,Dobian,3010,TRUE
+114,M16-SMP,3,Ismaila,3015,TRUE
+115,M16-SMP,3,Bakhshali,3020,TRUE
+116,M16-SMP,3,Katlang,3025,TRUE
+117,M16-SMP,3,Palai,3030,TRUE
+118,M16-SMP,3,Chakdara,3035,TRUE
+120,LRR,8,Saggiyan,8010,TRUE
+121,LRR,8,Sabzi Mandi,8015,TRUE
+122,LRR,8,Naizi,8020,TRUE
+123,LRR,8,Shadbag,8025,TRUE
+124,LRR,8,Koral Ghatti,8030,TRUE
+125,LRR,8,Mehmood Booti,8035,TRUE
+126,LRR,8,Sharif Pura,8040,TRUE
+127,LRR,8,Quaid-e-Azam,8045,TRUE
+128,LRR,8,Harbans Pura,8050,TRUE
+129,LRR,8,Airport,8055,TRUE
+105,M5,5,Uch Shareef,56,TRUE
+131,LRR,8,Bhatta Chowk/Ghazi,8065,TRUE
+133,LRR,8,Kamaha,8075,TRUE
+134,LRR,8,Col Arif Shaheed,8080,TRUE
+135,LRR,8,Bulleh Shah,8085,TRUE
+136,LRR,8,Kahna,8090,TRUE
+137,LRR,8,Haloki,8095,TRUE
+138,LRR,8,Khayban-e-Amen,8100,TRUE
+139,LRR,8,Fazaia,8105,TRUE
+140,Habibabad,12,Patokki,12005,TRUE
+145,lafco,9,tp5,9025,TRUE
+146,lafco,9,tp4,9020,TRUE
+147,lafco,9,tp2,9010,TRUE
+148,lafco,9,tp3,9015,TRUE
+149,lafco,9,tp1,9005,TRUE
+173,Wahndo,15,Whandu,15005,TRUE
+174,Wahndo,15,Gujranwala,15010,TRUE
+132,LRR,8,Nawaz Sharif,8070,TRUE
+101,M5,5,Guddu,52,TRUE
+15,M1,4,Peshawar,4075,TRUE
+1,M1,4,Islamabad,4005,TRUE
+206,M2,7,Capital Smart City,7012,TRUE
+100,M5,5,Ghotki,51,TRUE
+98,M5,5,Rohri,49,TRUE
+162,M14,14,Kharapa,14015,TRUE
+160,M14,14,Dhok Syedan,14005,TRUE
+164,M14,14,Daud Khel,14025,TRUE
+170,M14,14,Hakla M14,14003,FALSE
+168,M14,14,Abdul Khel,14045,TRUE
+161,M14,14,Thatti Kalran,14010,TRUE
+163,M14,14,Tarap,14020,TRUE
+165,M14,14,Kot Balian,14030,TRUE
+169,M14,14,Yarik,14050,TRUE
+166,M14,14,Essa Khel,14035,TRUE
+167,M14,14,Kundal,14040,TRUE
+104,M5,5,Tarinda,55,TRUE
+106,M5,5,BahawalPur,57,TRUE
+108,M5,5,Shujabad,59,TRUE
+109,M5,5,Shershah,60,TRUE
+103,M5,5,Zahir Pir,54,TRUE
+102,M5,5,Rahim Yar Khan,53,TRUE
+99,M5,5,Pano Aqil,50,TRUE
+130,LRR,8,A Gul,8060,TRUE
+291,N75,16,Murree Expressway,16005,TRUE

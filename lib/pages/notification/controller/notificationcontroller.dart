@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '/pages/notification/model/notification_model.dart';
 import '/pages/notification/model/delete_notification_model.dart';
-import '../../../widgets/dialog/cupertion_dialog.dart';
+import '../../../widgets/dialog/cupertino_dialog.dart';
 
 class NotificationController extends GetxController implements GetxService {
   Rx<NotificationModel> notificationModel = NotificationModel().obs;

@@ -1,9 +1,8 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:mtag_flutterapp/pages/alfawebview/alfla_webview_mastercard.dart';
-import '../../../widgets/dialog/cupertion_dialog.dart';
+import '../../../widgets/dialog/cupertino_dialog.dart';
 import '../../recharge/shared/card_shared_ui.dart';
 import '/api/api_constants.dart';
 import '/api/recharge_repo.dart';

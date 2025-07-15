@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '/api/api_constants.dart';
 import '/api/user_repo.dart';
 import '/pages/recharge/model/owner_summary_model.dart';
-import '../../../widgets/dialog/cupertion_dialog.dart';
+import '../../../widgets/dialog/cupertino_dialog.dart';
 
 class RechargeController extends GetxController implements GetxService {
   final UserRepo userRepo;

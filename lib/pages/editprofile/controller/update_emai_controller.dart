@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '/api/api_constants.dart';
 import '/api/user_repo.dart';
 import '/constants/other_consts.dart';
-import '../../../widgets/dialog/cupertion_dialog.dart';
+import '../../../widgets/dialog/cupertino_dialog.dart';
 import '../model/customer_details_model.dart';
 import '../model/update_email_model.dart';
 

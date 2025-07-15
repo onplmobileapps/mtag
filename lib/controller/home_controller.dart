@@ -11,7 +11,7 @@ import '../api/user_repo.dart';
 import '../constants/other_consts.dart';
 import '../pages/dashboard/model/dashboard_model.dart';
 import '../pages/dashboard/model/mtag_model.dart';
-import '../widgets/dialog/cupertion_dialog.dart';
+import '../widgets/dialog/cupertino_dialog.dart';
 
 class HomeController extends GetxController implements GetxService {
   final UserRepo userRepo;

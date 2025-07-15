@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
-void showPopDialog(String message, Function()? onPressed) {
+
+
+void showPopDialog(String message, Function()? onPressed,{bool otpVerificationError = false}) {
   final context = Get.overlayContext ?? Get.context;
   if (context == null) return;
 
@@ -12,7 +14,13 @@ void showPopDialog(String message, Function()? onPressed) {
       content: Text(message),
       actions: [
         CupertinoDialogAction(
-          onPressed:onPressed,
+          onPressed: () {
+            if(otpVerificationError){
+              Navigator.of(dialogContext).pop();
+              
+            }
+            if (onPressed != null) onPressed();
+          },
           child: const Text('OK'),
         ),
       ],

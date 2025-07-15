@@ -128,3 +128,4 @@ class MotorwayStaticController extends GetxController implements GetxService {
     }
   }
 }
+

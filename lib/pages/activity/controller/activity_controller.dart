@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import '/controller/home_controller.dart';
 import '/pages/activity/model/activities_model.dart';
-import '../../../widgets/dialog/cupertion_dialog.dart';
+import '../../../widgets/dialog/cupertino_dialog.dart';
 import '../../../api/api_constants.dart';
 import '../../../api/auth_controller.dart';
 import '../../../api/user_repo.dart';

@@ -8,7 +8,7 @@ import '../../api/api_constants.dart';
 import '../../pages/payment/controller/payment_card_controller.dart';
 import '../../pages/payment/model/payment_card_model.dart';
 
-import '../../widgets/dialog/cupertion_dialog.dart';
+import '../../widgets/dialog/cupertino_dialog.dart';
 
 class FleetRechargePage extends StatefulWidget {
   const FleetRechargePage({super.key});

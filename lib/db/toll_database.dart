@@ -116,14 +116,14 @@ class TollDatabase {
         final batch = txn.batch();
         int insertedRows = 0;
 
-        for (var row in csvData) {
+        for (var colum in csvData) {
           try {
             // Ensure row has exactly 4 columns and handle null/empty values
-            if (row.length == 4) {
-              final eStaId = row[0] is int ? row[0] : null;
-              final xStaId = row[1] is int ? row[1] : null;
-              final vCat = row[2] is int ? row[2] : null;
-              final tTollR = row[3] is int ? row[3] : 0;
+            if (colum.length == 4) {
+              final eStaId = colum[0] is int ? colum[0] : null;
+              final xStaId = colum[1] is int ? colum[1] : null;
+              final vCat = colum[2] is int ? colum[2] : null;
+              final tTollR = colum[3] is int ? colum[3] : 0;
 
               // Only insert if critical fields are not null
               if (eStaId != null && xStaId != null && vCat != null) {

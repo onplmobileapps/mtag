@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:mtag_flutterapp/api/api_constants.dart';
 import 'package:mtag_flutterapp/api/user_repo.dart';
 import 'package:mtag_flutterapp/pages/receipt/model/receipt_model.dart';
-import 'package:mtag_flutterapp/widgets/dialog/cupertion_dialog.dart';
+import 'package:mtag_flutterapp/widgets/dialog/cupertino_dialog.dart';
 
 class ReceiptController extends GetxController implements GetxService {
   final UserRepo userRepo;

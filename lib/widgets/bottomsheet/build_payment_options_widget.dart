@@ -9,7 +9,7 @@ import '../../constants/other_consts.dart';
 import '../../pages/dashboard/model/dashboard_model.dart';
 import '../../pages/payment/controller/payment_card_controller.dart';
 import '../../utils/utils.dart';
-import '../../widgets/dialog/cupertion_dialog.dart';
+import '../dialog/cupertino_dialog.dart';
 import '../dialog/breakdown_dialog.dart';
 import 'bottom_sheet_widget.dart';
 import 'build_payment_card.dart';

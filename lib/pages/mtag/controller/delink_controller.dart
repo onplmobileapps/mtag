@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import '/api/api_constants.dart';
 import '/pages/mtag/model/dlinkoptionsmodel.dart';
-import '../../../widgets/dialog/cupertion_dialog.dart';
+import '../../../widgets/dialog/cupertino_dialog.dart';
 
 import '../../../api/user_repo.dart';
 import '../model/vehdelinkmodel.dart';

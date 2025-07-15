@@ -9,7 +9,7 @@ import '../../remoteconfig/firebase_remote_config.dart';
 import '../../utils/utils.dart';
 import '../../widgets/amount_chipselector.dart';
 import '../../widgets/bottomsheet/build_payment_options_widget.dart';
-import '../../widgets/dialog/cupertion_dialog.dart';
+import '../../widgets/dialog/cupertino_dialog.dart';
 import '../../api/api_constants.dart';
 import '../../pages/payment/controller/payment_card_controller.dart';
 import '../../pages/payment/model/payment_card_model.dart';

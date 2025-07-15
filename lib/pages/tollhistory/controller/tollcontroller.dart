@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import '../../../controller/home_controller.dart';
-import '../../../widgets/dialog/cupertion_dialog.dart';
+import '../../../widgets/dialog/cupertino_dialog.dart';
 import '/api/user_repo.dart';
 import '/pages/tollhistory/model/toll_history_model.dart';
 import '../../../api/api_constants.dart';
