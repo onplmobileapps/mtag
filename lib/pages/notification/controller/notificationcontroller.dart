@@ -23,6 +23,7 @@ class NotificationController extends GetxController implements GetxService {
   }
 
   Future<Map<String, dynamic>> getNotifications() async {
+    log('called');
     isSelectionMode(false);
     final prefs = await SharedPreferences.getInstance();
     final String? notificationsJson = prefs.getString(_notificationsKey);

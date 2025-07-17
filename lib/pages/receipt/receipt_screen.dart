@@ -21,7 +21,7 @@ class ReceiptScreen extends StatelessWidget {
     return Obx(
       () {
         var data = _receiptController.receiptModel.value.data;
-        return Scaffold(
+        return Scaffold(resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: const Text("Recharge/Travel Receipt"),
             actions: [
@@ -31,247 +31,249 @@ class ReceiptScreen extends StatelessWidget {
                       shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
                       backgroundColor: Theme.of(context).bottomSheetTheme.backgroundColor,
-                      Wrap(
-                        children: [
-                          ListTile(
-                            onTap: () async {
-                              try {
-                                _screenshotController.capture().then((Uint8List? image) async {
-                                  if (image != null) {
-                                    final directory = await getApplicationDocumentsDirectory();
-                                    final imagePath = await File('${directory.path}/receipt.png').create();
-                                    await imagePath.writeAsBytes(image);
-
-                                    await SharePlus.instance.share(ShareParams(files:  [XFile(imagePath.path)]));
-                                  }
-                                });
-                              } catch (e) {
-                                throw Exception(e);
-                              }
-                            },
-                            dense: true,
-                            leading: const Icon(
-                              Icons.screenshot,
-                              size: 30.0,
+                      SafeArea(
+                        child: Wrap(
+                          children: [
+                            ListTile(
+                              onTap: () async {
+                                try {
+                                  _screenshotController.capture().then((Uint8List? image) async {
+                                    if (image != null) {
+                                      final directory = await getApplicationDocumentsDirectory();
+                                      final imagePath = await File('${directory.path}/receipt.png').create();
+                                      await imagePath.writeAsBytes(image);
+                        
+                                      await SharePlus.instance.share(ShareParams(files:  [XFile(imagePath.path)]));
+                                    }
+                                  });
+                                } catch (e) {
+                                  throw Exception(e);
+                                }
+                              },
+                              dense: true,
+                              leading: const Icon(
+                                Icons.screenshot,
+                                size: 30.0,
+                              ),
+                              title: Text(
+                                'Share as Screenshot',
+                                style: Theme.of(context).textTheme.displaySmall,
+                              ),
                             ),
-                            title: Text(
-                              'Share as Screenshot',
-                              style: Theme.of(context).textTheme.displaySmall,
-                            ),
-                          ),
-                          const Divider(),
-                          ListTile(
-                            onTap: () async {
-                              final headerImage =
-                                  pw.MemoryImage((await rootBundle.load('assets/h.png')).buffer.asUint8List());
-                              final brandImage = pw.MemoryImage(
-                                (await rootBundle.load('assets/mtagbrand.png')).buffer.asUint8List(),
-                              );
-                              final footerImage = pw.MemoryImage(
-                                (await rootBundle.load('assets/footer.png')).buffer.asUint8List(),
-                              );
-                              final pdf = pw.Document(version: PdfVersion.pdf_1_4);
-
-                              pdf.addPage(
-                                pw.Page(
-                                  orientation: pw.PageOrientation.portrait,
-                                  margin: pw.EdgeInsets.zero,
-                                  build: (pw.Context context1) {
-                                    return pw.Column(
-                                      mainAxisSize: pw.MainAxisSize.max,
-                                      mainAxisAlignment: pw.MainAxisAlignment.start,
-                                      crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                      children: [
-                                        pw.Image(headerImage, height: 20, fit: pw.BoxFit.fitWidth),
-                                        pw.Container(
-                                          height: 30,
-                                          width: double.infinity,
-                                        ),
-                                        pw.Center(child: pw.Image(brandImage, height: 120, width: 200)),
-                                        pw.Container(
-                                          height: 30,
-                                          width: double.infinity,
-                                        ),
-                                        pw.Center(
-                                          child: pw.Text(
-                                            'Travel Receipt',
-                                            style: pw.TextStyle(
-                                              color: PdfColor.fromHex(
-                                                'E73B3E',
+                            const Divider(),
+                            ListTile(
+                              onTap: () async {
+                                final headerImage =
+                                    pw.MemoryImage((await rootBundle.load('assets/h.png')).buffer.asUint8List());
+                                final brandImage = pw.MemoryImage(
+                                  (await rootBundle.load('assets/mtagbrand.png')).buffer.asUint8List(),
+                                );
+                                final footerImage = pw.MemoryImage(
+                                  (await rootBundle.load('assets/footer.png')).buffer.asUint8List(),
+                                );
+                                final pdf = pw.Document(version: PdfVersion.pdf_1_4);
+                        
+                                pdf.addPage(
+                                  pw.Page(
+                                    orientation: pw.PageOrientation.portrait,
+                                    margin: pw.EdgeInsets.zero,
+                                    build: (pw.Context context1) {
+                                      return pw.Column(
+                                        mainAxisSize: pw.MainAxisSize.max,
+                                        mainAxisAlignment: pw.MainAxisAlignment.start,
+                                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                        children: [
+                                          pw.Image(headerImage, height: 20, fit: pw.BoxFit.fitWidth),
+                                          pw.Container(
+                                            height: 30,
+                                            width: double.infinity,
+                                          ),
+                                          pw.Center(child: pw.Image(brandImage, height: 120, width: 200)),
+                                          pw.Container(
+                                            height: 30,
+                                            width: double.infinity,
+                                          ),
+                                          pw.Center(
+                                            child: pw.Text(
+                                              'Travel Receipt',
+                                              style: pw.TextStyle(
+                                                color: PdfColor.fromHex(
+                                                  'E73B3E',
+                                                ),
+                                                fontSize: 25,
                                               ),
-                                              fontSize: 25,
                                             ),
                                           ),
-                                        ),
-                                        pw.SizedBox(height: 40),
-                                        pw.Padding(
-                                          padding: const pw.EdgeInsets.only(left: 12, right: 12),
-                                          child: pw.Column(children: [
-                                            pw.Container(
-                                              padding: const pw.EdgeInsets.all(10),
-                                              color: PdfColor.fromHex('F5F5F5'),
-                                              child: pw.Row(
-                                                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                                                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                                children: [
-                                                  pw.Text('Amount'),
-                                                  pw.Text('PKR ${data?.amount ?? data?.fare ?? ''}/-'),
-                                                ],
+                                          pw.SizedBox(height: 40),
+                                          pw.Padding(
+                                            padding: const pw.EdgeInsets.only(left: 12, right: 12),
+                                            child: pw.Column(children: [
+                                              pw.Container(
+                                                padding: const pw.EdgeInsets.all(10),
+                                                color: PdfColor.fromHex('F5F5F5'),
+                                                child: pw.Row(
+                                                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                                                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                                  children: [
+                                                    pw.Text('Amount'),
+                                                    pw.Text('PKR ${data?.amount ?? data?.fare ?? ''}/-'),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            pw.SizedBox(height: 10),
-                                            pw.Container(
-                                              padding: const pw.EdgeInsets.all(10),
-                                              color: PdfColor.fromHex('F5F5F5'),
-                                              child: pw.Row(
-                                                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                                                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                                children: [
-                                                  pw.Text('Vehicle Number'),
-                                                  pw.Text(data?.registration ?? ''),
-                                                ],
+                                              pw.SizedBox(height: 10),
+                                              pw.Container(
+                                                padding: const pw.EdgeInsets.all(10),
+                                                color: PdfColor.fromHex('F5F5F5'),
+                                                child: pw.Row(
+                                                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                                                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                                  children: [
+                                                    pw.Text('Vehicle Number'),
+                                                    pw.Text(data?.registration ?? ''),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            pw.SizedBox(height: 10),
-                                            pw.Container(
-                                              padding: const pw.EdgeInsets.all(10),
-                                              color: PdfColor.fromHex('F5F5F5'),
-                                              child: pw.Row(
-                                                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                                                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                                children: [
-                                                  pw.Text('M-TAG ID'),
-                                                  pw.Text('${data?.mTagID}'),
-                                                ],
+                                              pw.SizedBox(height: 10),
+                                              pw.Container(
+                                                padding: const pw.EdgeInsets.all(10),
+                                                color: PdfColor.fromHex('F5F5F5'),
+                                                child: pw.Row(
+                                                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                                                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                                  children: [
+                                                    pw.Text('M-TAG ID'),
+                                                    pw.Text('${data?.mTagID}'),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            pw.SizedBox(height: 10),
-                                            pw.Container(
-                                              padding: const pw.EdgeInsets.all(10),
-                                              color: PdfColor.fromHex('F5F5F5'),
-                                              child: pw.Row(
-                                                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                                                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                                children: [
-                                                  pw.Text('Date & Time (PKT)'),
-                                                  pw.Text(data?.rechargeDate ?? data?.time ?? ''),
-                                                ],
+                                              pw.SizedBox(height: 10),
+                                              pw.Container(
+                                                padding: const pw.EdgeInsets.all(10),
+                                                color: PdfColor.fromHex('F5F5F5'),
+                                                child: pw.Row(
+                                                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                                                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                                  children: [
+                                                    pw.Text('Date & Time (PKT)'),
+                                                    pw.Text(data?.rechargeDate ?? data?.time ?? ''),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            pw.SizedBox(height: 10),
-                                            pw.Container(
-                                              padding: const pw.EdgeInsets.all(10),
-                                              color: PdfColor.fromHex('F5F5F5'),
-                                              child: pw.Row(
-                                                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                                                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                                children: [
-                                                  pw.Text('Booth Name'),
-                                                  pw.Text(data?.boothName ?? ''),
-                                                ],
+                                              pw.SizedBox(height: 10),
+                                              pw.Container(
+                                                padding: const pw.EdgeInsets.all(10),
+                                                color: PdfColor.fromHex('F5F5F5'),
+                                                child: pw.Row(
+                                                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                                                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                                  children: [
+                                                    pw.Text('Booth Name'),
+                                                    pw.Text(data?.boothName ?? ''),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            pw.SizedBox(height: 10),
-                                            pw.Container(
-                                              padding: const pw.EdgeInsets.all(10),
-                                              color: PdfColor.fromHex('F5F5F5'),
-                                              child: pw.Row(
-                                                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                                                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                                children: [
-                                                  pw.Text('Entry Station'),
-                                                  pw.Text(data?.entryStation ?? ''),
-                                                ],
+                                              pw.SizedBox(height: 10),
+                                              pw.Container(
+                                                padding: const pw.EdgeInsets.all(10),
+                                                color: PdfColor.fromHex('F5F5F5'),
+                                                child: pw.Row(
+                                                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                                                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                                  children: [
+                                                    pw.Text('Entry Station'),
+                                                    pw.Text(data?.entryStation ?? ''),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            pw.SizedBox(height: 10),
-                                            pw.Container(
-                                              padding: const pw.EdgeInsets.all(10),
-                                              color: PdfColor.fromHex('F5F5F5'),
-                                              child: pw.Row(
-                                                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                                                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                                children: [
-                                                  pw.Text('Exit Station'),
-                                                  pw.Text(data?.exitStation ?? ''),
-                                                ],
+                                              pw.SizedBox(height: 10),
+                                              pw.Container(
+                                                padding: const pw.EdgeInsets.all(10),
+                                                color: PdfColor.fromHex('F5F5F5'),
+                                                child: pw.Row(
+                                                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                                                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                                  children: [
+                                                    pw.Text('Exit Station'),
+                                                    pw.Text(data?.exitStation ?? ''),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            pw.SizedBox(height: 10),
-                                            pw.Container(
-                                              padding: const pw.EdgeInsets.all(10),
-                                              color: PdfColor.fromHex('F5F5F5'),
-                                              child: pw.Row(
-                                                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                                                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                                children: [
-                                                  pw.Text('Reference Number'),
-                                                  pw.Text(data?.uID ?? ''),
-                                                ],
+                                              pw.SizedBox(height: 10),
+                                              pw.Container(
+                                                padding: const pw.EdgeInsets.all(10),
+                                                color: PdfColor.fromHex('F5F5F5'),
+                                                child: pw.Row(
+                                                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                                                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                                  children: [
+                                                    pw.Text('Reference Number'),
+                                                    pw.Text(data?.uID ?? ''),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ]),
-                                        ),
-                                        pw.SizedBox(height: 20),
-                                        pw.Padding(
-                                          padding: const pw.EdgeInsets.only(
-                                            left: 10,
+                                            ]),
                                           ),
-                                          child: pw.Text(
-                                            'Disclaimer',
-                                            style: pw.TextStyle(color: PdfColor.fromHex('E73B3E'), fontSize: 25),
+                                          pw.SizedBox(height: 20),
+                                          pw.Padding(
+                                            padding: const pw.EdgeInsets.only(
+                                              left: 10,
+                                            ),
+                                            child: pw.Text(
+                                              'Disclaimer',
+                                              style: pw.TextStyle(color: PdfColor.fromHex('E73B3E'), fontSize: 25),
+                                            ),
                                           ),
-                                        ),
-                                        pw.SizedBox(height: 15),
-                                        pw.Padding(
-                                          padding: const pw.EdgeInsets.only(left: 10, right: 10),
-                                          child: pw.Text(
-                                              'This document is computer generated and does not require the Registrar\'s signature or the Company\'s stamp in order to be considered valid'),
-                                        ),
-                                        pw.SizedBox(height: 30),
-                                        pw.Container(
-                                            margin: const pw.EdgeInsets.only(left: 10, right: 10),
-                                            color: PdfColor.fromHex('E73B3E'),
-                                            height: 2,
-                                            width: double.infinity),
-                                        pw.SizedBox(height: 20),
-                                        pw.Spacer(),
-                                        pw.Center(
-                                          child: pw.Text('Powered by One Network\u00AE',
-                                              style: const pw.TextStyle(fontSize: 20, letterSpacing: 0)),
-                                        ),
-                                        pw.Spacer(),
-                                        pw.Image(
-                                          footerImage,
-                                        ),
-                                      ],
-                                    );
-
-                                    // Center
-                                  },
-                                  pageFormat: const PdfPageFormat(500, 1024),
-                                ),
-                              );
-
-                              Directory documentDirectory = await getApplicationDocumentsDirectory();
-                              String documentPath = documentDirectory.path;
-
-                              File pdfFile = File('$documentPath/${data?.uID}.pdf');
-
-                              pdfFile.writeAsBytesSync(await pdf.save());
-                              SharePlus.instance.share(ShareParams(files: [XFile(pdfFile.path)]));
-                            },
-                            dense: true,
-                            leading: const Icon(
-                              Icons.picture_as_pdf,
-                              size: 30.0,
-                            ),
-                            title: Text(
-                              'Share as PDF',
-                              style: Theme.of(context).textTheme.displaySmall,
-                            ),
-                          )
-                        ],
+                                          pw.SizedBox(height: 15),
+                                          pw.Padding(
+                                            padding: const pw.EdgeInsets.only(left: 10, right: 10),
+                                            child: pw.Text(
+                                                'This document is computer generated and does not require the Registrar\'s signature or the Company\'s stamp in order to be considered valid'),
+                                          ),
+                                          pw.SizedBox(height: 30),
+                                          pw.Container(
+                                              margin: const pw.EdgeInsets.only(left: 10, right: 10),
+                                              color: PdfColor.fromHex('E73B3E'),
+                                              height: 2,
+                                              width: double.infinity),
+                                          pw.SizedBox(height: 20),
+                                          pw.Spacer(),
+                                          pw.Center(
+                                            child: pw.Text('Powered by One Network\u00AE',
+                                                style: const pw.TextStyle(fontSize: 20, letterSpacing: 0)),
+                                          ),
+                                          pw.Spacer(),
+                                          pw.Image(
+                                            footerImage,
+                                          ),
+                                        ],
+                                      );
+                        
+                                      // Center
+                                    },
+                                    pageFormat: const PdfPageFormat(500, 1024),
+                                  ),
+                                );
+                        
+                                Directory documentDirectory = await getApplicationDocumentsDirectory();
+                                String documentPath = documentDirectory.path;
+                        
+                                File pdfFile = File('$documentPath/${data?.uID}.pdf');
+                        
+                                pdfFile.writeAsBytesSync(await pdf.save());
+                                SharePlus.instance.share(ShareParams(files: [XFile(pdfFile.path)]));
+                              },
+                              dense: true,
+                              leading: const Icon(
+                                Icons.picture_as_pdf,
+                                size: 30.0,
+                              ),
+                              title: Text(
+                                'Share as PDF',
+                                style: Theme.of(context).textTheme.displaySmall,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     );
                   },

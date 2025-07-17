@@ -16,6 +16,7 @@ class AuthController extends GetxController implements GetxService {
   final AuthRepo authRepo;
 
   AuthController({required this.authRepo});
+  
 
   int? forgotUserId;
   String? forgotUserPhoneNo;

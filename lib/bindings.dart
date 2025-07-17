@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/controller/home_controller.dart';
-import 'package:mtag_flutterapp/pages/tolcalator/controller/toll_calculator_static_controller.dart';
+import '../../controller/home_controller.dart';
+import '../../pages/tolcalator/controller/toll_calculator_static_controller.dart';
 import '../../api/recharge_repo.dart';
 
 import '../../pages/activity/controller/activity_controller.dart';
@@ -30,7 +30,6 @@ class Binding extends Bindings {
         permanent: true);
     Get.lazyPut(() => HomeController(userRepo: UserRepo()));
     Get.lazyPut(() => PaymentCardController(userRepo: RechargRepo()));
-    Get.lazyPut(() => NotificationController());
     Get.lazyPut(() => UpdateEmailController(userRepo: UserRepo()));
     Get.lazyPut(() => RechargeController(userRepo: UserRepo()));
     // Get.lazyPut(() => TollCalculatorController(userRepo: UserRepo()));
@@ -41,5 +40,6 @@ class Binding extends Bindings {
     Get.lazyPut(() => ReceiptController(userRepo: UserRepo()));
     Get.lazyPut(() => DelinkController(userRepo: UserRepo()));
     Get.lazyPut(() => DeleteAccountController(userRepo: UserRepo()));
+    Get.lazyPut(() => NotificationController());
   }
 }

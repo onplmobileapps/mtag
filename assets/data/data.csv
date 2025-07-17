@@ -1,3 +1,4 @@
+#version=2
 e_sta_id,x_sta_id,v_cat,t_toll_r
 4035,4050,3,220
 4035,10020,2,300

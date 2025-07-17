@@ -3,40 +3,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:keyboard_actions/keyboard_actions.dart'; // Add this import
+import 'package:keyboard_actions/keyboard_actions.dart';
 import '../../api/auth_controller.dart';
 import '../../constants/input_formater.dart';
 import '../../utils/utils.dart';
+import 'controller/auth_page_controller.dart';
+
+
 
 class AuthPage extends StatelessWidget {
   AuthPage({super.key});
 
-  final _userName = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _cnicController = TextEditingController();
-  final ValueNotifier<int> _authNotifier = ValueNotifier<int>(0);
-  final _formKey = GlobalKey<FormState>();
+  final controller = Get.put(AuthPageController()); // Initialize controller
 
-  // Focus nodes for keyboard actions
-  final _cnicFocusNode = FocusNode();
-  final _phoneFocusNode = FocusNode();
-
-  // Keyboard actions configuration
   KeyboardActionsConfig _buildKeyboardConfig(BuildContext context) {
     return KeyboardActionsConfig(
-      keyboardActionsPlatform: KeyboardActionsPlatform.IOS, // Target iOS only
+      keyboardActionsPlatform: KeyboardActionsPlatform.IOS,
       keyboardBarColor: Theme.of(context).brightness == Brightness.light
           ? Colors.grey[200]
           : Colors.grey[800],
-      nextFocus: false, // Prevent focus jumping
+      nextFocus: false,
       actions: [
         KeyboardActionsItem(
-          focusNode: _cnicFocusNode,
+          focusNode: controller.cnicFocusNode,
           toolbarButtons: [
             (node) => Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: TextButton(
-                    onPressed: () => node.unfocus(),
+                    onPressed: () {
+                      node.unfocus();
+                      FocusScope.of(context).unfocus(); // Ensure focus is cleared
+                    },
                     child: Text(
                       'Done',
                       style: TextStyle(
@@ -49,12 +46,15 @@ class AuthPage extends StatelessWidget {
           ],
         ),
         KeyboardActionsItem(
-          focusNode: _phoneFocusNode,
+          focusNode: controller.phoneFocusNode,
           toolbarButtons: [
             (node) => Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: TextButton(
-                    onPressed: () => node.unfocus(),
+                    onPressed: () {
+                      node.unfocus();
+                      FocusScope.of(context).unfocus(); // Ensure focus is cleared
+                    },
                     child: Text(
                       'Done',
                       style: TextStyle(
@@ -87,11 +87,9 @@ class AuthPage extends StatelessWidget {
               horizontal: screenWidth * 0.09,
             ),
             child: KeyboardActions(
-              config: _buildKeyboardConfig(
-                  context), // Wrap entire column with KeyboardActions
-              child: ValueListenableBuilder(
-                valueListenable: _authNotifier,
-                builder: (context, value, child) => Column(
+              config: _buildKeyboardConfig(context),
+              child: Obx(
+                () => Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -109,7 +107,7 @@ class AuthPage extends StatelessWidget {
                       children: [
                         TextButton(
                           onPressed: () {
-                            _authNotifier.value = 0;
+                            controller.authIndex.value = 0;
                           },
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -119,7 +117,7 @@ class AuthPage extends StatelessWidget {
                           child: Text(
                             'Sign In',
                             style: theme.textTheme.titleMedium?.copyWith(
-                              color: value == 0
+                              color: controller.authIndex.value == 0
                                   ? colorScheme.primary
                                   : colorScheme.secondary,
                             ),
@@ -134,7 +132,7 @@ class AuthPage extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () {
-                            _authNotifier.value = 1;
+                            controller.authIndex.value = 1;
                           },
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -144,7 +142,7 @@ class AuthPage extends StatelessWidget {
                           child: Text(
                             'Sign Up',
                             style: theme.textTheme.titleMedium?.copyWith(
-                              color: value == 1
+                              color: controller.authIndex.value == 1
                                   ? colorScheme.primary
                                   : colorScheme.secondary,
                             ),
@@ -164,10 +162,10 @@ class AuthPage extends StatelessWidget {
                     ),
                     SizedBox(height: screenHeight * 0.02),
                     Form(
-                      key: _formKey,
+                      key: controller.formKey,
                       child: Column(
                         children: [
-                          if (value == 1)
+                          if (controller.authIndex.value == 1)
                             TextFormField(
                               keyboardType: TextInputType.text,
                               inputFormatters: [
@@ -177,11 +175,11 @@ class AuthPage extends StatelessWidget {
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
                               style: const TextStyle(height: 1),
-                              controller: _userName,
+                              controller: controller.userName,
                               decoration:
                                   const InputDecoration(hintText: 'Full Name'),
                               validator: (v) {
-                                if (value == 1 &&
+                                if (controller.authIndex.value == 1 &&
                                     (v == null || v.isEmpty || v.length < 3)) {
                                   return 'Please enter your full name';
                                 }
@@ -190,7 +188,7 @@ class AuthPage extends StatelessWidget {
                             ),
                           SizedBox(height: screenHeight * 0.02),
                           TextFormField(
-                            focusNode: _cnicFocusNode, // Assign focus node
+                            focusNode: controller.cnicFocusNode,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             keyboardType: TextInputType.number,
@@ -202,18 +200,17 @@ class AuthPage extends StatelessWidget {
                               }
                               return null;
                             },
-                            controller: _cnicController,
+                            controller: controller.cnicController,
                             decoration: const InputDecoration(
                               hintText: 'CNIC',
                             ),
                           ),
                           SizedBox(height: screenHeight * 0.02),
                           TextFormField(
-                            focusNode: _phoneFocusNode, // Assign focus node
+                            focusNode: controller.phoneFocusNode,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             keyboardType: TextInputType.number,
-                            // textInputAction: TextInputAction.done,
                             inputFormatters: numberInputFormatters,
                             maxLength: 11,
                             validator: (v) {
@@ -226,7 +223,7 @@ class AuthPage extends StatelessWidget {
                               return null;
                             },
                             style: const TextStyle(height: 1),
-                            controller: _phoneController,
+                            controller: controller.phoneController,
                             decoration: const InputDecoration(
                               hintText: 'Mobile Number',
                               counterText: "",
@@ -239,24 +236,24 @@ class AuthPage extends StatelessWidget {
                             alignment: Alignment.topRight,
                             child: GestureDetector(
                               onTap: () async {
-                                if (_formKey.currentState?.validate() ??
+                                if (controller.formKey.currentState?.validate() ??
                                     false) {
                                   var release =
                                       await DeviceInfo.getDeviceInfo();
-                                  if (value == 0) {
+                                  if (controller.authIndex.value == 0) {
                                     Get.find<AuthController>().login(
-                                      cnic: _cnicController.text.trim(),
+                                      cnic: controller.cnicController.text.trim(),
                                       mobileNumber:
-                                          _phoneController.text.trim(),
+                                          controller.phoneController.text.trim(),
                                       metaData:
                                           '"${Platform.isAndroid ? "Android" : 'iOS'} ""__"${release['release']} "__"${release['manufacturer']}""${release['model']} "__"android_id"__"fcmToken"__"3.1.4"',
                                     );
-                                    return;
                                   } else {
                                     Get.find<AuthController>().registerUser(
-                                      cnic: _cnicController.text,
-                                      mobileNumber: _phoneController.text,
-                                      fullName: _userName.text,
+                                      cnic: controller.cnicController.text,
+                                      mobileNumber:
+                                          controller.phoneController.text,
+                                      fullName: controller.userName.text,
                                     );
                                   }
                                 }

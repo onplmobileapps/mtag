@@ -1,9 +1,11 @@
-import 'dart:developer';
 
+
+import 'dart:developer';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:csv/csv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TollDatabase {
   static final TollDatabase instance = TollDatabase._init();
@@ -20,11 +22,10 @@ class TollDatabase {
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
-
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
-  Future _createDB(Database db, int version) async {
+  Future<void> _createDB(Database db, int version) async {
     await db.execute('''
       CREATE TABLE veh_toll_cal_7 (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,130 +35,95 @@ class TollDatabase {
         t_toll_r INTEGER DEFAULT 0
       )
     ''');
-
-    // After creating the table, check if we need to import data
-    await _checkAndImportData(db);
   }
 
-  Future<bool> _isDatabaseEmpty(Database db) async {
-    final count = Sqflite.firstIntValue(
-        await db.rawQuery('SELECT COUNT(*) FROM veh_toll_cal_7'));
-    return count == 0;
+  Future<int> _getCsvVersion() async {
+    final csvString = await rootBundle.loadString('assets/data/data.csv');
+    final firstLine = csvString.split('\n').first.trim();
+    if (firstLine.startsWith('#version=')) {
+      return int.tryParse(firstLine.split('=').last.trim()) ?? 1;
+    }
+    return 1; // default if version not found
   }
 
-  Future<bool> _isDataComplete(Database db) async {
-    // Check if we have at least one complete record
-    final result = await db.rawQuery('''
-      SELECT COUNT(*) FROM veh_toll_cal_7 
-      WHERE e_sta_id IS NOT NULL 
-        AND x_sta_id IS NOT NULL 
-        AND v_cat IS NOT NULL 
-        AND t_toll_r IS NOT NULL
-    ''');
-
-    final completeRecords = Sqflite.firstIntValue(result) ?? 0;
-    return completeRecords > 0;
+  Future<int> _getStoredVersion() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('data_csv_version') ?? 0;
   }
 
-  Future<void> _checkAndImportData(Database db) async {
-    final isEmpty = await _isDatabaseEmpty(db);
-    final isComplete = isEmpty ? false : await _isDataComplete(db);
+  Future<void> _setStoredVersion(int version) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('data_csv_version', version);
+  }
 
-    if (isEmpty || !isComplete) {
-      log('Database is empty or incomplete, importing data...');
+  Future<void> importDataIfNeeded() async {
+    final db = await database;
+    final currentVersion = await _getCsvVersion();
+    final storedVersion = await _getStoredVersion();
+
+    if (storedVersion < currentVersion) {
+      log('New CSV version detected: $currentVersion (old: $storedVersion), importing...');
       await _loadDataFromCsvAndInsert(db);
+      await _setStoredVersion(currentVersion);
     } else {
-      log('Database already contains complete data, skipping import.');
+      log('CSV version $currentVersion already imported, skipping...');
     }
   }
 
   Future<void> _loadDataFromCsvAndInsert(Database db) async {
     try {
       await db.delete('veh_toll_cal_7');
-      log('Existing data deleted');
+      log('Existing toll data deleted');
 
       final csvString = await rootBundle.loadString('assets/data/data.csv');
-      log('Raw CSV length: ${csvString.length} characters');
 
-      if (csvString.isEmpty) {
-        log('Error: CSV file is empty');
-        return;
-      }
+      final rows = const CsvToListConverter(eol: '\n').convert(csvString);
 
-      List<List<dynamic>> csvData;
-      try {
-        csvData = const CsvToListConverter(
-          eol: '\n',
-          shouldParseNumbers: true,
-        ).convert(csvString);
+      // Skip version and header lines
+      final dataRows = rows
+          .where((row) =>
+      row.isNotEmpty &&
+          !row[0].toString().startsWith('#') &&
+          row[0].toString() != 'e_sta_id')
+          .toList();
 
-        if (csvData.isEmpty) {
-          log('Error: No rows found in CSV');
-          return;
-        }
-
-        // Verify the CSV has the expected 4 columns
-        if (csvData[0].length != 4) {
-          log(
-              'Error: Expected 4 columns (e_sta_id, x_sta_id, v_cat, t_toll_r), found ${csvData[0].length}');
-          return;
-        }
-
-        // Remove header row if present
-        if (csvData[0][0] == 'e_sta_id') {
-          csvData = csvData.sublist(1);
-        }
-      } catch (parseError) {
-        log('CSV parsing failed: $parseError');
+      if (dataRows.isEmpty) {
+        log('No valid data found in CSV');
         return;
       }
 
       await db.transaction((txn) async {
         final batch = txn.batch();
-        int insertedRows = 0;
+        int inserted = 0;
 
-        for (var colum in csvData) {
-          try {
-            // Ensure row has exactly 4 columns and handle null/empty values
-            if (colum.length == 4) {
-              final eStaId = colum[0] is int ? colum[0] : null;
-              final xStaId = colum[1] is int ? colum[1] : null;
-              final vCat = colum[2] is int ? colum[2] : null;
-              final tTollR = colum[3] is int ? colum[3] : 0;
+        for (final row in dataRows) {
+          if (row.length < 4) continue;
 
-              // Only insert if critical fields are not null
-              if (eStaId != null && xStaId != null && vCat != null) {
-                batch.insert(
-                  'veh_toll_cal_7',
-                  {
-                    'e_sta_id': eStaId,
-                    'x_sta_id': xStaId,
-                    'v_cat': vCat,
-                    't_toll_r': tTollR,
-                  },
-                  conflictAlgorithm: ConflictAlgorithm.replace,
-                );
-                insertedRows++;
-              }
-            }
-          } catch (e) {
-            log('Error inserting row: $e');
+          final eStaId = int.tryParse(row[0].toString());
+          final xStaId = int.tryParse(row[1].toString());
+          final vCat = int.tryParse(row[2].toString());
+          final tTollR = int.tryParse(row[3].toString()) ?? 0;
+
+          if (eStaId != null && xStaId != null && vCat != null) {
+            batch.insert(
+              'veh_toll_cal_7',
+              {
+                'e_sta_id': eStaId,
+                'x_sta_id': xStaId,
+                'v_cat': vCat,
+                't_toll_r': tTollR,
+              },
+              conflictAlgorithm: ConflictAlgorithm.replace,
+            );
+            inserted++;
           }
         }
 
         await batch.commit(noResult: true);
-        log('Inserted $insertedRows rows');
+        log('Inserted $inserted toll records');
       });
-
-      log('Data insertion complete!');
     } catch (e) {
-      log('Error loading data from CSV: $e');
+      log('Error during CSV toll import: $e');
     }
-  }
-
-  // Public method to manually trigger data import if needed
-  Future<void> importDataIfNeeded() async {
-    final db = await database;
-    await _checkAndImportData(db);
   }
 }
