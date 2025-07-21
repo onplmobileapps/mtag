@@ -16,7 +16,9 @@ xmlns:tools="http://schemas.android.com/tools">
         android:label="M-TAG"
         android:name="${applicationName}"
         android:layerType="software"
+         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher">
+        
 
         <activity
 

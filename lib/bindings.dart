@@ -32,7 +32,6 @@ class Binding extends Bindings {
     Get.lazyPut(() => PaymentCardController(userRepo: RechargRepo()));
     Get.lazyPut(() => UpdateEmailController(userRepo: UserRepo()));
     Get.lazyPut(() => RechargeController(userRepo: UserRepo()));
-    // Get.lazyPut(() => TollCalculatorController(userRepo: UserRepo()));
     Get.lazyPut(() => MotorwayStaticController());
     Get.lazyPut(() => TollController(userRepo: UserRepo()));
     Get.lazyPut(() => UpdateSmsStatusController(userRepo: UserRepo()));
@@ -41,5 +40,6 @@ class Binding extends Bindings {
     Get.lazyPut(() => DelinkController(userRepo: UserRepo()));
     Get.lazyPut(() => DeleteAccountController(userRepo: UserRepo()));
     Get.lazyPut(() => NotificationController());
+
   }
 }
