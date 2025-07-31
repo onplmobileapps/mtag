@@ -38,6 +38,8 @@ class MotorwayStaticController extends GetxController implements GetxService {
     StaticMotorwayModel(motorwayName: "M14", motorwayAbbrivation: "Yrk-Hak", motorwayID: 14),
     StaticMotorwayModel(motorwayName: "M15", motorwayAbbrivation: "Hazara", motorwayID: 10),
     StaticMotorwayModel(motorwayName: "M16-SMP", motorwayAbbrivation: "Swat", motorwayID: 3),
+    StaticMotorwayModel(motorwayName: "N75", motorwayAbbrivation: "\t\t\tMurree\nExpressway", motorwayID: 200),
+    StaticMotorwayModel(motorwayName: "EBP", motorwayAbbrivation: "\t\tEastern\n\t\tBypass", motorwayID: 300),
   ].obs;
 
   final ScrollController scrollController = ScrollController();
