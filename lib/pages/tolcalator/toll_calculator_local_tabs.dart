@@ -19,7 +19,7 @@ class TollCalculatorLocalTabs extends StatelessWidget {
     final Animation<double> fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: animationController, curve: Curves.easeIn),
     );
-// nsdfkjwfjsbkjbs
+
     return Scaffold(
       appBar: AppBar(title: const Text(TollCalculatorLocalTabs.title)),
       body: Column(
@@ -56,6 +56,24 @@ class TollPlazaTab extends StatelessWidget {
     required this.fadeAnimation,
   });
 
+  static const Map<int, int> tollMapMurree = {
+    1: 200,
+    2: 200,
+    3: 200,
+    4: 350,
+    5: 400,
+    6: 800,
+  };
+
+  static const Map<int, int> tollMapEasternBypass = {
+    1: 70,
+    2: 150,
+    3: 150,
+    4: 250,
+    5: 300,
+    6: 550,
+  };
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<MotorwayStaticController>(
@@ -73,33 +91,76 @@ class TollPlazaTab extends StatelessWidget {
                   const SizedBox(height: 8),
                   _buildSection(_buildMotorwaySelector(context, isLargeScreen, controller), context),
                   const SizedBox(height: 12),
-                  _buildSection(_buildStationSelector(context, padding, controller), context),
+                  Obx(() {
+                    final selectedMotorwayIndex = controller.selectedMotorway.value;
+                    final selectedMwID = (selectedMotorwayIndex != -1 &&
+                        controller.mwNameList.length > selectedMotorwayIndex)
+                        ? controller.mwNameList[selectedMotorwayIndex].motorwayID
+                        : null;
+
+                    return (selectedMwID != 200 && selectedMwID != 300)
+                        ? _buildSection(
+                      _buildStationSelector(context, padding, controller),
+                      context,
+                    )
+                        : const SizedBox.shrink();
+                  }),
                   const SizedBox(height: 12),
                   _buildSection(_buildVehicleSelector(context, isLargeScreen, controller), context),
-                  Obx(() => controller.showTollPlaza.value
-                      ? Column(
-                          children: [
-                            const SizedBox(height: 12),
-                            FadeTransition(
-                              opacity: fadeAnimation,
-                              child: _buildSection(
-                                TollDisplay(
-                                  padding: padding,
-                                  isCalculating: controller.isCalculatingPlaza.value,
-                                  entry: controller.entryStation.value.isEmpty ? null : controller.entryStation.value,
-                                  exit: controller.exitStation.value.isEmpty ? null : controller.exitStation.value,
-                                  vehicleName: controller.selectedVehicle.value != -1
-                                      ? controller.vehicleList[controller.selectedVehicle.value].name
-                                      : null,
-                                  toll: controller.calculatedTollPlaza.value,
-                                  route: '${controller.entryStation.value} - ${controller.exitStation.value}',
-                                ),
-                                context,
-                              ),
+                  Obx(() {
+                    final selectedMotorwayIndex = controller.selectedMotorway.value;
+                    final selectedMwID = (selectedMotorwayIndex != -1 &&
+                        controller.mwNameList.length > selectedMotorwayIndex)
+                        ? controller.mwNameList[selectedMotorwayIndex].motorwayID
+                        : null;
+                    final selectedVehicleIndex = controller.selectedVehicle.value;
+                    final vehicleName = selectedVehicleIndex != -1 &&
+                        controller.vehicleList.length > selectedVehicleIndex
+                        ? controller.vehicleList[selectedVehicleIndex].name
+                        : null;
+                    final toll = selectedVehicleIndex != -1
+                        ? (selectedMwID == 200
+                        ? tollMapMurree[controller.vehicleList[selectedVehicleIndex].id]?.toString()
+                        : selectedMwID == 300
+                        ? tollMapEasternBypass[controller.vehicleList[selectedVehicleIndex].id]?.toString()
+                        : controller.calculatedTollPlaza.value)
+                        : null;
+
+                    return controller.showTollPlaza.value
+                        ? Column(
+                      children: [
+                        const SizedBox(height: 12),
+                        FadeTransition(
+                          opacity: fadeAnimation,
+                          child: _buildSection(
+                            TollDisplay(
+                              padding: padding,
+                              isCalculating: controller.isCalculatingPlaza.value &&
+                                  selectedMwID != 200 &&
+                                  selectedMwID != 300,
+                              entry: (selectedMwID == 200 || selectedMwID == 300)
+                                  ? null
+                                  : (controller.entryStation.value.isEmpty
+                                  ? null
+                                  : controller.entryStation.value),
+                              exit: (selectedMwID == 200 || selectedMwID == 300)
+                                  ? null
+                                  : (controller.exitStation.value.isEmpty
+                                  ? null
+                                  : controller.exitStation.value),
+                              vehicleName: vehicleName,
+                              toll: toll,
+                              route: (selectedMwID == 200 || selectedMwID == 300)
+                                  ? controller.mwNameList[selectedMotorwayIndex].motorwayName
+                                  : '${controller.entryStation.value} - ${controller.exitStation.value}',
                             ),
-                          ],
-                        )
-                      : const SizedBox.shrink()),
+                            context,
+                          ),
+                        ),
+                      ],
+                    )
+                        : const SizedBox.shrink();
+                  }),
                   const SizedBox(height: 20),
                 ],
               ),
@@ -111,14 +172,16 @@ class TollPlazaTab extends StatelessWidget {
   }
 
   Widget _buildSection(Widget child, BuildContext context) => Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).disabledColor,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: child,
-      );
+    decoration: BoxDecoration(
+      color: Theme.of(context).disabledColor,
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: child,
+  );
 
-  Widget _buildMotorwaySelector(BuildContext  context,bool isLargeScreen, MotorwayStaticController controller) => Card(
+  Widget _buildMotorwaySelector(
+      BuildContext context, bool isLargeScreen, MotorwayStaticController controller) =>
+      Card(
         elevation: 0,
         color: Colors.transparent,
         child: Column(
@@ -139,94 +202,98 @@ class TollPlazaTab extends StatelessWidget {
         ),
       );
 
-  Widget _buildMotorwayItem(BuildContext context ,int index, bool isLargeScreen, MotorwayStaticController controller) {
+  Widget _buildMotorwayItem(
+      BuildContext context, int index, bool isLargeScreen, MotorwayStaticController controller) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final borderColor = isDarkMode ? Colors.redAccent : Theme.of(context).primaryColor;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: isLargeScreen ? 8 : 6),
       child: Obx(() => InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: () {
-              controller.fetchStations(controller.mwNameList[index].motorwayID ?? 0);
-              controller.selectedMotorway.value = index;
-              controller.selectedVehicle.value = -1;
-              controller.showTollPlaza.value = false;
-              controller.entryStation.value = '';
-              controller.exitStation.value = '';
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              width: isLargeScreen ? 150 : 120,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(
-                  color: controller.selectedMotorway.value == index ? borderColor : Colors.transparent,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: controller.selectedMotorway.value == index
-                    ? [BoxShadow(color: borderColor.withValues(alpha: 20), blurRadius: 0, spreadRadius: 0)]
-                    : null,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    'assets/line.svg',
-                    height: isLargeScreen ? 45 : 35,
-                    colorFilter: ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
-                  ),
-                  Text(
-                    controller.mwNameList[index].motorwayAbbrivation!,
-                    style: TextStyle(fontSize: isLargeScreen ? 14 : 12, color: Theme.of(context).primaryColor),
-                  ),
-                  Text(
-                    controller.mwNameList[index].motorwayName!,
-                    style: TextStyle(fontSize: isLargeScreen ? 20 : 18, color: Theme.of(context).primaryColor),
-                  ),
-                ],
-              ),
+        borderRadius: BorderRadius.circular(12),
+        onTap: () {
+          controller.selectedMotorway.value = index;
+          controller.selectedVehicle.value = -1;
+          controller.showTollPlaza.value = false;
+          controller.entryStation.value = '';
+          controller.exitStation.value = '';
+          if (controller.mwNameList[index].motorwayID != 200 &&
+              controller.mwNameList[index].motorwayID != 300) {
+            controller.fetchStations(controller.mwNameList[index].motorwayID ?? 0);
+          }
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          width: isLargeScreen ? 150 : 120,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(
+              color: controller.selectedMotorway.value == index ? borderColor : Colors.transparent,
+              width: 1,
             ),
-          )),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: controller.selectedMotorway.value == index
+                ? [BoxShadow(color: borderColor.withValues(alpha: 20), blurRadius: 0, spreadRadius: 0)]
+                : null,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/line.svg',
+                height: isLargeScreen ? 45 : 35,
+                colorFilter: ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
+              ),
+              Text(
+                controller.mwNameList[index].motorwayAbbrivation!,
+                style: TextStyle(fontSize: isLargeScreen ? 14 : 12, color: Theme.of(context).primaryColor),
+              ),
+              Text(
+                controller.mwNameList[index].motorwayName!,
+                style: TextStyle(fontSize: isLargeScreen ? 20 : 18, color: Theme.of(context).primaryColor),
+              ),
+            ],
+          ),
+        ),
+      )),
     );
   }
 
   Widget _buildStationSelector(BuildContext context, double padding, MotorwayStaticController controller) => Card(
-        elevation: 0,
-        color: Colors.transparent,
-        child: Padding(
-          padding: EdgeInsets.all(padding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    elevation: 0,
+    color: Colors.transparent,
+    child: Padding(
+      padding: EdgeInsets.all(padding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(child: Text('Select Interchange', style: Theme.of(context).textTheme.labelLarge)),
+          const SizedBox(height: 10),
+          Obx(() => _buildDropdownField(
+            icon: const Icon(Icons.location_on_outlined, color: Colors.green),
+            label: 'Entry Station',
+            value: controller.entryStation.value.isEmpty ? null : controller.entryStation.value,
+            hint: 'Enter starting point',
+            onTap: () => controller.showStationSelectionDialog(true),
+          )),
+          Obx(() => controller.entryStation.value.isNotEmpty
+              ? Column(
             children: [
-              Center(child: Text('Select InterChange', style: Theme.of(context).textTheme.labelLarge)),
               const SizedBox(height: 10),
-              Obx(() => _buildDropdownField(
-                    icon: const Icon(Icons.location_on_outlined, color: Colors.green),
-                    label: 'Entry Station',
-                    value: controller.entryStation.value.isEmpty ? null : controller.entryStation.value,
-                    hint: 'Enter starting point',
-                    onTap: () => controller.showStationSelectionDialog(true),
-                  )),
-              Obx(() => controller.entryStation.value.isNotEmpty
-                  ? Column(
-                      children: [
-                        const SizedBox(height: 10),
-                        _buildDropdownField(
-                          icon: const Icon(Icons.location_on, color: Colors.redAccent),
-                          label: 'Exit Station',
-                          value: controller.exitStation.value.isEmpty ? null : controller.exitStation.value,
-                          hint: 'Enter destination',
-                          onTap: () => controller.showStationSelectionDialog(false),
-                        ),
-                      ],
-                    )
-                  : const SizedBox.shrink()),
+              _buildDropdownField(
+                icon: const Icon(Icons.location_on, color: Colors.redAccent),
+                label: 'Exit Station',
+                value: controller.exitStation.value.isEmpty ? null : controller.exitStation.value,
+                hint: 'Enter destination',
+                onTap: () => controller.showStationSelectionDialog(false),
+              ),
             ],
-          ),
-        ),
-      );
+          )
+              : const SizedBox.shrink()),
+        ],
+      ),
+    ),
+  );
 
   Widget _buildDropdownField({
     required Widget icon,
@@ -272,7 +339,9 @@ class TollPlazaTab extends StatelessWidget {
     );
   }
 
-  Widget _buildVehicleSelector(BuildContext context, bool isLargeScreen, MotorwayStaticController controller) => Card(
+  Widget _buildVehicleSelector(
+      BuildContext context, bool isLargeScreen, MotorwayStaticController controller) =>
+      Card(
         elevation: 0,
         color: Colors.transparent,
         child: Column(
@@ -293,59 +362,82 @@ class TollPlazaTab extends StatelessWidget {
         ),
       );
 
-  Widget _buildVehicleItem(BuildContext context,int index, bool isLargeScreen, MotorwayStaticController controller) {
+  Widget _buildVehicleItem(
+      BuildContext context, int index, bool isLargeScreen, MotorwayStaticController controller) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final borderColor = isDarkMode ? Colors.redAccent : Theme.of(context).primaryColor;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: isLargeScreen ? 8 : 6),
       child: Obx(() => InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: () {
-              if (controller.selectedMotorway.value == -1) {
-                controller.showSnackBar('Please select a motorway first');
-                return;
-              }
-              if (controller.entryStation.value.isEmpty || controller.exitStation.value.isEmpty) {
-                controller.showSnackBar('Please select entry and exit stations first');
-                return;
-              }
-              controller.selectedVehicle.value = index;
-              controller.calculateTollPlaza(animationController);
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              width: isLargeScreen ? 160 : 120,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(
-                  color: controller.selectedVehicle.value == index ? borderColor : Colors.transparent,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: controller.selectedVehicle.value == index
-                    ? [BoxShadow(color: borderColor.withValues(alpha: 20), blurRadius: 0, spreadRadius: 0)]
-                    : null,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SvgPicture.asset(
-                      controller.vehicleList[index].image!,
-                      height: isLargeScreen ? 48 : 40,
-                      colorFilter: ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
-                    ),
-                  ),
-                  Text(
-                    controller.vehicleList[index].name!,
-                    style: TextStyle(fontSize: isLargeScreen ? 18 : 16, color: Theme.of(context).primaryColor),
-                  ),
-                ],
-              ),
+        borderRadius: BorderRadius.circular(12),
+        onTap: () {
+          if (controller.selectedMotorway.value == -1) {
+            controller.showSnackBar('Please select a motorway first');
+            return;
+          }
+          final selectedMotorwayIndex = controller.selectedMotorway.value;
+          final selectedMwID = (selectedMotorwayIndex != -1 &&
+              controller.mwNameList.length > selectedMotorwayIndex)
+              ? controller.mwNameList[selectedMotorwayIndex].motorwayID
+              : null;
+
+          if (selectedMwID != 200 &&
+              selectedMwID != 300 &&
+              (controller.entryStation.value.isEmpty || controller.exitStation.value.isEmpty)) {
+            controller.showSnackBar('Please select entry and exit stations first');
+            return;
+          }
+
+          controller.selectedVehicle.value = index;
+          controller.showTollPlaza.value = true;
+          if (selectedMwID == 200) {
+            final toll = tollMapMurree[controller.vehicleList[index].id]?.toString() ?? '0';
+            controller.calculatedTollPlaza.value = toll;
+            controller.isCalculatingPlaza.value = false;
+            animationController.forward(from: 0);
+          } else if (selectedMwID == 300) {
+            final toll = tollMapEasternBypass[controller.vehicleList[index].id]?.toString() ?? '0';
+            controller.calculatedTollPlaza.value = toll;
+            controller.isCalculatingPlaza.value = false;
+            animationController.forward(from: 0);
+          } else {
+            controller.calculateTollPlaza(animationController);
+          }
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          width: isLargeScreen ? 160 : 120,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(
+              color: controller.selectedVehicle.value == index ? borderColor : Colors.transparent,
+              width: 1,
             ),
-          )),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: controller.selectedVehicle.value == index
+                ? [BoxShadow(color: borderColor.withValues(alpha: 20), blurRadius: 0, spreadRadius: 0)]
+                : null,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SvgPicture.asset(
+                  controller.vehicleList[index].image!,
+                  height: isLargeScreen ? 48 : 40,
+                  colorFilter: ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
+                ),
+              ),
+              Text(
+                controller.vehicleList[index].name!,
+                style: TextStyle(fontSize: isLargeScreen ? 18 : 16, color: Theme.of(context).primaryColor),
+              ),
+            ],
+          ),
+        ),
+      )),
     );
   }
 }
@@ -381,17 +473,17 @@ class TollDisplay extends StatelessWidget {
           children: [
             Text('Toll Details', style: Theme.of(context).textTheme.labelLarge),
             const SizedBox(height: 6),
-            _buildDetailRow('Route', route ?? '$entry - $exit'),
+            _buildDetailRow('Route', route ?? (entry != null && exit != null ? '$entry - $exit' : 'N/A')),
             _buildDetailRow('Vehicle', vehicleName ?? 'Unknown'),
             const Divider(height: 1, color: Colors.grey),
             isCalculating
                 ? const CircularProgressIndicator()
                 : _buildDetailRow(
-                    'Total Toll',
-                    '$toll PKR',
-                    isTotal: true,
-                    valueStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red, fontSize: 18),
-                  ),
+              'Total Toll',
+              toll != null ? '$toll PKR' : 'N/A',
+              isTotal: true,
+              valueStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red, fontSize: 18),
+            ),
           ],
         ),
       ),
@@ -399,11 +491,11 @@ class TollDisplay extends StatelessWidget {
   }
 
   Widget _buildDetailRow(
-    String label,
-    String value, {
-    bool isTotal = false,
-    TextStyle? valueStyle,
-  }) {
+      String label,
+      String value, {
+        bool isTotal = false,
+        TextStyle? valueStyle,
+      }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2.0),
       child: Row(
