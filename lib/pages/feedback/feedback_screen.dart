@@ -36,13 +36,8 @@ class FeedBackScreen extends StatelessWidget {
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.call,
-              size: 20,
-            ),
-            SizedBox(
-              width: 1.0,
-            ),
+            Icon(Icons.call, size: 20),
+            SizedBox(width: 1.0),
             Text(
               '1313',
               style: TextStyle(fontSize: 13, fontFamily: "Poppins"),
@@ -52,9 +47,7 @@ class FeedBackScreen extends StatelessWidget {
         ),
       ),
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: const Text('Add Feedback'),
-      ),
+      appBar: AppBar(title: const Text('Add Feedback')),
       body: Container(
         color: Theme.of(context).primaryColor,
         height: MediaQuery.sizeOf(context).height,
@@ -73,9 +66,7 @@ class FeedBackScreen extends StatelessWidget {
               key: _formKey,
               child: Column(
                 children: [
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
                   CustomTExtField(
                     validator: (value) {
                       if (value!.isEmpty || value.length < 3) {
@@ -84,16 +75,18 @@ class FeedBackScreen extends StatelessWidget {
                       return null;
                     },
                     isReadOnly: true,
-                    controller: _nameController..text = _otherConstants.ownerName.value,
+                    controller: _nameController
+                      ..text = _otherConstants.ownerName.value,
                     focusNode: _nameFocusNode,
-                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]'))],
-                    onEditingComplete: () => FocusScope.of(context).requestFocus(_cnicFocusNode),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]')),
+                    ],
+                    onEditingComplete: () =>
+                        FocusScope.of(context).requestFocus(_cnicFocusNode),
                     label: 'FULL NAME',
                     keyboardType: TextInputType.name,
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
                   CustomTExtField(
                     validator: (p0) {
                       if (p0!.isEmpty || p0.isCnpj) {
@@ -102,19 +95,19 @@ class FeedBackScreen extends StatelessWidget {
                       return null;
                     },
                     isReadOnly: true,
-                    controller: _cnicController..text = _otherConstants.ownerCNIC.value,
+                    controller: _cnicController
+                      ..text = _otherConstants.ownerCNIC.value,
                     focusNode: _cnicFocusNode,
-                    onEditingComplete: () => FocusScope.of(context).requestFocus(_phoneFocusNode),
+                    onEditingComplete: () =>
+                        FocusScope.of(context).requestFocus(_phoneFocusNode),
                     inputFormatters: [
                       CnicMaskTextInputFormatter(),
-                      FilteringTextInputFormatter.deny(RegExp(r'[a-zA-Z]'))
+                      FilteringTextInputFormatter.deny(RegExp(r'[a-zA-Z]')),
                     ],
                     label: 'CNIC',
                     keyboardType: TextInputType.number,
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
                   CustomTExtField(
                     validator: (p0) {
                       if (p0!.isEmpty || !p0.isPhoneNumber) {
@@ -124,57 +117,54 @@ class FeedBackScreen extends StatelessWidget {
                     },
                     isReadOnly: true,
                     maxLength: 11,
-                    controller: _phoneController..text = _otherConstants.mobile.value,
+                    controller: _phoneController
+                      ..text = _otherConstants.mobile.value,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     focusNode: _phoneFocusNode,
-                    onEditingComplete: () => FocusScope.of(context).requestFocus(_remarksFocusNode),
+                    onEditingComplete: () =>
+                        FocusScope.of(context).requestFocus(_remarksFocusNode),
                     label: 'MOBILE NUMBER',
                     keyboardType: TextInputType.phone,
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  CustomTExtField(
-                    filled: true,
-                    fillColor: Theme.of(context).disabledColor,
-                    contentPadding: const EdgeInsets.only(left: 0),
-                    validator: (p0) {
+                  const SizedBox(height: 10),
+                  
+                  TextFormField(
+                    style: TextStyle(height: 1, fontSize: 12),
+                    maxLines: 4,
+                    focusNode: _remarksFocusNode,
+                    controller: _remarksController,  validator: (p0) {
                       if (p0!.isEmpty || p0.length.isLowerThan(3)) {
                         return 'Enter remarks';
                       }
                       return null;
                     },
-                    controller: _remarksController,
-                    focusNode: _remarksFocusNode,
-                    inputFormatters: const [],
                     onEditingComplete: () => FocusScope.of(context).unfocus(),
-                    maxLines: 4,
-                    label: 'REMARKS',
+                    decoration: InputDecoration(filled: true,fillColor: Theme.of(context).disabledColor ,
+                      labelText: 'REMARKS',
+                      border: InputBorder.none,disabledBorder: InputBorder.none,focusedBorder: InputBorder.none,enabledBorder: InputBorder.none,
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                    ),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Spacer(
-                    flex: 6,
-                  ),
+                  const SizedBox(height: 10),
+                  const Spacer(flex: 6),
                   ElevatedButton1(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      width: MediaQuery.sizeOf(context).width,
-                      onclick: () async {
-                        Analytics.submitFeedbackTapped();
-                        if (_formKey.currentState!.validate()) {
-                          await Get.find<UpdateEmailController>().addFeedBack(
-                              cnic: _cnicController.text,
-                              mobileNumber: _phoneController.text,
-                              fullName: _nameController.text,
-                              remarks: _remarksController.text.trim());
-                          _remarksController.clear();
-                        }
-                      },
-                      text: 'Submit'),
-                  const Spacer(
-                    flex: 4,
-                  )
+                    backgroundColor: Theme.of(context).primaryColor,
+                    width: MediaQuery.sizeOf(context).width,
+                    onclick: () async {
+                      Analytics.submitFeedbackTapped();
+                      if (_formKey.currentState!.validate()) {
+                        await Get.find<UpdateEmailController>().addFeedBack(
+                          cnic: _cnicController.text,
+                          mobileNumber: _phoneController.text,
+                          fullName: _nameController.text,
+                          remarks: _remarksController.text.trim(),
+                        );
+                        _remarksController.clear();
+                      }
+                    },
+                    text: 'Submit',
+                  ),
+                  const Spacer(flex: 4),
                 ],
               ),
             ),

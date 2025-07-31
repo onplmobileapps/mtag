@@ -78,8 +78,34 @@ class MotorwayStaticController extends GetxController implements GetxService {
   @override
   void onClose() {
     scrollController.dispose();
+ 
     super.onClose();
   }
+
+
+
+
+  void reset() {
+    selectedVehicle.value = -1;
+    entryCity.value = '';
+    exitCity.value = '';
+    calculatedToll.value = '0';
+    calculatedRoute.value = '';
+    showToll.value = false;
+    isCalculating.value = false;
+    isLoadingTollData.value = false;
+    selectedMotorway.value = -1;
+    entryStation.value = '';
+    exitStation.value = '';
+    calculatedTollPlaza.value = '0';
+    showTollPlaza.value = false;
+    isCalculatingPlaza.value = false;
+    stations.clear();
+    fullStationsList.clear();
+  
+    
+  }
+  
 
   void scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
