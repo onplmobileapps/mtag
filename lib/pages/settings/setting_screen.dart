@@ -196,46 +196,48 @@ final List<SettingsModel> items = [
                     topRight: Radius.circular(10))),
             backgroundColor:
                 Theme.of(Get.context!).bottomSheetTheme.backgroundColor,
-            Wrap(
-              children: [
-                ListTile(
-                  key: UniqueKey(),
-                  onTap: () {
-                    Get.changeThemeMode(ThemeMode.system);
-                    AppData.setThemeMode(null);
-                    Get.back();
-                  },
-                  dense: true,
-                  leading: const Icon(Icons.phone_android_outlined),
-                  title: const Text('System Default'),
-                ),
-                const Divider(),
-                ListTile(
-                  key: UniqueKey(),
-                  onTap: () {
-                    Get.changeThemeMode(ThemeMode.light);
-                    Get.changeTheme(appTheme);
-                    AppData.setThemeMode(false);
-                    Get.back();
-                  },
-                  dense: true,
-                  leading: const Icon(Icons.light_mode_outlined),
-                  title: const Text('Light Mode'),
-                ),
-                const Divider(),
-                ListTile(
-                  key: UniqueKey(),
-                  onTap: () {
-                    Get.changeThemeMode(ThemeMode.dark);
-                    Get.changeTheme(darkTheme);
-                    AppData.setThemeMode(true);
-                    Get.back();
-                  },
-                  dense: true,
-                  leading: const Icon(Icons.dark_mode_outlined),
-                  title: const Text('Dark Mode'),
-                )
-              ],
+            SafeArea(
+              child: Wrap(
+                children: [
+                  ListTile(
+                    key: UniqueKey(),
+                    onTap: () {
+                      Get.changeThemeMode(ThemeMode.system);
+                      AppData.setThemeMode(null);
+                      Get.back();
+                    },
+                    dense: true,
+                    leading: const Icon(Icons.phone_android_outlined),
+                    title: const Text('System Default'),
+                  ),
+                  const Divider(),
+                  ListTile(
+                    key: UniqueKey(),
+                    onTap: () {
+                      Get.changeThemeMode(ThemeMode.light);
+                      Get.changeTheme(appTheme);
+                      AppData.setThemeMode(false);
+                      Get.back();
+                    },
+                    dense: true,
+                    leading: const Icon(Icons.light_mode_outlined),
+                    title: const Text('Light Mode'),
+                  ),
+                  const Divider(),
+                  ListTile(
+                    key: UniqueKey(),
+                    onTap: () {
+                      Get.changeThemeMode(ThemeMode.dark);
+                      Get.changeTheme(darkTheme);
+                      AppData.setThemeMode(true);
+                      Get.back();
+                    },
+                    dense: true,
+                    leading: const Icon(Icons.dark_mode_outlined),
+                    title: const Text('Dark Mode'),
+                  )
+                ],
+              ),
             ));
       },
       name: 'Dark/Light Mode',

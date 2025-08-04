@@ -124,7 +124,7 @@ class HomePage extends GetView<HomeController> {
                                           options: CarouselOptions(
                                             height:600,
                                             viewportFraction: 1,
-                                            autoPlay: false,
+                                            autoPlay: true,
                                             autoPlayInterval: const Duration(seconds: 5),
                                             enlargeCenterPage: true,
                                           ),
@@ -224,7 +224,7 @@ class HomePage extends GetView<HomeController> {
                                     maxCrossAxisExtent: screenWidth * 0.5,
                                     mainAxisSpacing: 10,
                                     crossAxisSpacing: 10,
-                                    mainAxisExtent: screenHeight * 0.17,
+                                    mainAxisExtent: screenHeight * 0.20,
                                   ),
                                   delegate: SliverChildBuilderDelegate(
                                     (context, index) {
