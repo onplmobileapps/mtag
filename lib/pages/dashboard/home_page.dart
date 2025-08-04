@@ -86,75 +86,48 @@ class HomePage extends GetView<HomeController> {
                         ? buildShimmerEffect(screenWidth, screenHeight)
                         : CustomScrollView(
                             slivers: [
-                              // Responsive Carousel
                               SliverToBoxAdapter(
-                                child: SizedBox(
-                                  height: screenHeight * 0.38,
+                                child: AspectRatio(
+                                  aspectRatio: 2,
                                   child: Stack(
+                                    fit: StackFit.expand,
                                     children: [
-                                      CarouselSlider(
-                                        carouselController: _carouselController,
-                                        items:
-                                            OtherConsts.sliderImages.map((e) {
-                                          final imageUrl = 'assets/slider/$e';
-                                          return Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
+                                      Padding(
+                                        padding: EdgeInsets.all(8),
+                                        child: CarouselSlider(
+                                          carouselController: _carouselController,
+                                          items: OtherConsts.sliderImages.map((e) {
+                                            final imageUrl = 'assets/slider/$e';
+                                            return ClipRRect(
+                                              borderRadius: BorderRadius.circular(8),
+
                                               child: Image.asset(
                                                 imageUrl,
-                                                width: screenWidth,
-                                                fit: BoxFit.fill,
-
-                                                errorBuilder: (context, error,
-                                                    stackTrace) {
+                                                fit: BoxFit.cover,
+                                                width: double.infinity,
+                                                height: double.infinity,
+                                                errorBuilder: (context, error, stackTrace) {
                                                   return Container(
                                                     color: Colors.grey[300],
                                                     child: Center(
                                                       child: Image.asset(
                                                         'assets/placeholder.png',
-                                                        width:
-                                                            screenWidth * 0.3,
-                                                        height:
-                                                            screenHeight * 0.15,
-                                                        fit: BoxFit.contain,
+                                                        fit: BoxFit.cover,
+                                                        width: double.infinity,
                                                       ),
                                                     ),
                                                   );
                                                 },
-                                                frameBuilder: (context,
-                                                    child,
-                                                    frame,
-                                                    wasSynchronouslyLoaded) {
-                                                  if (frame == null) {
-                                                    return Container(
-                                                      color: Colors.grey[200],
-                                                      child: Image.asset(
-                                                        'assets/placeholder.png',
-                                                        width: double.infinity,
-                                                        height:
-                                                            screenHeight * 0.15,
-                                                        fit: BoxFit.contain,
-                                                      ),
-                                                    );
-                                                  }
-                                                  return child;
-                                                },
-                                                cacheHeight: 600,
-                                                // Optional: for memory caching
-                                                cacheWidth:
-                                                    600, // Optional: for memory caching
                                               ),
-                                            ),
-                                          );
-                                        }).toList(),
-                                        options: CarouselOptions(
-                                          autoPlayInterval:
-                                              const Duration(seconds: 10),
-                                          height: screenHeight * 0.38,
-                                          autoPlay: true,
-                                          viewportFraction: 1.0,
+                                            );
+                                          }).toList(),
+                                          options: CarouselOptions(
+                                            height:600,
+                                            viewportFraction: 1,
+                                            autoPlay: false,
+                                            autoPlayInterval: const Duration(seconds: 5),
+                                            enlargeCenterPage: true,
+                                          ),
                                         ),
                                       ),
                                       Positioned(
@@ -162,27 +135,19 @@ class HomePage extends GetView<HomeController> {
                                         bottom: 100,
                                         child: GestureDetector(
                                           onTap: () {
-                                            CallWhatsappUtil.openWhatsAppChat(
-                                                "+923105931103");
+                                            CallWhatsappUtil.openWhatsAppChat("+923105931103");
                                           },
                                           child: Container(
-                                            padding: const EdgeInsets.only(
-                                                left: 10,
-                                                right: 10,
-                                                top: 4,
-                                                bottom: 4),
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                             decoration: BoxDecoration(
-                                              color:
-                                                  Colors.white.withAlpha(139),
-                                              borderRadius:
-                                                  const BorderRadius.only(
+                                              color: Colors.white.withAlpha(139),
+                                              borderRadius: const BorderRadius.only(
                                                 topLeft: Radius.circular(8),
                                                 bottomLeft: Radius.circular(8),
                                               ),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: Colors.black
-                                                      .withAlpha(100),
+                                                  color: Colors.black.withAlpha(100),
                                                   blurRadius: 6,
                                                   offset: const Offset(0, 3),
                                                 ),
@@ -190,8 +155,8 @@ class HomePage extends GetView<HomeController> {
                                             ),
                                             child: Image.asset(
                                               'assets/whatsapp.png',
-                                              width: screenWidth * 0.1,
-                                              height: screenHeight * 0.06,
+                                              width: 40,
+                                              height: 40,
                                               fit: BoxFit.contain,
                                             ),
                                           ),
@@ -202,7 +167,6 @@ class HomePage extends GetView<HomeController> {
                                 ),
                               ),
 
-                              // Responsive Horizontal Scroll for Active Tags
                               controller.dashboradData.value.activeMtags !=
                                           null &&
                                       controller.dashboradData.value
