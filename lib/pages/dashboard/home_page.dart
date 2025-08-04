@@ -124,7 +124,7 @@ class HomePage extends GetView<HomeController> {
                                           options: CarouselOptions(
                                             height:600,
                                             viewportFraction: 1,
-                                            autoPlay: false,
+                                            autoPlay: true,
                                             autoPlayInterval: const Duration(seconds: 5),
                                             enlargeCenterPage: true,
                                           ),
