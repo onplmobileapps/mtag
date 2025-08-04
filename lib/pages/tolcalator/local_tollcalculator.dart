@@ -39,7 +39,8 @@ static const Map<int, int> tollMapMurree = {
         builder: (context, constraints) {
           final isLargeScreen = constraints.maxWidth > 600;
           final padding = isLargeScreen ? 18.0 : 10.0;
-          return SingleChildScrollView(
+          return SingleChildScrollView(physics: BouncingScrollPhysics(),
+          scrollDirection: Axis.vertical,
             controller: controller.scrollController,
             padding: EdgeInsets.symmetric(horizontal: padding),
             child: ConstrainedBox(
@@ -91,26 +92,28 @@ static const Map<int, int> tollMapMurree = {
                         FadeTransition(
                           opacity: fadeAnimation,
                           child: _buildSection(
-                            TollDisplay(
-                              padding: padding,
-                              isCalculating: controller.isCalculatingPlaza.value &&
-                                  selectedMwID != 200 &&
-                                  selectedMwID != 300,
-                              entry: (selectedMwID == 200 || selectedMwID == 300)
-                                  ? null
-                                  : (controller.entryStation.value.isEmpty
-                                  ? null
-                                  : controller.entryStation.value),
-                              exit: (selectedMwID == 200 || selectedMwID == 300)
-                                  ? null
-                                  : (controller.exitStation.value.isEmpty
-                                  ? null
-                                  : controller.exitStation.value),
-                              vehicleName: vehicleName,
-                              toll: toll,
-                              route: (selectedMwID == 200 || selectedMwID == 300)
-                                  ? controller.mwNameList[selectedMotorwayIndex].motorwayName
-                                  : '${controller.entryStation.value} - ${controller.exitStation.value}',
+                            SafeArea(
+                              child: TollDisplay(
+                                padding: padding,
+                                isCalculating: controller.isCalculatingPlaza.value &&
+                                    selectedMwID != 200 &&
+                                    selectedMwID != 300,
+                                entry: (selectedMwID == 200 || selectedMwID == 300)
+                                    ? null
+                                    : (controller.entryStation.value.isEmpty
+                                    ? null
+                                    : controller.entryStation.value),
+                                exit: (selectedMwID == 200 || selectedMwID == 300)
+                                    ? null
+                                    : (controller.exitStation.value.isEmpty
+                                    ? null
+                                    : controller.exitStation.value),
+                                vehicleName: vehicleName,
+                                toll: toll,
+                                route: (selectedMwID == 200 || selectedMwID == 300)
+                                    ? controller.mwNameList[selectedMotorwayIndex].motorwayName
+                                    : '${controller.entryStation.value} - ${controller.exitStation.value}',
+                              ),
                             ),
                             context,
                           ),

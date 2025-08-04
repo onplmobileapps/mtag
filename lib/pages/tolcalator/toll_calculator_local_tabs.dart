@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-
-
 import 'package:mtag_flutterapp/pages/tolcalator/toll_calculator_cities.dart';
-
 import 'local_tollcalculator.dart';
-
-
 class TollCalculatorLocalTabs extends StatelessWidget {
   const TollCalculatorLocalTabs({super.key});
 
@@ -48,3 +43,14 @@ class TollCalculatorLocalTabs extends StatelessWidget {
     );
   }
 }
+
+
+
+ 
+
+  
+
+  
+
+
+
