@@ -17,3 +17,7 @@ Optimizations:
 Optimizations:
 CarouselSlider stretching fix 
 
+#Changelog (Tuesday 5 August 25)
+Optimizations:
+1. Add operator selection dialog
+
