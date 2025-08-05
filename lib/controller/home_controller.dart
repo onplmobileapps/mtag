@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../../base/app_data.dart';
 import '../../utils/utils.dart';
 import '../api/application_url.dart';
 import '../widgets/dialog/promo_dialog.dart';
-
+import '../widgets/dialog/operator_selection_dialog.dart';
 import '../api/api_constants.dart';
 import '../api/auth_controller.dart';
 import '../api/user_repo.dart';
@@ -122,18 +123,30 @@ class HomeController extends GetxController implements GetxService {
   }
 
   void _handlePostInitActions() {
+    // Show promotional dialog if applicable
     if (dashboradData.value.promotionalPopUpImage?.code == '00') {
       Get.dialog(
         PromoDialog(
           imageUrl:
-              "${ApplicationUrl.IMAGE_ULR}/${dashboradData.value.promotionalPopUpImage?.imgURL}",
+          "${ApplicationUrl.IMAGE_ULR}/${dashboradData.value.promotionalPopUpImage?.imgURL}",
         ),
         barrierDismissible: false,
       );
     }
 
-    // if (dashboradData.value.versionCheck?.code == '01' && Platform.isIOS) {
-    //   showUpdateDialog(dashboradData.value.versionCheck?.message ?? '');
-    // }
+
+    if (dashboradData.value.customerDetail != null &&
+        dashboradData.value.customerDetail!.mobileNumber != null &&
+        dashboradData.value.customerDetail!.mobileNumber!.isNotEmpty) {
+      OperatorSelectionDialog.show(
+        Get.context!,
+            (operator, number) {
+          if (kDebugMode) {
+            print('Selected Operator: $operator, Number: $number');
+          }
+        },
+        mobileNumber: dashboradData.value.customerDetail!.mobileNumber,
+      );
+    }
   }
 }

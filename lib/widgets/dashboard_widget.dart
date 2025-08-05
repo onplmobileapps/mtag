@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:mtag_flutterapp/controller/home_controller.dart';
 import 'package:mtag_flutterapp/utils/utils.dart';
 import 'package:mtag_flutterapp/widgets/bottomsheet/bottom_sheet_widget.dart';
-
 import '../pages/recharge/recharge_page.dart';
 
 String getVehCategory(String vehicleType) {

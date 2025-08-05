@@ -14,6 +14,7 @@ import '../../widgets/dashboard_widget.dart';
 
 import '../../constants/other_consts.dart';
 import '../../widgets/dialog/chat_support_dialog.dart';
+import '../../widgets/dialog/operator_selection_dialog.dart';
 import '../../widgets/shimmer_dashboard.dart';
 import '../activity/activity_screen.dart';
 import '../recharge/controller/recharge_controller.dart';
@@ -50,9 +51,10 @@ class HomePage extends GetView<HomeController> {
         });
   }
 
-  // Extracted Scaffold widget to avoid repetition
   Widget _buildScaffold(BuildContext context, HomeController controller) {
+
     return Scaffold(
+
       resizeToAvoidBottomInset: false,
       appBar: controller.currentPage.value == 0
           ? BuilAppBarWidget(
@@ -214,7 +216,7 @@ class HomePage extends GetView<HomeController> {
                                     )
                                   : SliverToBoxAdapter(
                                       child:
-                                          Container(height: screenHeight / 3)),
+                                          Container(height: screenHeight / 3),),
 
                               SliverPadding(
                                 padding: const EdgeInsets.all(8.0),
