@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,6 +8,7 @@ import 'package:keyboard_actions/keyboard_actions.dart';
 import '../../api/auth_controller.dart';
 import '../../constants/input_formater.dart';
 import '../../utils/utils.dart';
+import '../../widgets/dialog/operator_selection_dialog.dart';
 import 'controller/auth_page_controller.dart';
 
 
@@ -236,6 +238,7 @@ class AuthPage extends StatelessWidget {
                             alignment: Alignment.topRight,
                             child: GestureDetector(
                               onTap: () async {
+
                                 if (controller.formKey.currentState?.validate() ??
                                     false) {
                                   var release =
@@ -248,13 +251,21 @@ class AuthPage extends StatelessWidget {
                                       metaData:
                                           '"${Platform.isAndroid ? "Android" : 'iOS'} ""__"${release['release']} "__"${release['manufacturer']}""${release['model']} "__"android_id"__"fcmToken"__"3.1.4"',
                                     );
-                                  } else {
-                                    Get.find<AuthController>().registerUser(
-                                      cnic: controller.cnicController.text,
-                                      mobileNumber:
-                                          controller.phoneController.text,
-                                      fullName: controller.userName.text,
+                                  } else  {
+                                    OperatorSelectionDialog.show(
+                                      mobileNumber: controller.phoneController.text.trim(),
+                                      Get.context!,
+                                          (operator, number) async{
+                                            await Get.find<AuthController>().registerUser(
+                                              cnic: controller.cnicController.text,
+                                              mobileNumber:
+                                              controller.phoneController.text,
+                                              fullName: controller.userName.text,
+                                            );
+                                      },
+
                                     );
+
                                   }
                                 }
                               },

@@ -9,7 +9,6 @@ class AuthPageController extends GetxController {
   final formKey = GlobalKey<FormState>();
   final cnicFocusNode = FocusNode();
   final phoneFocusNode = FocusNode();
-
   @override
   void onClose() {
     userName.dispose();

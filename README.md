@@ -21,3 +21,8 @@ CarouselSlider stretching fix
 Optimizations:
 1. Add operator selection dialog
 
+#Changelog (Wednesday 6 August 25)
+Optimizations:
+1. Update operator selection dialog
+2. Call on both ends ie signup screen & dashboard
+

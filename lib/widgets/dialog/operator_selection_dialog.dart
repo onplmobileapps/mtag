@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../constants/call_helper.dart';
+import '../operator_drop_down.dart';
 
 class OperatorSelectionDialog extends StatefulWidget {
   final void Function(String operator, String number) onSubmit;
@@ -149,51 +150,15 @@ class _OperatorSelectionDialogState extends State<OperatorSelectionDialog> with 
               ),
             ),
             const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: leftPadding, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade50,
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: selectedOperator,
-                  isExpanded: true,
-                  hint: Text(
-                    'Select Operator',
-                    style: TextStyle(color: Colors.grey.shade500),
-                  ),
-                  icon: Icon(Icons.arrow_drop_down, color: Theme.of(context).primaryColor),
-                  items: operators.map((op) {
-                    return DropdownMenuItem<String>(
-                      value: op.name,
-                      child: Row(
-                        children: [
-                          Image.asset(
-                            op.image,
-                            height: 28,
-                            width: 28,
-                            fit: BoxFit.contain,
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            op.name,
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedOperator = value;
-                      _showError = false; // Hide error and stop animation
-                      _animationController.reset();
-                    });
-                  },
-                ),
-              ),
+            OperatorDropdown(
+              selectedOperator: selectedOperator,
+              onChanged: (value) {
+                setState(() {
+                  selectedOperator = value;
+                  _showError = false;
+                  _animationController.reset();
+                });
+              },
             ),
             const SizedBox(height: 15),
             // Submit Button
@@ -201,13 +166,15 @@ class _OperatorSelectionDialogState extends State<OperatorSelectionDialog> with 
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
+
                   if (selectedOperator != null && _numberController.text.isNotEmpty) {
-                    widget.onSubmit(selectedOperator!, _numberController.text);
                     Navigator.of(context).pop();
+                    widget.onSubmit(selectedOperator!, _numberController.text);
+
                   } else {
                     setState(() {
-                      _showError = true; // Show error
-                      _animationController.forward(from: 0); // Start shake animation
+                      _showError = true;
+                      _animationController.forward(from: 0);
                     });
                   }
                 },
