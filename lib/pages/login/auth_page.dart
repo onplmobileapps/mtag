@@ -1,8 +1,6 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import '../../api/auth_controller.dart';
@@ -11,12 +9,40 @@ import '../../utils/utils.dart';
 import '../../widgets/dialog/operator_selection_dialog.dart';
 import 'controller/auth_page_controller.dart';
 
-
-
 class AuthPage extends StatelessWidget {
   AuthPage({super.key});
 
-  final controller = Get.put(AuthPageController()); // Initialize controller
+  final controller = Get.put(AuthPageController());
+
+  final List<Map<String, dynamic>> operatorList = [
+    {
+      'text': 'Jazz',
+      'value': 1,
+      'image': 'assets/jazz-logo-1.png',
+      'prefixes': ['0300', '0301', '0302', '0303', '0304', '0306', '0307', '0308', '0309']
+    },
+    {
+      'text': 'Telenor',
+      'value': 2,
+      'image': 'assets/telenor.jpg',
+      'prefixes': ['0340', '0341', '0342', '0343', '0344', '0345', '0346', '0347', '0348', '0349']
+    },
+    {
+      'text': 'Ufone',
+      'value': 3,
+      'image': 'assets/ufone.png',
+      'prefixes': ['0330', '0331', '0332', '0333', '0334', '0335', '0336', '0337', '0338']
+    },
+    {
+      'text': 'CMPak',
+      'value': 5,
+      'image': 'assets/zong.png',
+      'prefixes': ['0310', '0311', '0312', '0313', '0314', '0315', '0316', '0317', '0318', '0319']
+    },
+    {'text': 'Warid', 'value': 4, 'image': 'assets/warid.png', 'prefixes': ['0320', '0321', '0322', '0323', '0324', '0325', '0327', '0328', '0329']},
+    {'text': 'SCO', 'value': 6, 'image': 'assets/sco.webp', 'prefixes': ['0355']},
+
+  ];
 
   KeyboardActionsConfig _buildKeyboardConfig(BuildContext context) {
     return KeyboardActionsConfig(
@@ -29,47 +55,59 @@ class AuthPage extends StatelessWidget {
         KeyboardActionsItem(
           focusNode: controller.cnicFocusNode,
           toolbarButtons: [
-            (node) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: TextButton(
-                    onPressed: () {
-                      node.unfocus();
-                      FocusScope.of(context).unfocus(); // Ensure focus is cleared
-                    },
-                    child: Text(
-                      'Done',
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                (node) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: TextButton(
+                onPressed: () {
+                  node.unfocus();
+                  FocusScope.of(context).unfocus();
+                },
+                child: Text(
+                  'Done',
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
+              ),
+            ),
           ],
         ),
         KeyboardActionsItem(
           focusNode: controller.phoneFocusNode,
           toolbarButtons: [
-            (node) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: TextButton(
-                    onPressed: () {
-                      node.unfocus();
-                      FocusScope.of(context).unfocus(); // Ensure focus is cleared
-                    },
-                    child: Text(
-                      'Done',
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                (node) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: TextButton(
+                onPressed: () {
+                  node.unfocus();
+                  FocusScope.of(context).unfocus();
+                },
+                child: Text(
+                  'Done',
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
+              ),
+            ),
           ],
         ),
       ],
     );
+  }
+
+  Map<String, dynamic>? _detectOperator(String phoneNumber) {
+    if (phoneNumber.length >= 4) {
+      String prefix = phoneNumber.substring(0, 4);
+      for (var operator in operatorList) {
+        if (operator['prefixes']?.contains(prefix) ?? false) {
+          return operator;
+        }
+      }
+    }
+    return null;
   }
 
   @override
@@ -91,14 +129,14 @@ class AuthPage extends StatelessWidget {
             child: KeyboardActions(
               config: _buildKeyboardConfig(context),
               child: Obx(
-                () => Column(
+                    () => Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: screenHeight * 0.12),
                     Center(
-                      child: SvgPicture.asset(
-                        'assets/logolight.svg',
+                      child: Image.asset(
+                        'assets/logolight.png',
                         height: screenWidth * 0.13,
                         width: screenWidth * 0.13,
                       ),
@@ -130,7 +168,8 @@ class AuthPage extends StatelessWidget {
                           width: screenWidth * 0.003,
                           color: colorScheme.secondary,
                           margin: EdgeInsets.symmetric(
-                              horizontal: screenWidth * 0.02),
+                            horizontal: screenWidth * 0.02,
+                          ),
                         ),
                         TextButton(
                           onPressed: () {
@@ -171,15 +210,14 @@ class AuthPage extends StatelessWidget {
                             TextFormField(
                               keyboardType: TextInputType.text,
                               inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp("[A-Za-z ]")),
+                                FilteringTextInputFormatter.allow(RegExp("[A-Za-z ]")),
                               ],
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
                               style: const TextStyle(height: 1),
                               controller: controller.userName,
-                              decoration:
-                                  const InputDecoration(hintText: 'Full Name'),
+                              decoration: const InputDecoration(
+                                hintText: 'Full Name',
+                              ),
                               validator: (v) {
                                 if (controller.authIndex.value == 1 &&
                                     (v == null || v.isEmpty || v.length < 3)) {
@@ -191,8 +229,7 @@ class AuthPage extends StatelessWidget {
                           SizedBox(height: screenHeight * 0.02),
                           TextFormField(
                             focusNode: controller.cnicFocusNode,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             keyboardType: TextInputType.number,
                             inputFormatters: [CnicMaskTextInputFormatter()],
                             style: const TextStyle(height: 1),
@@ -203,69 +240,141 @@ class AuthPage extends StatelessWidget {
                               return null;
                             },
                             controller: controller.cnicController,
-                            decoration: const InputDecoration(
-                              hintText: 'CNIC',
-                            ),
+                            decoration: const InputDecoration(hintText: 'CNIC'),
                           ),
                           SizedBox(height: screenHeight * 0.02),
-                          TextFormField(
-                            focusNode: controller.phoneFocusNode,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: numberInputFormatters,
-                            maxLength: 11,
-                            validator: (v) {
-                              if (v == null ||
-                                  v.isEmpty ||
-                                  !v.startsWith('03') ||
-                                  v.length < 11) {
-                                return 'Please enter your mobile number';
-                              }
-                              return null;
-                            },
-                            style: const TextStyle(height: 1),
-                            controller: controller.phoneController,
-                            decoration: const InputDecoration(
-                              hintText: 'Mobile Number',
-                              counterText: "",
+                          Obx(
+                                () => TextFormField(
+                              focusNode: controller.phoneFocusNode,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: numberInputFormatters,
+                              maxLength: 11,
+                              validator: (v) {
+                                if (v == null || v.isEmpty || !v.startsWith('03') || v.length < 11) {
+                                  return 'Please enter your mobile number';
+                                }
+                                return null;
+                              },
+                              style: const TextStyle(height: 1),
+                              controller: controller.phoneController,
+                              decoration: InputDecoration(
+                                hintText: 'Mobile Number',
+                                counterText: "",
+                                contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                                prefixIconConstraints: const BoxConstraints(
+                                  minWidth: 70,
+                                  maxWidth: 90,
+                                ),
+                                prefixIcon: Padding(
+                                  padding: const EdgeInsets.only(left: 4, right: 4),
+                                  child: SizedBox(
+                                    width: 80,
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<Map<String, dynamic>>(
+                                        value: controller.selectedOperator.value,
+                                        icon: const Icon(Icons.arrow_drop_down, size: 18),
+                                        isExpanded: false,
+                                        hint: Text(
+                                          'Operator',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Theme.of(context).hintColor,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        onChanged: (Map<String, dynamic>? newValue) {
+                                          if (newValue != null) {
+                                            controller.selectedOperator.value = newValue;
+                                          }
+                                        },
+                                        selectedItemBuilder: (context) {
+                                          return operatorList.map((operator) {
+                                            return Container(
+                                              padding: const EdgeInsets.only(right: 4),
+                                              child: Image.asset(
+                                                operator['image'] as String,
+                                                height: 50,
+                                                width: 50,
+                                                fit: BoxFit.contain,
+                                                errorBuilder: (context, error, stackTrace) =>
+                                                const Icon(Icons.sim_card, size: 20),
+                                              ),
+                                            );
+                                          }).toList();
+                                        },
+                                        items: operatorList.map((operator) {
+                                          return DropdownMenuItem<Map<String, dynamic>>(
+                                            value: operator,
+                                            child: SizedBox(
+                                              width: 160,  // Fixed width for dropdown items
+                                              child: Row(
+                                                children: [
+                                                  Image.asset(
+                                                    operator['image'] as String,
+                                                    height: 20,
+                                                    width: 20,
+                                                    errorBuilder: (context, error, stackTrace) =>
+                                                    const Icon(Icons.sim_card, size: 20),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Flexible(
+                                                    child: Text(
+                                                      operator['text'] as String,
+                                                      style: const TextStyle(fontSize: 12),  // Smaller font
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                        isDense: true,
+                                        dropdownColor: Theme.of(context).colorScheme.surface,
+                                        menuMaxHeight: 250,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              onChanged: (value) {
+                                final detectedOperator = _detectOperator(value ?? '');
+                                if (detectedOperator != null) {
+                                  controller.selectedOperator.value = detectedOperator;
+                                }
+                              },
+                              onEditingComplete: () => FocusScope.of(context).unfocus(),
                             ),
-                            onEditingComplete: () =>
-                                FocusScope.of(context).unfocus(),
                           ),
                           SizedBox(height: screenHeight * 0.02),
                           Align(
                             alignment: Alignment.topRight,
                             child: GestureDetector(
                               onTap: () async {
-
-                                if (controller.formKey.currentState?.validate() ??
-                                    false) {
-                                  var release =
-                                      await DeviceInfo.getDeviceInfo();
+                                if (controller.formKey.currentState?.validate() ?? false) {
+                                  var release = await DeviceInfo.getDeviceInfo();
                                   if (controller.authIndex.value == 0) {
                                     Get.find<AuthController>().login(
                                       cnic: controller.cnicController.text.trim(),
-                                      mobileNumber:
-                                          controller.phoneController.text.trim(),
+                                      mobileNumber: controller.phoneController.text.trim(),
                                       metaData:
-                                          '"${Platform.isAndroid ? "Android" : 'iOS'} ""__"${release['release']} "__"${release['manufacturer']}""${release['model']} "__"android_id"__"fcmToken"__"3.1.4"',
+                                      '"${Platform.isAndroid ? "Android" : 'iOS'} ""__"${release['release']} "__"${release['manufacturer']}""${release['model']} "__"android_id"__"fcmToken"__"3.1.4"',
                                     );
-                                  } else  {
+                                  } else {
                                     OperatorSelectionDialog.show(
                                       mobileNumber: controller.phoneController.text.trim(),
                                       Get.context!,
-                                          (operator, number) async{
-                                            await Get.find<AuthController>().registerUser(
-                                              cnic: controller.cnicController.text,
-                                              mobileNumber:
-                                              controller.phoneController.text,
-                                              fullName: controller.userName.text,
-                                            );
+                                          (operator, number) async {
+                                        await Get.find<AuthController>().registerUser(
+                                          cnic: controller.cnicController.text,
+                                          mobileNumber: controller.phoneController.text,
+                                          fullName: controller.userName.text,
+                                          operator: controller.selectedOperator.value?['value'] as int?,
+                                        );
                                       },
-
                                     );
-
                                   }
                                 }
                               },

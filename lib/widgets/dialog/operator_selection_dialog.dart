@@ -45,12 +45,6 @@ class _OperatorSelectionDialogState extends State<OperatorSelectionDialog> with 
   late AnimationController _animationController;
   late Animation<double> _shakeAnimation;
 
-  final List<_OperatorItem> operators = [
-    _OperatorItem(name: 'Jazz', image: 'assets/jazz-logo-1.png'),
-    _OperatorItem(name: 'Telenor', image: 'assets/telenor.jpg'),
-    _OperatorItem(name: 'Zong', image: 'assets/zong.png'),
-    _OperatorItem(name: 'Ufone', image: 'assets/ufone.png'),
-  ];
 
   @override
   void initState() {

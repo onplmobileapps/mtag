@@ -14,7 +14,6 @@ import '../../widgets/dashboard_widget.dart';
 
 import '../../constants/other_consts.dart';
 import '../../widgets/dialog/chat_support_dialog.dart';
-import '../../widgets/dialog/operator_selection_dialog.dart';
 import '../../widgets/shimmer_dashboard.dart';
 import '../activity/activity_screen.dart';
 import '../recharge/controller/recharge_controller.dart';
@@ -30,7 +29,7 @@ class HomePage extends GetView<HomeController> {
     Container(),
     const ActivityScreen(),
     SettingScreen(),
-    Container()
+    Container(),
   ];
   final _otherConstants = OtherConsts();
   final MessagingService _messagingService = MessagingService();
@@ -38,23 +37,24 @@ class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return GetX<HomeController>(
-        init: HomeController(userRepo: UserRepo()),
-        builder: (controller) {
-          return AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle(
-              statusBarIconBrightness: Brightness.dark,
-              statusBarBrightness: Brightness.light,
-            ),
-            child: _buildScaffold(
-                context, controller), // No UpgradeAlert for non-iOS
-          );
-        });
+      init: HomeController(userRepo: UserRepo()),
+      builder: (controller) {
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle(
+            statusBarIconBrightness: Brightness.dark,
+            statusBarBrightness: Brightness.light,
+          ),
+          child: _buildScaffold(
+            context,
+            controller,
+          ), // No UpgradeAlert for non-iOS
+        );
+      },
+    );
   }
 
   Widget _buildScaffold(BuildContext context, HomeController controller) {
-
     return Scaffold(
-
       resizeToAvoidBottomInset: false,
       appBar: controller.currentPage.value == 0
           ? BuilAppBarWidget(
@@ -63,14 +63,17 @@ class HomePage extends GetView<HomeController> {
                 showCustomDialog(context: context, message: 'Support Center');
               },
               onSmsTap: () {
-                Get.toNamed('/smsAlert',
-                    arguments: controller.dashboradData.value.activeMtags);
+                Get.toNamed(
+                  '/smsAlert',
+                  arguments: controller.dashboradData.value.activeMtags,
+                );
               },
               badgeCountNotifier: _messagingService.badgeCountNotifier,
               onNotificationTap: () {
                 Get.toNamed('/notifications');
                 _messagingService.resetBadgeCount();
-              })
+              },
+            )
           : null,
       body: controller.currentPage.value == 0
           ? RefreshIndicator.adaptive(
@@ -97,37 +100,49 @@ class HomePage extends GetView<HomeController> {
                                       Padding(
                                         padding: EdgeInsets.all(8),
                                         child: CarouselSlider(
-                                          carouselController: _carouselController,
-                                          items: OtherConsts.sliderImages.map((e) {
+                                          carouselController:
+                                              _carouselController,
+                                          items: OtherConsts.sliderImages.map((
+                                            e,
+                                          ) {
                                             final imageUrl = 'assets/slider/$e';
                                             return ClipRRect(
-                                              borderRadius: BorderRadius.circular(8),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
 
                                               child: Image.asset(
                                                 imageUrl,
                                                 fit: BoxFit.cover,
                                                 width: double.infinity,
                                                 height: double.infinity,
-                                                errorBuilder: (context, error, stackTrace) {
-                                                  return Container(
-                                                    color: Colors.grey[300],
-                                                    child: Center(
-                                                      child: Image.asset(
-                                                        'assets/placeholder.png',
-                                                        fit: BoxFit.cover,
-                                                        width: double.infinity,
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
+                                                errorBuilder:
+                                                    (
+                                                      context,
+                                                      error,
+                                                      stackTrace,
+                                                    ) {
+                                                      return Container(
+                                                        color: Colors.grey[300],
+                                                        child: Center(
+                                                          child: Image.asset(
+                                                            'assets/placeholder.png',
+                                                            fit: BoxFit.cover,
+                                                            width:
+                                                                double.infinity,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
                                               ),
                                             );
                                           }).toList(),
                                           options: CarouselOptions(
-                                            height:600,
+                                            height: 600,
                                             viewportFraction: 1,
                                             autoPlay: true,
-                                            autoPlayInterval: const Duration(seconds: 5),
+                                            autoPlayInterval: const Duration(
+                                              seconds: 5,
+                                            ),
                                             enlargeCenterPage: true,
                                           ),
                                         ),
@@ -137,19 +152,31 @@ class HomePage extends GetView<HomeController> {
                                         bottom: 100,
                                         child: GestureDetector(
                                           onTap: () {
-                                            CallWhatsappUtil.openWhatsAppChat("+923105931103");
+                                            CallWhatsappUtil.openWhatsAppChat(
+                                              "+923105931103",
+                                            );
                                           },
                                           child: Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 4,
+                                            ),
                                             decoration: BoxDecoration(
-                                              color: Colors.white.withAlpha(139),
-                                              borderRadius: const BorderRadius.only(
-                                                topLeft: Radius.circular(8),
-                                                bottomLeft: Radius.circular(8),
+                                              color: Colors.white.withAlpha(
+                                                139,
                                               ),
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                    topLeft: Radius.circular(8),
+                                                    bottomLeft: Radius.circular(
+                                                      8,
+                                                    ),
+                                                  ),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: Colors.black.withAlpha(100),
+                                                  color: Colors.black.withAlpha(
+                                                    100,
+                                                  ),
                                                   blurRadius: 6,
                                                   offset: const Offset(0, 3),
                                                 ),
@@ -171,26 +198,36 @@ class HomePage extends GetView<HomeController> {
 
                               controller.dashboradData.value.activeMtags !=
                                           null &&
-                                      controller.dashboradData.value
-                                          .activeMtags!.isNotEmpty
+                                      controller
+                                          .dashboradData
+                                          .value
+                                          .activeMtags!
+                                          .isNotEmpty
                                   ? SliverToBoxAdapter(
                                       child: SizedBox(
                                         height: screenHeight * 0.25,
                                         child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
-                                          itemCount: controller.dashboradData
-                                              .value.activeMtags!.length,
+                                          itemCount: controller
+                                              .dashboradData
+                                              .value
+                                              .activeMtags!
+                                              .length,
                                           itemBuilder: (context, index) {
-                                            final e = controller.dashboradData
-                                                .value.activeMtags![index];
+                                            final e = controller
+                                                .dashboradData
+                                                .value
+                                                .activeMtags![index];
                                             return Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      horizontal: 0.0),
+                                                    horizontal: 0.0,
+                                                  ),
                                               child: mtagDataWidget(
                                                 context,
-                                                size:
-                                                    MediaQuery.sizeOf(context),
+                                                size: MediaQuery.sizeOf(
+                                                  context,
+                                                ),
                                                 height: screenHeight * 0.25,
                                                 isBlock: e.isactive,
                                                 jazzCode: controller
@@ -215,19 +252,22 @@ class HomePage extends GetView<HomeController> {
                                       ),
                                     )
                                   : SliverToBoxAdapter(
-                                      child:
-                                          Container(height: screenHeight / 3),),
+                                      child: Container(
+                                        height: screenHeight / 3,
+                                      ),
+                                    ),
 
                               SliverPadding(
                                 padding: const EdgeInsets.all(8.0),
+
                                 sliver: SliverGrid(
                                   gridDelegate:
                                       SliverGridDelegateWithMaxCrossAxisExtent(
-                                    maxCrossAxisExtent: screenWidth * 0.5,
-                                    mainAxisSpacing: 10,
-                                    crossAxisSpacing: 10,
-                                    mainAxisExtent: screenHeight * 0.20,
-                                  ),
+                                        maxCrossAxisExtent: screenWidth * 0.5,
+                                        mainAxisSpacing: 10,
+                                        crossAxisSpacing: 10,
+                                        mainAxisExtent: screenHeight * 0.20,
+                                      ),
                                   delegate: SliverChildBuilderDelegate(
                                     (context, index) {
                                       return InkWell(
@@ -237,8 +277,10 @@ class HomePage extends GetView<HomeController> {
                                           selected1linkOpt.value = -1;
                                           await Get.toNamed(
                                             '${controller.dashBoardModel[index].routeName}',
-                                            arguments: controller.dashboradData
-                                                .value.activeMtags,
+                                            arguments: controller
+                                                .dashboradData
+                                                .value
+                                                .activeMtags,
                                           );
                                           selected1linkOpt.value = -1;
                                           rechctrl.isPaymentModdeVisible(false);
@@ -247,10 +289,12 @@ class HomePage extends GetView<HomeController> {
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            color:
-                                                Theme.of(context).primaryColor,
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                            color: Theme.of(
+                                              context,
+                                            ).primaryColor,
                                           ),
                                           child: Column(
                                             mainAxisAlignment:
@@ -270,7 +314,8 @@ class HomePage extends GetView<HomeController> {
                                                 ),
                                               const SizedBox(height: 8),
                                               Text(
-                                                controller.dashBoardModel[index]
+                                                controller
+                                                        .dashBoardModel[index]
                                                         .title ??
                                                     '',
                                                 overflow: TextOverflow.ellipsis,
@@ -311,7 +356,9 @@ class HomePage extends GetView<HomeController> {
         showSelectedLabels: true,
         showUnselectedLabels: true,
         selectedLabelStyle: TextStyle(
-            fontFamily: 'Poppins', color: Theme.of(context).primaryColor),
+          fontFamily: 'Poppins',
+          color: Theme.of(context).primaryColor,
+        ),
         unselectedItemColor: Colors.grey,
         currentIndex: controller.currentPage.value,
         unselectedFontSize: 11,
@@ -320,19 +367,35 @@ class HomePage extends GetView<HomeController> {
         items: [
           BottomNavigationBarItem(
             tooltip: 'Home',
-            activeIcon: SvgPicture.asset('assets/house-blank.svg',
-                height: 20, width: 20, fit: BoxFit.fill),
+            activeIcon: SvgPicture.asset(
+              'assets/house-blank.svg',
+              height: 20,
+              width: 20,
+              fit: BoxFit.fill,
+            ),
             label: 'Home',
-            icon: SvgPicture.asset('assets/house-blank.svg',
-                height: 20, width: 20, fit: BoxFit.fill),
+            icon: SvgPicture.asset(
+              'assets/house-blank.svg',
+              height: 20,
+              width: 20,
+              fit: BoxFit.fill,
+            ),
           ),
           BottomNavigationBarItem(
-            activeIcon: SvgPicture.asset('assets/clock-five.svg',
-                height: 20, width: 20, fit: BoxFit.fill),
+            activeIcon: SvgPicture.asset(
+              'assets/clock-five.svg',
+              height: 20,
+              width: 20,
+              fit: BoxFit.fill,
+            ),
             label: 'Activities',
             tooltip: 'Activities',
-            icon: SvgPicture.asset('assets/clock-five.svg',
-                height: 20, width: 20, fit: BoxFit.fill),
+            icon: SvgPicture.asset(
+              'assets/clock-five.svg',
+              height: 20,
+              width: 20,
+              fit: BoxFit.fill,
+            ),
           ),
           BottomNavigationBarItem(
             activeIcon: Image.asset('assets/settings.png', height: 20),

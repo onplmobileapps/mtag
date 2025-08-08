@@ -145,6 +145,7 @@ class AuthRepo {
     required String cnic,
     required String mobileNumber,
     String? fcmToken,
+    int? operator, // Added operator parameter
   }) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
       apiUrl: ApplicationUrl.REGISTER_URL,

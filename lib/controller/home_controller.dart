@@ -135,18 +135,18 @@ class HomeController extends GetxController implements GetxService {
     }
 
 
-    if (dashboradData.value.customerDetail != null &&
-        dashboradData.value.customerDetail!.mobileNumber != null &&
-        dashboradData.value.customerDetail!.mobileNumber!.isNotEmpty) {
-      OperatorSelectionDialog.show(
-        Get.context!,
-            (operator, number) {
-          if (kDebugMode) {
-            print('Selected Operator: $operator, Number: $number');
-          }
-        },
-        mobileNumber: dashboradData.value.customerDetail!.mobileNumber,
-      );
-    }
+    // if (dashboradData.value.customerDetail != null &&
+    //     dashboradData.value.customerDetail!.mobileNumber != null &&
+    //     dashboradData.value.customerDetail!.mobileNumber!.isNotEmpty) {
+    //   OperatorSelectionDialog.show(
+    //     Get.context!,
+    //         (operator, number) {
+    //       if (kDebugMode) {
+    //         print('Selected Operator: $operator, Number: $number');
+    //       }
+    //     },
+    //     mobileNumber: dashboradData.value.customerDetail!.mobileNumber,
+    //   );
+    // }
   }
 }

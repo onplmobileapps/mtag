@@ -9,6 +9,8 @@ class AuthPageController extends GetxController {
   final formKey = GlobalKey<FormState>();
   final cnicFocusNode = FocusNode();
   final phoneFocusNode = FocusNode();
+  final selectedOperator = Rxn<Map<String, dynamic>>(); // Added reactive selectedOperator
+
   @override
   void onClose() {
     userName.dispose();
