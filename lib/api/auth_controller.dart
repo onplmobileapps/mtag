@@ -66,6 +66,7 @@ class AuthController extends GetxController implements GetxService {
     required String cnic,
     required String mobileNumber,
     required String metaData,
+    int? operator, // Added optional operator parameter
     int? isForgetPin,
   }) async {
     var fcm = AppData.getFcmToken();
@@ -75,6 +76,7 @@ class AuthController extends GetxController implements GetxService {
       mobileNumber: mobileNumber,
       metaData: metaData,
       fcmToken: fcm,
+      operator: operator, // Pass operator to repository
     );
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {

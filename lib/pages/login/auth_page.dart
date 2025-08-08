@@ -19,29 +19,90 @@ class AuthPage extends StatelessWidget {
       'text': 'Jazz',
       'value': 1,
       'image': 'assets/jazz-logo-1.png',
-      'prefixes': ['0300', '0301', '0302', '0303', '0304', '0306', '0307', '0308', '0309']
+      'prefixes': [
+        '0300',
+        '0301',
+        '0302',
+        '0303',
+        '0304',
+        '0306',
+        '0307',
+        '0308',
+        '0309',
+      ],
     },
     {
       'text': 'Telenor',
       'value': 2,
       'image': 'assets/telenor.jpg',
-      'prefixes': ['0340', '0341', '0342', '0343', '0344', '0345', '0346', '0347', '0348', '0349']
+      'prefixes': [
+        '0340',
+        '0341',
+        '0342',
+        '0343',
+        '0344',
+        '0345',
+        '0346',
+        '0347',
+        '0348',
+        '0349',
+      ],
     },
     {
       'text': 'Ufone',
       'value': 3,
       'image': 'assets/ufone.png',
-      'prefixes': ['0330', '0331', '0332', '0333', '0334', '0335', '0336', '0337', '0338']
+      'prefixes': [
+        '0330',
+        '0331',
+        '0332',
+        '0333',
+        '0334',
+        '0335',
+        '0336',
+        '0337',
+        '0338',
+      ],
     },
     {
       'text': 'CMPak',
       'value': 5,
       'image': 'assets/zong.png',
-      'prefixes': ['0310', '0311', '0312', '0313', '0314', '0315', '0316', '0317', '0318', '0319']
+      'prefixes': [
+        '0310',
+        '0311',
+        '0312',
+        '0313',
+        '0314',
+        '0315',
+        '0316',
+        '0317',
+        '0318',
+        '0319',
+      ],
     },
-    {'text': 'Warid', 'value': 4, 'image': 'assets/warid.png', 'prefixes': ['0320', '0321', '0322', '0323', '0324', '0325', '0327', '0328', '0329']},
-    {'text': 'SCO', 'value': 6, 'image': 'assets/sco.webp', 'prefixes': ['0355']},
-
+    {
+      'text': 'Warid',
+      'value': 4,
+      'image': 'assets/warid.png',
+      'prefixes': [
+        '0320',
+        '0321',
+        '0322',
+        '0323',
+        '0324',
+        '0325',
+        '0327',
+        '0328',
+        '0329',
+      ],
+    },
+    {
+      'text': 'SCO',
+      'value': 6,
+      'image': 'assets/sco.webp',
+      'prefixes': ['0355'],
+    },
   ];
 
   KeyboardActionsConfig _buildKeyboardConfig(BuildContext context) {
@@ -55,7 +116,7 @@ class AuthPage extends StatelessWidget {
         KeyboardActionsItem(
           focusNode: controller.cnicFocusNode,
           toolbarButtons: [
-                (node) => Padding(
+            (node) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: TextButton(
                 onPressed: () {
@@ -76,7 +137,7 @@ class AuthPage extends StatelessWidget {
         KeyboardActionsItem(
           focusNode: controller.phoneFocusNode,
           toolbarButtons: [
-                (node) => Padding(
+            (node) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: TextButton(
                 onPressed: () {
@@ -129,7 +190,7 @@ class AuthPage extends StatelessWidget {
             child: KeyboardActions(
               config: _buildKeyboardConfig(context),
               child: Obx(
-                    () => Column(
+                () => Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -210,9 +271,12 @@ class AuthPage extends StatelessWidget {
                             TextFormField(
                               keyboardType: TextInputType.text,
                               inputFormatters: [
-                                FilteringTextInputFormatter.allow(RegExp("[A-Za-z ]")),
+                                FilteringTextInputFormatter.allow(
+                                  RegExp("[A-Za-z ]"),
+                                ),
                               ],
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
                               style: const TextStyle(height: 1),
                               controller: controller.userName,
                               decoration: const InputDecoration(
@@ -229,7 +293,8 @@ class AuthPage extends StatelessWidget {
                           SizedBox(height: screenHeight * 0.02),
                           TextFormField(
                             focusNode: controller.cnicFocusNode,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             keyboardType: TextInputType.number,
                             inputFormatters: [CnicMaskTextInputFormatter()],
                             style: const TextStyle(height: 1),
@@ -244,14 +309,18 @@ class AuthPage extends StatelessWidget {
                           ),
                           SizedBox(height: screenHeight * 0.02),
                           Obx(
-                                () => TextFormField(
+                            () => TextFormField(
                               focusNode: controller.phoneFocusNode,
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
                               keyboardType: TextInputType.number,
                               inputFormatters: numberInputFormatters,
                               maxLength: 11,
                               validator: (v) {
-                                if (v == null || v.isEmpty || !v.startsWith('03') || v.length < 11) {
+                                if (v == null ||
+                                    v.isEmpty ||
+                                    !v.startsWith('03') ||
+                                    v.length < 11) {
                                   return 'Please enter your mobile number';
                                 }
                                 return null;
@@ -261,91 +330,147 @@ class AuthPage extends StatelessWidget {
                               decoration: InputDecoration(
                                 hintText: 'Mobile Number',
                                 counterText: "",
-                                contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 12,
+                                ),
                                 prefixIconConstraints: const BoxConstraints(
                                   minWidth: 70,
                                   maxWidth: 90,
                                 ),
                                 prefixIcon: Padding(
-                                  padding: const EdgeInsets.only(left: 4, right: 4),
+                                  padding: const EdgeInsets.only(
+                                    left: 4,
+                                    right: 4,
+                                  ),
                                   child: SizedBox(
                                     width: 80,
                                     child: DropdownButtonHideUnderline(
-                                      child: DropdownButton<Map<String, dynamic>>(
-                                        value: controller.selectedOperator.value,
-                                        icon: const Icon(Icons.arrow_drop_down, size: 18),
-                                        isExpanded: false,
-                                        hint: Text(
-                                          'Operator',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Theme.of(context).hintColor,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        onChanged: (Map<String, dynamic>? newValue) {
-                                          if (newValue != null) {
-                                            controller.selectedOperator.value = newValue;
-                                          }
-                                        },
-                                        selectedItemBuilder: (context) {
-                                          return operatorList.map((operator) {
-                                            return Container(
-                                              padding: const EdgeInsets.only(right: 4),
-                                              child: Image.asset(
-                                                operator['image'] as String,
-                                                height: 50,
-                                                width: 50,
-                                                fit: BoxFit.contain,
-                                                errorBuilder: (context, error, stackTrace) =>
-                                                const Icon(Icons.sim_card, size: 20),
-                                              ),
-                                            );
-                                          }).toList();
-                                        },
-                                        items: operatorList.map((operator) {
-                                          return DropdownMenuItem<Map<String, dynamic>>(
-                                            value: operator,
-                                            child: SizedBox(
-                                              width: 160,  // Fixed width for dropdown items
-                                              child: Row(
-                                                children: [
-                                                  Image.asset(
-                                                    operator['image'] as String,
-                                                    height: 20,
-                                                    width: 20,
-                                                    errorBuilder: (context, error, stackTrace) =>
-                                                    const Icon(Icons.sim_card, size: 20),
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  Flexible(
-                                                    child: Text(
-                                                      operator['text'] as String,
-                                                      style: const TextStyle(fontSize: 12),  // Smaller font
-                                                      overflow: TextOverflow.ellipsis,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                      child:
+                                          DropdownButton<Map<String, dynamic>>(
+                                            value: controller
+                                                .selectedOperator
+                                                .value,
+                                            icon: const Icon(
+                                              Icons.arrow_drop_down,
+                                              size: 18,
                                             ),
-                                          );
-                                        }).toList(),
-                                        isDense: true,
-                                        dropdownColor: Theme.of(context).colorScheme.surface,
-                                        menuMaxHeight: 250,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
+                                            isExpanded: false,
+                                            hint: Text(
+                                              'Operator',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Theme.of(
+                                                  context,
+                                                ).hintColor,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            onChanged:
+                                                (
+                                                  Map<String, dynamic>?
+                                                  newValue,
+                                                ) {
+                                                  if (newValue != null) {
+                                                    controller
+                                                            .selectedOperator
+                                                            .value =
+                                                        newValue;
+                                                  }
+                                                },
+                                            selectedItemBuilder: (context) {
+                                              return operatorList.map((
+                                                operator,
+                                              ) {
+                                                return Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                        right: 4,
+                                                      ),
+                                                  child: Image.asset(
+                                                    operator['image'] as String,
+                                                    height: 50,
+                                                    width: 50,
+                                                    fit: BoxFit.contain,
+                                                    errorBuilder:
+                                                        (
+                                                          context,
+                                                          error,
+                                                          stackTrace,
+                                                        ) => const Icon(
+                                                          Icons.sim_card,
+                                                          size: 20,
+                                                        ),
+                                                  ),
+                                                );
+                                              }).toList();
+                                            },
+                                            items: operatorList.map((operator) {
+                                              return DropdownMenuItem<
+                                                Map<String, dynamic>
+                                              >(
+                                                value: operator,
+                                                child: SizedBox(
+                                                  width: 160,
+                                                  child: Row(
+                                                    children: [
+                                                      Image.asset(
+                                                        operator['image']
+                                                            as String,
+                                                        height: 20,
+                                                        width: 20,
+                                                        errorBuilder:
+                                                            (
+                                                              context,
+                                                              error,
+                                                              stackTrace,
+                                                            ) => const Icon(
+                                                              Icons.sim_card,
+                                                              size: 20,
+                                                            ),
+                                                      ),
+                                                      const SizedBox(width: 8),
+                                                      Flexible(
+                                                        child: Text(
+                                                          operator['text']
+                                                              as String,
+                                                          style:
+                                                              const TextStyle(
+                                                                fontSize: 12,
+                                                              ),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                            isDense: true,
+                                            dropdownColor: Theme.of(
+                                              context,
+                                            ).colorScheme.surface,
+                                            menuMaxHeight: 250,
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
                                     ),
                                   ),
                                 ),
                               ),
                               onChanged: (value) {
-                                final detectedOperator = _detectOperator(value ?? '');
+                                final detectedOperator = _detectOperator(
+                                  value ?? '',
+                                );
                                 if (detectedOperator != null) {
-                                  controller.selectedOperator.value = detectedOperator;
+                                  controller.selectedOperator.value =
+                                      detectedOperator;
                                 }
                               },
-                              onEditingComplete: () => FocusScope.of(context).unfocus(),
+                              onEditingComplete: () =>
+                                  FocusScope.of(context).unfocus(),
                             ),
                           ),
                           SizedBox(height: screenHeight * 0.02),
@@ -353,28 +478,40 @@ class AuthPage extends StatelessWidget {
                             alignment: Alignment.topRight,
                             child: GestureDetector(
                               onTap: () async {
-                                if (controller.formKey.currentState?.validate() ?? false) {
-                                  var release = await DeviceInfo.getDeviceInfo();
+                                if (controller.formKey.currentState
+                                        ?.validate() ??
+                                    false) {
+                                  var release =
+                                      await DeviceInfo.getDeviceInfo();
                                   if (controller.authIndex.value == 0) {
                                     Get.find<AuthController>().login(
-                                      cnic: controller.cnicController.text.trim(),
-                                      mobileNumber: controller.phoneController.text.trim(),
+                                      cnic: controller.cnicController.text
+                                          .trim(),
+                                      mobileNumber: controller
+                                          .phoneController
+                                          .text
+                                          .trim(),
                                       metaData:
-                                      '"${Platform.isAndroid ? "Android" : 'iOS'} ""__"${release['release']} "__"${release['manufacturer']}""${release['model']} "__"android_id"__"fcmToken"__"3.1.4"',
+                                          '"${Platform.isAndroid ? "Android" : 'iOS'} ""__"${release['release']} "__"${release['manufacturer']}""${release['model']} "__"android_id"__"fcmToken"__"3.1.4"',
+                                      operator:
+                                          controller
+                                                  .selectedOperator
+                                                  .value?['value']
+                                              as int?,
                                     );
                                   } else {
-                                    OperatorSelectionDialog.show(
-                                      mobileNumber: controller.phoneController.text.trim(),
-                                      Get.context!,
-                                          (operator, number) async {
-                                        await Get.find<AuthController>().registerUser(
+                                    await Get.find<AuthController>()
+                                        .registerUser(
                                           cnic: controller.cnicController.text,
-                                          mobileNumber: controller.phoneController.text,
+                                          mobileNumber:
+                                              controller.phoneController.text,
                                           fullName: controller.userName.text,
-                                          operator: controller.selectedOperator.value?['value'] as int?,
+                                          operator:
+                                              controller
+                                                      .selectedOperator
+                                                      .value?['value']
+                                                  as int?,
                                         );
-                                      },
-                                    );
                                   }
                                 }
                               },
