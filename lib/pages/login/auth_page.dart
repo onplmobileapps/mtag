@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import '../../api/auth_controller.dart';
@@ -65,7 +66,7 @@ class AuthPage extends StatelessWidget {
       ],
     },
     {
-      'text': 'CMPak',
+      'text': 'Zong',
       'value': 5,
       'image': 'assets/zong.png',
       'prefixes': [
@@ -175,6 +176,7 @@ class AuthPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -196,10 +198,16 @@ class AuthPage extends StatelessWidget {
                   children: [
                     SizedBox(height: screenHeight * 0.12),
                     Center(
-                      child: Image.asset(
-                        'assets/logolight.png',
-                        height: screenWidth * 0.13,
-                        width: screenWidth * 0.13,
+                      child: isDarkMode
+                          ? Image.asset(
+                        'assets/darklogo.png',
+                        height: 60.0,
+                        fit: BoxFit.contain,
+                      )
+                          : SvgPicture.asset(
+                        'assets/logolight.svg',
+                        height: 60.0,
+                        fit: BoxFit.contain,
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.06),
@@ -336,129 +344,97 @@ class AuthPage extends StatelessWidget {
                                 ),
                                 prefixIconConstraints: const BoxConstraints(
                                   minWidth: 70,
-                                  maxWidth: 90,
+                                  maxWidth: 150,
                                 ),
-                                prefixIcon: Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 4,
-                                    right: 4,
-                                  ),
+                                prefixIcon: controller.authIndex.value == 1
+                                    ? Padding(
+                                  padding: const EdgeInsets.only(left: 4, right: 4),
                                   child: SizedBox(
-                                    width: 80,
+                                    width: 200,
                                     child: DropdownButtonHideUnderline(
-                                      child:
-                                          DropdownButton<Map<String, dynamic>>(
-                                            value: controller
-                                                .selectedOperator
-                                                .value,
-                                            icon: const Icon(
-                                              Icons.arrow_drop_down,
-                                              size: 18,
-                                            ),
-                                            isExpanded: false,
-                                            hint: Text(
-                                              'Operator',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Theme.of(
-                                                  context,
-                                                ).hintColor,
+                                      child: DropdownButton<Map<String, dynamic>>(
+                                        value: controller.selectedOperator.value,
+                                        icon: const Icon(Icons.arrow_drop_down, size: 18),
+                                        isExpanded: true,
+                                        hint: Row(
+                                          children: [
+                                            Text(
+                                              'Select Operator',
+                                              style: theme.textTheme.bodySmall?.copyWith(
+                                                color: colorScheme.onSurface,
                                               ),
                                               overflow: TextOverflow.ellipsis,
                                             ),
-                                            onChanged:
-                                                (
-                                                  Map<String, dynamic>?
-                                                  newValue,
-                                                ) {
-                                                  if (newValue != null) {
-                                                    controller
-                                                            .selectedOperator
-                                                            .value =
-                                                        newValue;
-                                                  }
-                                                },
-                                            selectedItemBuilder: (context) {
-                                              return operatorList.map((
-                                                operator,
-                                              ) {
-                                                return Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                        right: 4,
-                                                      ),
-                                                  child: Image.asset(
-                                                    operator['image'] as String,
-                                                    height: 50,
-                                                    width: 50,
-                                                    fit: BoxFit.contain,
-                                                    errorBuilder:
-                                                        (
-                                                          context,
-                                                          error,
-                                                          stackTrace,
-                                                        ) => const Icon(
-                                                          Icons.sim_card,
-                                                          size: 20,
-                                                        ),
-                                                  ),
-                                                );
-                                              }).toList();
-                                            },
-                                            items: operatorList.map((operator) {
-                                              return DropdownMenuItem<
-                                                Map<String, dynamic>
-                                              >(
-                                                value: operator,
-                                                child: SizedBox(
-                                                  width: 160,
-                                                  child: Row(
-                                                    children: [
-                                                      Image.asset(
-                                                        operator['image']
-                                                            as String,
-                                                        height: 20,
-                                                        width: 20,
-                                                        errorBuilder:
-                                                            (
-                                                              context,
-                                                              error,
-                                                              stackTrace,
-                                                            ) => const Icon(
-                                                              Icons.sim_card,
-                                                              size: 20,
-                                                            ),
-                                                      ),
-                                                      const SizedBox(width: 8),
-                                                      Flexible(
-                                                        child: Text(
-                                                          operator['text']
-                                                              as String,
-                                                          style:
-                                                              const TextStyle(
-                                                                fontSize: 12,
-                                                              ),
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        ),
-                                                      ),
-                                                    ],
+                                          ],
+                                        ),
+                                        onChanged: (Map<String, dynamic>? newValue) {
+                                          if (newValue != null) {
+                                            controller.selectedOperator.value = newValue;
+                                          }
+                                        },
+                                        selectedItemBuilder: (context) {
+                                          return operatorList.map((operator) {
+                                            return Row(
+                                              children: [
+                                                Image.asset(
+                                                  operator['image'],
+                                                  height: 20,
+                                                  width: 20,
+                                                  errorBuilder: (context, error, stackTrace) =>
+                                                  const Icon(Icons.sim_card, size: 20),
+                                                ),
+                                                const SizedBox(width: 6),
+                                                Flexible(
+                                                  child: Text(
+                                                    operator['text'],
+                                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                                      fontWeight: FontWeight.w500,
+                                                      color: colorScheme.onSurface,
+                                                    ),
+                                                    overflow: TextOverflow.ellipsis,
                                                   ),
                                                 ),
-                                              );
-                                            }).toList(),
-                                            isDense: true,
-                                            dropdownColor: Theme.of(
-                                              context,
-                                            ).colorScheme.surface,
-                                            menuMaxHeight: 250,
-                                            borderRadius: BorderRadius.circular(
-                                              8,
+                                              ],
+                                            );
+                                          }).toList();
+                                        },
+                                        items: operatorList.map((operator) {
+                                          return DropdownMenuItem<Map<String, dynamic>>(
+                                            value: operator,
+                                            child: Row(
+                                              children: [
+                                                Image.asset(
+                                                  operator['image'],
+                                                  height: 24,
+                                                  width: 24,
+                                                  errorBuilder: (context, error, stackTrace) =>
+                                                  const Icon(Icons.sim_card, size: 20),
+                                                ),
+                                                const SizedBox(width: 8),
+                                                Flexible(
+                                                  child: Text(
+                                                    operator['text'],
+                                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                                  fontWeight: FontWeight.w500,
+                                                    color: colorScheme.onSurface,
+                                                  ),
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ),
+                                          );
+                                        }).toList(),
+                                        isDense: false,
+                                        dropdownColor: Theme.of(context).colorScheme.surface,
+                                        menuMaxHeight: 300,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                )
+                                    : null,
+
                               ),
                               onChanged: (value) {
                                 final detectedOperator = _detectOperator(

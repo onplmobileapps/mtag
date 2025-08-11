@@ -76,7 +76,7 @@ class AuthController extends GetxController implements GetxService {
       mobileNumber: mobileNumber,
       metaData: metaData,
       fcmToken: fcm,
-      operator: operator, // Pass operator to repository
+      // operator: operator, // Pass operator to repository
     );
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {

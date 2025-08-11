@@ -100,7 +100,8 @@ class AuthRepo {
       required String mobileNumber,
       String? fcmToken,
       String? metaData,
-        int? operator}) async {
+        // int? operator
+      }) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
       apiUrl: ApplicationUrl.LOGIN_URL,
       apiRequestMethod: APIREQUESTMETHOD.POST,
@@ -110,7 +111,7 @@ class AuthRepo {
         "MobileNum": mobileNumber,
         "meta_data": metaData,
         "fcmToken": fcmToken,
-        "sim_operator":operator
+        // "sim_operator":operator
       },
     );
 

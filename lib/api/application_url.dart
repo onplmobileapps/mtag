@@ -9,9 +9,10 @@ class ApplicationUrl {
     return _instance;
   }
 
-  // static const String _BASE_URL = 'http://10.0.1.127:9008';
+  static const String _BASE_URL = 'http://10.0.1.127:9008';
 
-  static const String _BASE_URL = 'https://ocotapp.com';
+  // static const String _BASE_URL = 'https://ocotapp.com';
+
   static const String _IMAGE_ULR = _BASE_URL;
 
   static String get IMAGE_ULR => _IMAGE_ULR;
@@ -145,4 +146,8 @@ class ApplicationUrl {
   static const String _VERIFY_PIN_URL = '$_BASE_URL/verify/pin';
 
   static String get VERIFY_PIN_URL => _VERIFY_PIN_URL;
+
+  static const String _UPDATE_OPERATOR = '$_BASE_URL/update/sim-operator';
+
+  static String get UPDATE_OPERATOR => _UPDATE_OPERATOR;
 }

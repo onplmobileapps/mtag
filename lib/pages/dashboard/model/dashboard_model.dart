@@ -145,8 +145,9 @@ class CustomerDetail {
   String? fullName;
   String? mobileNumber;
   String? password;
+  int ? sim_operator;
 
-  CustomerDetail({this.cNIC, this.email, this.fullName, this.mobileNumber, this.password});
+  CustomerDetail({this.cNIC, this.email, this.fullName, this.mobileNumber, this.password,this.sim_operator});
 
   CustomerDetail.fromJson(Map<String, dynamic> json) {
     cNIC = json['CNIC'];
@@ -154,6 +155,7 @@ class CustomerDetail {
     fullName = json['Full_Name'];
     mobileNumber = json['Mobile_Number'];
     password = json['Password'];
+    sim_operator = json['sim_operator'];
   }
 
   Map<String, dynamic> toJson() {
@@ -163,6 +165,7 @@ class CustomerDetail {
     data['Full_Name'] = fullName;
     data['Mobile_Number'] = mobileNumber;
     data['Password'] = password;
+    data['sim_operator'] = sim_operator;
     return data;
   }
 }

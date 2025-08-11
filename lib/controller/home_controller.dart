@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../../base/app_data.dart';
@@ -58,6 +59,31 @@ class HomeController extends GetxController implements GetxService {
     }
     return response;
   }
+  Future<Map<String, dynamic>> sendNetworkOperator({
+  String? CnicNumber,String? MobileNum, int? sim_operator
+  }) async {
+    final response = await userRepo.updateSimOperator(CnicNumber: CnicNumber,MobileNum: MobileNum,sim_operator: sim_operator);
+
+    if (response.containsKey(APIRESPONSE.SUCCESS)) {
+      //shhow dialog here
+      showCupertinoModalPopup(
+        context: Get.context!,
+        builder: (_) => CupertinoAlertDialog(
+          content: Text('${response[APIRESPONSE.SUCCESS]['Message']}'),
+          actions: [
+            CupertinoDialogAction(
+              onPressed: Get.back,
+              child: const Text('Ok'),
+            )
+          ],
+        ),
+      );
+    } else {
+      _handleError(response);
+    }
+    return response;
+  }
+
 
   void _updateDashboardData(Map<String, dynamic> data) {
     dashboradData.value = DashBoardModel.fromJson(data);
@@ -135,18 +161,20 @@ class HomeController extends GetxController implements GetxService {
     }
 
 
-    // if (dashboradData.value.customerDetail != null &&
-    //     dashboradData.value.customerDetail!.mobileNumber != null &&
-    //     dashboradData.value.customerDetail!.mobileNumber!.isNotEmpty) {
-    //   OperatorSelectionDialog.show(
-    //     Get.context!,
-    //         (operator, number) {
-    //       if (kDebugMode) {
-    //         print('Selected Operator: $operator, Number: $number');
-    //       }
-    //     },
-    //     mobileNumber: dashboradData.value.customerDetail!.mobileNumber,
-    //   );
-    // }
+    if (dashboradData.value.customerDetail != null &&
+        dashboradData.value.customerDetail!.mobileNumber != null &&
+        dashboradData.value.customerDetail!.mobileNumber!.isNotEmpty &&
+        dashboradData.value.customerDetail?.sim_operator == 5) {
+      OperatorSelectionDialog.show(
+        Get.context!,
+            (value) {
+          // if (kDebugMode) {
+          //   print('OpValue=========>: $value',);
+          // }
+              sendNetworkOperator(CnicNumber: dashboradData.value.customerDetail!.cNIC,MobileNum: dashboradData.value.customerDetail!.mobileNumber,sim_operator: value);
+        },
+        mobileNumber: dashboradData.value.customerDetail!.mobileNumber,
+      );
+    }
   }
 }
