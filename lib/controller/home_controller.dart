@@ -164,7 +164,7 @@ class HomeController extends GetxController implements GetxService {
     if (dashboradData.value.customerDetail != null &&
         dashboradData.value.customerDetail!.mobileNumber != null &&
         dashboradData.value.customerDetail!.mobileNumber!.isNotEmpty &&
-        dashboradData.value.customerDetail?.sim_operator == 5) {
+        dashboradData.value.customerDetail?.sim_operator == 0) {
       OperatorSelectionDialog.show(
         Get.context!,
             (value) {
