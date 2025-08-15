@@ -4,16 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import '../../fcm_handeler.dart';
 import '../../widgets/appbar/app_bar_widget.dart';
 import '../../api/user_repo.dart';
 import '../../base/app_data.dart';
 import '../../constants/call_helper.dart';
 import '../../controller/home_controller.dart';
+import '../../widgets/car_loader.dart';
 import '../../widgets/dashboard_widget.dart';
 
 import '../../constants/other_consts.dart';
 import '../../widgets/dialog/chat_support_dialog.dart';
+import '../../widgets/mtag_data_widget_shimmer.dart';
 import '../../widgets/shimmer_dashboard.dart';
 import '../activity/activity_screen.dart';
 import '../recharge/controller/recharge_controller.dart';
@@ -223,29 +226,43 @@ class HomePage extends GetView<HomeController> {
                                                   const EdgeInsets.symmetric(
                                                     horizontal: 0.0,
                                                   ),
-                                              child: mtagDataWidget(
-                                                context,
-                                                size: MediaQuery.sizeOf(
-                                                  context,
-                                                ),
-                                                height: screenHeight * 0.25,
-                                                isBlock: e.isactive,
-                                                jazzCode: controller
-                                                    .dashboradData
-                                                    .value
-                                                    .jazzCashRecharge
-                                                    .toString(),
-                                                creditCode: controller
-                                                    .dashboradData
-                                                    .value
-                                                    .creditCardRecharge
-                                                    .toString(),
-                                                vehType: e.vehicletype,
-                                                mtagId: e.tokenno,
-                                                userName: e.ownername,
-                                                regId: e.registration,
-                                                ball: e.balance,
-                                              ),
+
+                                              child: Obx(() {
+                                                return controller
+                                                        .isBalanceUpdate
+                                                        .value
+                                                    ? buildCarLoaderWidget(
+                                                        context,
+                                                        MediaQuery.of(
+                                                              context,
+                                                            ).size.height *
+                                                            0.25,
+                                                      )
+                                                    : mtagDataWidget(
+                                                        context,
+                                                        size: MediaQuery.sizeOf(
+                                                          context,
+                                                        ),
+                                                        height:
+                                                            screenHeight * 0.25,
+                                                        isBlock: e.isactive,
+                                                        jazzCode: controller
+                                                            .dashboradData
+                                                            .value
+                                                            .jazzCashRecharge
+                                                            .toString(),
+                                                        creditCode: controller
+                                                            .dashboradData
+                                                            .value
+                                                            .creditCardRecharge
+                                                            .toString(),
+                                                        vehType: e.vehicletype,
+                                                        mtagId: e.tokenno,
+                                                        userName: e.ownername,
+                                                        regId: e.registration,
+                                                        ball: e.balance,
+                                                      );
+                                              }),
                                             );
                                           },
                                         ),

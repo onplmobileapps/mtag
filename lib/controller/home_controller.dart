@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../../base/app_data.dart';
 import '../../utils/utils.dart';
@@ -22,6 +21,8 @@ class HomeController extends GetxController implements GetxService {
 
   final RxInt currentPage = 0.obs;
   final RxBool isLoading = false.obs;
+
+  final RxBool isBalanceUpdate = false.obs;
 
   void setCurrentIndex(int value) => currentPage.value = value;
 
@@ -47,6 +48,8 @@ class HomeController extends GetxController implements GetxService {
   Future<Map<String, dynamic>> getDashboardData({
     String? appVersion,
     String? deviceID,
+
+
   }) async {
     isLoading.value = true;
     final response = await userRepo.getdashBoardData();
@@ -59,13 +62,29 @@ class HomeController extends GetxController implements GetxService {
     }
     return response;
   }
+
+  Future<Map<String, dynamic>> updateBalance({
+    String? appVersion,
+    String? deviceID,
+  }) async {
+    isBalanceUpdate.value = true;
+    final response = await userRepo.getdashBoardData(isShowLoading: false);
+    isBalanceUpdate.value = false;
+
+    if (response.containsKey(APIRESPONSE.SUCCESS)) {
+      _updateDashboardData(response[APIRESPONSE.SUCCESS]);
+    } else {
+      _handleError(response);
+    }
+    return response;
+  }
+
   Future<Map<String, dynamic>> sendNetworkOperator({
   String? CnicNumber,String? MobileNum, int? sim_operator
   }) async {
     final response = await userRepo.updateSimOperator(CnicNumber: CnicNumber,MobileNum: MobileNum,sim_operator: sim_operator);
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
-      //shhow dialog here
       showCupertinoModalPopup(
         context: Get.context!,
         builder: (_) => CupertinoAlertDialog(

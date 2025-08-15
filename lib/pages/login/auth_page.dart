@@ -7,7 +7,6 @@ import 'package:keyboard_actions/keyboard_actions.dart';
 import '../../api/auth_controller.dart';
 import '../../constants/input_formater.dart';
 import '../../utils/utils.dart';
-import '../../widgets/dialog/operator_selection_dialog.dart';
 import 'controller/auth_page_controller.dart';
 
 class AuthPage extends StatelessWidget {
