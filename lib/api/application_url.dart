@@ -121,7 +121,7 @@ class ApplicationUrl {
 
   static String get GETPAYUUID_URL => _GETPAYUUID_URL;
   static const String _VALIDATE_MTAG_URL =
-      '$_BASE_URL/validate/mtag/recharge'; //payload{"itoken_no":"123124324"} to do
+      '$_BASE_URL/validate/mtag/recharge';
   static String get VALIDATE_MTAG_URL => _VALIDATE_MTAG_URL;
   static const String _GETHTML_URL = '$_BASE_URL/pay/v4/';
 

@@ -25,7 +25,7 @@ void main() async {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,name: 'mtagFlutter');
   
-  // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         systemNavigationBarColor: Colors.transparent,statusBarColor: Colors.transparent,));
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);

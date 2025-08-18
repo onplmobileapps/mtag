@@ -16,7 +16,6 @@ import '../../widgets/dashboard_widget.dart';
 
 import '../../constants/other_consts.dart';
 import '../../widgets/dialog/chat_support_dialog.dart';
-import '../../widgets/mtag_data_widget_shimmer.dart';
 import '../../widgets/shimmer_dashboard.dart';
 import '../activity/activity_screen.dart';
 import '../recharge/controller/recharge_controller.dart';
@@ -152,11 +151,14 @@ class HomePage extends GetView<HomeController> {
                                       ),
                                       Positioned(
                                         right: 0,
-                                        bottom: 100,
+                                        bottom: 80,
                                         child: GestureDetector(
                                           onTap: () {
                                             CallWhatsappUtil.openWhatsAppChat(
-                                              "+923105931103",
+                                              controller
+                                                  .dashboradData
+                                                  .value
+                                                  .helpLineNumber !=null?controller.dashboradData.value.helpLineNumber.toString():"+923105931103"
                                             );
                                           },
                                           child: Container(
