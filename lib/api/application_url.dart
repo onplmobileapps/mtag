@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names, constant_identifier_names
-
 class ApplicationUrl {
   static final ApplicationUrl _instance = ApplicationUrl._internal();
 
@@ -10,7 +8,6 @@ class ApplicationUrl {
   }
 
   // static const String _BASE_URL = 'http://10.0.1.127:9008';
-
   static const String _BASE_URL = 'https://ocotapp.com';
 
   static const String _IMAGE_ULR = _BASE_URL;
@@ -86,8 +83,7 @@ class ApplicationUrl {
   static const String _JAZZCASHRECHARGE_URL = '$_BASE_URL/JazzCash_Recharge';
 
   static String get JAZZCASHRECHARGE_URL => _JAZZCASHRECHARGE_URL;
-  static const String _GETNOTIFICATION_URL =
-      '$_BASE_URL/Notification_Check_New';
+  static const String _GETNOTIFICATION_URL = '$_BASE_URL/Notification_Check_New';
 
   static String get GETNOTIFICATION_URL => _GETNOTIFICATION_URL;
   static const String _DELETENOTIFICATION_URL =
@@ -125,7 +121,7 @@ class ApplicationUrl {
 
   static String get GETPAYUUID_URL => _GETPAYUUID_URL;
   static const String _VALIDATE_MTAG_URL =
-      '$_BASE_URL/validate/mtag/recharge'; //payload{"itoken_no":"123124324"} to do
+      '$_BASE_URL/validate/mtag/recharge';
   static String get VALIDATE_MTAG_URL => _VALIDATE_MTAG_URL;
   static const String _GETHTML_URL = '$_BASE_URL/pay/v4/';
 

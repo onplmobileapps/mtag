@@ -35,7 +35,7 @@ class UserRepo {
   }
 
 // DashBoard Data
-  Future<Map<String, dynamic>> getdashBoardData({String? appVersion, deviceID}) async {
+  Future<Map<String, dynamic>> getdashBoardData({String? appVersion, deviceID,bool isShowLoading=false}) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
       apiUrl: ApplicationUrl.DASHBOARD_URL,
       apiRequestMethod: APIREQUESTMETHOD.POST,
@@ -43,7 +43,7 @@ class UserRepo {
       body: {"AppVer": Platform.isIOS ? "3.1.1" : "3.1.2", "deviceId": Platform.isAndroid ? '0' : '1'},
     );
 
-    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: true);
+    return await apiObject.requestAPI(isShowLoading: isShowLoading, isCheckAuthorization: true);
   }
 
   Future<Map<String, dynamic>> updateSimOperator({String? CnicNumber, MobileNum,int ?sim_operator}) async {

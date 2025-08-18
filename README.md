@@ -26,3 +26,6 @@ Optimizations:
 1. Update operator selection dialog
 2. Call on both ends ie signup screen & dashboard
 
+#Changelog (Friday 15 Aug 25)
+1. Add balance loading animation
+2. Not yet tested on iOS device

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:mtag_flutterapp/controller/home_controller.dart';
 import 'package:mtag_flutterapp/utils/utils.dart';
 import 'package:mtag_flutterapp/widgets/bottomsheet/bottom_sheet_widget.dart';
+import 'package:mtag_flutterapp/widgets/mtag_data_widget_shimmer.dart';
 import '../pages/recharge/recharge_page.dart';
 
 String getVehCategory(String vehicleType) {
@@ -217,8 +219,7 @@ Widget mtagDataWidget(BuildContext context,
                                   child: InkWell(
                                     onTap: () async {
                                       if (!_obscured.value) {
-                                        await Get.find<HomeController>()
-                                            .pullRefreshDashboardData();
+                                        await Get.find<HomeController>().updateBalance();
                                         _obscured(!_obscured.value);
                                       } else {
                                         _obscured(!_obscured.value);

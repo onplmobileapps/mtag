@@ -14,7 +14,6 @@ class MyMtagScreen extends StatelessWidget {
   final List<ActiveMtags> argument = Get.arguments is ActiveMtags ? [Get.arguments] : Get.arguments ?? [ActiveMtags()];
   @override
   Widget build(BuildContext context) {
-    Analytics.myMTagScreenDisplayed();
     var size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -60,7 +59,7 @@ class MyMtagScreen extends StatelessWidget {
                             size: 25.0,
                           ),
                         ),
-                        Padding(
+                        Padding (
                           padding: EdgeInsets.only(right: 16.0),
                           child: Text(
                             'Swipe to Delete',
@@ -71,7 +70,6 @@ class MyMtagScreen extends StatelessWidget {
                     ),
                   ),
                   direction: DismissDirection.endToStart,
-                  // onDismissed: (direction) {
                   confirmDismiss: (direction) async {
                     if (direction == DismissDirection.endToStart) {
                       showDialog(
@@ -166,10 +164,12 @@ class MyMtagScreen extends StatelessWidget {
                                     ),
                               ),
                               const SizedBox(height: 30, width: 20),
+
                               SvgPicture.asset(getVehicleImage(argument[index].vehicletype??'',),height: 40,width: 50,
                                   colorFilter: ColorFilter.mode(Theme.of(context).hintColor, BlendMode.srcIn)),
                             ],
                           ),
+
                         ],
                       ),
                     ),
