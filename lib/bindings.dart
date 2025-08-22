@@ -19,15 +19,21 @@ import 'pages/recharge/controller/recharge_controller.dart';
 import 'pages/tollhistory/controller/tollcontroller.dart';
 
 class Binding extends Bindings {
+  final SharedPreferences sharedPreferences;
+
+  Binding(this.sharedPreferences);
+
   @override
-  void dependencies() async {
+  void dependencies() {
+    // AuthController needs SharedPreferences immediately
     Get.put(
-        AuthController(
-          authRepo: AuthRepo(
-            sharedPreferences: await SharedPreferences.getInstance(),
-          ),
-        ),
-        permanent: true);
+      AuthController(
+        authRepo: AuthRepo(sharedPreferences: sharedPreferences),
+      ),
+      permanent: true,
+    );
+
+    // Other controllers lazy-loaded when first used
     Get.lazyPut(() => HomeController(userRepo: UserRepo()));
     Get.lazyPut(() => PaymentCardController(userRepo: RechargRepo()));
     Get.lazyPut(() => UpdateEmailController(userRepo: UserRepo()));
@@ -40,6 +46,5 @@ class Binding extends Bindings {
     Get.lazyPut(() => DelinkController(userRepo: UserRepo()));
     Get.lazyPut(() => DeleteAccountController(userRepo: UserRepo()));
     Get.lazyPut(() => NotificationController());
-
   }
 }

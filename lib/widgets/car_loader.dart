@@ -28,7 +28,7 @@ Widget buildCarLoaderWidget(BuildContext context, double height) {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Poppins',
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).primaryColorLight,
                 fontSize: 12.0,
                 fontStyle: FontStyle.italic,
               ),

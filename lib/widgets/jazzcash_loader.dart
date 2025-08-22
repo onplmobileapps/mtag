@@ -73,7 +73,7 @@ Future<void> jazzLoader() {
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(
-                'assets/jazzcash1.png',
+                'assets/jazzcash.png',
                 height: 70,
               ),
               const SizedBox(

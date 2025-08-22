@@ -9,21 +9,60 @@ import '../../widgets/elevated_button.dart';
 import '../../constants/input_formater.dart';
 import '../../widgets/textform_widget.dart';
 
-class FeedBackScreen extends StatelessWidget {
-  FeedBackScreen({super.key});
-  final _nameFocusNode = FocusNode(),
-      _cnicFocusNode = FocusNode(),
-      _phoneFocusNode = FocusNode(),
-      _remarksFocusNode = FocusNode();
-  final _nameController = TextEditingController(),
-      _cnicController = TextEditingController(),
-      _phoneController = TextEditingController(),
-      _remarksController = TextEditingController();
+class FeedBackScreen extends StatefulWidget {
+  const FeedBackScreen({super.key});
+
+  @override
+  State<FeedBackScreen> createState() => _FeedBackScreenState();
+}
+
+class _FeedBackScreenState extends State<FeedBackScreen> {
+  late final FocusNode _nameFocusNode;
+  late final FocusNode _cnicFocusNode;
+  late final FocusNode _phoneFocusNode;
+  late final FocusNode _remarksFocusNode;
+
+  late final TextEditingController _nameController;
+  late final TextEditingController _cnicController;
+  late final TextEditingController _phoneController;
+  late final TextEditingController _remarksController;
+
   final _formKey = GlobalKey<FormState>();
   final _otherConstants = OtherConsts();
+
+  @override
+  void initState() {
+    super.initState();
+    _nameFocusNode = FocusNode();
+    _cnicFocusNode = FocusNode();
+    _phoneFocusNode = FocusNode();
+    _remarksFocusNode = FocusNode();
+
+    _nameController = TextEditingController(text: _otherConstants.ownerName.value);
+    _cnicController = TextEditingController(text: _otherConstants.ownerCNIC.value);
+    _phoneController = TextEditingController(text: _otherConstants.mobile.value);
+    _remarksController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _nameFocusNode.dispose();
+    _cnicFocusNode.dispose();
+    _phoneFocusNode.dispose();
+    _remarksFocusNode.dispose();
+
+    _nameController.dispose();
+    _cnicController.dispose();
+    _phoneController.dispose();
+    _remarksController.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Analytics.feedbackTapped();
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
@@ -67,16 +106,15 @@ class FeedBackScreen extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 10),
-                  CustomTExtField(
+                  CustomTextField(
                     validator: (value) {
                       if (value!.isEmpty || value.length < 3) {
                         return 'Enter valid name';
                       }
                       return null;
                     },
-                    isReadOnly: true,
-                    controller: _nameController
-                      ..text = _otherConstants.ownerName.value,
+                    readOnly: true,
+                    controller: _nameController,
                     focusNode: _nameFocusNode,
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]')),
@@ -87,16 +125,15 @@ class FeedBackScreen extends StatelessWidget {
                     keyboardType: TextInputType.name,
                   ),
                   const SizedBox(height: 10),
-                  CustomTExtField(
+                  CustomTextField(
                     validator: (p0) {
                       if (p0!.isEmpty || p0.isCnpj) {
                         return 'Enter valid CNIC';
                       }
                       return null;
                     },
-                    isReadOnly: true,
-                    controller: _cnicController
-                      ..text = _otherConstants.ownerCNIC.value,
+                    readOnly: true,
+                    controller: _cnicController,
                     focusNode: _cnicFocusNode,
                     onEditingComplete: () =>
                         FocusScope.of(context).requestFocus(_phoneFocusNode),
@@ -108,17 +145,16 @@ class FeedBackScreen extends StatelessWidget {
                     keyboardType: TextInputType.number,
                   ),
                   const SizedBox(height: 10),
-                  CustomTExtField(
+                  CustomTextField(
                     validator: (p0) {
                       if (p0!.isEmpty || !p0.isPhoneNumber) {
                         return 'Enter valid phone';
                       }
                       return null;
                     },
-                    isReadOnly: true,
+                    readOnly: true,
                     maxLength: 11,
-                    controller: _phoneController
-                      ..text = _otherConstants.mobile.value,
+                    controller: _phoneController,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     focusNode: _phoneFocusNode,
                     onEditingComplete: () =>
@@ -127,21 +163,26 @@ class FeedBackScreen extends StatelessWidget {
                     keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: 10),
-                  
                   TextFormField(
-                    style: TextStyle(height: 1, fontSize: 12),
+                    style: const TextStyle(height: 1, fontSize: 12),
                     maxLines: 4,
                     focusNode: _remarksFocusNode,
-                    controller: _remarksController,  validator: (p0) {
+                    controller: _remarksController,
+                    validator: (p0) {
                       if (p0!.isEmpty || p0.length.isLowerThan(3)) {
                         return 'Enter remarks';
                       }
                       return null;
                     },
                     onEditingComplete: () => FocusScope.of(context).unfocus(),
-                    decoration: InputDecoration(filled: true,fillColor: Theme.of(context).disabledColor ,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Theme.of(context).disabledColor,
                       labelText: 'REMARKS',
-                      border: InputBorder.none,disabledBorder: InputBorder.none,focusedBorder: InputBorder.none,enabledBorder: InputBorder.none,
+                      border: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                     ),
                   ),

@@ -85,7 +85,7 @@ class EditProfileScreen extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     const SizedBox(height: 10),
-                                    CustomTExtField(
+                                    CustomTextField(
                                       onTapOutside: (p0) =>
                                           FocusScope.of(context).unfocus(),
                                       autoFocus: true,
@@ -111,7 +111,7 @@ class EditProfileScreen extends StatelessWidget {
                                       },
                                     ),
                                     const SizedBox(height: 10),
-                                    CustomTExtField(
+                                    CustomTextField(
                                       textInputAction: TextInputAction.next,
                                       controller: customerDetailsController
                                           .cnicController,
@@ -122,10 +122,10 @@ class EditProfileScreen extends StatelessWidget {
                                       ],
                                       label: 'CNIC',
                                       keyboardType: TextInputType.number,
-                                      enable: false,
+                                      enabled: false,
                                     ),
                                     const SizedBox(height: 10),
-                                    CustomTExtField(
+                                    CustomTextField(
                                       textInputAction: TextInputAction.next,
                                       maxLength: 11,
                                       inputFormatters: [
@@ -134,10 +134,10 @@ class EditProfileScreen extends StatelessWidget {
                                       controller: customerDetailsController
                                           .phoneController,
                                       label: 'MOBILE NUMBER',
-                                      enable: false,
+                                      enabled: false,
                                     ),
                                     const SizedBox(height: 10),
-                                    CustomTExtField(
+                                    CustomTextField(
                                       controller: customerDetailsController
                                           .emailController,
                                       focusNode: _emailFocusNode,
@@ -151,7 +151,7 @@ class EditProfileScreen extends StatelessWidget {
                                       },
                                     ),
                                     const SizedBox(height: 10),
-                                    CustomTExtField(
+                                    CustomTextField(
                                       textInputAction: TextInputAction.next,
                                       controller: customerDetailsController
                                           .passwordController,
@@ -162,7 +162,7 @@ class EditProfileScreen extends StatelessWidget {
                                           TextInputType.visiblePassword,
                                     ),
                                     const SizedBox(height: 10),
-                                    CustomTExtField(
+                                    CustomTextField(
                                       textInputAction: TextInputAction.done,
                                       onTapOutside: (p0) {
                                         FocusScope.of(context).unfocus();

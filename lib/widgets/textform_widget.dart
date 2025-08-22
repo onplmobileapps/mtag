@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class CustomTExtField extends StatelessWidget {
-  const CustomTExtField({
+class CustomTextField extends StatelessWidget {
+  const CustomTextField({
     super.key,
     this.keyboardType,
     this.label,
@@ -21,9 +21,9 @@ class CustomTExtField extends StatelessWidget {
     this.maxLength,
     this.onTapOutside,
     this.textInputAction,
-    this.enable,
+    this.enabled,
     this.obscure = false,
-    this.isReadOnly,
+    this.readOnly,
     this.autoFocus = false,
     this.onChanged,
     this.suffix,
@@ -44,12 +44,12 @@ class CustomTExtField extends StatelessWidget {
   final bool? filled;
   final String? hint;
   final int? maxLength;
-  final bool? enable;
+  final bool? enabled;
   final bool obscure;
   final EdgeInsetsGeometry? contentPadding;
   final Function(PointerDownEvent)? onTapOutside;
   final TextInputAction? textInputAction;
-  final bool? isReadOnly;
+  final bool? readOnly;
   final bool? autoFocus;
   final Function(String)? onChanged;
   final Function(String)? onFieldSubmitted;
@@ -62,7 +62,7 @@ class CustomTExtField extends StatelessWidget {
     return TextFormField(
       onChanged: onChanged,
       autofocus: autoFocus ?? false,
-      readOnly: isReadOnly ?? false,
+      readOnly: readOnly ?? false,
       textInputAction: textInputAction,
       onTapOutside: onTapOutside,onFieldSubmitted:onFieldSubmitted ,
       maxLength: maxLength,
@@ -75,7 +75,7 @@ class CustomTExtField extends StatelessWidget {
       controller: controller,
       inputFormatters: inputFormatters,
       keyboardType: keyboardType ?? TextInputType.text,
-      enabled: enable,
+      enabled: enabled,
       obscureText: obscure,
       decoration: InputDecoration(
         errorBorder: const UnderlineInputBorder(),

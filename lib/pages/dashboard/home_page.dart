@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import '../../fcm_handeler.dart';
 import '../../widgets/appbar/app_bar_widget.dart';
 import '../../api/user_repo.dart';
@@ -131,6 +130,7 @@ class HomePage extends GetView<HomeController> {
                                                             fit: BoxFit.cover,
                                                             width:
                                                                 double.infinity,
+
                                                           ),
                                                         ),
                                                       );
