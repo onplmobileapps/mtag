@@ -1,7 +1,7 @@
 name: mtag_flutterapp
 description: "M-Tag A Prime Product of One Network Solutions(FWO)."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 4.2.7+244
+version: 4.2.8+244
 environment:
   sdk: 3.8.1
 dependencies:
