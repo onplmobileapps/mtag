@@ -173,22 +173,79 @@ class RechargeSummary extends StatelessWidget {
           detailRow(context, 'Bank Charges:', 'PKR $bankCharges'),
           const SizedBox(height: 20),
           const Divider(color: Colors.grey, thickness: 0.5),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          const SizedBox(height: 20),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Total Recharge',
-                style: Theme.of(context).textTheme.displayMedium,
-              ),
-              Text(
-                'PKR $total',
-                style: Theme.of(context).textTheme.displayMedium?.copyWith(
+              //voucher ui
+              // Row(
+              //   children:  [
+              //     Icon(Icons.confirmation_num,color: Colors.redAccent,size: 20,),
+              //     SizedBox(width: 5),
+              //     Text("Apply a voucher",
+              //       style: Theme.of(context).textTheme.displayMedium?.copyWith(
+              //           color: Colors.redAccent, fontWeight: FontWeight.bold),
+              //     ),
+              //   ],
+              // ),
+              // const SizedBox(height: 10),
+              // TextField(
+              //   maxLength: 10,
+              //
+              //   decoration: InputDecoration(
+              //     filled: true,
+              //     fillColor: Colors.grey.shade200,
+              //     hintText: "Enter voucher code",
+              //     border: const OutlineInputBorder(),
+              //     enabledBorder: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Colors.grey.shade400),
+              //       borderRadius: BorderRadius.circular(8),
+              //     ),
+              //     focusedBorder: OutlineInputBorder(
+              //       borderSide:  BorderSide(color: Theme.of(context).primaryColor, width: 1),
+              //       borderRadius: BorderRadius.circular(5),
+              //     ),
+              //     suffixIcon: Padding(
+              //       padding: const EdgeInsets.only(right: 0),
+              //       child: SizedBox(
+              //         width: 30,
+              //         child: ElevatedButton(
+              //           onPressed: () {
+              //             // Apply action
+              //           },
+              //           style: ElevatedButton.styleFrom(
+              //             padding: EdgeInsets.zero,
+              //             backgroundColor: Theme.of(context).primaryColor,
+              //           ),
+              //           child: const Text(
+              //             "Apply",
+              //             style: TextStyle(fontSize: 12),
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Total Recharge',
+                    style: Theme.of(context).textTheme.displayMedium,
+                  ),
+                  Text(
+                    'PKR $total',
+                    style: Theme.of(context).textTheme.displayMedium?.copyWith(
                       color: Colors.redAccent,
                       fontWeight: FontWeight.w600,
                     ),
+                  ),
+                ],
               ),
             ],
-          ),
+          )
+
         ],
       ),
     );

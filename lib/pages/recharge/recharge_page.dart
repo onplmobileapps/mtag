@@ -293,7 +293,7 @@ Widget _buildMtagList(BuildContext context, RechargeSelfController controller) {
 }
 
 Widget _buildOtherMtagField(BuildContext context, RechargeSelfController controller) {
-  return CustomTExtField(
+  return CustomTextField(
     controller: controller.otherMtagController,
     hint: "Enter M-Tag Id",
     hintStyle: const TextStyle(color: Colors.grey),
@@ -326,7 +326,7 @@ Widget _buildAmountSection(BuildContext context, RechargeSelfController controll
                 ),
               ],
             ),
-            CustomTExtField(
+            CustomTextField(
               controller: controller.amountController,
               keyboardType: const TextInputType.numberWithOptions(signed: true),
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],

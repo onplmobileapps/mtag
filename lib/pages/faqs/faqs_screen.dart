@@ -88,7 +88,7 @@ class FaqsScreen extends StatelessWidget {
                                                 height: 45,
                                                 child: Material(
                                                   color: Colors.transparent,
-                                                  child: CustomTExtField(
+                                                  child: CustomTextField(
                                                     controller: _reasontextController,
                                                     contentPadding: const EdgeInsets.only(top: 0, left: 0),
                                                     hint: 'Why you want to deactivate your account?',

@@ -250,8 +250,8 @@ class _AddNewCardTile extends StatelessWidget {
         label: 'Add New +',
         labelColor: Colors.green,
         child: SvgPicture.asset(
-          payId == 2 ? 'assets/jazzcash.svg' : 'assets/addnew.svg',
-          height: 15,
+          payId == 2 ? 'assets/jazz_cash_new.svg' : 'assets/addnew.svg',
+          height: 35,
           fit: BoxFit.contain,
         ),
       ),
@@ -291,7 +291,7 @@ class _CardTile extends StatelessWidget {
             label: 'Ends ${maskString(card.cARDNUMBER ?? '')}',
             child: SvgPicture.asset(
               payId == 2
-                  ? 'assets/jazzcash.svg'
+                  ? 'assets/jazz_cash_new.svg'
                   : card.bRAND == 'MASTERCARD'
                       ? 'assets/mastercard.svg'
                       : 'assets/visa-logo.svg',
@@ -436,7 +436,7 @@ class _JazzCashInputSection extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  SvgPicture.asset('assets/jazzcash.svg', height: 10),
+                  SvgPicture.asset('assets/jazz_cash_new.svg', height: 10),
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: Column(
@@ -452,7 +452,7 @@ class _JazzCashInputSection extends StatelessWidget {
                   ),
                 ],
               ),
-              CustomTExtField(
+              CustomTextField(
                 hint: 'Enter JazzCash Account Number',
                 maxLength: 11,keyboardType: TextInputType.numberWithOptions(signed: true),
                 validator: validateJazzcashNumber,inputFormatters: [FilteringTextInputFormatter.digitsOnly],

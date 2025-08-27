@@ -130,6 +130,7 @@ class HomePage extends GetView<HomeController> {
                                                             fit: BoxFit.cover,
                                                             width:
                                                                 double.infinity,
+
                                                           ),
                                                         ),
                                                       );
