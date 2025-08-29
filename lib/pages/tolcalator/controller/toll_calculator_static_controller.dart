@@ -80,12 +80,8 @@ class MotorwayStaticController extends GetxController implements GetxService {
   @override
   void onClose() {
     scrollController.dispose();
- 
     super.onClose();
   }
-
-
-
 
   void reset() {
     selectedVehicle.value = -1;
@@ -222,10 +218,13 @@ class MotorwayStaticController extends GetxController implements GetxService {
           final List<dynamic> data = response["Data"];
           for (var item in data) {
             if (item is Map && item.containsKey('stname')) {
-              stations.add(item['stname'].toString());
+              // stations.add(item['stname'].toString());
               fullStationsList.add(StData.fromJson(Map<String, dynamic>.from(item)));
             }
           }
+          fullStationsList.sort((a, b) => (a.stname ?? '').compareTo(b.stname ?? ''));
+
+          stations.addAll(fullStationsList.map((s) => s.stname ?? '').toList());
         }
       } else {
         stations.clear();
