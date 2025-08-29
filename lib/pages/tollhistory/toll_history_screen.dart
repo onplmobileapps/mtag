@@ -101,23 +101,27 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
         ),
         child: Column(
           children: [
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildChip(controller, 'All', 0, ''),
-                    const SizedBox(width: 5),
-                    _buildChip(controller, 'Recharge', 1, '+'),
-                    const SizedBox(width: 5),
-                    _buildChip(controller, 'Travel', 2, '-'),
-                    //coming soon
-                    // const SizedBox(width: 5),
-                    // _buildChip(controller, 'CDA-Parking', 3, 'P'),
-                  ],
+            Align(
+              alignment: Alignment.centerLeft,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child:
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildChip(controller, 'All', 0, ''),
+                      const SizedBox(width: 5),
+                      _buildChip(controller, 'Recharge', 1, '+'),
+                      const SizedBox(width: 5),
+                      _buildChip(controller, 'Travel', 2, '-'),
+                      //coming soon
+                      // const SizedBox(width: 5),
+                      // _buildChip(controller, 'CDA-Parking', 3, 'P'),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -157,20 +161,17 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
           Get.find<ReceiptController>().chechTravel(true);
         }
       },
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Chip(
-          label: Text(label),
-          labelStyle: TextStyle(
-            color: controller.isSlected.value == value
-                ? Colors.white
-                : Theme.of(context).highlightColor,
-          ),
-          backgroundColor: controller.isSlected.value == value
-              ? primarSwatch
-              : Theme.of(context).disabledColor,
-          side: const BorderSide(color: Colors.black12),
+      child: Chip(
+        label: Text(label),
+        labelStyle: TextStyle(
+          color: controller.isSlected.value == value
+              ? Colors.white
+              : Theme.of(context).highlightColor,
         ),
+        backgroundColor: controller.isSlected.value == value
+            ? primarSwatch
+            : Theme.of(context).disabledColor,
+        side: const BorderSide(color: Colors.black12),
       ),
     );
   }
