@@ -5,11 +5,9 @@ Widget buildPaymentOption(
   required String label,
   required int value,
   required ValueNotifier<int> selectedOptionNotifier,
-  
   required String assetPath,
-  ValueNotifier<bool>?showTopupTimer,
-    ValueNotifier<bool>?showTimer,
-
+  ValueNotifier<bool>? showTopupTimer,
+  ValueNotifier<bool>? showTimer,
   ValueNotifier<Duration>? timerNotifier,
   Function()? onTap,
 }) {
@@ -21,50 +19,55 @@ Widget buildPaymentOption(
         builder: (context, remainingTime, child) {
           return Theme(
             data: Theme.of(context).copyWith(
-              visualDensity: VisualDensity(horizontal: -2, vertical: -2),
-            ), // Adjust visual density
-            child: RadioListTile<int>(isThreeLine: false,selected: true,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              value: value,
+              visualDensity: const VisualDensity(horizontal: -2, vertical: -2),
+            ),
+            child: RadioGroup<int>(
               groupValue: selectedOption,
-              onChanged: (int? newValue) {
-                if (newValue != null && remainingTime == Duration.zero) {
-                  selectedOptionNotifier.value = newValue;
-                  if (onTap != null) {
-                    onTap();
-                  }
+              onChanged: ( newValue) {
+                if (remainingTime == Duration.zero) {
+                  selectedOptionNotifier.value = newValue!;
+                  if (onTap != null) onTap();
                 }
               },
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Image.asset(
-                    assetPath,
-                    height: 30,
-                    width: 45,
-                  ),
-                  const SizedBox(width: 8), // Add some spacing
-                  Text(
-                    label,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 12),
-                  ),
-                ],
+              child: RadioListTile<int>(
+                isThreeLine: false,
+                selected: selectedOption == value,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                value: value,
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Image.asset(
+                      assetPath,
+                      height: 30,
+                      width: 45,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      label,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(fontSize: 12),
+                    ),
+                  ],
+                ),
+                controlAffinity: ListTileControlAffinity.leading,
+                dense: true,
+                contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                secondary: remainingTime > Duration.zero
+                    ? Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Text(
+                          '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(fontSize: 12, color: Colors.red),
+                        ),
+                      )
+                    : null,
               ),
-              controlAffinity: ListTileControlAffinity.leading,
-              dense: true,
-              contentPadding: EdgeInsets.symmetric(vertical: 0), // Reduce internal padding
-              secondary: remainingTime > Duration.zero
-                  ? Padding(
-                      padding: const EdgeInsets.only(right: 8.0), // Adjust spacing to fine-tune alignment
-                      child: Text(
-                        '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(fontSize: 12, color: Colors.red),
-                      ),
-                    )
-                  : null,
             ),
           );
         },

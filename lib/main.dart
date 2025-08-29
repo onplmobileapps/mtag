@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:upgrader/upgrader.dart';
-
 import 'db/stations_database.dart';
 import 'db/toll_database.dart';
 import 'fcm_handeler.dart';
@@ -30,7 +29,7 @@ void main() async {
     name: 'mtagFlutter',
   );
   //uncomment when go to production
-// FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   final sharedPreferences = await SharedPreferences.getInstance();
 
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
