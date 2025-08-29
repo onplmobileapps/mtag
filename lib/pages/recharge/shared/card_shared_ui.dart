@@ -10,7 +10,6 @@ import '/utils/utils.dart';
 import '/widgets/textform_widget.dart';
 import '../../payment/model/payment_card_model.dart';
 
-// Global ValueNotifiers (consider moving to a state management solution if app scales)
 final ValueNotifier<bool> isJazzShown = ValueNotifier(false);
 final ValueNotifier<bool> isCardsVisible = ValueNotifier(false);
 
