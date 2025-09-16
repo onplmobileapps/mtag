@@ -38,7 +38,8 @@ class ActivityScreen extends StatelessWidget {
           child: GetX<ActivityContorller>(
             init: ActivityContorller(UserRepo()),
             builder: (controller) {
-              final jazzcashData = controller.activitiesModel.value.jazzcashData;
+              final jazzcashData =
+                  controller.activitiesModel.value.jazzcashData;
               final cardData = controller.activitiesModel.value.cardData;
               final transData = controller.activitiesModel.value.transData;
 
@@ -55,13 +56,11 @@ class ActivityScreen extends StatelessWidget {
                   ),
                   // Rest of the scrollable content
                   SliverList(
-                    delegate: SliverChildListDelegate(
-                      [
-                        _buildJazzcashCardSection(jazzcashData, context),
-                        _buildDebitCardSection(cardData, context),
-                        _buildActivitiesList(transData, context),
-                      ],
-                    ),
+                    delegate: SliverChildListDelegate([
+                      _buildJazzcashCardSection(jazzcashData, context),
+                      _buildDebitCardSection(cardData, context),
+                      _buildActivitiesList(transData, context),
+                    ]),
                   ),
                 ],
               );
@@ -74,7 +73,6 @@ class ActivityScreen extends StatelessWidget {
 
   Widget _buildSavedCardsHeader(BuildContext context) {
     return Container(
-      
       padding: const EdgeInsets.all(8.0),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -90,7 +88,10 @@ class ActivityScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildJazzcashCardSection(List<JazzcashData>? jazzcashData, BuildContext context) {
+  Widget _buildJazzcashCardSection(
+    List<JazzcashData>? jazzcashData,
+    BuildContext context,
+  ) {
     if (jazzcashData?.isNotEmpty ?? false) {
       return SizedBox(
         height: 120,
@@ -111,7 +112,10 @@ class ActivityScreen extends StatelessWidget {
     return const SizedBox.shrink();
   }
 
-  Widget _buildDebitCardSection(List<CardDataX>? cardData, BuildContext context) {
+  Widget _buildDebitCardSection(
+    List<CardDataX>? cardData,
+    BuildContext context,
+  ) {
     if (cardData?.isNotEmpty ?? false) {
       return SizedBox(
         height: MediaQuery.of(context).size.height / 4.9,
@@ -147,7 +151,10 @@ class ActivityScreen extends StatelessWidget {
     return const SizedBox.shrink();
   }
 
-  Widget _buildActivitiesList(List<TransData>? transData, BuildContext context) {
+  Widget _buildActivitiesList(
+    List<TransData>? transData,
+    BuildContext context,
+  ) {
     if (transData != null && transData.isNotEmpty) {
       return ActivitiesListView(activitiesModel: transData);
     }
@@ -171,7 +178,10 @@ class ActivitiesListView extends StatelessWidget {
         return Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8.0,
+                vertical: 4.0,
+              ),
               child: ListTile(
                 visualDensity: VisualDensity.compact,
                 contentPadding: EdgeInsets.zero,
@@ -187,9 +197,9 @@ class ActivitiesListView extends StatelessWidget {
                 ),
                 trailing: Text(
                   'PKR ${transaction?.amount ?? ''}/-',
-                  style: Theme.of(context).listTileTheme.titleTextStyle?.copyWith(
-                        color: Colors.green,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).listTileTheme.titleTextStyle?.copyWith(color: Colors.green),
                 ),
                 subtitle: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -197,25 +207,20 @@ class ActivitiesListView extends StatelessWidget {
                   children: [
                     Text(
                       transaction?.orderId ?? '',
-                      style: Theme.of(context).listTileTheme.titleTextStyle?.copyWith(color: Colors.grey, fontSize: 11),
+                      style: Theme.of(context).listTileTheme.titleTextStyle
+                          ?.copyWith(color: Colors.grey, fontSize: 11),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       transaction?.cardNumber ?? '',
-                      style: Theme.of(context)
-                          .listTileTheme
-                          .titleTextStyle
+                      style: Theme.of(context).listTileTheme.titleTextStyle
                           ?.copyWith(color: Colors.redAccent, fontSize: 11),
                     ),
                   ],
                 ),
               ),
             ),
-            const Divider(
-              indent: 12,
-              endIndent: 12,
-              thickness: 0.2,
-            ),
+            const Divider(indent: 12, endIndent: 12, thickness: 0.2),
           ],
         );
       },

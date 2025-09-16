@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -7,18 +8,18 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:upgrader/upgrader.dart';
 
+import 'base/app_data.dart';
+import 'bindings.dart';
 import 'db/stations_database.dart';
 import 'db/toll_database.dart';
 import 'fcm_handeler.dart';
-import 'pages/login/create_pin_page.dart';
-import 'base/app_data.dart';
-import 'bindings.dart';
 import 'firebase_options.dart';
+import 'pages/login/auth_page.dart';
+import 'pages/login/create_pin_page.dart';
 import 'remoteconfig/firebase_remote_config.dart';
 import 'routes/approute.dart';
 import 'theme/app_theme.dart';
 import 'utils/utils.dart';
-import 'pages/login/auth_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,13 +31,15 @@ void main() async {
     name: 'mtagFlutter',
   );
   //uncomment when go to production
-// FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   final sharedPreferences = await SharedPreferences.getInstance();
 
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    systemNavigationBarColor: Colors.transparent,
-    statusBarColor: Colors.transparent,
-  ));
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.transparent,
+      statusBarColor: Colors.transparent,
+    ),
+  );
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -45,9 +48,7 @@ void main() async {
 
   HttpOverrides.global = MyHttpOverrides();
 
-  runApp(
-    MTagApp(sharedPreferences: sharedPreferences),
-  );
+  runApp(MTagApp(sharedPreferences: sharedPreferences));
 }
 
 class MTagApp extends StatefulWidget {
@@ -110,27 +111,23 @@ class _MTagAppState extends State<MTagApp> {
       debugShowCheckedModeBanner: false,
       home: Platform.isIOS
           ? UpgradeAlert(
-        upgrader: Upgrader(
-          upgraderOS: UpgraderOS(),
-          languageCode: "en",
-          countryCode: "US",
-          debugLogging: true,
-          willDisplayUpgrade: (
-              {required display,
-                installedVersion,
-                versionInfo}) =>
-          display,
-        ),
-        dialogStyle: UpgradeDialogStyle.cupertino,
-        cupertinoButtonTextStyle: const TextStyle(fontFamily: 'Poppins'),
-        barrierDismissible: false,
-        showIgnore: false,
-        showLater: false,
-        showReleaseNotes: true,
-        child: AppData.getPinData() != null
-            ? PinEntryPage()
-            : AuthPage(),
-      )
+              upgrader: Upgrader(
+                upgraderOS: UpgraderOS(),
+                languageCode: "en",
+                countryCode: "US",
+                debugLogging: true,
+                willDisplayUpgrade:
+                    ({required display, installedVersion, versionInfo}) =>
+                        display,
+              ),
+              dialogStyle: UpgradeDialogStyle.cupertino,
+              cupertinoButtonTextStyle: const TextStyle(fontFamily: 'Poppins'),
+              barrierDismissible: false,
+              showIgnore: false,
+              showLater: false,
+              showReleaseNotes: true,
+              child: AppData.getPinData() != null ? PinEntryPage() : AuthPage(),
+            )
           : AppData.getPinData() != null
           ? const PinEntryPage()
           : AuthPage(),
