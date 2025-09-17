@@ -22,7 +22,7 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
   final startDate = DateTime.now().obs;
   final endDate = DateTime.now().obs;
 
-  void onListTileTap(arguments) async {
+  void onListTileTap(dynamic arguments) async {
     _receiptController.chechTravel(arguments.cR == '-');
     await _receiptController.getrechargeDetails(
         cr: arguments.cR, uID: arguments.uID, itoken: arguments.iTOKKENNO);
@@ -175,7 +175,7 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
     );
   }
 
-  Widget _buildListTile(item) {
+  Widget _buildListTile(dynamic item) {
     return Container(
       margin: const EdgeInsets.all(1),
       decoration: BoxDecoration(
@@ -206,7 +206,7 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
     );
   }
 
-  Widget _buildTrailingColumn(item) {
+  Widget _buildTrailingColumn(dynamic item) {
     final isTravel = item?.cR == '-';
     final color = isTravel ? Colors.redAccent : Colors.green;
     final label = isTravel ? 'Travel' : 'Recharge';

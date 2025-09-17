@@ -21,9 +21,7 @@ import 'pages/login/auth_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await AppData.initialize();
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
     name: 'mtagFlutter',
