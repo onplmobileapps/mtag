@@ -215,7 +215,13 @@ class MyMtagScreen extends StatelessWidget {
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
+                                      Icon(
+                                        Icons.delete_forever_outlined,
+                                        size: 18,
+                                        color: Colors.red,
+                                      ),
                                       const SizedBox(width: 2),
+
                                       Text(
                                         'Delete',
                                         style: TextStyle(
@@ -223,12 +229,6 @@ class MyMtagScreen extends StatelessWidget {
                                           fontWeight: FontWeight.bold,
                                           color: Colors.red,
                                         ),
-                                      ),
-                                      const SizedBox(width: 2),
-                                      Icon(
-                                        Icons.delete_forever_outlined,
-                                        size: 18,
-                                        color: Colors.red,
                                       ),
                                     ],
                                   ),
