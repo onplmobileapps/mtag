@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,6 +7,8 @@ import 'package:get/get.dart';
 import 'package:mtag_flutterapp/controller/home_controller.dart';
 import 'package:mtag_flutterapp/utils/utils.dart';
 import 'package:mtag_flutterapp/widgets/bottomsheet/bottom_sheet_widget.dart';
+
+import '../pages/dashboard/model/dashboard_model.dart';
 import '../pages/recharge/recharge_page.dart';
 
 String getVehCategory(String vehicleType) {
@@ -15,7 +18,7 @@ String getVehCategory(String vehicleType) {
     'Coaster': 'F3',
     'Bus': 'F4',
     'Truck': 'F5',
-    'Trailer': 'F6'
+    'Trailer': 'F6',
   };
   if (vehicleCategories.containsKey(vehicleType)) {
     return vehicleCategories[vehicleType] ?? '';
@@ -41,21 +44,27 @@ String getVehicleImage(String vehicleType) {
 
 RxBool _obscured = false.obs;
 
-Widget mtagDataWidget(BuildContext context,
-    {String? vehType,
-    double? height,
-    Size? size,
-    String? userName,
-    String? ball,
-    String? mtagId,
-    String? regId,
-    String? creditCode,
-    String? jazzCode,
-    double? blockStatus,
-    double? blockAmount,
-    String? cnic,
-    String? mobileNum,
-    double? isBlock}) {
+final List<ActiveMtags> argument = Get.arguments is ActiveMtags
+    ? [Get.arguments]
+    : Get.arguments ?? [ActiveMtags()];
+
+Widget mtagDataWidget(
+  BuildContext context, {
+  String? vehType,
+  double? height,
+  Size? size,
+  String? userName,
+  String? ball,
+  String? mtagId,
+  String? regId,
+  String? creditCode,
+  String? jazzCode,
+  double? blockStatus,
+  double? blockAmount,
+  String? cnic,
+  String? mobileNum,
+  double? isBlock,
+}) {
   log('$mtagId,$regId,$creditCode,$jazzCode');
 
   return Column(
@@ -71,11 +80,7 @@ Widget mtagDataWidget(BuildContext context,
               child: Container(
                 width: MediaQuery.sizeOf(context).width - 20,
                 height: height,
-                padding: const EdgeInsets.only(
-                  left: 10,
-                  right: 10,
-                  top: 10,
-                ),
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
                 decoration: BoxDecoration(
                   color: Theme.of(context).disabledColor,
                   borderRadius: BorderRadius.circular(12),
@@ -94,12 +99,8 @@ Widget mtagDataWidget(BuildContext context,
                             fit: BoxFit.scaleDown,
                             child: Text(
                               userName?.toUpperCase() ?? '',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displayMedium
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                              style: Theme.of(context).textTheme.displayMedium
+                                  ?.copyWith(fontWeight: FontWeight.w600),
                             ),
                           ),
                         ),
@@ -159,18 +160,17 @@ Widget mtagDataWidget(BuildContext context,
                           child: SvgPicture.asset(
                             getVehicleImage(vehType ?? '').toString(),
                             colorFilter: ColorFilter.mode(
-                                Theme.of(context).hintColor, BlendMode.srcIn),
+                              Theme.of(context).hintColor,
+                              BlendMode.srcIn,
+                            ),
                             width: 120,
                           ),
                         ),
                       ],
                     ),
                     const Spacer(),
-                    const Divider(
-                      thickness: 0.2,
-                      height: 0.7,
-                    ),
-                    // const Spacer(),
+                    const Divider(thickness: 0.2, height: 0.7),
+                    const Spacer(),
                     Expanded(
                       flex: 6,
                       child: Column(
@@ -184,8 +184,9 @@ Widget mtagDataWidget(BuildContext context,
                               fit: BoxFit.scaleDown,
                               child: Text(
                                 'Available Balance',
-                                style:
-                                    Theme.of(context).textTheme.displayMedium,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.displayMedium,
                               ),
                             ),
                           ),
@@ -217,7 +218,8 @@ Widget mtagDataWidget(BuildContext context,
                                   child: InkWell(
                                     onTap: () async {
                                       if (!_obscured.value) {
-                                        await Get.find<HomeController>().updateBalance();
+                                        await Get.find<HomeController>()
+                                            .updateBalance();
                                         _obscured(!_obscured.value);
                                       } else {
                                         _obscured(!_obscured.value);
@@ -236,45 +238,121 @@ Widget mtagDataWidget(BuildContext context,
                                 Flexible(
                                   flex: 1,
                                   child: InkWell(
-                                    onTap: () => showPaymentBottomSheet(context,
-                                        mtagId: mtagId,
-                                        regId: regId,
-                                        jazzCode: jazzCode,
-                                        creditCode: creditCode),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        color: Theme.of(context).disabledColor,
-                                        border: Border.all(
-                                            color: Colors.green, width: 0.5),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          const Icon(
-                                            Icons.add_outlined,
-                                            color: Colors.green,
-                                            size: 25,
-                                          ),
-                                          FittedBox(
-                                            fit: BoxFit.scaleDown,
-                                            child: Text(
-                                              'Recharge',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall
-                                                  ?.copyWith(
-                                                      color: Colors.green),
+                                    onTap: () => showPaymentBottomSheet(
+                                      context,
+                                      mtagId: mtagId,
+                                      regId: regId,
+                                      jazzCode: jazzCode,
+                                      creditCode: creditCode,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
                                             ),
-                                          )
-                                        ],
-                                      ),
+                                            color: Theme.of(
+                                              context,
+                                            ).disabledColor,
+                                            border: Border.all(
+                                              color: Colors.green,
+                                              width: 0.5,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              const Icon(
+                                                Icons.add_outlined,
+                                                color: Colors.green,
+                                                size: 25,
+                                              ),
+                                              FittedBox(
+                                                fit: BoxFit.scaleDown,
+                                                child: Text(
+                                                  'Recharge',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall
+                                                      ?.copyWith(
+                                                        color: Colors.green,
+                                                      ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 5),
+                                      ],
                                     ),
                                   ),
                                 ),
+                                // SizedBox(width: 10),
+                                // Flexible(
+                                //   flex: 1,
+                                //   child: InkWell(
+                                //     onTap: () {
+                                //       showDialog(
+                                //         context: Get.context!,
+                                //         builder: (ctx) {
+                                //           return DelinkVehicleDialog(
+                                //             argument: argument.isNotEmpty
+                                //                 ? argument[0]
+                                //                 : null,
+                                //           );
+                                //         },
+                                //       );
+                                //     },
+                                //     child: Column(
+                                //       children: [
+                                //         Container(
+                                //           decoration: BoxDecoration(
+                                //             borderRadius: BorderRadius.circular(
+                                //               12,
+                                //             ),
+                                //             color: Theme.of(
+                                //               context,
+                                //             ).disabledColor,
+                                //             border: Border.all(
+                                //               color: Colors.redAccent,
+                                //               width: 0.5,
+                                //             ),
+                                //           ),
+                                //           child: Row(
+                                //             mainAxisAlignment:
+                                //                 MainAxisAlignment.center,
+                                //             crossAxisAlignment:
+                                //                 CrossAxisAlignment.center,
+                                //             children: [
+                                //               const Icon(
+                                //                 Icons.delete_forever_outlined,
+                                //                 color: Colors.redAccent,
+                                //                 size: 25,
+                                //               ),
+                                //               FittedBox(
+                                //                 fit: BoxFit.scaleDown,
+                                //                 child: Text(
+                                //                   'De-Link',
+                                //                   style: Theme.of(context)
+                                //                       .textTheme
+                                //                       .bodySmall
+                                //                       ?.copyWith(
+                                //                         color: Colors.redAccent,
+                                //                       ),
+                                //                 ),
+                                //               ),
+                                //             ],
+                                //           ),
+                                //         ),
+                                //         const SizedBox(height: 5),
+                                //       ],
+                                //     ),
+                                //   ),
+                                // ),
                               ],
                             ),
                           ),
@@ -290,8 +368,10 @@ Widget mtagDataWidget(BuildContext context,
                 top: 0,
                 right: 0,
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 5,
+                    vertical: 3,
+                  ),
                   decoration: const BoxDecoration(
                     color: Colors.red,
                     borderRadius: BorderRadius.only(
@@ -304,7 +384,9 @@ Widget mtagDataWidget(BuildContext context,
                     child: const Text(
                       'Blocked',
                       style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -317,14 +399,19 @@ Widget mtagDataWidget(BuildContext context,
 }
 
 // Use this in your widget to show the bottom sheet:
-void showPaymentBottomSheet(BuildContext context,
-    {String? mtagId, String? regId, String? jazzCode, String? creditCode}) {
+void showPaymentBottomSheet(
+  BuildContext context, {
+  String? mtagId,
+  String? regId,
+  String? jazzCode,
+  String? creditCode,
+}) {
   final TextEditingController amountController = TextEditingController();
   final TextEditingController psidController = TextEditingController();
 
   final ValueNotifier<bool> showPSIDField = ValueNotifier(false);
   final ValueNotifier<int> selectedPaymentOption = ValueNotifier(-1);
-selected1linkOpt.value = -1;
+  selected1linkOpt.value = -1;
   Get.bottomSheet(
     PaymentBottomSheet(
       mtagId: mtagId,

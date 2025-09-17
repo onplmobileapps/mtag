@@ -264,12 +264,14 @@ Widget _buildStickyMessage(BuildContext context) {
       children: [
         Row(
           children: [
-            Icon(Icons.campaign),
+            Icon(Icons.campaign, color: Theme.of(context).primaryColor),
             Text(
               'Announcement',
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(fontSize: 12),
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -280,9 +282,12 @@ Widget _buildStickyMessage(BuildContext context) {
           children: [
             Flexible(
               child: Text(
-                'The history section displays only M-Tag transactions,cash transactions are not included.',
+                'The history section displays only M-Tag transactions, cash transactions are not included.',
                 textAlign: TextAlign.justify,
-                style: Theme.of(context).textTheme.bodySmall,
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontSize: 12,
+                ),
               ),
             ),
           ],
