@@ -208,34 +208,27 @@ class MyMtagScreen extends StatelessWidget {
                                     vertical: 8,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.red.shade100,
+                                    color: Theme.of(context).disabledColor,
                                     borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                      color: Colors.red.shade300,
-                                    ),
+                                    border: Border.all(color: Colors.red),
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Icon(
-                                        Icons.arrow_back_ios,
-                                        size: 12,
-                                        color: Colors.red.shade700,
-                                      ),
                                       const SizedBox(width: 2),
                                       Text(
-                                        'De-Link',
+                                        'Delete',
                                         style: TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.red.shade700,
+                                          color: Colors.red,
                                         ),
                                       ),
                                       const SizedBox(width: 2),
                                       Icon(
-                                        Icons.delete_outline,
+                                        Icons.delete_forever_outlined,
                                         size: 18,
-                                        color: Colors.red.shade700,
+                                        color: Colors.red,
                                       ),
                                     ],
                                   ),
