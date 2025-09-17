@@ -115,12 +115,8 @@ class _PinEntryPageState extends State<PinEntryPage> {
     } else {
       await authController.verifyPIN(
         onTap: () {
-        
-        
-            _pin.value = '';
-   Future.delayed(const Duration(milliseconds: 200), ()=>Get.back());
-           
-      
+          _pin.value = '';
+          Future.delayed(const Duration(milliseconds: 200), () => Get.back());
         },
         cnic: pinData?['cnic'] ?? widget.cnicNumber ?? '',
         mobileNum: pinData?['mobile'] ?? widget.mobileNumber ?? '',
@@ -181,9 +177,9 @@ class _PinEntryPageState extends State<PinEntryPage> {
         'Welcome to One Network',
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: MediaQuery.of(context).size.height * 0.026,
-            ),
+          fontWeight: FontWeight.w600,
+          fontSize: MediaQuery.of(context).size.height * 0.026,
+        ),
       ),
     );
   }
@@ -254,10 +250,37 @@ class _PinEntryPageState extends State<PinEntryPage> {
               // Show empty Container until biometric availability is checked
               _isAuthAvailable
                   ? _buildKey(
-                      child: Icon(
-                        Platform.isIOS ? Icons.face : Icons.fingerprint,
-                        size: size.width * 0.09,
+                      // child: Icon(
+                      //   Platform.isIOS ? Icons.face : Icons.fingerprint,
+                      //   size: size.width * 0.09,
+                      // ),
+                      child: Container(
+                        padding: EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Get.isDarkMode
+                              ? Colors.white
+                              : Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Platform.isIOS
+                            ? Image.asset(
+                                "assets/face.png",
+                                height: size.width * 0.08,
+                                width: size.width * 0.08,
+                                color: Get.isDarkMode
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.white,
+                              )
+                            : Image.asset(
+                                "assets/fingerprint.png",
+                                height: size.width * 0.08,
+                                width: size.width * 0.08,
+                                color: Get.isDarkMode
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.white,
+                              ),
                       ),
+
                       onPressed: () {
                         if (AppData.getPinData() == null) {
                           _showBiometricDialog(context);
@@ -280,8 +303,8 @@ class _PinEntryPageState extends State<PinEntryPage> {
             child: Text(
               'Sign-in with a different account',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    decoration: TextDecoration.underline,
-                  ),
+                decoration: TextDecoration.underline,
+              ),
             ),
           ),
         ),
@@ -313,9 +336,9 @@ class _PinEntryPageState extends State<PinEntryPage> {
           return _buildKey(
             child: Text(
               '$number',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontSize: size.height * 0.03,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontSize: size.height * 0.03),
             ),
             onPressed: () => _onNumberTap(number),
           );
@@ -351,10 +374,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
           textAlign: TextAlign.justify,
         ),
         actions: [
-          CupertinoDialogAction(
-            onPressed: Get.back,
-            child: const Text('Ok'),
-          ),
+          CupertinoDialogAction(onPressed: Get.back, child: const Text('Ok')),
         ],
       ),
     );

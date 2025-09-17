@@ -6,12 +6,16 @@ import 'package:get/get.dart';
 import 'package:mtag_flutterapp/constants/analytics.dart';
 import 'package:mtag_flutterapp/widgets/dashboard_widget.dart';
 import 'package:mtag_flutterapp/widgets/dialog/d_link_dialog.dart';
+
 import '../dashboard/model/dashboard_model.dart';
 
 class MyMtagScreen extends StatelessWidget {
   MyMtagScreen({super.key});
 
-  final List<ActiveMtags> argument = Get.arguments is ActiveMtags ? [Get.arguments] : Get.arguments ?? [ActiveMtags()];
+  final List<ActiveMtags> argument = Get.arguments is ActiveMtags
+      ? [Get.arguments]
+      : Get.arguments ?? [ActiveMtags()];
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -54,18 +58,19 @@ class MyMtagScreen extends StatelessWidget {
                       children: [
                         Padding(
                           padding: EdgeInsets.only(right: 5.0),
-                          child: Icon(
-                            Icons.delete,
-                            size: 25.0,
-                          ),
+                          child: Icon(Icons.delete, size: 25.0),
                         ),
-                        Padding (
+                        Padding(
                           padding: EdgeInsets.only(right: 16.0),
                           child: Text(
                             'Swipe to Delete',
-                            style: TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 16.0),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Poppins',
+                              fontSize: 16.0,
+                            ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -75,9 +80,7 @@ class MyMtagScreen extends StatelessWidget {
                       showDialog(
                         context: Get.context!,
                         builder: (ctx) {
-                          return DelinkVehicleDialog(
-                            argument: argument[index],
-                          );
+                          return DelinkVehicleDialog(argument: argument[index]);
                         },
                       );
                     }
@@ -85,8 +88,13 @@ class MyMtagScreen extends StatelessWidget {
                   },
                   child: InkWell(
                     onTap: () async {
-                      Analytics.selectedMTag(argument[index].tokenno.toString());
-                      await Get.toNamed('/mtagDetails', arguments: argument[index]);
+                      Analytics.selectedMTag(
+                        argument[index].tokenno.toString(),
+                      );
+                      await Get.toNamed(
+                        '/mtagDetails',
+                        arguments: argument[index],
+                      );
                       log(argument[index].toString());
                     },
                     child: Container(
@@ -106,13 +114,19 @@ class MyMtagScreen extends StatelessWidget {
                               children: [
                                 SvgPicture.asset(
                                   'assets/mtag_logo.svg',
-                                  colorFilter: ColorFilter.mode(Theme.of(context).hintColor, BlendMode.srcIn),
+                                  colorFilter: ColorFilter.mode(
+                                    Theme.of(context).hintColor,
+                                    BlendMode.srcIn,
+                                  ),
                                   fit: BoxFit.fill,
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   'M-TAG',
-                                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displayMedium
+                                      ?.copyWith(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.red,
                                       ),
@@ -120,7 +134,9 @@ class MyMtagScreen extends StatelessWidget {
                                 const SizedBox(height: 8),
                                 Text(
                                   argument[index].tokenno ?? "",
-                                  style: Theme.of(context).textTheme.displayMedium,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.displayMedium,
                                 ),
                               ],
                             ),
@@ -137,17 +153,37 @@ class MyMtagScreen extends StatelessWidget {
                                 children: [
                                   Text(
                                     '${argument[index].ownername}',
-                                    style: Theme.of(context).textTheme.displayMedium,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.displayMedium,
+                                    maxLines: 1,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'PKR ${argument[index].balance}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge
+                                        ?.copyWith(
+                                          color: Colors.green,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                     maxLines: 1,
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
                                     argument[index].registration ?? '',
-                                    style: Theme.of(context).textTheme.displaySmall,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.displaySmall,
                                   ),
                                   const SizedBox(height: 8),
-                                  Text(argument[index].vehicletype ?? '',
-                                      style: Theme.of(context).textTheme.displaySmall),
+                                  Text(
+                                    argument[index].vehicletype ?? '',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.displaySmall,
+                                  ),
                                 ],
                               ),
                             ),
@@ -156,20 +192,69 @@ class MyMtagScreen extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Text(
-                                'PKR ${argument[index].balance}',
-                                style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.green,
+                              // const SizedBox(height: 30, width: 20),
+                              InkWell(
+                                onTap: () => showDialog(
+                                  context: Get.context!,
+                                  builder: (ctx) {
+                                    return DelinkVehicleDialog(
+                                      argument: argument[index],
+                                    );
+                                  },
+                                ),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 8,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.shade100,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: Colors.red.shade300,
                                     ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.arrow_back_ios,
+                                        size: 12,
+                                        color: Colors.red.shade700,
+                                      ),
+                                      const SizedBox(width: 2),
+                                      Text(
+                                        'De-Link',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.red.shade700,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 2),
+                                      Icon(
+                                        Icons.delete_outline,
+                                        size: 18,
+                                        color: Colors.red.shade700,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              const SizedBox(height: 30, width: 20),
-
-                              SvgPicture.asset(getVehicleImage(argument[index].vehicletype??'',),height: 40,width: 50,
-                                  colorFilter: ColorFilter.mode(Theme.of(context).hintColor, BlendMode.srcIn)),
+                              const SizedBox(height: 20),
+                              SvgPicture.asset(
+                                getVehicleImage(
+                                  argument[index].vehicletype ?? '',
+                                ),
+                                height: 40,
+                                width: 50,
+                                colorFilter: ColorFilter.mode(
+                                  Theme.of(context).hintColor,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
                             ],
                           ),
-
                         ],
                       ),
                     ),

@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '/widgets/elevated_button.dart';
 import '../../pages/dashboard/model/dashboard_model.dart' as m;
 import '../../pages/mtag/controller/delink_controller.dart';
 
 // ignore: must_be_immutable
 class DelinkVehicleDialog extends StatefulWidget {
-  final m.ActiveMtags argument;
+  final m.ActiveMtags? argument;
+
   const DelinkVehicleDialog({super.key, required this.argument});
 
   @override
@@ -26,9 +28,7 @@ class _DelinkVehicleDialogState extends State<DelinkVehicleDialog> {
     return Dialog(
       surfaceTintColor: Theme.of(context).dialogTheme.surfaceTintColor,
       backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(4),
         child: Column(
@@ -44,7 +44,7 @@ class _DelinkVehicleDialogState extends State<DelinkVehicleDialog> {
             SizedBox(height: MediaQuery.sizeOf(context).height / 80),
             Text(
               "Are you sure to delete?",
-              style: Theme.of(context).dialogTheme.contentTextStyle,
+              style: Theme.of(context).dialogTheme.titleTextStyle,
             ),
             SizedBox(height: MediaQuery.sizeOf(context).height / 80),
             Container(
@@ -70,21 +70,32 @@ class _DelinkVehicleDialogState extends State<DelinkVehicleDialog> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.argument.registration ?? '',
+                          widget.argument?.registration ?? '',
                           style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: "Poppins"),
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontFamily: "Poppins",
+                          ),
                         ),
                         const SizedBox(height: 5),
                         Row(
                           children: [
                             Text(
-                              widget.argument.tokenno ?? '',
-                              style: const TextStyle(fontSize: 14, color: Colors.white, fontFamily: "Poppins"),
+                              widget.argument?.tokenno ?? '',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontFamily: "Poppins",
+                              ),
                             ),
                             const Spacer(),
                             Text(
-                              widget.argument.balance ?? '',
-                              style: const TextStyle(color: Colors.white, fontFamily: "Poppins"),
+                              widget.argument?.balance ?? '',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontFamily: "Poppins",
+                              ),
                             ),
                           ],
                         ),
@@ -94,44 +105,55 @@ class _DelinkVehicleDialogState extends State<DelinkVehicleDialog> {
                 ],
               ),
             ),
-            const SizedBox(
-              height: 5,
-            ),
-            Obx(
-              () {
-                return dlinkOptionsController.dlinkOptionsModel.value.data == null
-                    ? Container()
-                    : Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: dlinkOptionsController.dlinkOptionsModel.value.data!.map((reason) {
-                          bool isSelected = reasonID.value == '${reason.rID}';
-                          return GestureDetector(
-                            onTap: () {
-                              reasonID.value = '${reason.rID}';
-                              reasonIndex.value = reason.rDESC ?? '';
-                              isTextFieldVisible = reason == dlinkOptionsController.dlinkOptionsModel.value.data?.last;
-                              if (mounted) {
-                                setState(() {});
-                              }
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: isSelected ? Theme.of(context).hintColor : Colors.transparent,
-                              ),
-                              child: ListTile(
-                                title: Text(
-                                  reason.rDESC ?? '',
-                                  style: Theme.of(context).textTheme.displayMedium,
+            const SizedBox(height: 5),
+            Obx(() {
+              return dlinkOptionsController.dlinkOptionsModel.value.data == null
+                  ? Container()
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: dlinkOptionsController
+                          .dlinkOptionsModel
+                          .value
+                          .data!
+                          .map((reason) {
+                            bool isSelected = reasonID.value == '${reason.rID}';
+                            return GestureDetector(
+                              onTap: () {
+                                reasonID.value = '${reason.rID}';
+                                reasonIndex.value = reason.rDESC ?? '';
+                                isTextFieldVisible =
+                                    reason ==
+                                    dlinkOptionsController
+                                        .dlinkOptionsModel
+                                        .value
+                                        .data
+                                        ?.last;
+                                if (mounted) {
+                                  setState(() {});
+                                }
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: isSelected
+                                      ? Theme.of(context).hintColor
+                                      : Colors.transparent,
+                                ),
+                                child: ListTile(
+                                  title: Text(
+                                    reason.rDESC ?? '',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.displayMedium,
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        }).toList(),
-                      );
-              },
-            ),
+                            );
+                          })
+                          .toList(),
+                    );
+            }),
             const SizedBox(height: 10),
             if (isTextFieldVisible)
               Flexible(
@@ -163,40 +185,43 @@ class _DelinkVehicleDialogState extends State<DelinkVehicleDialog> {
                   ),
                   const SizedBox(width: 20),
                   ElevatedButton1(
-                      width: 120,
-                      onclick: () {
-                        //validation
-                        if (reasonID.value.isEmpty) {
-                          showCupertinoModalPopup(
-                            context: Get.context!,
-                            builder: (_) => CupertinoAlertDialog(
-                              content: const Text("Please select a reason to proceed."),
-                              actions: [
-                                CupertinoDialogAction(
-                                  onPressed: () async {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Ok'),
-                                )
-                              ],
+                    width: 120,
+                    onclick: () {
+                      //validation
+                      if (reasonID.value.isEmpty) {
+                        showCupertinoModalPopup(
+                          context: Get.context!,
+                          builder: (_) => CupertinoAlertDialog(
+                            content: const Text(
+                              "Please select a reason to proceed.",
                             ),
-                          );
-                        } else {
-                          Navigator.of(context).pop();
+                            actions: [
+                              CupertinoDialogAction(
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Ok'),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        Navigator.of(context).pop();
 
-                          dlinkOptionsController.deLinkVehicle(
-                              mtagID: widget.argument.tokenno ?? '',
-                              rDesc: "${reasonIndex.value}--${_reasonController.text}",
-                              rID: reasonID.value);
-                        }
-                      },
-                      text: 'De-link')
+                        dlinkOptionsController.deLinkVehicle(
+                          mtagID: widget.argument?.tokenno ?? '',
+                          rDesc:
+                              "${reasonIndex.value}--${_reasonController.text}",
+                          rID: reasonID.value,
+                        );
+                      }
+                    },
+                    text: 'De-link',
+                  ),
                 ],
               ),
             ),
-            const SizedBox(
-              height: 5,
-            )
+            const SizedBox(height: 5),
           ],
         ),
       ),

@@ -39,7 +39,9 @@ class Data {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     if (allTransactions != null) {
-      data['AllTransactions'] = allTransactions?.map((v) => v.toJson()).toList();
+      data['AllTransactions'] = allTransactions
+          ?.map((v) => v.toJson())
+          .toList();
     }
     return data;
   }
@@ -56,16 +58,17 @@ class AllTransactions {
   String? tRANSTIME;
   String? uID;
 
-  AllTransactions(
-      {this.cARREGISTRATION,
-      this.cR,
-      this.eNTRYSTATIONNAME,
-      this.eXITSTATIONNAME,
-      this.fARE,
-      this.iD,
-      this.iTOKKENNO,
-      this.tRANSTIME,
-      this.uID});
+  AllTransactions({
+    this.cARREGISTRATION,
+    this.cR,
+    this.eNTRYSTATIONNAME,
+    this.eXITSTATIONNAME,
+    this.fARE,
+    this.iD,
+    this.iTOKKENNO,
+    this.tRANSTIME,
+    this.uID,
+  });
 
   AllTransactions.fromJson(Map<String, dynamic> json) {
     cARREGISTRATION = json['CAR_REGISTRATION'];

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -22,10 +21,16 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
   final startDate = DateTime.now().obs;
   final endDate = DateTime.now().obs;
 
-  void onListTileTap(dynamic arguments) async {
+  void onListTileTap(arguments) async {
+    if (arguments.cR == 'P') {
+      return;
+    }
     _receiptController.chechTravel(arguments.cR == '-');
     await _receiptController.getrechargeDetails(
-        cr: arguments.cR, uID: arguments.uID, itoken: arguments.iTOKKENNO);
+      cr: arguments.cR,
+      uID: arguments.uID,
+      itoken: arguments.iTOKKENNO,
+    );
     await Get.toNamed('/receipt', arguments: arguments.cR == '-');
   }
 
@@ -58,9 +63,7 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
   Widget build(BuildContext context) {
     Analytics.historyScreenDisplayed();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Toll History'),
-      ),
+      appBar: AppBar(title: const Text('Toll History')),
       body: Column(
         children: [
           _buildStickyMessage(context),
@@ -69,9 +72,11 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
               () => isLoading.value
                   ? Center(
                       child: LoadingAnimationWidget.flickr(
-                          leftDotColor: Theme.of(context).primaryColor,
-                          rightDotColor: Colors.white,
-                          size: 35.0))
+                        leftDotColor: Theme.of(context).primaryColor,
+                        rightDotColor: Colors.white,
+                        size: 35.0,
+                      ),
+                    )
                   : GetX<TollController>(
                       init: TollController(userRepo: UserRepo()),
                       builder: (controller) =>
@@ -101,28 +106,32 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
         ),
         child: Column(
           children: [
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildChip(controller, 'All', 0, ''),
-                    const SizedBox(width: 5),
-                    _buildChip(controller, 'Recharge', 1, '+'),
-                    const SizedBox(width: 5),
-                    _buildChip(controller, 'Travel', 2, '-'),
-                    //coming soon
-                    // const SizedBox(width: 5),
-                    // _buildChip(controller, 'CDA-Parking', 3, 'P'),
-                  ],
+            Align(
+              alignment: Alignment.centerLeft,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildChip(controller, 'All', 0, ''),
+                      const SizedBox(width: 5),
+                      _buildChip(controller, 'Recharge', 1, '+'),
+                      const SizedBox(width: 5),
+                      _buildChip(controller, 'Travel', 2, '-'),
+                      //coming soon
+                      const SizedBox(width: 5),
+                      _buildChip(controller, 'CDA-Parking', 3, 'P'),
+                    ],
+                  ),
                 ),
               ),
             ),
             Expanded(
-              child: (controller.searchList == [] ||
+              child:
+                  (controller.searchList == [] ||
                       controller.searchList!.isEmpty)
                   ? const Center(child: Text('No Record Found!'))
                   : CustomScrollView(
@@ -130,13 +139,13 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
                       shrinkWrap: true,
                       slivers: [
                         SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                              final item = controller.searchList?[index];
-                              return _buildListTile(item);
-                            },
-                            childCount: controller.searchList?.length,
-                          ),
+                          delegate: SliverChildBuilderDelegate((
+                            BuildContext context,
+                            int index,
+                          ) {
+                            final item = controller.searchList?[index];
+                            return _buildListTile(item);
+                          }, childCount: controller.searchList?.length),
                         ),
                       ],
                     ),
@@ -148,29 +157,30 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
   }
 
   Widget _buildChip(
-      TollController controller, String label, int value, String searchData) {
+    TollController controller,
+    String label,
+    int value,
+    String searchData,
+  ) {
     return InkWell(
       onTap: () async {
         controller.isSlected.value = value;
-         controller.serchData(searchData);
+        controller.serchData(searchData);
         if (value == 2) {
           Get.find<ReceiptController>().chechTravel(true);
         }
       },
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Chip(
-          label: Text(label),
-          labelStyle: TextStyle(
-            color: controller.isSlected.value == value
-                ? Colors.white
-                : Theme.of(context).highlightColor,
-          ),
-          backgroundColor: controller.isSlected.value == value
-              ? primarSwatch
-              : Theme.of(context).disabledColor,
-          side: const BorderSide(color: Colors.black12),
+      child: Chip(
+        label: Text(label),
+        labelStyle: TextStyle(
+          color: controller.isSlected.value == value
+              ? Colors.white
+              : Theme.of(context).highlightColor,
         ),
+        backgroundColor: controller.isSlected.value == value
+            ? primarSwatch
+            : Theme.of(context).disabledColor,
+        side: const BorderSide(color: Colors.black12),
       ),
     );
   }
@@ -206,15 +216,27 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
     );
   }
 
-  Widget _buildTrailingColumn(dynamic item) {
-    final isTravel = item?.cR == '-';
-    final color = isTravel ? Colors.redAccent : Colors.green;
-    final label = isTravel ? 'Travel' : 'Recharge';
+  Widget _buildTrailingColumn(item) {
+    final String? cR = item?.cR;
+
+    late final Color color;
+    late final String label;
+
+    if (cR == '-') {
+      color = Colors.redAccent;
+      label = 'Travel';
+    } else if (cR == 'P') {
+      color = Colors.redAccent;
+      label = 'Parking';
+    } else {
+      color = Colors.green;
+      label = 'Recharge';
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
-          '${item?.cR} Rs. ${item?.fARE ?? ''}',
+          cR == 'P' ? 'Rs. ${item?.fARE ?? ''}' : '$cR Rs. ${item?.fARE ?? ''}',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: color),
         ),
         Text(
@@ -228,25 +250,44 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
 }
 
 Widget _buildStickyMessage(BuildContext context) {
-  return Container(margin: EdgeInsets.all(5),
+  return Container(
+    margin: EdgeInsets.all(5),
     width: double.infinity,
     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
-   decoration: BoxDecoration(borderRadius: BorderRadius.circular(4) ,color: Colors.yellow.shade100,),
-    child: Column(mainAxisAlignment: MainAxisAlignment.start,crossAxisAlignment: CrossAxisAlignment.start,
-      children: [Row(
-        children: [ Icon(Icons.campaign),
-          Text('Announcement',style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),),
-        ],
-      ),
-        
-        Row(mainAxisAlignment: MainAxisAlignment.start,crossAxisAlignment: CrossAxisAlignment.start,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(4),
+      color: Colors.yellow.shade100,
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
           children: [
-           
+            Icon(Icons.campaign, color: Theme.of(context).primaryColor),
+            Text(
+              'Announcement',
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Flexible(
               child: Text(
                 'The history section displays only M-Tag transactions, cash transactions are not included.',
                 textAlign: TextAlign.justify,
-                style: Theme.of(context).textTheme.bodySmall,
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontSize: 12,
+                ),
               ),
             ),
           ],
