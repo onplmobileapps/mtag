@@ -2,14 +2,15 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/controller/home_controller.dart';
 import 'package:mtag_flutterapp/utils/utils.dart';
 import 'package:mtag_flutterapp/widgets/bottomsheet/bottom_sheet_widget.dart';
 
+import '../controller/home_controller.dart';
 import '../pages/dashboard/model/dashboard_model.dart';
 import '../pages/recharge/recharge_page.dart';
+import 'dialog/d_link_dialog.dart';
 
 String getVehCategory(String vehicleType) {
   Map<String, String> vehicleCategories = {
@@ -38,15 +39,10 @@ String getVehicleImage(String vehicleType) {
     'Trailer': 'assets/f6.svg',
   };
 
-  // Return the corresponding image path if the vehicle type exists in the map
   return vehicleImages[vehicleType] ?? '';
 }
 
 RxBool _obscured = false.obs;
-
-final List<ActiveMtags> argument = Get.arguments is ActiveMtags
-    ? [Get.arguments]
-    : Get.arguments ?? [ActiveMtags()];
 
 Widget mtagDataWidget(
   BuildContext context, {
@@ -66,7 +62,6 @@ Widget mtagDataWidget(
   double? isBlock,
 }) {
   log('$mtagId,$regId,$creditCode,$jazzCode');
-
   return Column(
     mainAxisAlignment: MainAxisAlignment.start,
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,34 +165,27 @@ Widget mtagDataWidget(
                     ),
                     const Spacer(),
                     const Divider(thickness: 0.2, height: 0.7),
-                    const Spacer(),
-                    Expanded(
-                      flex: 6,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Spacer(),
-                          Flexible(
-                            flex: 1,
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(
+                    const SizedBox(height: 8),
+                    // Modified section: Balance and buttons in a row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
                                 'Available Balance',
                                 style: Theme.of(
                                   context,
                                 ).textTheme.displayMedium,
                               ),
-                            ),
-                          ),
-                          Obx(
-                            () => Row(
-                              children: [
-                                Expanded(
-                                  child: FittedBox(
-                                    alignment: Alignment.topLeft,
-                                    fit: BoxFit.scaleDown,
-                                    child: Text(
+                              const SizedBox(height: 14),
+                              Obx(
+                                () => Row(
+                                  children: [
+                                    Text(
                                       _obscured.value
                                           ? 'PKR ${ball ?? '0.00'}'
                                           : 'PKR ••••••',
@@ -208,157 +196,135 @@ Widget mtagDataWidget(
                                             color: Colors.red,
                                             height: 1,
                                           ),
-                                      textAlign: TextAlign.left,
                                     ),
-                                  ),
+                                    const SizedBox(width: 12),
+                                    // Reduced spacing
+                                    InkWell(
+                                      onTap: () async {
+                                        if (!_obscured.value) {
+                                          await Get.find<HomeController>()
+                                              .updateBalance();
+                                          _obscured(!_obscured.value);
+                                        } else {
+                                          _obscured(!_obscured.value);
+                                        }
+                                      },
+                                      child: Icon(
+                                        _obscured.value
+                                            ? Icons.visibility_off_outlined
+                                            : Icons.visibility_outlined,
+                                        size: 20, // Slightly smaller icon
+                                        color: Colors.redAccent,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Baseline(
-                                  baseline: 27,
-                                  baselineType: TextBaseline.ideographic,
-                                  child: InkWell(
-                                    onTap: () async {
-                                      if (!_obscured.value) {
-                                        await Get.find<HomeController>()
-                                            .updateBalance();
-                                        _obscured(!_obscured.value);
-                                      } else {
-                                        _obscured(!_obscured.value);
-                                      }
-                                    },
-                                    child: Icon(
-                                      _obscured.value
-                                          ? Icons.visibility_off_outlined
-                                          : Icons.visibility_outlined,
-                                      size: 25,
-                                      color: Colors.redAccent,
-                                    ),
-                                  ),
-                                ),
-                                const Spacer(),
-                                Flexible(
-                                  flex: 1,
-                                  child: InkWell(
-                                    onTap: () => showPaymentBottomSheet(
-                                      context,
-                                      mtagId: mtagId,
-                                      regId: regId,
-                                      jazzCode: jazzCode,
-                                      creditCode: creditCode,
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              12,
-                                            ),
-                                            color: Theme.of(
-                                              context,
-                                            ).disabledColor,
-                                            border: Border.all(
-                                              color: Colors.green,
-                                              width: 0.5,
-                                            ),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              const Icon(
-                                                Icons.add_outlined,
-                                                color: Colors.green,
-                                                size: 25,
-                                              ),
-                                              FittedBox(
-                                                fit: BoxFit.scaleDown,
-                                                child: Text(
-                                                  'Recharge',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall
-                                                      ?.copyWith(
-                                                        color: Colors.green,
-                                                      ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(height: 5),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                // SizedBox(width: 10),
-                                // Flexible(
-                                //   flex: 1,
-                                //   child: InkWell(
-                                //     onTap: () {
-                                //       showDialog(
-                                //         context: Get.context!,
-                                //         builder: (ctx) {
-                                //           return DelinkVehicleDialog(
-                                //             argument: argument.isNotEmpty
-                                //                 ? argument[0]
-                                //                 : null,
-                                //           );
-                                //         },
-                                //       );
-                                //     },
-                                //     child: Column(
-                                //       children: [
-                                //         Container(
-                                //           decoration: BoxDecoration(
-                                //             borderRadius: BorderRadius.circular(
-                                //               12,
-                                //             ),
-                                //             color: Theme.of(
-                                //               context,
-                                //             ).disabledColor,
-                                //             border: Border.all(
-                                //               color: Colors.redAccent,
-                                //               width: 0.5,
-                                //             ),
-                                //           ),
-                                //           child: Row(
-                                //             mainAxisAlignment:
-                                //                 MainAxisAlignment.center,
-                                //             crossAxisAlignment:
-                                //                 CrossAxisAlignment.center,
-                                //             children: [
-                                //               const Icon(
-                                //                 Icons.delete_forever_outlined,
-                                //                 color: Colors.redAccent,
-                                //                 size: 25,
-                                //               ),
-                                //               FittedBox(
-                                //                 fit: BoxFit.scaleDown,
-                                //                 child: Text(
-                                //                   'De-Link',
-                                //                   style: Theme.of(context)
-                                //                       .textTheme
-                                //                       .bodySmall
-                                //                       ?.copyWith(
-                                //                         color: Colors.redAccent,
-                                //                       ),
-                                //                 ),
-                                //               ),
-                                //             ],
-                                //           ),
-                                //         ),
-                                //         const SizedBox(height: 5),
-                                //       ],
-                                //     ),
-                                //   ),
-                                // ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(width: 16),
+                        Column(
+                          children: [
+                            SizedBox(
+                              width: 100,
+                              child: InkWell(
+                                onTap: () => showPaymentBottomSheet(
+                                  context,
+                                  mtagId: mtagId,
+                                  regId: regId,
+                                  jazzCode: jazzCode,
+                                  creditCode: creditCode,
+                                ),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Theme.of(context).disabledColor,
+                                    border: Border.all(
+                                      color: Colors.green,
+                                      width: 0.5,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.add_outlined,
+                                        color: Colors.green,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        'Recharge',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(color: Colors.green),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            SizedBox(
+                              width: 100,
+                              child: InkWell(
+                                onTap: () => showDialog(
+                                  context: Get.context!,
+                                  builder: (ctx) {
+                                    return DelinkVehicleDialog(
+                                      argument: ActiveMtags(
+                                        tokenno: mtagId,
+                                        balance: ball,
+                                        registration: regId,
+                                      ),
+                                    );
+                                  },
+                                ),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Theme.of(context).disabledColor,
+                                    border: Border.all(
+                                      color: Colors.redAccent,
+                                      width: 0.5,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.delete_forever_outlined,
+                                        color: Colors.redAccent,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        'Delete\t\t\t\t\t',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(color: Colors.redAccent),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
+                    const SizedBox(height: 8),
                   ],
                 ),
               ),
@@ -379,14 +345,12 @@ Widget mtagDataWidget(
                       bottomLeft: Radius.circular(8),
                     ),
                   ),
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: const Text(
-                      'Blocked',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  child: const Text(
+                    'Blocked',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
                     ),
                   ),
                 ),
@@ -398,7 +362,6 @@ Widget mtagDataWidget(
   );
 }
 
-// Use this in your widget to show the bottom sheet:
 void showPaymentBottomSheet(
   BuildContext context, {
   String? mtagId,
