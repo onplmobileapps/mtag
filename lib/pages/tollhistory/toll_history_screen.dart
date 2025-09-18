@@ -21,7 +21,7 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
   final startDate = DateTime.now().obs;
   final endDate = DateTime.now().obs;
 
-  void onListTileTap(arguments) async {
+  void onListTileTap(dynamic arguments) async {
     if (arguments.cR == 'P') {
       return;
     }
@@ -216,7 +216,7 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
     );
   }
 
-  Widget _buildTrailingColumn(item) {
+  Widget _buildTrailingColumn( dynamic item) {
     final String? cR = item?.cR;
 
     late final Color color;
