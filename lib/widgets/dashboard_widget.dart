@@ -169,7 +169,7 @@ Widget mtagDataWidget(
                     // Modified section: Balance and buttons in a row
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: Column(
@@ -181,7 +181,7 @@ Widget mtagDataWidget(
                                   context,
                                 ).textTheme.displayMedium,
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 14),
                               Obx(
                                 () => Row(
                                   children: [
@@ -270,7 +270,7 @@ Widget mtagDataWidget(
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 5),
                             SizedBox(
                               width: 100,
                               child: InkWell(
