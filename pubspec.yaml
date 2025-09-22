@@ -11,7 +11,7 @@ dependencies:
   flutter_svg: ^2.0.17
   pinput: ^5.0.0
   get: ^4.7.2
-  share_plus: ^11.0.0
+  share_plus: ^12.0.0
   dio: ^5.5.0+1
   loading_animation_widget: ^1.2.1
   shared_preferences: ^2.2.3
@@ -30,18 +30,18 @@ dependencies:
   carousel_slider: ^5.1.1
   firebase_crashlytics: ^5.0.0
   firebase_remote_config: ^6.0.0
-  device_info_plus: ^11.5.0
-  connectivity_plus: ^6.0.3
+  device_info_plus: ^12.1.0
+  connectivity_plus: ^7.0.0
   firebase_performance: ^0.11.0
   cached_network_image: ^3.3.1
   in_app_review: ^2.0.10
   firebase_analytics: ^12.0.0
-  package_info_plus: ^8.0.0
+  package_info_plus: ^9.0.0
   video_player: ^2.8.6
   smart_auth: ^3.2.0
   flutter_inappwebview: ^6.1.5
   shimmer: ^3.0.0
-  upgrader: ^11.3.1
+  upgrader: ^12.0.0
   keyboard_actions: ^4.2.0
   sqflite: ^2.4.2
   path: ^1.9.1

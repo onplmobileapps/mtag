@@ -3,13 +3,10 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
-
 import 'package:dio/dio.dart' as apiClient;
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../api/api_constants.dart';
 import '../pages/login/user_model.dart';
 import 'api_structure.dart';

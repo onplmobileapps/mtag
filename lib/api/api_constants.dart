@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, constant_identifier_names
-const BASE_URL = '';
+ const String  _BASE_URL = 'https://ocotapp.com';
+ String get BASE_URL => _BASE_URL;
 List<Map<int, String>> API_ERROR_RESPONSE = [
   {200: ResponseType.REQUEST_SUCCESSFULL},
   {400: ResponseType.BAD_REQUEST},

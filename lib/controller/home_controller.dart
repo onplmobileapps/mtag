@@ -150,6 +150,7 @@ class HomeController extends GetxController implements GetxService {
   @override
   void onReady() async {
     super.onReady();
+    Future.wait([]);
     await _initializeDashboard();
     await _handleAppCountAndReview();
     _handlePostInitActions();
@@ -189,9 +190,6 @@ class HomeController extends GetxController implements GetxService {
       OperatorSelectionDialog.show(
         Get.context!,
             (value) {
-          // if (kDebugMode) {
-          //   print('OpValue=========>: $value',);
-          // }
               sendNetworkOperator(CnicNumber: dashboradData.value.customerDetail!.cNIC,MobileNum: dashboradData.value.customerDetail!.mobileNumber,sim_operator: value);
         },
         mobileNumber: dashboradData.value.customerDetail!.mobileNumber,
