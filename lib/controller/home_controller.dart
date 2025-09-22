@@ -1,20 +1,25 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+
 import '../../base/app_data.dart';
 import '../../utils/utils.dart';
-import '../api/application_url.dart';
-import '../widgets/dialog/promo_dialog.dart';
-import '../widgets/dialog/operator_selection_dialog.dart';
 import '../api/api_constants.dart';
+import '../api/application_url.dart';
 import '../api/auth_controller.dart';
 import '../api/user_repo.dart';
 import '../constants/other_consts.dart';
 import '../pages/dashboard/model/dashboard_model.dart';
 import '../pages/dashboard/model/mtag_model.dart';
 import '../widgets/dialog/cupertino_dialog.dart';
+import '../widgets/dialog/operator_selection_dialog.dart';
+import '../widgets/dialog/promo_dialog.dart';
 
 class HomeController extends GetxController implements GetxService {
+  final balances = <String, String>{}.obs;
+  final hiddenStates = <String, bool>{}.obs;
+
   final UserRepo userRepo;
 
   HomeController({required this.userRepo});
@@ -30,17 +35,20 @@ class HomeController extends GetxController implements GetxService {
   final List<MtagModel> dashBoardModel = [
     MtagModel(routeName: '/mTag', title: 'M-TAG', image: 'assets/my_tag.svg'),
     MtagModel(
-        routeName: '/tollHostory',
-        title: 'Toll/Recharge History',
-        image: 'assets/tollhistory.svg'),
+      routeName: '/tollHostory',
+      title: 'Toll/Recharge History',
+      image: 'assets/tollhistory.svg',
+    ),
     MtagModel(
-        routeName: '/tollCalculator',
-        title: 'Toll Calculator',
-        image: 'assets/toll_calc.svg'),
+      routeName: '/tollCalculator',
+      title: 'Toll Calculator',
+      image: 'assets/toll_calc.svg',
+    ),
     MtagModel(
-        routeName: '/recharge',
-        title: 'Recharge',
-        image: 'assets/recharge2.svg'),
+      routeName: '/recharge',
+      title: 'Recharge',
+      image: 'assets/recharge2.svg',
+    ),
   ];
 
   final dashboradData = DashBoardModel().obs;
@@ -48,8 +56,6 @@ class HomeController extends GetxController implements GetxService {
   Future<Map<String, dynamic>> getDashboardData({
     String? appVersion,
     String? deviceID,
-
-
   }) async {
     isLoading.value = true;
     final response = await userRepo.getdashBoardData();
@@ -80,9 +86,15 @@ class HomeController extends GetxController implements GetxService {
   }
 
   Future<Map<String, dynamic>> sendNetworkOperator({
-  String? CnicNumber,String? MobileNum, int? sim_operator
+    String? CnicNumber,
+    String? MobileNum,
+    int? sim_operator,
   }) async {
-    final response = await userRepo.updateSimOperator(CnicNumber: CnicNumber,MobileNum: MobileNum,sim_operator: sim_operator);
+    final response = await userRepo.updateSimOperator(
+      CnicNumber: CnicNumber,
+      MobileNum: MobileNum,
+      sim_operator: sim_operator,
+    );
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       showCupertinoModalPopup(
@@ -90,10 +102,7 @@ class HomeController extends GetxController implements GetxService {
         builder: (_) => CupertinoAlertDialog(
           content: Text('${response[APIRESPONSE.SUCCESS]['Message']}'),
           actions: [
-            CupertinoDialogAction(
-              onPressed: Get.back,
-              child: const Text('Ok'),
-            )
+            CupertinoDialogAction(onPressed: Get.back, child: const Text('Ok')),
           ],
         ),
       );
@@ -103,6 +112,43 @@ class HomeController extends GetxController implements GetxService {
     return response;
   }
 
+  Future<Map<String, dynamic>> sendCheckBalance([List<String>? mtagIds]) async {
+    final response = await userRepo.checkBalance(mtagIds ?? []);
+
+    Map<String, dynamic> actualData;
+    if (response.containsKey("Success")) {
+      actualData = response["Success"];
+    } else if (response.containsKey("Error")) {
+      debugPrint("❌ API failed with error response: $response");
+      _handleError(response);
+      return response;
+    } else {
+      actualData = response;
+    }
+
+    final code = actualData["Code"]?.toString();
+
+    if (code == "00" && actualData["Data"] != null) {
+      final data = actualData["Data"] as List<dynamic>;
+
+      for (final e in data) {
+        final id = e["itokenno"].toString();
+        final amount = (e["amount"] != null) ? e["amount"].toString() : "0.00";
+
+        balances[id] = amount;
+        hiddenStates.putIfAbsent(id, () => true);
+      }
+
+      hiddenStates.refresh();
+
+      debugPrint("✅ Balance check successful. Found ${data.length} accounts");
+    } else {
+      debugPrint("❌ API failed with response: $response");
+      _handleError(response);
+    }
+
+    return response;
+  }
 
   void _updateDashboardData(Map<String, dynamic> data) {
     dashboradData.value = DashBoardModel.fromJson(data);
@@ -137,7 +183,8 @@ class HomeController extends GetxController implements GetxService {
   }
 
   Future<void> pullRefreshDashboardData() async {
-    await getDashboardData();
+    // await getDashboardData();
+    await sendCheckBalance();
     _otherConstants.isRefresh(false);
   }
 
@@ -173,12 +220,11 @@ class HomeController extends GetxController implements GetxService {
       Get.dialog(
         PromoDialog(
           imageUrl:
-          "${ApplicationUrl.IMAGE_ULR}/${dashboradData.value.promotionalPopUpImage?.imgURL}",
+              "${ApplicationUrl.IMAGE_ULR}/${dashboradData.value.promotionalPopUpImage?.imgURL}",
         ),
         barrierDismissible: false,
       );
     }
-
 
     if (dashboradData.value.customerDetail != null &&
         dashboradData.value.customerDetail!.mobileNumber != null &&
@@ -186,11 +232,15 @@ class HomeController extends GetxController implements GetxService {
         dashboradData.value.customerDetail?.sim_operator == 0) {
       OperatorSelectionDialog.show(
         Get.context!,
-            (value) {
+        (value) {
           // if (kDebugMode) {
           //   print('OpValue=========>: $value',);
           // }
-              sendNetworkOperator(CnicNumber: dashboradData.value.customerDetail!.cNIC,MobileNum: dashboradData.value.customerDetail!.mobileNumber,sim_operator: value);
+          sendNetworkOperator(
+            CnicNumber: dashboradData.value.customerDetail!.cNIC,
+            MobileNum: dashboradData.value.customerDetail!.mobileNumber,
+            sim_operator: value,
+          );
         },
         mobileNumber: dashboradData.value.customerDetail!.mobileNumber,
       );

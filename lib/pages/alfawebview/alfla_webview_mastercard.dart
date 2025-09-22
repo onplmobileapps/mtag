@@ -10,34 +10,38 @@ import 'package:video_player/video_player.dart';
 class AlfaWebView2 extends StatefulWidget {
   final String? url;
   final bool? isSaveCard;
+
   const AlfaWebView2({super.key, this.url, this.isSaveCard});
+
   @override
   State<AlfaWebView2> createState() => _AlfaWebViewState();
 }
 
 class _AlfaWebViewState extends State<AlfaWebView2> {
   final GlobalKey webViewKey = GlobalKey();
- InAppWebViewController? _appWebViewController;
+  InAppWebViewController? _appWebViewController;
   InAppWebViewSettings settings = InAppWebViewSettings(
-      underPageBackgroundColor: Colors.white,
-      javaScriptCanOpenWindowsAutomatically: true,
-       useHybridComposition: true,
-      iframeAllow: "camera; microphone",
-      javaScriptEnabled: true,
-      cacheEnabled: true,
-      clearCache: true,
-      userAgent: "",
-      useOnLoadResource: true,
-      horizontalScrollBarEnabled: false,
-      useShouldOverrideUrlLoading: true,
-      verticalScrollBarEnabled: true,
-      safeBrowsingEnabled: true,
-      iframeAllowFullscreen: true,
-       mixedContentMode: MixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
-      pageZoom: 1);
+    underPageBackgroundColor: Colors.white,
+    javaScriptCanOpenWindowsAutomatically: true,
+    useHybridComposition: true,
+    iframeAllow: "camera; microphone",
+    javaScriptEnabled: true,
+    cacheEnabled: true,
+    clearCache: true,
+    userAgent: "",
+    useOnLoadResource: true,
+    horizontalScrollBarEnabled: false,
+    useShouldOverrideUrlLoading: true,
+    verticalScrollBarEnabled: true,
+    safeBrowsingEnabled: true,
+    iframeAllowFullscreen: true,
+    mixedContentMode: MixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
+    pageZoom: 1,
+  );
   late VideoPlayerController _videocontroller;
   int loadingPercentage = 0;
   bool isNoInternet = false;
+
   Future<void> handlePageFinished(String url) async {
     // 'Recharge%20Success' old
     if (url.contains('status') && url.contains('status=succes')) {
@@ -49,12 +53,10 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
       return;
     } else if (url.contains('status=cancel')) {
       showPaymentCancelledPopup('Payment Cancelled');
-    }
-    else if(url.contains('invalid')){
-       showPaymentCancelledPopup('Payment Failed Due to Invalid Card Details');
+    } else if (url.contains('invalid')) {
+      showPaymentCancelledPopup('Payment Failed Due to Invalid Card Details');
     }
   }
-
 
   Future<void> showSuccessPopup() async {
     await showCupertinoModalPopup(
@@ -70,24 +72,30 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
                 SizedBox(
                   height: 120,
                   width: MediaQuery.sizeOf(context).width,
-                  child: VideoPlayer(
-                    _videocontroller..play(),
-                  ),
+                  child: VideoPlayer(_videocontroller..play()),
                 ),
-                const SizedBox(
-                  height: 8,
-                ),
+                const SizedBox(height: 8),
                 const Text('M-Tag Successfully Recharged'),
               ],
             ),
             actions: [
               CupertinoDialogAction(
                 onPressed: () async {
-                  await Get.find<HomeController>().pullRefreshDashboardData();
+                  final HomeController homeController = Get.find();
+
+                  final mtagIds =
+                      homeController.dashboradData.value.activeMtags
+                          ?.map((e) => e.tokenno)
+                          .whereType<String>()
+                          .toList() ??
+                      [];
+                  await homeController.sendCheckBalance(mtagIds);
+
+                  // await Get.find<HomeController>().pullRefreshDashboardData();
                   await Get.offAllNamed('/dashboard');
                 },
                 child: const Text('Ok'),
-              )
+              ),
             ],
           ),
         ),
@@ -108,12 +116,7 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
           child: CupertinoAlertDialog(
             content: Column(
               mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(message),
-              ],
+              children: [const SizedBox(height: 10), Text(message)],
             ),
             actions: [
               CupertinoDialogAction(
@@ -121,7 +124,7 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
                   await Get.offAllNamed('/dashboard');
                 },
                 child: const Text('Ok'),
-              )
+              ),
             ],
           ),
         ),
@@ -131,12 +134,15 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
 
   @override
   void initState() {
-    _videocontroller = VideoPlayerController.asset('assets/mcsuccess.mp4',
-        videoPlayerOptions: VideoPlayerOptions(
-          allowBackgroundPlayback: true,
-        ))
-      ..setLooping(false)
-      ..initialize();
+    _videocontroller =
+        VideoPlayerController.asset(
+            'assets/mcsuccess.mp4',
+            videoPlayerOptions: VideoPlayerOptions(
+              allowBackgroundPlayback: true,
+            ),
+          )
+          ..setLooping(false)
+          ..initialize();
     super.initState();
   }
 
@@ -172,16 +178,12 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.warning_sharp,
-                      color: Colors.red,
-                      size: 100,
-                    ),
+                    Icon(Icons.warning_sharp, color: Colors.red, size: 100),
                     Text(
                       'We couldn’t complete your request\n Try again or contact assistance.\n Try again later.',
                       style: TextStyle(color: Colors.black),
                       textAlign: TextAlign.center,
-                    )
+                    ),
                   ],
                 ),
               )
@@ -195,49 +197,45 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
                         "User-Agent":
                             "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.0.0 Mobile Safari/537.36",
                         "Connection": "Keep-Alive",
-                        "Access-Control-Allow-Origin":"*",
+                        "Access-Control-Allow-Origin": "*",
                         "Authorization":
-                            "Bearer ${Get.find<AuthController>().authRepo.getAuthToken()}"
+                            "Bearer ${Get.find<AuthController>().authRepo.getAuthToken()}",
                       },
                     ),
                     initialSettings: settings,
                     onWebViewCreated: (controller) async {
-                    if(_appWebViewController!=null){
-                      _appWebViewController?.dispose();
-                      _appWebViewController= controller;
-                    }
-                       
-
+                      if (_appWebViewController != null) {
+                        _appWebViewController?.dispose();
+                        _appWebViewController = controller;
+                      }
                     },
                     onDidReceiveServerRedirectForProvisionalNavigation:
-                        (controller) {
-                        
-                         
-                        },
+                        (controller) {},
                     onLoadStart: (controller, url) {
-if(mounted)                      setState(() {});
+                      if (mounted) setState(() {});
                     },
                     onPermissionRequest: (controller, request) async {
                       return PermissionResponse(
-                          resources: request.resources,
-                          action: PermissionResponseAction.GRANT);
+                        resources: request.resources,
+                        action: PermissionResponseAction.GRANT,
+                      );
                     },
                     onPageCommitVisible: (controller, url) {
                       if (mounted) handlePageFinished(url.toString());
                     },
-                    shouldOverrideUrlLoading:
-                        (controller, navigationAction) async{
-                          log("navigation Url==>${navigationAction.request.url} $navigationAction");
+                    shouldOverrideUrlLoading: (controller, navigationAction) async {
+                      log(
+                        "navigation Url==>${navigationAction.request.url} $navigationAction",
+                      );
                       return NavigationActionPolicy.ALLOW;
                     },
                     onLoadStop: (controller, url) {
                       log('load stope==>${url?.data}');
                     },
                     onReceivedError: (controller, request, error) {
-                   
                       log("Error on Load==>${error.description}");
                       if (error.type ==
-                              WebResourceErrorType.BAD_SERVER_RESPONSE || 
+                              WebResourceErrorType.BAD_SERVER_RESPONSE ||
                           error.type ==
                               WebResourceErrorType.NETWORK_CONNECTION_LOST ||
                           error.type ==
@@ -250,7 +248,9 @@ if(mounted)                      setState(() {});
                           error.type == WebResourceErrorType.CANCELLED ||
                           error.type ==
                               WebResourceErrorType
-                                  .CLIENT_CERTIFICATE_REJECTED ||error.type==WebResourceErrorType.CANNOT_CONNECT_TO_HOST||
+                                  .CLIENT_CERTIFICATE_REJECTED ||
+                          error.type ==
+                              WebResourceErrorType.CANNOT_CONNECT_TO_HOST ||
                           error.type ==
                               WebResourceErrorType.CANNOT_LOAD_FROM_NETWORK) {
                         isNoInternet = true;
@@ -273,15 +273,15 @@ if(mounted)                      setState(() {});
                     onReceivedServerTrustAuthRequest:
                         (controller, challenge) async =>
                             ServerTrustAuthResponse(
-                                action: ServerTrustAuthResponseAction.PROCEED),
-                               
+                              action: ServerTrustAuthResponseAction.PROCEED,
+                            ),
                   ),
                   if (loadingPercentage < 100)
                     LinearProgressIndicator(
                       color: Theme.of(context).primaryColor,
                       minHeight: 5.0,
                       value: loadingPercentage / 100.00,
-                    )
+                    ),
                 ],
               ),
       ),

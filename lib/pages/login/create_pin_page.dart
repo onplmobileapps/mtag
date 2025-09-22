@@ -1,8 +1,10 @@
 import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:local_auth/local_auth.dart';
+
 import '../../api/auth_controller.dart';
 import '../../base/app_data.dart';
 import '../../constants/auth_utils.dart';
@@ -247,40 +249,47 @@ class _PinEntryPageState extends State<PinEntryPage> {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
-              // Show empty Container until biometric availability is checked
               _isAuthAvailable
                   ? _buildKey(
-                      // child: Icon(
-                      //   Platform.isIOS ? Icons.face : Icons.fingerprint,
-                      //   size: size.width * 0.09,
-                      // ),
                       child: Container(
                         padding: EdgeInsets.all(6),
                         decoration: BoxDecoration(
                           color: Get.isDarkMode
-                              ? Colors.white
-                              : Theme.of(context).primaryColor,
+                              ? Colors.transparent
+                              : Colors.white,
                           borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: Get.isDarkMode
+                                ? Colors.white
+                                : Theme.of(context).primaryColor,
+                            width: 1,
+                          ),
                         ),
                         child: Platform.isIOS
-                            ? Image.asset(
-                                "assets/face.png",
-                                height: size.width * 0.08,
-                                width: size.width * 0.08,
-                                color: Get.isDarkMode
-                                    ? Theme.of(context).primaryColor
-                                    : Colors.white,
+                            ? Transform.translate(
+                                offset: Offset(
+                                  size.width * 0.008,
+                                  size.height * 0.002,
+                                ),
+                                child: Image.asset(
+                                  "assets/face3.png",
+                                  height: size.width * 0.09,
+                                  width: size.width * 0.09,
+                                  fit: BoxFit.contain,
+                                  color: Get.isDarkMode
+                                      ? Colors.white
+                                      : Theme.of(context).primaryColor,
+                                ),
                               )
                             : Image.asset(
                                 "assets/fingerprint.png",
                                 height: size.width * 0.08,
                                 width: size.width * 0.08,
                                 color: Get.isDarkMode
-                                    ? Theme.of(context).primaryColor
-                                    : Colors.white,
+                                    ? Colors.white
+                                    : Theme.of(context).primaryColor,
                               ),
                       ),
-
                       onPressed: () {
                         if (AppData.getPinData() == null) {
                           _showBiometricDialog(context);
@@ -289,7 +298,8 @@ class _PinEntryPageState extends State<PinEntryPage> {
                         }
                       },
                     )
-                  : Container(width: size.width * 0.09), // Placeholder
+                  : Container(width: size.width * 0.09),
+              // Placeholder
             ],
           ),
         ),

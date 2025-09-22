@@ -18,18 +18,22 @@ import '../model/payment_card_model.dart';
 
 class PaymentCardController extends GetxController implements GetxService {
   final RechargRepo userRepo;
+
   PaymentCardController({required this.userRepo});
+
   var paymentCardModel = PaymentCardModel().obs;
   var rechargeSummaryModel = Rx<OwnerRechargeModel?>(null);
 
   RxBool isLoading = false.obs;
+
   Future<Map<String, dynamic>> getCardDetails1(String payId) async {
     isLoading(true);
     var response = await userRepo.getCardDetails1(payId: payId);
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       paymentCardModel.refresh();
-      paymentCardModel.value =
-          PaymentCardModel.fromJson(response[APIRESPONSE.SUCCESS]);
+      paymentCardModel.value = PaymentCardModel.fromJson(
+        response[APIRESPONSE.SUCCESS],
+      );
       isLoading(false);
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () {
@@ -49,8 +53,9 @@ class PaymentCardController extends GetxController implements GetxService {
     var response = await userRepo.getCardDetails(payId: payId);
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       paymentCardModel.refresh();
-      paymentCardModel.value =
-          PaymentCardModel.fromJson(response[APIRESPONSE.SUCCESS]);
+      paymentCardModel.value = PaymentCardModel.fromJson(
+        response[APIRESPONSE.SUCCESS],
+      );
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () {
         Get.find<AuthController>().clearSharedData();
@@ -64,13 +69,17 @@ class PaymentCardController extends GetxController implements GetxService {
     return response;
   }
 
-  Future<Map<String, dynamic>> jazzCashRecharge(
-      {required String? mobile,
-      required String? amount,
-      required String? mtagId}) async {
+  Future<Map<String, dynamic>> jazzCashRecharge({
+    required String? mobile,
+    required String? amount,
+    required String? mtagId,
+  }) async {
     jazzLoader();
     var response = await userRepo.jazzCashRecharg(
-        mobileNumber: mobile, amount: amount, mtagID: mtagId);
+      mobileNumber: mobile,
+      amount: amount,
+      mtagID: mtagId,
+    );
 
     if (response.containsKey(APIRESPONSE.SUCCESS) &&
         (response[APIRESPONSE.SUCCESS]['Code'] == '000' ||
@@ -81,10 +90,12 @@ class PaymentCardController extends GetxController implements GetxService {
         barrierDismissible: false,
         context: Get.context!,
         builder: (_) => JazzResponseDialog(
-            message: response[APIRESPONSE.SUCCESS]['Message'] ??
-                'Somrthing went wrong',
-            isSuccess: true,
-            color: Colors.green),
+          message:
+              response[APIRESPONSE.SUCCESS]['Message'] ??
+              'Something went wrong',
+          isSuccess: true,
+          color: Colors.green,
+        ),
       );
     } else if (response.isNotEmpty &&
         response.containsKey(APIRESPONSE.SUCCESS)) {
@@ -93,31 +104,36 @@ class PaymentCardController extends GetxController implements GetxService {
       showDialog(
         context: Get.context!,
         builder: (_) => JazzResponseDialog(
-            message: response[APIRESPONSE.SUCCESS]['Message'] ??
-                'We couldn’t complete your request\n Try again or contact assistance.',
-            isSuccess: false,
-            color: Colors.red),
+          message:
+              response[APIRESPONSE.SUCCESS]['Message'] ??
+              'We couldn’t complete your request\n Try again or contact assistance.',
+          isSuccess: false,
+          color: Colors.red,
+        ),
       );
     } else {
       showDialog(
         context: Get.context!,
         builder: (_) => const JazzResponseDialog(
-            message: 'We couldn’t complete your request\n Try again or contact assistance.\nTry again later.',
-            isSuccess: false,
-            color: Colors.red),
+          message:
+              'We couldn’t complete your request\n Try again or contact assistance.\nTry again later.',
+          isSuccess: false,
+          color: Colors.red,
+        ),
       );
     }
 
     return response;
   }
 
-  Future<Map<String, dynamic>> deleteCardDetails(
-      {required String token, required String payId}) async {
+  Future<Map<String, dynamic>> deleteCardDetails({
+    required String token,
+    required String payId,
+  }) async {
     var response = await userRepo.deleteCardDetails(token: token, payId: payId);
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
-     
-isJazzShown.value=false;
-      isCardsVisible.value=false;
+      isJazzShown.value = false;
+      isCardsVisible.value = false;
       showPopDialog(response[APIRESPONSE.SUCCESS]['Message'], () async {
         await Get.find<ActivityContorller>().getActivities();
         Get.back();
@@ -127,13 +143,18 @@ isJazzShown.value=false;
     return response;
   }
 
-  Future<Map<String, dynamic>> getPayUUID(
-      {String? token,
-      required String mtagId,
-      required String amount,
-      required bool isFleet}) async {
+  Future<Map<String, dynamic>> getPayUUID({
+    String? token,
+    required String mtagId,
+    required String amount,
+    required bool isFleet,
+  }) async {
     var response = await userRepo.getPayUUID(
-        token: token, amount: amount, mtagId: mtagId, isFleet: isFleet);
+      token: token,
+      amount: amount,
+      mtagId: mtagId,
+      isFleet: isFleet,
+    );
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       return response;
     }
@@ -148,13 +169,17 @@ isJazzShown.value=false;
     String? token,
   }) async {
     var response = await UserRepo().getOwnerRechargeDetails(
-        mtagId: mtagId, amount: amount, payId: payId, isFleet: isFleet);
+      mtagId: mtagId,
+      amount: amount,
+      payId: payId,
+      isFleet: isFleet,
+    );
     if (response.containsKey(APIRESPONSE.SUCCESS) &&
         response[APIRESPONSE.SUCCESS]['Code'] == "00") {
-      rechargeSummaryModel.value =
-          OwnerRechargeModel.fromJson(response[APIRESPONSE.SUCCESS]);
+      rechargeSummaryModel.value = OwnerRechargeModel.fromJson(
+        response[APIRESPONSE.SUCCESS],
+      );
       showRechargeSummaryDialog(
-      
         payId: payId,
         rechargeSummaryModel: rechargeSummaryModel.value,
         context: Get.context!,
@@ -162,21 +187,27 @@ isJazzShown.value=false;
           if (payId == '1') {
             Get.back();
             await Get.find<PaymentCardController>().jazzCashRecharge(
-                mobile: token, amount: amount, mtagId: mtagId);
+              mobile: token,
+              amount: amount,
+              mtagId: mtagId,
+            );
             return;
           }
           var result = await Get.find<PaymentCardController>().getPayUUID(
-              mtagId: mtagId,
-              amount: amount,
-              token: token ?? '',
-              isFleet: isFleet);
+            mtagId: mtagId,
+            amount: amount,
+            token: token ?? '',
+            isFleet: isFleet,
+          );
           log(result.toString());
           if (result.isNotEmpty && result.containsKey(APIRESPONSE.SUCCESS)) {
-            Get.to(() => AlfaWebView2(
-                  isSaveCard: false,
-                  url:
-                      "${ApplicationUrl.IMAGE_ULR}/payment/${result[APIRESPONSE.SUCCESS]['key']}",
-                ));
+            Get.to(
+              () => AlfaWebView2(
+                isSaveCard: false,
+                url:
+                    "${ApplicationUrl.IMAGE_ULR}/payment/${result[APIRESPONSE.SUCCESS]['key']}",
+              ),
+            );
           }
         },
       );
@@ -207,19 +238,19 @@ isJazzShown.value=false;
 
     // Check if the response is successful and contains the expected data
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
-      
       return response[APIRESPONSE.SUCCESS]['Data']; // Extract the Data field
     }
 
     return response;
   }
 
-  Future<Map<String, dynamic>> generatePSIDTOPUP(
-      {required String? mtagID,
-      required String? cnic,
-      required String? mobileNum,
-      required bool? isBlocked,
-      bool? isInvoice}) async {
+  Future<Map<String, dynamic>> generatePSIDTOPUP({
+    required String? mtagID,
+    required String? cnic,
+    required String? mobileNum,
+    required bool? isBlocked,
+    bool? isInvoice,
+  }) async {
     var response = await userRepo.genearatePSIDTOPUP(
       mtagID: mtagID,
       cnic: cnic,
@@ -233,8 +264,10 @@ isJazzShown.value=false;
     return response;
   }
 
-  Future<String> getAmountBreakDown(
-      {required String? amount, bool? isInvoice}) async {
+  Future<String> getAmountBreakDown({
+    required String? amount,
+    bool? isInvoice,
+  }) async {
     var response = await userRepo.getAmountBreakDown(amount: amount);
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       log(response[APIRESPONSE.SUCCESS]['Data']['charges'].toString());

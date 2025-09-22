@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:mtag_flutterapp/constants/analytics.dart';
 import 'package:mtag_flutterapp/widgets/dashboard_widget.dart';
 import 'package:mtag_flutterapp/widgets/dialog/d_link_dialog.dart';
-
 import '../dashboard/model/dashboard_model.dart';
 
 class MyMtagScreen extends StatelessWidget {

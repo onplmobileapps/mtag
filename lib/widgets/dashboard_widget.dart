@@ -42,8 +42,6 @@ String getVehicleImage(String vehicleType) {
   return vehicleImages[vehicleType] ?? '';
 }
 
-RxBool _obscured = false.obs;
-
 Widget mtagDataWidget(
   BuildContext context, {
   String? vehType,
@@ -59,9 +57,12 @@ Widget mtagDataWidget(
   double? blockAmount,
   String? cnic,
   String? mobileNum,
+
   double? isBlock,
 }) {
   log('$mtagId,$regId,$creditCode,$jazzCode');
+  final controller = Get.find<HomeController>();
+
   return Column(
     mainAxisAlignment: MainAxisAlignment.start,
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -182,13 +183,26 @@ Widget mtagDataWidget(
                                 ).textTheme.displayMedium,
                               ),
                               const SizedBox(height: 14),
-                              Obx(
-                                () => Row(
+                              Obx(() {
+                                final id = mtagId ?? '';
+                                final isHidden =
+                                    controller.hiddenStates[id] ??
+                                    true; // default hidden
+                                final rawBalance = controller.balances[id];
+                                final displayBalance =
+                                    (rawBalance != null &&
+                                        rawBalance.isNotEmpty &&
+                                        rawBalance.toLowerCase() != 'null')
+                                    ? rawBalance
+                                    : '0.00';
+
+                                return Row(
                                   children: [
                                     Text(
-                                      _obscured.value
-                                          ? 'PKR ${ball ?? '0.00'}'
-                                          : 'PKR ••••••',
+                                      // show masked when hidden, otherwise show actual balance
+                                      isHidden
+                                          ? 'PKR ••••••'
+                                          : 'PKR $displayBalance',
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium
@@ -198,28 +212,35 @@ Widget mtagDataWidget(
                                           ),
                                     ),
                                     const SizedBox(width: 12),
-                                    // Reduced spacing
                                     InkWell(
                                       onTap: () async {
-                                        if (!_obscured.value) {
-                                          await Get.find<HomeController>()
-                                              .updateBalance();
-                                          _obscured(!_obscured.value);
+                                        if (isHidden) {
+                                          // user wants to reveal balance -> call API
+                                          await controller.sendCheckBalance([
+                                            id,
+                                          ]);
+                                          controller.hiddenStates[id] =
+                                              false; // now visible
                                         } else {
-                                          _obscured(!_obscured.value);
+                                          // user wants to hide balance -> just toggle
+                                          controller.hiddenStates[id] = true;
                                         }
+
+                                        controller.hiddenStates
+                                            .refresh(); // trigger UI update
                                       },
                                       child: Icon(
-                                        _obscured.value
-                                            ? Icons.visibility_off_outlined
-                                            : Icons.visibility_outlined,
-                                        size: 20, // Slightly smaller icon
+                                        // if hidden => show "eye" (visibility_outlined). If visible => show "eye-off".
+                                        isHidden
+                                            ? Icons.visibility_outlined
+                                            : Icons.visibility_off_outlined,
+                                        size: 20,
                                         color: Colors.redAccent,
                                       ),
                                     ),
                                   ],
-                                ),
-                              ),
+                                );
+                              }),
                             ],
                           ),
                         ),

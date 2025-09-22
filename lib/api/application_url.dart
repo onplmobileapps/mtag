@@ -7,9 +7,9 @@ class ApplicationUrl {
     return _instance;
   }
 
-  // static const String _BASE_URL = 'http://10.0.1.127:9008';
+  static const String _BASE_URL = 'http://10.0.1.127:9008';
 
-  static const String _BASE_URL = 'https://ocotapp.com';
+  // static const String _BASE_URL = 'https://ocotapp.com';
 
   static const String _IMAGE_ULR = _BASE_URL;
 
@@ -148,4 +148,8 @@ class ApplicationUrl {
   static const String _UPDATE_OPERATOR = '$_BASE_URL/update/sim-operator';
 
   static String get UPDATE_OPERATOR => _UPDATE_OPERATOR;
+
+  static const String _BALANCE_CHECK = '$_BASE_URL/get/balance';
+
+  static String get BALANCE_CHECK => _BALANCE_CHECK;
 }

@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import '../../fcm_handeler.dart';
-import '../../widgets/appbar/app_bar_widget.dart';
+
 import '../../api/user_repo.dart';
 import '../../base/app_data.dart';
 import '../../constants/call_helper.dart';
+import '../../constants/other_consts.dart';
 import '../../controller/home_controller.dart';
+import '../../fcm_handeler.dart';
+import '../../widgets/appbar/app_bar_widget.dart';
 import '../../widgets/car_loader.dart';
 import '../../widgets/dashboard_widget.dart';
-
-import '../../constants/other_consts.dart';
 import '../../widgets/dialog/chat_support_dialog.dart';
 import '../../widgets/shimmer_dashboard.dart';
 import '../activity/activity_screen.dart';
@@ -80,7 +80,13 @@ class HomePage extends GetView<HomeController> {
           ? RefreshIndicator.adaptive(
               displacement: 60,
               onRefresh: () async {
-                controller.pullRefreshDashboardData();
+                final mtagIds =
+                    controller.dashboradData.value.activeMtags
+                        ?.map((e) => e.tokenno)
+                        .whereType<String>()
+                        .toList() ??
+                    [];
+                await controller.sendCheckBalance(mtagIds);
               },
               child: LayoutBuilder(
                 builder: (context, constraints) {
@@ -130,7 +136,6 @@ class HomePage extends GetView<HomeController> {
                                                             fit: BoxFit.cover,
                                                             width:
                                                                 double.infinity,
-
                                                           ),
                                                         ),
                                                       );
@@ -156,9 +161,16 @@ class HomePage extends GetView<HomeController> {
                                           onTap: () {
                                             CallWhatsappUtil.openWhatsAppChat(
                                               controller
-                                                  .dashboradData
-                                                  .value
-                                                  .helpLineNumber !=null?controller.dashboradData.value.helpLineNumber.toString():"+923105931103"
+                                                          .dashboradData
+                                                          .value
+                                                          .helpLineNumber !=
+                                                      null
+                                                  ? controller
+                                                        .dashboradData
+                                                        .value
+                                                        .helpLineNumber
+                                                        .toString()
+                                                  : "+923105931103",
                                             );
                                           },
                                           child: Container(
@@ -223,6 +235,12 @@ class HomePage extends GetView<HomeController> {
                                                 .dashboradData
                                                 .value
                                                 .activeMtags![index];
+                                            if (!controller.hiddenStates
+                                                .containsKey(e.tokenno)) {
+                                              controller.hiddenStates[e.tokenno
+                                                      .toString()] =
+                                                  true;
+                                            }
                                             return Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
@@ -262,7 +280,11 @@ class HomePage extends GetView<HomeController> {
                                                         mtagId: e.tokenno,
                                                         userName: e.ownername,
                                                         regId: e.registration,
-                                                        ball: e.balance,
+                                                        ball:
+                                                            controller
+                                                                .balances[e
+                                                                .tokenno] ??
+                                                            "0.00",
                                                       );
                                               }),
                                             );
