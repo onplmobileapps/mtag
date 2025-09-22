@@ -52,7 +52,6 @@ class OtherConsts {
   RxString get promoPopUp => _promoPopUp;
   static const List<String> sliderImages = [
     '8.webp',
-    'j.webp',
     '7.jpg',
     '2.jpg',
     '3.jpg',
