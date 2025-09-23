@@ -8,14 +8,6 @@ class ApplicationUrl {
   factory ApplicationUrl() {
     return _instance;
   }
-
-  // static const String _BASE_URL = 'http://10.0.1.127:9008';
-
-  // static const String _BASE_URL = 'https://ocotapp.com';
-
-  static const String _IMAGE_ULR ='https://ocotapp.com';
-
-  static String get IMAGE_ULR => _IMAGE_ULR;
   static const String _LOGIN_URL = '/loginUser_new';
 
   static String get LOGIN_URL => _LOGIN_URL;

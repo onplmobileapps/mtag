@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import '../../base/app_data.dart';
 import '../../utils/utils.dart';
-import '../api/application_url.dart';
 import '../widgets/dialog/promo_dialog.dart';
 import '../widgets/dialog/operator_selection_dialog.dart';
 import '../api/api_constants.dart';
@@ -176,7 +175,7 @@ class HomeController extends GetxController implements GetxService {
       Get.dialog(
         PromoDialog(
           imageUrl:
-          "${ApplicationUrl.IMAGE_ULR}/${dashboradData.value.promotionalPopUpImage?.imgURL}",
+          "$IMAGE_ULR/${dashboradData.value.promotionalPopUpImage?.imgURL}",
         ),
         barrierDismissible: false,
       );

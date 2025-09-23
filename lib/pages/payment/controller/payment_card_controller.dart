@@ -12,7 +12,6 @@ import '/pages/activity/controller/activity_controller.dart';
 import '/pages/recharge/model/owner_summary_model.dart';
 import '/widgets/jazzcash_loader.dart';
 import '../../../widgets/dialog/recharge_summary_dialog.dart';
-import '../../../api/application_url.dart';
 import '../../../api/auth_controller.dart';
 import '../model/payment_card_model.dart';
 
@@ -175,7 +174,7 @@ isJazzShown.value=false;
             Get.to(() => AlfaWebView2(
                   isSaveCard: false,
                   url:
-                      "${ApplicationUrl.IMAGE_ULR}/payment/${result[APIRESPONSE.SUCCESS]['key']}",
+                      "$IMAGE_ULR/payment/${result[APIRESPONSE.SUCCESS]['key']}",
                 ));
           }
         },
