@@ -15,17 +15,30 @@ Optimizations:
 
 #Changelog (Monday 04 August 25)
 Optimizations:
-CarouselSlider stretching fix 
+CarouselSlider stretching fix
 
 #Changelog (Tuesday 5 August 25)
 Optimizations:
+
 1. Add operator selection dialog
 
 #Changelog (Wednesday 6 August 25)
 Optimizations:
+
 1. Update operator selection dialog
 2. Call on both ends ie signup screen & dashboard
 
 #Changelog (Friday 15 Aug 25)
+
 1. Add balance loading animation
 2. Not yet tested on iOS device
+
+#Changelog Thursday (25 Sept)
+
+1. Reduce api calls (Remove dlink options api)
+2. Add new dialogues (Delete vehicle,add chassis number)
+3. Modify dashboard widget
+4. New balance fetch api integration
+5. Light dark theme settings on dialogues
+6. Change biometrics icons
+7. Not yet tested on ios device
