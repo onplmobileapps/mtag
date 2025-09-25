@@ -24,7 +24,8 @@ class RechargeSelfPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<RechargeSelfController>(
-      init: RechargeSelfController(),
+      init: RechargeSelfController( paymentController: Get.find(),
+    homeController: Get.find(), ),
       builder: (controller) => PopScope(
         canPop: true,
         onPopInvokedWithResult: controller.handlePop,
@@ -77,9 +78,9 @@ class RechargeSelfPage extends StatelessWidget {
 
 class RechargeSelfController extends GetxController {
   // Dependencies
-  final PaymentCardController paymentController = Get.find();
-  final HomeController homeController = Get.find();
-
+  final PaymentCardController paymentController;
+  final HomeController homeController ;
+RechargeSelfController({required this.paymentController,required this.homeController});
   // Scroll Controllers
   final ScrollController scrollController = ScrollController();
   final ScrollController scrollController1 = ScrollController();

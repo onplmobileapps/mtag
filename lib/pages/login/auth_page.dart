@@ -437,7 +437,7 @@ class AuthPage extends StatelessWidget {
                               ),
                               onChanged: (value) {
                                 final detectedOperator = _detectOperator(
-                                  value ?? '',
+                                  value ,
                                 );
                                 if (detectedOperator != null) {
                                   controller.selectedOperator.value =

@@ -60,7 +60,7 @@ class OperatorDropdown extends StatelessWidget {
             size: 24,
           ),
           dropdownColor: isDarkMode
-              ? Theme.of(context).dialogBackgroundColor
+              ? DialogThemeData().backgroundColor
               : Colors.white,
           items: defaultOperators.map((op) {
             return DropdownMenuItem<String>(

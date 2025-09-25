@@ -26,11 +26,7 @@ Widget buildCarLoaderWidget(BuildContext context, double height) {
             child: Text(
               'Please wait while we fetch your balance',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                color: Theme.of(context).primaryColorLight,
-                fontSize: 12.0,
-                fontStyle: FontStyle.italic,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic,
               ),
             ),
           ),

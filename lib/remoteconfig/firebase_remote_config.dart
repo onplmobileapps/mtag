@@ -15,9 +15,9 @@ class FirebaseRemoteConfigService {
   final _otherConstants = OtherConsts();
   final FirebaseRemoteConfig _remoteConfig;
   RemoteConfigSettings configSettings = RemoteConfigSettings(
-    minimumFetchInterval: const Duration(seconds: 30),
+    minimumFetchInterval: const Duration(seconds: 0),
     fetchTimeout:
-    const Duration(seconds: 30), // Set the cache duration to 30 sec
+    const Duration(seconds: 10), // Set the cache duration to 30 sec
   );
   Future<void> fetchRemoteConfig() async {
     try {

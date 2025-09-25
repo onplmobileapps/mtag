@@ -46,5 +46,6 @@ class Binding extends Bindings {
     Get.lazyPut(() => DelinkController(userRepo: UserRepo()));
     Get.lazyPut(() => DeleteAccountController(userRepo: UserRepo()));
     Get.lazyPut(() => NotificationController());
+
   }
 }
