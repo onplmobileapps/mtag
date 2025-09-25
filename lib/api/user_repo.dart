@@ -170,19 +170,6 @@ class UserRepo {
     );
   }
 
-  Future<Map<String, dynamic>> getDlinkOptions() async {
-    APISTRUCTURE apiObject = APISTRUCTURE(
-      apiUrl: ApplicationUrl.GETDLINKOPTIONS_URL,
-      apiRequestMethod: APIREQUESTMETHOD.POST,
-      isWantSuccessMessage: true,
-    );
-
-    return await apiObject.requestAPI(
-      isShowLoading: false,
-      isCheckAuthorization: true,
-    );
-  }
-
   Future<Map<String, dynamic>> deleteAccount({String? comments}) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
       apiUrl: ApplicationUrl.DELETEACCOUNT_URL,

@@ -8,7 +8,7 @@ import 'package:mtag_flutterapp/utils/utils.dart';
 import 'package:mtag_flutterapp/widgets/bottomsheet/bottom_sheet_widget.dart';
 
 import '../controller/home_controller.dart';
-import '../pages/mtag/controller/delink_controller.dart' show DelinkController;
+import '../pages/mtag/controller/delink_controller.dart';
 import '../pages/recharge/recharge_page.dart';
 import 'dialog/chassis_num.dart';
 import 'dialog/delink_dialog.dart';
@@ -63,7 +63,7 @@ Widget mtagDataWidget(
 }) {
   log('$mtagId,$regId,$creditCode,$jazzCode');
   final controller = Get.find<HomeController>();
-  final dlinkOptionsController = Get.find<DelinkController>();
+  final dlinkVehicleController = Get.find<DelinkController>();
 
   final double screenWidth = MediaQuery.sizeOf(context).width;
   final double screenHeight = MediaQuery.sizeOf(context).height;
@@ -416,7 +416,7 @@ Widget mtagDataWidget(
                                           onCancel: () => Get.back(),
                                           onConfirm: () {
                                             Get.back();
-                                            dlinkOptionsController.deLinkVehicle(
+                                            dlinkVehicleController.deLinkVehicle(
                                               mtagID: mtagId ?? '',
                                               rDesc:
                                                   "${0}--${"Vehicle has been sold out."}",

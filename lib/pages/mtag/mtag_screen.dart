@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/constants/analytics.dart';
 import 'package:mtag_flutterapp/widgets/dashboard_widget.dart';
-import 'package:mtag_flutterapp/widgets/dialog/d_link_dialog.dart';
 import '../../widgets/dialog/delink_dialog.dart';
 import '../dashboard/model/dashboard_model.dart';
 import 'controller/delink_controller.dart';
@@ -16,7 +15,7 @@ class MyMtagScreen extends StatelessWidget {
   final List<ActiveMtags> argument = Get.arguments is ActiveMtags
       ? [Get.arguments]
       : Get.arguments ?? [ActiveMtags()];
-  final dlinkOptionsController = Get.find<DelinkController>();
+  final dlinkVehicleController = Get.find<DelinkController>();
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +87,7 @@ class MyMtagScreen extends StatelessWidget {
                             onCancel: () => Get.back(),
                             onConfirm: () {
                               Get.back();
-                              dlinkOptionsController.deLinkVehicle(
+                              dlinkVehicleController.deLinkVehicle(
                                 mtagID: argument[index].tokenno ?? '',
                                 rDesc: "${0}--${"Vehicle has been sold out."}",
                                 rID: "1",
@@ -217,7 +216,7 @@ class MyMtagScreen extends StatelessWidget {
                                       onCancel: () => Get.back(),
                                       onConfirm: () {
                                         Get.back();
-                                        dlinkOptionsController.deLinkVehicle(
+                                        dlinkVehicleController.deLinkVehicle(
                                           mtagID: argument[index].tokenno ?? '',
                                           rDesc:
                                               "${0}--${"Vehicle has been sold out."}",
