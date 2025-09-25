@@ -1,7 +1,7 @@
-
 import 'package:mtag_flutterapp/api/application_url.dart';
 import 'api_constants.dart';
 import 'api_structure.dart';
+
 abstract class PaymentRepo {
   void jazzCashRecharg() {}
   void getCardDetails() {}
@@ -11,13 +11,16 @@ abstract class PaymentRepo {
 
   void genearatePSID() {}
   void genearatePSIDTOPUP() {}
-  void getAmountBreakDown(){}
+  void getAmountBreakDown() {}
 }
 
 class RechargRepo implements PaymentRepo {
   @override
-  Future<Map<String, dynamic>> jazzCashRecharg({String? mobileNumber, String? mtagID, String? amount}) async {
-
+  Future<Map<String, dynamic>> jazzCashRecharg({
+    String? mobileNumber,
+    String? mtagID,
+    String? amount,
+  }) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
       apiUrl: ApplicationUrl.JAZZCASHRECHARGE_URL,
       apiRequestMethod: APIREQUESTMETHOD.POST,
@@ -29,47 +32,55 @@ class RechargRepo implements PaymentRepo {
       },
     );
 
-    return await apiObject.requestAPI(isShowLoading: false, isCheckAuthorization: true);
+    return await apiObject.requestAPI(
+      isShowLoading: false,
+      isCheckAuthorization: true,
+    );
   }
 
   @override
-  Future<Map<String, dynamic>> getCardDetails({
-    String? payId,
-  }) async {
+  Future<Map<String, dynamic>> getCardDetails({String? payId}) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
       apiUrl: ApplicationUrl.GETCARDETAILS_URL,
       apiRequestMethod: APIREQUESTMETHOD.POST,
-      body: {
-        "Pay_Id": payId,
-      },
+      body: {"Pay_Id": payId},
       isWantSuccessMessage: true,
     );
-    return await apiObject.requestAPI(isShowLoading: false, isCheckAuthorization: true);
+    return await apiObject.requestAPI(
+      isShowLoading: false,
+      isCheckAuthorization: true,
+    );
   }
 
   @override
-  Future<Map<String, dynamic>> getCardDetails1({
-    String? payId,
-  }) async {
+  Future<Map<String, dynamic>> getCardDetails1({String? payId}) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
       apiUrl: ApplicationUrl.GETCARDETAILS_URL,
       apiRequestMethod: APIREQUESTMETHOD.POST,
-      body: {
-        "Pay_Id": payId,
-      },
+      body: {"Pay_Id": payId},
       isWantSuccessMessage: true,
     );
-    return await apiObject.requestAPI(isShowLoading: false, isCheckAuthorization: true);
+    return await apiObject.requestAPI(
+      isShowLoading: false,
+      isCheckAuthorization: true,
+    );
   }
 
   @override
-  Future<Map<String, dynamic>> deleteCardDetails({String? token, String? payId}) async {
+  Future<Map<String, dynamic>> deleteCardDetails({
+    String? token,
+    String? payId,
+  }) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
-        apiUrl: ApplicationUrl.DELETCARD_URL,
-        apiRequestMethod: APIREQUESTMETHOD.POST,
-        isWantSuccessMessage: true,
-        body: {"token": token, "Pay_Id": payId});
-    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: true);
+      apiUrl: ApplicationUrl.DELETCARD_URL,
+      apiRequestMethod: APIREQUESTMETHOD.POST,
+      isWantSuccessMessage: true,
+      body: {"token": token, "Pay_Id": payId},
+    );
+    return await apiObject.requestAPI(
+      isShowLoading: true,
+      isCheckAuthorization: true,
+    );
   }
 
   @override
@@ -80,23 +91,31 @@ class RechargRepo implements PaymentRepo {
     bool isFleet = false,
   }) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
-        apiUrl: ApplicationUrl.GETPAYUUID_URL,
-        apiRequestMethod: APIREQUESTMETHOD.POST,
-        isWantSuccessMessage: true,
-        body: {
-          "mtag_id": mtagId,
-          "amount": amount,
-          'token': token,
-          'is_company': isFleet,
-        });
-    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: true);
+      apiUrl: ApplicationUrl.GETPAYUUID_URL,
+      apiRequestMethod: APIREQUESTMETHOD.POST,
+      isWantSuccessMessage: true,
+      body: {
+        "mtag_id": mtagId,
+        "amount": amount,
+        'token': token,
+        'is_company': isFleet,
+      },
+    );
+    return await apiObject.requestAPI(
+      isShowLoading: true,
+      isCheckAuthorization: true,
+    );
   }
 
- 
-
   @override
-  Future<Map<String, dynamic>> genearatePSID(
-      {String? mtagID, double? amount, String? cnic, String? mobileNum, bool? isBlocked, bool? isInvoice}) async {
+  Future<Map<String, dynamic>> genearatePSID({
+    String? mtagID,
+    double? amount,
+    String? cnic,
+    String? mobileNum,
+    bool? isBlocked,
+    bool? isInvoice,
+  }) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
       apiUrl: ApplicationUrl.GENERATE_PSID,
       apiRequestMethod: APIREQUESTMETHOD.POST,
@@ -110,7 +129,10 @@ class RechargRepo implements PaymentRepo {
         "is_invoice": isInvoice,
       },
     );
-    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: true);
+    return await apiObject.requestAPI(
+      isShowLoading: true,
+      isCheckAuthorization: true,
+    );
   }
 
   @override
@@ -131,21 +153,23 @@ class RechargRepo implements PaymentRepo {
         "is_blocked": isBlocked,
       },
     );
-    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: true);
+    return await apiObject.requestAPI(
+      isShowLoading: true,
+      isCheckAuthorization: true,
+    );
   }
+
   @override
- Future<Map<String, dynamic>> getAmountBreakDown({
-    String? amount,
-   
-  }) async {
+  Future<Map<String, dynamic>> getAmountBreakDown({String? amount}) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
       apiUrl: ApplicationUrl.GET_AMOUNTBREAK_DOWNURL,
       apiRequestMethod: APIREQUESTMETHOD.POST,
       isWantSuccessMessage: true,
-      body: {
-       "amount":amount
-      },
+      body: {"amount": amount},
     );
-    return await apiObject.requestAPI(isShowLoading: true, isCheckAuthorization: false);
+    return await apiObject.requestAPI(
+      isShowLoading: true,
+      isCheckAuthorization: false,
+    );
   }
 }

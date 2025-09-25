@@ -264,7 +264,7 @@ class HomePage extends GetView<HomeController> {
                                                           context,
                                                         ),
                                                         height:
-                                                            screenHeight * 0.25,
+                                                            screenHeight * 0.30,
                                                         isBlock: e.isactive,
                                                         jazzCode: controller
                                                             .dashboradData
@@ -285,6 +285,15 @@ class HomePage extends GetView<HomeController> {
                                                                 .balances[e
                                                                 .tokenno] ??
                                                             "0.00",
+                                                        showTransferButton:
+                                                            controller
+                                                                    .dashboradData
+                                                                    .value
+                                                                    .activeMtags!
+                                                                    .length ==
+                                                                1
+                                                            ? false
+                                                            : true,
                                                       );
                                               }),
                                             );
@@ -300,7 +309,6 @@ class HomePage extends GetView<HomeController> {
 
                               SliverPadding(
                                 padding: const EdgeInsets.all(8.0),
-
                                 sliver: SliverGrid(
                                   gridDelegate:
                                       SliverGridDelegateWithMaxCrossAxisExtent(

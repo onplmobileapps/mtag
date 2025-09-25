@@ -7,9 +7,12 @@ class ApplicationUrl {
     return _instance;
   }
 
-  static const String _BASE_URL = 'http://10.0.1.127:9008';
+  // static const String _BASE_URL = 'http://10.0.1.127:9008';
 
-  // static const String _BASE_URL = 'https://ocotapp.com';
+  //temp
+  // static const String _BASE_URL = 'http://10.0.1.127:5000';
+
+  static const String _BASE_URL = 'https://ocotapp.com';
 
   static const String _IMAGE_ULR = _BASE_URL;
 
