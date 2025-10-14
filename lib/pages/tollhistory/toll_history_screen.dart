@@ -61,7 +61,6 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    Analytics.historyScreenDisplayed();
     return Scaffold(
       appBar: AppBar(title: const Text('Toll History')),
       body: Column(
@@ -216,7 +215,7 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
     );
   }
 
-  Widget _buildTrailingColumn( dynamic item) {
+  Widget _buildTrailingColumn(dynamic item) {
     final String? cR = item?.cR;
 
     late final Color color;

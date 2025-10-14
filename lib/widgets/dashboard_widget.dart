@@ -10,6 +10,7 @@ import 'package:mtag_flutterapp/widgets/bottomsheet/bottom_sheet_widget.dart';
 import '../controller/home_controller.dart';
 import '../pages/mtag/controller/delink_controller.dart';
 import '../pages/recharge/recharge_page.dart';
+import 'bottomsheet/balance_transfer_bs.dart';
 import 'dialog/chassis_num.dart';
 import 'dialog/delink_dialog.dart';
 
@@ -50,6 +51,7 @@ Widget mtagDataWidget(
   Size? size,
   String? userName,
   String? ball,
+  balanceDashboard,
   String? mtagId,
   String? regId,
   String? creditCode,
@@ -60,6 +62,8 @@ Widget mtagDataWidget(
   String? mobileNum,
   double? isBlock,
   bool? showTransferButton,
+  bool? showChassisBadge,
+  String? chassisNumber,
 }) {
   log('$mtagId,$regId,$creditCode,$jazzCode');
   final controller = Get.find<HomeController>();
@@ -73,11 +77,26 @@ Widget mtagDataWidget(
   final double containerPadding = containerHeight * 0.055;
   final double elementSpacing = containerHeight * 0.080;
   final double buttonSpacing = containerHeight * 0.02;
-  final double iconSize = containerHeight * 0.12;
+  final double iconSize = containerHeight * 0.10;
   final double vehicleImageWidth = containerHeight * 0.45;
   final double fontSizeSmall = containerHeight * 0.075;
   final double fontSizeMedium = containerHeight * 0.085;
 
+  bool? isShowChassisBadge = showChassisBadge;
+
+  List<Map<String, dynamic>> allCars = controller
+      .dashboradData
+      .value
+      .activeMtags!
+      .where((car) => car.registration != regId)
+      .map(
+        (car) => {
+          "carNumber": car.registration,
+          "balance": double.parse(car.balance ?? '0.0'),
+          "mtagID": car.tokenno,
+        },
+      )
+      .toList();
   return Column(
     mainAxisAlignment: MainAxisAlignment.start,
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,13 +128,11 @@ Widget mtagDataWidget(
                       SizedBox(height: elementSpacing * 0.5),
                       Expanded(
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   FittedBox(
                                     fit: BoxFit.scaleDown,
@@ -123,32 +140,30 @@ Widget mtagDataWidget(
                                       regId ?? '',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyMedium
+                                          .bodyLarge
                                           ?.copyWith(
-                                            fontWeight: FontWeight.w600,
                                             fontSize: fontSizeSmall,
-                                            height: 0.5,
+                                            height: 1,
+                                            fontWeight: FontWeight.w800,
                                             color: Theme.of(
                                               context,
                                             ).primaryColorLight,
                                           ),
                                     ),
                                   ),
-                                  SizedBox(height: elementSpacing * 1.1),
+                                  SizedBox(height: elementSpacing * 0.5),
                                   FittedBox(
                                     fit: BoxFit.scaleDown,
                                     child: RichText(
                                       text: TextSpan(
                                         children: <TextSpan>[
                                           TextSpan(
-                                            text: 'M-TAG ',
+                                            text: 'M-TAG : ',
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyMedium
+                                                .labelMedium
                                                 ?.copyWith(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: fontSizeSmall,
-                                                  height: 0.5,
+                                                  height: 0.2,
                                                   color: Theme.of(
                                                     context,
                                                   ).primaryColorLight,
@@ -158,11 +173,9 @@ Widget mtagDataWidget(
                                             text: mtagId ?? '',
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyMedium
+                                                .labelMedium
                                                 ?.copyWith(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: fontSizeSmall,
-                                                  height: 0.5,
+                                                  height: 1.0,
                                                   color: Theme.of(
                                                     context,
                                                   ).primaryColorLight,
@@ -172,24 +185,22 @@ Widget mtagDataWidget(
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: elementSpacing * 0.5),
+                                  SizedBox(height: elementSpacing * 0.3),
                                   Row(
                                     children: [
                                       Text(
                                         'Balance',
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyMedium
+                                            .labelMedium
                                             ?.copyWith(
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: fontSizeSmall,
-                                              height: 1.0,
+                                              height: 0.2,
                                               color: Theme.of(
                                                 context,
                                               ).primaryColorLight,
                                             ),
                                       ),
-                                      SizedBox(width: elementSpacing * 0.50),
+                                      SizedBox(width: elementSpacing * 0.30),
                                       Obx(() {
                                         final id = mtagId ?? '';
                                         final isHidden =
@@ -207,25 +218,41 @@ Widget mtagDataWidget(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Flexible(
-                                              child: Text(
-                                                isHidden
-                                                    ? '••••••'
-                                                    : 'PKR $displayBalance',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyLarge
-                                                    ?.copyWith(
-                                                      color: Colors.red,
-                                                      height: 0.5,
-                                                      fontSize:
-                                                          fontSizeMedium * 1.1,
-                                                      fontWeight:
-                                                          FontWeight.w800,
+                                              child: RichText(
+                                                text: TextSpan(
+                                                  text: isHidden ? "" : ":",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelMedium
+                                                      ?.copyWith(
+                                                        height: 0.2,
+                                                        color: Theme.of(
+                                                          context,
+                                                        ).primaryColorLight,
+                                                      ),
+                                                  children: <TextSpan>[
+                                                    TextSpan(
+                                                      text: isHidden
+                                                          ? '••••••'
+                                                          // ? 'Rs 12345'
+                                                          : ' Rs $displayBalance',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyMedium
+                                                          ?.copyWith(
+                                                            color: Colors.red,
+                                                            height: 0.5,
+                                                            fontWeight:
+                                                                FontWeight.w800,
+                                                          ),
                                                     ),
-                                                overflow: TextOverflow.ellipsis,
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                            SizedBox(width: elementSpacing),
+                                            SizedBox(
+                                              width: elementSpacing * 0.5,
+                                            ),
                                             InkWell(
                                               onTap: () async {
                                                 if (isHidden) {
@@ -257,31 +284,135 @@ Widget mtagDataWidget(
                                 ],
                               ),
                             ),
+                            Column(
+                              children: [
+                                Transform.translate(
+                                  offset: Offset(-3, -10),
 
-                            SvgPicture.asset(
-                              getVehicleImage(vehType ?? '').toString(),
-                              colorFilter: ColorFilter.mode(
-                                Theme.of(context).primaryColorLight,
-                                BlendMode.srcIn,
-                              ),
-                              width: vehicleImageWidth,
-                              height: vehicleImageWidth * 0.60,
+                                  child: SvgPicture.asset(
+                                    getVehicleImage(vehType ?? '').toString(),
+                                    colorFilter: ColorFilter.mode(
+                                      Theme.of(context).primaryColorLight,
+                                      BlendMode.srcIn,
+                                    ),
+                                    width: vehicleImageWidth,
+                                    height: vehicleImageWidth * 0.60,
+                                  ),
+                                ),
+
+                                Transform.translate(
+                                  offset: Offset(-3, -8),
+                                  child: InkWell(
+                                    onTap: () async {
+                                      final chassisNumber =
+                                          await showDialog<String>(
+                                            context: context,
+                                            barrierDismissible: false,
+                                            builder: (context) {
+                                              return ChassisNumberDialog(
+                                                registration: regId ?? '',
+                                                mobileNumber: mobileNum ?? '',
+                                                tokenNo: mtagId ?? '',
+                                                balance: ball ?? '',
+                                                cnicNumber: cnic ?? '',
+                                              );
+                                            },
+                                          );
+
+                                      if (chassisNumber != null &&
+                                          chassisNumber.isNotEmpty) {
+                                        print(
+                                          "Entered Chassis Number: $chassisNumber",
+                                        );
+                                      }
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: containerHeight * 0.035,
+                                        vertical: containerHeight * 0.018,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).disabledColor,
+                                        borderRadius: BorderRadius.circular(
+                                          containerHeight * 0.035,
+                                        ),
+                                        border: Border.all(
+                                          color: Theme.of(
+                                            context,
+                                          ).primaryColorLight,
+                                          width: 0.7,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          chassisNumber == null ||
+                                                  chassisNumber == ""
+                                              ? Icon(
+                                                  Icons.add,
+                                                  color: Theme.of(
+                                                    context,
+                                                  ).primaryColorLight,
+                                                  size: containerHeight * 0.070,
+                                                )
+                                              : SizedBox.shrink(),
+                                          SizedBox(
+                                            width: containerHeight * 0.015,
+                                          ),
+
+                                          Text(
+                                            chassisNumber == null ||
+                                                    chassisNumber == ""
+                                                ? 'Add Chassis Number'
+                                                : "Chassis : $chassisNumber",
+                                            style: TextStyle(
+                                              color: Theme.of(
+                                                context,
+                                              ).primaryColorLight,
+                                              fontSize: containerHeight * 0.05,
+                                              letterSpacing: 0.0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(height: elementSpacing * 0.5),
+                      SizedBox(height: elementSpacing * 0.2),
                       Column(
                         children: [
                           const Divider(thickness: 0.3, height: 0.1),
-                          SizedBox(height: elementSpacing * 0.8),
+                          SizedBox(height: elementSpacing * 0.5),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               showTransferButton == true
                                   ? Expanded(
                                       child: InkWell(
-                                        onTap: () => (),
+                                        onTap: () => (
+                                          //code here bottom sheet
+                                          showModalBottomSheet(
+                                            context: context,
+                                            isScrollControlled: true,
+                                            useSafeArea: true,
+                                            backgroundColor: Colors.transparent,
+                                            builder: (_) =>
+                                                BalanceTransferSheet(
+                                                  carRegistration: regId,
+                                                  balance: balanceDashboard,
+                                                  cnicNumber: cnic,
+                                                  mobileNumber: mobileNum,
+                                                  mtagid: mtagId,
+                                                  dropDownCars: allCars,
+                                                ),
+                                          ),
+                                        ),
                                         child: Container(
                                           padding: EdgeInsets.symmetric(
                                             horizontal: containerHeight * 0.025,
@@ -309,12 +440,18 @@ Widget mtagDataWidget(
                                                 MainAxisAlignment.center,
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Icon(
-                                                Icons.send_outlined,
-                                                color: Theme.of(
+                                              CircleAvatar(
+                                                radius: 10,
+                                                backgroundColor: Theme.of(
                                                   context,
-                                                ).primaryColorLight,
-                                                size: iconSize * 0.9,
+                                                ).primaryColor,
+                                                child: const Text(
+                                                  'Rs',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
                                               ),
                                               SizedBox(
                                                 width: containerHeight * 0.012,
@@ -524,59 +661,6 @@ Widget mtagDataWidget(
                     ),
                   ),
                 ),
-
-              Positioned(
-                top: 0,
-                right: horizontalPadding,
-                child: InkWell(
-                  onTap: () async {
-                    final chassisNumber = await showDialog<String>(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (context) {
-                        return ChassisNumberDialog(
-                          registration: regId ?? '',
-                          tokenNo: mtagId ?? '',
-                          balance: ball ?? '',
-                        );
-                      },
-                    );
-
-                    if (chassisNumber != null && chassisNumber.isNotEmpty) {
-                      print("Entered Chassis Number: $chassisNumber");
-                    }
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: containerHeight * 0.035,
-                      vertical: containerHeight * 0.018,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(10),
-                        bottomLeft: Radius.circular(10),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.red.withAlpha(77),
-                          blurRadius: 4,
-                          offset: Offset(2, 2),
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      'Add Chassis Number',
-                      style: TextStyle(
-                        color: Colors.white,
-
-                        fontSize: containerHeight * 0.05,
-                        letterSpacing: 0.0,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),

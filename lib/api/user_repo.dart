@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'dart:developer';
 import 'dart:io';
 
@@ -12,7 +10,6 @@ import '../pages/notification/controller/notificationcontroller.dart';
 import 'api_constants.dart';
 import 'api_structure.dart';
 
-//testing comment
 class UserRepo {
   UserRepo();
 
@@ -93,23 +90,54 @@ class UserRepo {
     );
 
     return await apiObject.requestAPI(
+      isShowLoading: false,
+      isCheckAuthorization: true,
+    );
+  }
+
+  //update chassis call
+  Future<Map<String, dynamic>> updateChassisNumber(
+    String? cnicNumber,
+    mobileNumber,
+    mtagID,
+    chassisNumber,
+  ) async {
+    APISTRUCTURE apiObject = APISTRUCTURE(
+      apiUrl: ApplicationUrl.UPDATE_CHASSIS,
+      apiRequestMethod: APIREQUESTMETHOD.POST,
+      isWantSuccessMessage: true,
+      body: {
+        "cnic": cnicNumber,
+        "mobile_num": mobileNumber,
+        "mtag_id": mtagID,
+        "chassis_number": chassisNumber,
+      },
+    );
+
+    return await apiObject.requestAPI(
       isShowLoading: true,
       isCheckAuthorization: true,
     );
   }
 
-  //Fleet DashBoard APi
-  Future<Map<String, dynamic>> getFleetdashBoardData({
-    String? appVersion,
-    deviceID,
-  }) async {
+  //balance transfer call
+  Future<Map<String, dynamic>> transferBalance(
+    String? cnicNumber,
+    mobileNumber,
+    fromMtag,
+    toMtag,
+    amount,
+  ) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
-      apiUrl: ApplicationUrl.FLEET_DASHBOARD_URL,
+      apiUrl: ApplicationUrl.BALANCE_TRANSFER,
       apiRequestMethod: APIREQUESTMETHOD.POST,
       isWantSuccessMessage: true,
       body: {
-        "AppVer": Platform.isIOS ? "3.1.1" : "3.1.2",
-        "deviceId": Platform.isAndroid ? '0' : '1',
+        "cnic": cnicNumber,
+        "mobile_num": mobileNumber,
+        "from_mtag_id": fromMtag,
+        "to_mtag_id": toMtag,
+        "amount": amount,
       },
     );
 

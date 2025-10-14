@@ -38,9 +38,15 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
     _phoneFocusNode = FocusNode();
     _remarksFocusNode = FocusNode();
 
-    _nameController = TextEditingController(text: _otherConstants.ownerName.value);
-    _cnicController = TextEditingController(text: _otherConstants.ownerCNIC.value);
-    _phoneController = TextEditingController(text: _otherConstants.mobile.value);
+    _nameController = TextEditingController(
+      text: _otherConstants.ownerName.value,
+    );
+    _cnicController = TextEditingController(
+      text: _otherConstants.ownerCNIC.value,
+    );
+    _phoneController = TextEditingController(
+      text: _otherConstants.mobile.value,
+    );
     _remarksController = TextEditingController();
   }
 
@@ -61,15 +67,12 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Analytics.feedbackTapped();
-
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
         onPressed: () {
-          Analytics.call1313Tapped();
           CallWhatsappUtil.openCall1313();
         },
         child: const Row(
@@ -192,7 +195,6 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
                     backgroundColor: Theme.of(context).primaryColor,
                     width: MediaQuery.sizeOf(context).width,
                     onclick: () async {
-                      Analytics.submitFeedbackTapped();
                       if (_formKey.currentState!.validate()) {
                         await Get.find<UpdateEmailController>().addFeedBack(
                           cnic: _cnicController.text,

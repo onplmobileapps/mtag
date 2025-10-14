@@ -83,29 +83,35 @@ class AuthController extends GetxController implements GetxService {
       Map<String, dynamic> result = response[APIRESPONSE.SUCCESS];
 
       authRepo.saveLoginUserData(
-          user: UserModel(
-              code: result['Code'],
-              data: Data(accessToken: result['Data']['access_token'])));
+        user: UserModel(
+          code: result['Code'],
+          data: Data(accessToken: result['Data']['access_token']),
+        ),
+      );
 
       if (result["Code"] == '00') {
         await generateOTP(
-            cnic: cnic,
-            islogin: 1,
-            mobile: mobileNumber,
-            isForgetPin: isForgetPin);
+          cnic: cnic,
+          islogin: 1,
+          mobile: mobileNumber,
+          isForgetPin: isForgetPin,
+        );
       }
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(
-          '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.'}',
-          Get.back);
+        '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.'}',
+        Get.back,
+      );
     } else if (response['Code'] == '02') {
       showPopDialog(
-          '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.'}',
-          Get.back);
+        '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.'}',
+        Get.back,
+      );
     } else {
       showPopDialog(
-          '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.'}',
-          Get.back);
+        '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.'}',
+        Get.back,
+      );
     }
     return response;
   }
@@ -129,11 +135,14 @@ class AuthController extends GetxController implements GetxService {
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       if (response[APIRESPONSE.SUCCESS]["Code"] == '00') {
         updateLoginUserData(
-            user: UserModel(
-                code: response[APIRESPONSE.SUCCESS]['Code'],
-                data: Data(
-                    accessToken: response[APIRESPONSE.SUCCESS]['Data']
-                    ['access_token'])));
+          user: UserModel(
+            code: response[APIRESPONSE.SUCCESS]['Code'],
+            data: Data(
+              accessToken:
+                  response[APIRESPONSE.SUCCESS]['Data']['access_token'],
+            ),
+          ),
+        );
         await generateOTP(cnic: cnic, islogin: 0, mobile: mobileNumber);
       }
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
@@ -142,32 +151,33 @@ class AuthController extends GetxController implements GetxService {
         builder: (_) => CupertinoAlertDialog(
           content: Text('${response[APIRESPONSE.ERROR]['Message']}'),
           actions: [
-            CupertinoDialogAction(
-              onPressed: Get.back,
-              child: const Text('Ok'),
-            )
+            CupertinoDialogAction(onPressed: Get.back, child: const Text('Ok')),
           ],
         ),
       );
     } else if (response.containsKey(APIRESPONSE.SUCCESS)) {
       showPopDialog(
-          '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.'}',
-          Get.back);
+        '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.'}',
+        Get.back,
+      );
     } else {
       showPopDialog(
-          'We couldn’t complete your request\n Try again or contact assistance.',
-              () {});
+        'We couldn’t complete your request\n Try again or contact assistance.',
+        () {},
+      );
     }
 
     return response;
   }
 
   // Update FCM Token
-  Future<Map<String, dynamic>> updateFcmToken(
-      {required String fcmToken}) async {
+  Future<Map<String, dynamic>> updateFcmToken({
+    required String fcmToken,
+  }) async {
     debugPrint("updateFcmToken:->$fcmToken");
-    Map<String, dynamic> response =
-    await authRepo.updateFcmToken(fcmToken: fcmToken);
+    Map<String, dynamic> response = await authRepo.updateFcmToken(
+      fcmToken: fcmToken,
+    );
     authRepo.setSharedPreferenceFcmToken(fcmToken: fcmToken);
     return response;
   }
@@ -195,32 +205,46 @@ class AuthController extends GetxController implements GetxService {
     String? mobile,
     int? isForgetPin,
   }) async {
-    Map<String, dynamic> response =
-    await authRepo.genearateOtp(cnic: cnic, islogin: islogin);
+    Map<String, dynamic> response = await authRepo.genearateOtp(
+      cnic: cnic,
+      islogin: islogin,
+    );
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       authRepo.saveLoginUserData(
-          user: UserModel(
-              data: Data(accessToken: response[APIRESPONSE.SUCCESS]['Data'])));
+        user: UserModel(
+          data: Data(accessToken: response[APIRESPONSE.SUCCESS]['Data']),
+        ),
+      );
       updateLoginUserData(
-          user: UserModel(
-              code: response[APIRESPONSE.SUCCESS]['Code'],
-              data: Data(accessToken: response[APIRESPONSE.SUCCESS]['Data'])));
-      Get.dialog(OtpVerificationDialog(
-        onOtpSubmit: (otp) {
-          verifyOTP(otp, islogin,
-              cnic: cnic, mobile: mobile, isForgetPin: isForgetPin);
-        },
-        onResendOtp: () {
-          resendOTP(cnic: cnic, islogin: islogin);
-        },
-        mobileNumber: mobile,
-      ));
+        user: UserModel(
+          code: response[APIRESPONSE.SUCCESS]['Code'],
+          data: Data(accessToken: response[APIRESPONSE.SUCCESS]['Data']),
+        ),
+      );
+      Get.dialog(
+        OtpVerificationDialog(
+          onOtpSubmit: (otp) {
+            verifyOTP(
+              otp,
+              islogin,
+              cnic: cnic,
+              mobile: mobile,
+              isForgetPin: isForgetPin,
+            );
+          },
+          onResendOtp: () {
+            resendOTP(cnic: cnic, islogin: islogin);
+          },
+          mobileNumber: mobile,
+        ),
+      );
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () => Get.back());
     } else {
       showPopDialog(
-          'We couldn’t complete your request\n Try again or contact assistance.',
-              () => Get.back());
+        'We couldn’t complete your request\n Try again or contact assistance.',
+        () => Get.back(),
+      );
     }
 
     return response;
@@ -232,19 +256,24 @@ class AuthController extends GetxController implements GetxService {
     String? cnic,
     int? islogin,
   }) async {
-    Map<String, dynamic> response =
-    await authRepo.genearateOtp(cnic: cnic, islogin: islogin);
+    Map<String, dynamic> response = await authRepo.genearateOtp(
+      cnic: cnic,
+      islogin: islogin,
+    );
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       authRepo.saveLoginUserData(
-          user: UserModel(
-              data: Data(accessToken: response[APIRESPONSE.SUCCESS]['Data'])));
+        user: UserModel(
+          data: Data(accessToken: response[APIRESPONSE.SUCCESS]['Data']),
+        ),
+      );
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () => Get.back());
     } else {
       showPopDialog(
-          'We couldn’t complete your request\n Try again or contact assistance.',
-              () => Get.back());
+        'We couldn’t complete your request\n Try again or contact assistance.',
+        () => Get.back(),
+      );
     }
 
     return response;
@@ -252,39 +281,52 @@ class AuthController extends GetxController implements GetxService {
 
   // Verify OTP
   Future<Map<String, dynamic>> verifyOTP(
-      String? code,
-      int? islogin, {
-        String? mobile,
-        String? cnic,
-        int? isForgetPin,
-      }) async {
+    String? code,
+    int? islogin, {
+    String? mobile,
+    String? cnic,
+    int? isForgetPin,
+  }) async {
     var fcm = AppData.getFcmToken();
 
-    Map<String, dynamic> response =
-    await authRepo.verifyOTP(code: code, islogin: islogin, fcmToken: fcm);
+    Map<String, dynamic> response = await authRepo.verifyOTP(
+      code: code,
+      islogin: islogin,
+      fcmToken: fcm,
+    );
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       AppData.clearPinData();
       Get.back();
       authRepo.saveLoginUserData(
-          user: UserModel(
-              code: response[APIRESPONSE.SUCCESS]['Code'],
-              data: Data(
-                  accessToken: response[APIRESPONSE.SUCCESS]['Data'],
-                  iscoporate: false)));
+        user: UserModel(
+          code: response[APIRESPONSE.SUCCESS]['Code'],
+          data: Data(
+            accessToken: response[APIRESPONSE.SUCCESS]['Data'],
+            iscoporate: false,
+          ),
+        ),
+      );
 
-      Get.off(() => PinEntryPage(
-        isForgetPin: isForgetPin,
-        isCreatePin:
-        response[APIRESPONSE.SUCCESS]['has_mpin'] ? false : true,
-        cnicNumber: cnic,
-        mobileNumber: mobile,
-      ));
+      Get.off(
+        () => PinEntryPage(
+          isForgetPin: isForgetPin,
+          isCreatePin: response[APIRESPONSE.SUCCESS]['has_mpin'] ? false : true,
+          cnicNumber: cnic,
+          mobileNumber: mobile,
+        ),
+      );
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(
-          response[APIRESPONSE.ERROR]['Message'], null, otpVerificationError: true);
+        response[APIRESPONSE.ERROR]['Message'],
+        null,
+        otpVerificationError: true,
+      );
     } else {
-      showPopDialog('We couldn’t complete your request\n Try again or contact assistance.',
-          null, otpVerificationError: true);
+      showPopDialog(
+        'We couldn’t complete your request\n Try again or contact assistance.',
+        null,
+        otpVerificationError: true,
+      );
     }
 
     return response;
@@ -301,44 +343,42 @@ class AuthController extends GetxController implements GetxService {
     String? newPin,
   }) async {
     var response = await authRepo.createPin(
-        cnic: cnic,
-        mobileNum: mobileNum,
-        isResetPin: isResetPin,
-        isCreatePin: isCreatePin,
-        isForgetPin: isForgetPin,
-        pin: pin,
-        newPin: newPin);
+      cnic: cnic,
+      mobileNum: mobileNum,
+      isResetPin: isResetPin,
+      isCreatePin: isCreatePin,
+      isForgetPin: isForgetPin,
+      pin: pin,
+      newPin: newPin,
+    );
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
-      AppData.savePinData(pinData: {
-        'mobile': mobileNum,
-        'cnic': cnic,
-        'pin': isForgetPin == 1 || isResetPin == 1 ? newPin : pin
-      });
-
-      showPopDialog(
-        response[APIRESPONSE.SUCCESS]['Message'],
-            () {
-          if (isResetPin == 1) {
-            Get.back();
-          } else {
-            verifyPIN(
-                cnic: cnic,
-                mobileNum: mobileNum,
-                pin: AppData.getPinData()?['pin']);
-            Get.back();
-            Get.back();
-          }
+      AppData.savePinData(
+        pinData: {
+          'mobile': mobileNum,
+          'cnic': cnic,
+          'pin': isForgetPin == 1 || isResetPin == 1 ? newPin : pin,
         },
       );
+
+      showPopDialog(response[APIRESPONSE.SUCCESS]['Message'], () {
+        if (isResetPin == 1) {
+          Get.back();
+        } else {
+          verifyPIN(
+            cnic: cnic,
+            mobileNum: mobileNum,
+            pin: AppData.getPinData()?['pin'],
+          );
+          Get.back();
+          Get.back();
+        }
+      });
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       log(response.toString());
-      showPopDialog(
-        response[APIRESPONSE.ERROR]['Message'],
-            () {
-          Get.back();
-        },
-      );
+      showPopDialog(response[APIRESPONSE.ERROR]['Message'], () {
+        Get.back();
+      });
     }
 
     return response;
@@ -362,17 +402,18 @@ class AuthController extends GetxController implements GetxService {
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       log('ontapp:$onTap');
       authRepo.saveLoginUserData(
-          user: UserModel(
-              code: response[APIRESPONSE.SUCCESS]['Code'],
-              data: Data(
-                  accessToken: response[APIRESPONSE.SUCCESS]['Data']
-                  ['access_token'],
-                  iscoporate: false)));
-      AppData.savePinData(
-          pinData: {'mobile': mobileNum, 'cnic': cnic, 'pin': pin});
-      Get.offAllNamed(
-        '/home',
+        user: UserModel(
+          code: response[APIRESPONSE.SUCCESS]['Code'],
+          data: Data(
+            accessToken: response[APIRESPONSE.SUCCESS]['Data']['access_token'],
+            iscoporate: false,
+          ),
+        ),
       );
+      AppData.savePinData(
+        pinData: {'mobile': mobileNum, 'cnic': cnic, 'pin': pin},
+      );
+      Get.offAllNamed('/home');
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], onTap);
     }

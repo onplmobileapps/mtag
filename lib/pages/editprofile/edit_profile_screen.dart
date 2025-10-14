@@ -24,13 +24,10 @@ class EditProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Analytics.profileScreenDisplayed();
     var size = MediaQuery.sizeOf(context);
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: const Text('Profile Details'),
-      ),
+      appBar: AppBar(title: const Text('Profile Details')),
       body: Obx(
         () => Container(
           constraints: const BoxConstraints.expand(),
@@ -76,8 +73,9 @@ class EditProfileScreen extends StatelessWidget {
                           [
                             Padding(
                               padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                      MediaQuery.sizeOf(context).width / 9),
+                                horizontal:
+                                    MediaQuery.sizeOf(context).width / 9,
+                              ),
                               child: Form(
                                 key: _formKey,
                                 autovalidateMode:
@@ -92,7 +90,8 @@ class EditProfileScreen extends StatelessWidget {
                                       textInputAction: TextInputAction.next,
                                       inputFormatters: [
                                         FilteringTextInputFormatter.allow(
-                                            RegExp(r'[a-zA-Z ]'))
+                                          RegExp(r'[a-zA-Z ]'),
+                                        ),
                                       ],
                                       controller: customerDetailsController
                                           .nameController,
@@ -103,8 +102,9 @@ class EditProfileScreen extends StatelessWidget {
                                         if (value!.isEmpty ||
                                             value.length < 3) {
                                           return 'Please enter FULL NAME';
-                                        } else if (RegExp(r'\s{2,}')
-                                            .hasMatch(value)) {
+                                        } else if (RegExp(
+                                          r'\s{2,}',
+                                        ).hasMatch(value)) {
                                           return 'Username must not have multiple spaces';
                                         }
                                         return null;
@@ -118,7 +118,8 @@ class EditProfileScreen extends StatelessWidget {
                                       inputFormatters: [
                                         CnicMaskTextInputFormatter(),
                                         FilteringTextInputFormatter.deny(
-                                            RegExp(r'[a-zA-Z]'))
+                                          RegExp(r'[a-zA-Z]'),
+                                        ),
                                       ],
                                       label: 'CNIC',
                                       keyboardType: TextInputType.number,
@@ -129,7 +130,7 @@ class EditProfileScreen extends StatelessWidget {
                                       textInputAction: TextInputAction.next,
                                       maxLength: 11,
                                       inputFormatters: [
-                                        FilteringTextInputFormatter.digitsOnly
+                                        FilteringTextInputFormatter.digitsOnly,
                                       ],
                                       controller: customerDetailsController
                                           .phoneController,
@@ -173,7 +174,8 @@ class EditProfileScreen extends StatelessWidget {
                                       validator: (v) {
                                         if (v !=
                                             customerDetailsController
-                                                .passwordController.text) {
+                                                .passwordController
+                                                .text) {
                                           return 'Password and Confirm Password is not same.';
                                         }
                                         return null;
@@ -184,29 +186,40 @@ class EditProfileScreen extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 50),
                                     ElevatedButton1(
-                                      backgroundColor:
-                                          Theme.of(context).primaryColor,
+                                      backgroundColor: Theme.of(
+                                        context,
+                                      ).primaryColor,
                                       width: double.infinity,
                                       onclick: () async {
                                         if (_formKey.currentState!.validate()) {
-                                          var response = await Get.find<
-                                                  UpdateEmailController>()
-                                              .updateEmail(
-                                            email: customerDetailsController
-                                                .emailController.text
-                                                .trim(),
-                                            fullName: customerDetailsController
-                                                .nameController.text
-                                                .trim(),
-                                            password: customerDetailsController
-                                                .passwordController.text
-                                                .trim(),
-                                          );
+                                          var response =
+                                              await Get.find<
+                                                    UpdateEmailController
+                                                  >()
+                                                  .updateEmail(
+                                                    email:
+                                                        customerDetailsController
+                                                            .emailController
+                                                            .text
+                                                            .trim(),
+                                                    fullName:
+                                                        customerDetailsController
+                                                            .nameController
+                                                            .text
+                                                            .trim(),
+                                                    password:
+                                                        customerDetailsController
+                                                            .passwordController
+                                                            .text
+                                                            .trim(),
+                                                  );
                                           if (response.containsKey(
-                                              APIRESPONSE.SUCCESS)) {
+                                            APIRESPONSE.SUCCESS,
+                                          )) {
                                             _otherConstants.ownerName.value =
                                                 customerDetailsController
-                                                    .nameController.text
+                                                    .nameController
+                                                    .text
                                                     .trim();
                                           }
                                         }
@@ -223,7 +236,7 @@ class EditProfileScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),

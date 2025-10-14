@@ -1,4 +1,3 @@
-// Import Platform to check OS
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +15,7 @@ import '../../widgets/car_loader.dart';
 import '../../widgets/dashboard_widget.dart';
 import '../../widgets/dialog/chat_support_dialog.dart';
 import '../../widgets/shimmer_dashboard.dart';
-import '../activity/activity_screen.dart';
+
 import '../recharge/controller/recharge_controller.dart';
 import '../recharge/recharge_page.dart';
 import '../settings/setting_screen.dart';
@@ -28,7 +27,7 @@ class HomePage extends GetView<HomeController> {
 
   final bottomNavigations = <Widget>[
     Container(),
-    const ActivityScreen(),
+    // const ActivityScreen(),
     SettingScreen(),
     Container(),
   ];
@@ -80,13 +79,7 @@ class HomePage extends GetView<HomeController> {
           ? RefreshIndicator.adaptive(
               displacement: 60,
               onRefresh: () async {
-                final mtagIds =
-                    controller.dashboradData.value.activeMtags
-                        ?.map((e) => e.tokenno)
-                        .whereType<String>()
-                        .toList() ??
-                    [];
-                await controller.sendCheckBalance(mtagIds);
+                await Get.find<HomeController>().pullRefreshDashboardData();
               },
               child: LayoutBuilder(
                 builder: (context, constraints) {
@@ -94,7 +87,7 @@ class HomePage extends GetView<HomeController> {
                   final screenHeight = constraints.maxHeight;
 
                   return Obx(
-                    () => controller.isLoading.value
+                    () => controller.isLoadingShimmer.value
                         ? buildShimmerEffect(screenWidth, screenHeight)
                         : CustomScrollView(
                             slivers: [
@@ -222,7 +215,7 @@ class HomePage extends GetView<HomeController> {
                                           .isNotEmpty
                                   ? SliverToBoxAdapter(
                                       child: SizedBox(
-                                        height: screenHeight * 0.25,
+                                        height: screenHeight * 0.23,
                                         child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
                                           itemCount: controller
@@ -249,8 +242,11 @@ class HomePage extends GetView<HomeController> {
 
                                               child: Obx(() {
                                                 return controller
-                                                        .isBalanceUpdate
-                                                        .value
+                                                            .isLoading
+                                                            .value ||
+                                                        controller
+                                                            .balanceUpdate
+                                                            .value
                                                     ? buildCarLoaderWidget(
                                                         context,
                                                         MediaQuery.of(
@@ -264,7 +260,7 @@ class HomePage extends GetView<HomeController> {
                                                           context,
                                                         ),
                                                         height:
-                                                            screenHeight * 0.30,
+                                                            screenHeight * 0.29,
                                                         isBlock: e.isactive,
                                                         jazzCode: controller
                                                             .dashboradData
@@ -279,6 +275,13 @@ class HomePage extends GetView<HomeController> {
                                                         vehType: e.vehicletype,
                                                         mtagId: e.tokenno,
                                                         userName: e.ownername,
+                                                        mobileNum:
+                                                            _otherConstants
+                                                                .mobile
+                                                                .string,
+                                                        cnic: _otherConstants
+                                                            .ownerCNIC
+                                                            .string,
                                                         regId: e.registration,
                                                         ball:
                                                             controller
@@ -294,6 +297,15 @@ class HomePage extends GetView<HomeController> {
                                                                 1
                                                             ? false
                                                             : true,
+                                                        balanceDashboard:
+                                                            e.balance,
+                                                        showChassisBadge:
+                                                            e.chassis_number ==
+                                                                null
+                                                            ? true
+                                                            : false,
+                                                        chassisNumber:
+                                                            e.chassis_number,
                                                       );
                                               }),
                                             );
@@ -430,22 +442,22 @@ class HomePage extends GetView<HomeController> {
               fit: BoxFit.fill,
             ),
           ),
-          BottomNavigationBarItem(
-            activeIcon: SvgPicture.asset(
-              'assets/clock-five.svg',
-              height: 20,
-              width: 20,
-              fit: BoxFit.fill,
-            ),
-            label: 'Activities',
-            tooltip: 'Activities',
-            icon: SvgPicture.asset(
-              'assets/clock-five.svg',
-              height: 20,
-              width: 20,
-              fit: BoxFit.fill,
-            ),
-          ),
+          // BottomNavigationBarItem(
+          //   activeIcon: SvgPicture.asset(
+          //     'assets/clock-five.svg',
+          //     height: 20,
+          //     width: 20,
+          //     fit: BoxFit.fill,
+          //   ),
+          //   label: 'Activities',
+          //   tooltip: 'Activities',
+          //   icon: SvgPicture.asset(
+          //     'assets/clock-five.svg',
+          //     height: 20,
+          //     width: 20,
+          //     fit: BoxFit.fill,
+          //   ),
+          // ),
           BottomNavigationBarItem(
             activeIcon: Image.asset('assets/settings.png', height: 20),
             label: 'Settings',

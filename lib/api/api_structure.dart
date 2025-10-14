@@ -27,64 +27,79 @@ class APISTRUCTURE {
   });
 
   // Configure Dio with interceptors
-  static apiClient.Dio  _configureDio() {
-    final dio = apiClient.Dio(apiClient.BaseOptions(
-      baseUrl: BASE_URL,
-      connectTimeout: const Duration(seconds: 120),
-      receiveTimeout: const Duration(seconds: 120),
-      headers: {
-        "Accept": "application/json",
-        "Connection": "Keep-Alive",
-        'User-agent': 'your bot 0.1',
-      },
-      followRedirects: false,
-      validateStatus: (status) => status != null && status < 600,
-    ));
+  static apiClient.Dio _configureDio() {
+    final dio = apiClient.Dio(
+      apiClient.BaseOptions(
+        baseUrl: BASE_URL,
+        connectTimeout: const Duration(seconds: 120),
+        receiveTimeout: const Duration(seconds: 120),
+        headers: {
+          "Accept": "application/json",
+          "Connection": "Keep-Alive",
+          'User-agent': 'your bot 0.1',
+        },
+        followRedirects: false,
+        validateStatus: (status) => status != null && status < 600,
+      ),
+    );
 
-    dio.interceptors.add(apiClient.InterceptorsWrapper(
-      onRequest: (options, handler) async {
-        // Add Authorization header dynamically
-        final authToken = Get.find<AuthController>().authRepo.getAuthToken();
-        if (authToken != null) {
-          options.headers["Authorization"] = "Bearer $authToken";
-        }
-        // Add Content-Type if provided
-        if (options.extra['contentType'] != null) {
-          options.headers["Content-Type"] = options.extra['contentType'];
-        }
-        // Check connectivity before proceeding
-        final connectivityResult = await ConnectionCheck.isConnected();
-        if (!connectivityResult.containsKey(APIRESPONSE.SUCCESS)) {
-          handler.reject(
-            apiClient.DioException(
-              requestOptions: options,
-              error: Exception(connectivityResult[APIRESPONSE.ERROR]['Message']),
-              type: apiClient.DioExceptionType.connectionError,
-            ),
-            true,
-          );
-          return;
-        }
-        handler.next(options);
-      },
-      onResponse: (response, handler) {
-        handler.next(response);
-      },
-      onError: (apiClient.DioException e, apiClient.ErrorInterceptorHandler handler) {
-        // Handle errors globally
-        final response = _handleException(e);
-        handler.resolve(apiClient.Response(
-          requestOptions: e.requestOptions,
-          statusCode: e.response?.statusCode ?? 500,
-          data: response,
-        ));
-      },
-    ));
+    dio.interceptors.add(
+      apiClient.InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          // Add Authorization header dynamically
+          final authToken = Get.find<AuthController>().authRepo.getAuthToken();
+          if (authToken != null) {
+            options.headers["Authorization"] = "Bearer $authToken";
+          }
+          // Add Content-Type if provided
+          if (options.extra['contentType'] != null) {
+            options.headers["Content-Type"] = options.extra['contentType'];
+          }
+          // Check connectivity before proceeding
+          final connectivityResult = await ConnectionCheck.isConnected();
+          if (!connectivityResult.containsKey(APIRESPONSE.SUCCESS)) {
+            handler.reject(
+              apiClient.DioException(
+                requestOptions: options,
+                error: Exception(
+                  connectivityResult[APIRESPONSE.ERROR]['Message'],
+                ),
+                type: apiClient.DioExceptionType.connectionError,
+              ),
+              true,
+            );
+            return;
+          }
+          handler.next(options);
+        },
+        onResponse: (response, handler) {
+          handler.next(response);
+        },
+        onError:
+            (
+              apiClient.DioException e,
+              apiClient.ErrorInterceptorHandler handler,
+            ) {
+              // Handle errors globally
+              final response = _handleException(e);
+              handler.resolve(
+                apiClient.Response(
+                  requestOptions: e.requestOptions,
+                  statusCode: e.response?.statusCode ?? 500,
+                  data: response,
+                ),
+              );
+            },
+      ),
+    );
 
     return dio;
   }
 
-  Future<Map<String, dynamic>> requestAPI({bool isShowLoading = false,bool isCheckAuthorization=false }) async {
+  Future<Map<String, dynamic>> requestAPI({
+    bool isShowLoading = false,
+    bool isCheckAuthorization = false,
+  }) async {
     if (isShowLoading) ApiLoader.show();
 
     try {
@@ -92,16 +107,30 @@ class APISTRUCTURE {
 
       switch (apiRequestMethod) {
         case APIREQUESTMETHOD.GET:
-          response = await _dio.get(apiUrl, options: apiClient.Options(extra: {'contentType': contentType}));
+          response = await _dio.get(
+            apiUrl,
+            options: apiClient.Options(extra: {'contentType': contentType}),
+          );
           break;
         case APIREQUESTMETHOD.POST:
-          response = await _dio.post(apiUrl, data: body, options: apiClient.Options(extra: {'contentType': contentType}));
+          response = await _dio.post(
+            apiUrl,
+            data: body,
+            options: apiClient.Options(extra: {'contentType': contentType}),
+          );
           break;
         case APIREQUESTMETHOD.DELETE:
-          response = await _dio.delete(apiUrl, options: apiClient.Options(extra: {'contentType': contentType}));
+          response = await _dio.delete(
+            apiUrl,
+            options: apiClient.Options(extra: {'contentType': contentType}),
+          );
           break;
         case APIREQUESTMETHOD.PUT:
-          response = await _dio.put(apiUrl, data: body, options: apiClient.Options(extra: {'contentType': contentType}));
+          response = await _dio.put(
+            apiUrl,
+            data: body,
+            options: apiClient.Options(extra: {'contentType': contentType}),
+          );
           break;
         default:
           throw Exception('Unsupported request method');
@@ -129,19 +158,31 @@ class APISTRUCTURE {
         response.statusCode == 522 ||
         response.statusCode == 429) {
       return {
-        APIRESPONSE.ERROR: {'Message': 'We couldn’t complete your request\n Try again or contact assistance.\nTry again later.'}
+        APIRESPONSE.ERROR: {
+          'Message':
+              'We couldn’t complete your request\n Try again or contact assistance.',
+        },
       };
     } else if (response.statusCode == 502) {
       return {
-        APIRESPONSE.ERROR: {'Message': 'Cannot process right now\nTry again later.'}
+        APIRESPONSE.ERROR: {
+          'Message': 'Cannot process right now\nTry again later.',
+        },
       };
-    } else if (response.statusMessage == 'CONFLICT' || response.statusCode == 400 || response.statusCode == 404 || response.statusCode == 450 || response.statusCode == 409) {
+    } else if (response.statusMessage == 'CONFLICT' ||
+        response.statusCode == 400 ||
+        response.statusCode == 404 ||
+        response.statusCode == 450 ||
+        response.statusCode == 409) {
       log('controll here${response.statusCode}');
       return {APIRESPONSE.ERROR: response.data};
     } else {
       log('controll here${response.statusCode}');
       return {
-        APIRESPONSE.ERROR: {"Message": "We couldn’t complete your request\n Try again or contact assistance.\nTry again later."}
+        APIRESPONSE.ERROR: {
+          "Message":
+              "We couldn’t complete your request\n Try again or contact assistance.\nTry again later.",
+        },
       };
     }
   }
@@ -184,10 +225,15 @@ class APISTRUCTURE {
       _showDialog('Server Bad response');
       return {APIRESPONSE.EXCEPTION: APIEXCEPTION.FORMAT};
     } else {
-      _showDialog(e.toString().contains("SocketException") ? "Internet Connection Error" : "Unknown error occurred");
+      _showDialog(
+        e.toString().contains("SocketException")
+            ? "Internet Connection Error"
+            : "Unknown error occurred",
+      );
       return {
-        APIRESPONSE.EXCEPTION:
-            e.toString().contains("SocketException") ? "Internet Connection Error" : APIEXCEPTION.UNKNOWN
+        APIRESPONSE.EXCEPTION: e.toString().contains("SocketException")
+            ? "Internet Connection Error"
+            : APIEXCEPTION.UNKNOWN,
       };
     }
   }
@@ -210,10 +256,7 @@ class APISTRUCTURE {
                     horizontal: 20.0,
                     vertical: 10.0,
                   ),
-                  child: const Text(
-                    'Ok',
-                    style: TextStyle(fontSize: 17),
-                  ),
+                  child: const Text('Ok', style: TextStyle(fontSize: 17)),
                 ),
               ),
             ),

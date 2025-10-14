@@ -101,9 +101,6 @@ class MyMtagScreen extends StatelessWidget {
                   },
                   child: InkWell(
                     onTap: () async {
-                      Analytics.selectedMTag(
-                        argument[index].tokenno.toString(),
-                      );
                       await Get.toNamed(
                         '/mtagDetails',
                         arguments: argument[index],

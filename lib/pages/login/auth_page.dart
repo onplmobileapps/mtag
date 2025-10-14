@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import '../../api/auth_controller.dart';
+import '../../constants/analytics.dart';
 import '../../constants/input_formater.dart';
 import '../../utils/utils.dart';
 import 'controller/auth_page_controller.dart';
@@ -199,15 +200,15 @@ class AuthPage extends StatelessWidget {
                     Center(
                       child: isDarkMode
                           ? Image.asset(
-                        'assets/darklogo.png',
-                        height: 60.0,
-                        fit: BoxFit.contain,
-                      )
+                              'assets/darklogo.png',
+                              height: 60.0,
+                              fit: BoxFit.contain,
+                            )
                           : SvgPicture.asset(
-                        'assets/logolight.svg',
-                        height: 60.0,
-                        fit: BoxFit.contain,
-                      ),
+                              'assets/logolight.svg',
+                              height: 60.0,
+                              fit: BoxFit.contain,
+                            ),
                     ),
                     SizedBox(height: screenHeight * 0.06),
                     Row(
@@ -347,98 +348,152 @@ class AuthPage extends StatelessWidget {
                                 ),
                                 prefixIcon: controller.authIndex.value == 1
                                     ? Padding(
-                                  padding: const EdgeInsets.only(left: 4, right: 4),
-                                  child: SizedBox(
-                                    width: 200,
-                                    child: DropdownButtonHideUnderline(
-                                      child: DropdownButton<Map<String, dynamic>>(
-                                        value: controller.selectedOperator.value,
-                                        icon: const Icon(Icons.arrow_drop_down, size: 18),
-                                        isExpanded: true,
-                                        hint: Row(
-                                          children: [
-                                            Text(
-                                              'Select Operator',
-                                              style: theme.textTheme.bodySmall?.copyWith(
-                                                color: colorScheme.onSurface,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ],
+                                        padding: const EdgeInsets.only(
+                                          left: 4,
+                                          right: 4,
                                         ),
-                                        onChanged: (Map<String, dynamic>? newValue) {
-                                          if (newValue != null) {
-                                            controller.selectedOperator.value = newValue;
-                                          }
-                                        },
-                                        selectedItemBuilder: (context) {
-                                          return operatorList.map((operator) {
-                                            return Row(
-                                              children: [
-                                                Image.asset(
-                                                  operator['image'],
-                                                  height: 20,
-                                                  width: 20,
-                                                  errorBuilder: (context, error, stackTrace) =>
-                                                  const Icon(Icons.sim_card, size: 20),
-                                                ),
-                                                const SizedBox(width: 6),
-                                                Flexible(
-                                                  child: Text(
-                                                    operator['text'],
-                                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                                      fontWeight: FontWeight.w500,
-                                                      color: colorScheme.onSurface,
-                                                    ),
-                                                    overflow: TextOverflow.ellipsis,
+                                        child: SizedBox(
+                                          width: 200,
+                                          child: DropdownButtonHideUnderline(
+                                            child: DropdownButton<Map<String, dynamic>>(
+                                              value: controller
+                                                  .selectedOperator
+                                                  .value,
+                                              icon: const Icon(
+                                                Icons.arrow_drop_down,
+                                                size: 18,
+                                              ),
+                                              isExpanded: true,
+                                              hint: Row(
+                                                children: [
+                                                  Text(
+                                                    'Select Operator',
+                                                    style: theme
+                                                        .textTheme
+                                                        .bodySmall
+                                                        ?.copyWith(
+                                                          color: colorScheme
+                                                              .onSurface,
+                                                        ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
-                                                ),
-                                              ],
-                                            );
-                                          }).toList();
-                                        },
-                                        items: operatorList.map((operator) {
-                                          return DropdownMenuItem<Map<String, dynamic>>(
-                                            value: operator,
-                                            child: Row(
-                                              children: [
-                                                Image.asset(
-                                                  operator['image'],
-                                                  height: 24,
-                                                  width: 24,
-                                                  errorBuilder: (context, error, stackTrace) =>
-                                                  const Icon(Icons.sim_card, size: 20),
-                                                ),
-                                                const SizedBox(width: 8),
-                                                Flexible(
-                                                  child: Text(
-                                                    operator['text'],
-                                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                                  fontWeight: FontWeight.w500,
-                                                    color: colorScheme.onSurface,
+                                                ],
+                                              ),
+                                              onChanged:
+                                                  (
+                                                    Map<String, dynamic>?
+                                                    newValue,
+                                                  ) {
+                                                    if (newValue != null) {
+                                                      controller
+                                                              .selectedOperator
+                                                              .value =
+                                                          newValue;
+                                                    }
+                                                  },
+                                              selectedItemBuilder: (context) {
+                                                return operatorList.map((
+                                                  operator,
+                                                ) {
+                                                  return Row(
+                                                    children: [
+                                                      Image.asset(
+                                                        operator['image'],
+                                                        height: 20,
+                                                        width: 20,
+                                                        errorBuilder:
+                                                            (
+                                                              context,
+                                                              error,
+                                                              stackTrace,
+                                                            ) => const Icon(
+                                                              Icons.sim_card,
+                                                              size: 20,
+                                                            ),
+                                                      ),
+                                                      const SizedBox(width: 6),
+                                                      Flexible(
+                                                        child: Text(
+                                                          operator['text'],
+                                                          style: theme
+                                                              .textTheme
+                                                              .bodyMedium
+                                                              ?.copyWith(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: colorScheme
+                                                                    .onSurface,
+                                                              ),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  );
+                                                }).toList();
+                                              },
+                                              items: operatorList.map((
+                                                operator,
+                                              ) {
+                                                return DropdownMenuItem<
+                                                  Map<String, dynamic>
+                                                >(
+                                                  value: operator,
+                                                  child: Row(
+                                                    children: [
+                                                      Image.asset(
+                                                        operator['image'],
+                                                        height: 24,
+                                                        width: 24,
+                                                        errorBuilder:
+                                                            (
+                                                              context,
+                                                              error,
+                                                              stackTrace,
+                                                            ) => const Icon(
+                                                              Icons.sim_card,
+                                                              size: 20,
+                                                            ),
+                                                      ),
+                                                      const SizedBox(width: 8),
+                                                      Flexible(
+                                                        child: Text(
+                                                          operator['text'],
+                                                          style: theme
+                                                              .textTheme
+                                                              .bodyMedium
+                                                              ?.copyWith(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: colorScheme
+                                                                    .onSurface,
+                                                              ),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                ),
-                                              ],
+                                                );
+                                              }).toList(),
+                                              isDense: false,
+                                              dropdownColor: Theme.of(
+                                                context,
+                                              ).colorScheme.surface,
+                                              menuMaxHeight: 300,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
                                             ),
-                                          );
-                                        }).toList(),
-                                        isDense: false,
-                                        dropdownColor: Theme.of(context).colorScheme.surface,
-                                        menuMaxHeight: 300,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                  ),
-                                )
+                                          ),
+                                        ),
+                                      )
                                     : null,
-
                               ),
                               onChanged: (value) {
-                                final detectedOperator = _detectOperator(
-                                  value ,
-                                );
+                                final detectedOperator = _detectOperator(value);
                                 if (detectedOperator != null) {
                                   controller.selectedOperator.value =
                                       detectedOperator;

@@ -42,3 +42,11 @@ Optimizations:
 5. Light dark theme settings on dialogues
 6. Change biometrics icons
 7. Not yet tested on ios device
+
+#Changelog Tuesday 14 Oct 2025
+
+1. Add chassis number (working on android || ios not tested)
+2. Balance transfer (working on android || ios not tested)
+3. Check balance (Working on android || ios not tested)
+4. Shimmer loading (Testing not done due to test server issue)
+5. Overall dashboard widget adjustments (Tested on android || ios not tested)

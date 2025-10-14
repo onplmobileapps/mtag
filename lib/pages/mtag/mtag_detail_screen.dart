@@ -12,20 +12,17 @@ import '../dashboard/model/dashboard_model.dart';
 
 class MatagDetailScreen extends GetView<TollController> {
   MatagDetailScreen({super.key});
+
   final arguments = Get.arguments is List<ActiveMtags>
       ? Get.arguments as List<ActiveMtags>
       : Get.arguments != null
-          ? [Get.arguments as ActiveMtags]
-          : [ActiveMtags()];
+      ? [Get.arguments as ActiveMtags]
+      : [ActiveMtags()];
 
   @override
   Widget build(BuildContext context) {
-    Analytics.vehicleDetailScreenDisplayed();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Vehicle Details'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Vehicle Details'), centerTitle: true),
       body: Container(
         constraints: const BoxConstraints.expand(),
         decoration: BoxDecoration(color: Theme.of(context).primaryColor),
@@ -63,10 +60,12 @@ class MatagDetailScreen extends GetView<TollController> {
                           ),
                           Text(
                             'PKR ${arguments.isNotEmpty ? arguments.first.balance ?? '00.00' : '00.00'}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: Colors.green, fontSize: 16, fontWeight: FontWeight.bold),
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: Colors.green,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                         ],
                       ),
@@ -87,7 +86,9 @@ class MatagDetailScreen extends GetView<TollController> {
                                 width: 200,
                                 child: Text(
                                   'Owner: ${arguments.isNotEmpty ? arguments.first.ownername ?? '' : ''}',
-                                  style: Theme.of(context).textTheme.displaySmall,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.displaySmall,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -108,7 +109,9 @@ class MatagDetailScreen extends GetView<TollController> {
                               FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: SvgPicture.asset(
-                                  getVehicleImage(arguments.first.vehicletype??''),
+                                  getVehicleImage(
+                                    arguments.first.vehicletype ?? '',
+                                  ),
                                   colorFilter: ColorFilter.mode(
                                     Theme.of(context).hintColor,
                                     BlendMode.srcIn,
@@ -122,7 +125,9 @@ class MatagDetailScreen extends GetView<TollController> {
                                 fit: BoxFit.scaleDown,
                                 child: Text(
                                   'Vehicle: ${arguments.isNotEmpty ? arguments.first.vehicletype ?? '' : ''}',
-                                  style: Theme.of(context).textTheme.displaySmall,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.displaySmall,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -140,9 +145,11 @@ class MatagDetailScreen extends GetView<TollController> {
                   backgroundColor: Theme.of(context).primaryColor,
                   width: double.infinity,
                   onclick: () async {
-                    if (arguments.isNotEmpty && arguments.first.tokenno != null) {
-                      Analytics.rechargeOnVehicleDetailScreenTapped(arguments.first.tokenno.toString());
-                      Get.find<RechargeController>().isPaymentModdeVisible(false);
+                    if (arguments.isNotEmpty &&
+                        arguments.first.tokenno != null) {
+                      Get.find<RechargeController>().isPaymentModdeVisible(
+                        false,
+                      );
                       Get.find<RechargeController>().isSummaryVisible(false);
                       Get.find<RechargeController>().isRechageVisible(true);
                       await Get.toNamed('/recharge', arguments: arguments);
@@ -159,16 +166,24 @@ class MatagDetailScreen extends GetView<TollController> {
                 Expanded(
                   child: FutureBuilder(
                     future: controller.geTollHistory(
-                      mtagID: arguments.isNotEmpty ? arguments.first.tokenno : '',
+                      mtagID: arguments.isNotEmpty
+                          ? arguments.first.tokenno
+                          : '',
                     ),
                     builder: (_, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: Text('Please Wait'));
                       }
 
-                      var transactions = controller.tollHistoryModel.value?.data?.allTransactions;
+                      var transactions = controller
+                          .tollHistoryModel
+                          .value
+                          ?.data
+                          ?.allTransactions;
                       if (transactions == null || transactions.isEmpty) {
-                        return const Center(child: Text('No transactions found'));
+                        return const Center(
+                          child: Text('No transactions found'),
+                        );
                       }
 
                       return ListView.builder(
@@ -190,17 +205,22 @@ class MatagDetailScreen extends GetView<TollController> {
                                   children: [
                                     Text(
                                       'M-TAG ${data.iTOKKENNO ?? ''}',
-                                      style: Theme.of(context).textTheme.displaySmall,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.displaySmall,
                                     ),
                                     Text(
                                       data.tRANSTIME ?? '',
-                                      style: Theme.of(context).textTheme.displaySmall,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.displaySmall,
                                     ),
                                   ],
                                 ),
                                 trailing: Text(
                                   '${data.cR ?? ''} PKR ${data.fARE ?? ''}',
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.green),
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(color: Colors.green),
                                 ),
                               ),
                               const Divider(thickness: 0.5),

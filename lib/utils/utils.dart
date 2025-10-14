@@ -62,7 +62,6 @@ sealed class AppUpdate {
         await InAppUpdate.performImmediateUpdate();
       }
     } catch (e) {
-      // Handle any errors that occurred during the update check
       log('Error checking for updates: $e');
     }
   }
@@ -71,7 +70,7 @@ sealed class AppUpdate {
 void startTimer(ValueNotifier<Duration> timerNotifier) {
   Timer.periodic(Duration(seconds: 1), (timer) {
     if (timerNotifier.value > Duration.zero) {
-      timerNotifier.value -= Duration(seconds: 1); // Decrement timer
+      timerNotifier.value -= Duration(seconds: 1);
     } else {
       timer.cancel();
     }
@@ -103,10 +102,12 @@ String? validateAmount(String? value) {
   }
 
   final homeController = Get.find<HomeController>();
-  final minAmount =
-      int.tryParse('${homeController.dashboradData.value.rechargeMinAmount}');
-  final maxAmount =
-      int.tryParse('${homeController.dashboradData.value.rechargeMaxAmount}');
+  final minAmount = int.tryParse(
+    '${homeController.dashboradData.value.rechargeMinAmount}',
+  );
+  final maxAmount = int.tryParse(
+    '${homeController.dashboradData.value.rechargeMaxAmount}',
+  );
 
   if (minAmount == null || maxAmount == null) {
     return 'Invalid amount range';
@@ -123,8 +124,12 @@ String formatDateTime(String inputDateTime, {bool roundMinutes = false}) {
     DateTime dateTime = DateFormat("dd-MM-yy HH:mm:ss").parse(inputDateTime);
 
     if (roundMinutes) {
-      dateTime =
-          DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour);
+      dateTime = DateTime(
+        dateTime.year,
+        dateTime.month,
+        dateTime.day,
+        dateTime.hour,
+      );
     }
 
     // Format the date-time to the desired output format
