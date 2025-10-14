@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../api/user_repo.dart';
 import '../../base/app_data.dart';
@@ -87,7 +88,7 @@ class HomePage extends GetView<HomeController> {
                   final screenHeight = constraints.maxHeight;
 
                   return Obx(
-                    () => controller.isLoadingShimmer.value
+                    () => controller.isLoading.value
                         ? buildShimmerEffect(screenWidth, screenHeight)
                         : CustomScrollView(
                             slivers: [
@@ -241,72 +242,65 @@ class HomePage extends GetView<HomeController> {
                                                   ),
 
                                               child: Obx(() {
-                                                return controller
-                                                            .isLoading
-                                                            .value ||
-                                                        controller
-                                                            .balanceUpdate
-                                                            .value
-                                                    ? buildCarLoaderWidget(
-                                                        context,
-                                                        MediaQuery.of(
-                                                              context,
-                                                            ).size.height *
-                                                            0.25,
-                                                      )
-                                                    : mtagDataWidget(
-                                                        context,
-                                                        size: MediaQuery.sizeOf(
-                                                          context,
-                                                        ),
-                                                        height:
-                                                            screenHeight * 0.29,
-                                                        isBlock: e.isactive,
-                                                        jazzCode: controller
-                                                            .dashboradData
-                                                            .value
-                                                            .jazzCashRecharge
-                                                            .toString(),
-                                                        creditCode: controller
-                                                            .dashboradData
-                                                            .value
-                                                            .creditCardRecharge
-                                                            .toString(),
-                                                        vehType: e.vehicletype,
-                                                        mtagId: e.tokenno,
-                                                        userName: e.ownername,
-                                                        mobileNum:
-                                                            _otherConstants
-                                                                .mobile
-                                                                .string,
-                                                        cnic: _otherConstants
-                                                            .ownerCNIC
-                                                            .string,
-                                                        regId: e.registration,
-                                                        ball:
-                                                            controller
-                                                                .balances[e
-                                                                .tokenno] ??
-                                                            "0.00",
-                                                        showTransferButton:
-                                                            controller
-                                                                    .dashboradData
-                                                                    .value
-                                                                    .activeMtags!
-                                                                    .length ==
-                                                                1
-                                                            ? false
-                                                            : true,
-                                                        balanceDashboard:
-                                                            e.balance,
-                                                        showChassisBadge:
-                                                            e.chassis_number ==
-                                                                null
-                                                            ? true
-                                                            : false,
-                                                        chassisNumber:
-                                                            e.chassis_number,
-                                                      );
+                                                return
+                                                // controller.isLoading.value
+                                                //   ? placeholderWidget(
+                                                //       context,
+                                                //       size: MediaQuery.sizeOf(
+                                                //         context,
+                                                //       ),
+                                                //       height:
+                                                //           screenHeight * 0.29,
+                                                //     )
+                                                //   :
+                                                mtagDataWidget(
+                                                  context,
+                                                  size: MediaQuery.sizeOf(
+                                                    context,
+                                                  ),
+                                                  height: screenHeight * 0.29,
+                                                  isBlock: e.isactive,
+                                                  jazzCode: controller
+                                                      .dashboradData
+                                                      .value
+                                                      .jazzCashRecharge
+                                                      .toString(),
+                                                  creditCode: controller
+                                                      .dashboradData
+                                                      .value
+                                                      .creditCardRecharge
+                                                      .toString(),
+                                                  vehType: e.vehicletype,
+                                                  mtagId: e.tokenno,
+                                                  userName: e.ownername,
+                                                  mobileNum: _otherConstants
+                                                      .mobile
+                                                      .string,
+                                                  cnic: _otherConstants
+                                                      .ownerCNIC
+                                                      .string,
+                                                  regId: e.registration,
+                                                  ball:
+                                                      controller.balances[e
+                                                          .tokenno] ??
+                                                      "0.00",
+                                                  showTransferButton:
+                                                      controller
+                                                              .dashboradData
+                                                              .value
+                                                              .activeMtags!
+                                                              .length ==
+                                                          1
+                                                      ? false
+                                                      : true,
+                                                  balanceDashboard: e.balance,
+                                                  showChassisBadge:
+                                                      e.chassis_number == null
+                                                      ? true
+                                                      : false,
+                                                  chassisNumber:
+                                                      e.chassis_number,
+                                                );
                                               }),
                                             );
                                           },

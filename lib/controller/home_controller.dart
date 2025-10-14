@@ -26,7 +26,6 @@ class HomeController extends GetxController implements GetxService {
 
   final RxInt currentPage = 0.obs;
   final RxBool isLoading = false.obs;
-  final RxBool isLoadingShimmer = false.obs;
 
   //new logic for loading
   var balanceUpdate = false.obs;
@@ -63,10 +62,8 @@ class HomeController extends GetxController implements GetxService {
     bool? isLoadingValue,
   }) async {
     isLoading.value = true;
-    isLoadingShimmer.value = true;
     final response = await userRepo.getdashBoardData();
     isLoading.value = false;
-    isLoadingShimmer.value = false;
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       _updateDashboardData(response[APIRESPONSE.SUCCESS]);

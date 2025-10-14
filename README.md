@@ -50,3 +50,4 @@ Optimizations:
 3. Check balance (Working on android || ios not tested)
 4. Shimmer loading (Testing not done due to test server issue)
 5. Overall dashboard widget adjustments (Tested on android || ios not tested)
+6. Images remove new set when adnan sends
