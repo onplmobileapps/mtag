@@ -1,5 +1,6 @@
 import java.util.Properties
 import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
@@ -16,17 +17,17 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.ls.onenetwork.mtag"
     compileSdk = flutter.compileSdkVersion
-      ndkVersion = "27.0.12077973"
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
-         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
 
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = "17"
 
     }
 
@@ -39,7 +40,7 @@ android {
         targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-       ndk {
+        ndk {
             // Filter for architectures supported by Flutter
             abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86_64")
         }
@@ -66,10 +67,9 @@ flutter {
     source = "../.."
 }
 dependencies {
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
-    implementation ("com.google.android.material:material:1.12.0")
-
+    implementation("com.google.android.material:material:1.12.0")
 
 
 }

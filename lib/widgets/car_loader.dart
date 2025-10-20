@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 Widget buildCarLoaderWidget(BuildContext context, double height) {
-  final responsiveHeight = height.clamp(100.0, MediaQuery.sizeOf(context).height * 0.3);
+  final responsiveHeight = height.clamp(
+    100.0,
+    MediaQuery.sizeOf(context).height * 0.3,
+  );
 
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -17,17 +20,16 @@ Widget buildCarLoaderWidget(BuildContext context, double height) {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Expanded(
-            child: _SpeedingCarAnimation(height: responsiveHeight),
-          ),
+          Expanded(child: _SpeedingCarAnimation(height: responsiveHeight)),
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
             child: Text(
-              'Please wait while we fetch your balance',
+              'Please wait...',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
             ),
           ),
         ],
@@ -38,6 +40,7 @@ Widget buildCarLoaderWidget(BuildContext context, double height) {
 
 class _SpeedingCarAnimation extends StatefulWidget {
   final double height;
+
   const _SpeedingCarAnimation({required this.height});
 
   @override
@@ -93,10 +96,7 @@ class _SpeedingCarAnimationState extends State<_SpeedingCarAnimation>
           child: Stack(
             children: [
               Positioned.fill(
-                child: SvgPicture.asset(
-                  'assets/demo.svg',
-                  fit: BoxFit.contain,
-                ),
+                child: SvgPicture.asset('assets/demo.svg', fit: BoxFit.contain),
               ),
               // Moving small car
               AnimatedBuilder(

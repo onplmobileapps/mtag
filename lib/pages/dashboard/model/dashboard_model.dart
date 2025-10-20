@@ -16,19 +16,20 @@ class DashBoardModel {
   int? rechargeMinAmount;
   VersionCheck? versionCheck;
 
-  DashBoardModel(
-      {this.activeMtags,
-      this.code,
-      this.creditCardRecharge,
-      this.customerDetail,
-      this.helpLineNumber,
-      this.jazzCashRecharge,
-      this.picturesURL,
-      this.promotionalPopUpImage,
-      this.questionPending,
-      this.rechargeMaxAmount,
-      this.rechargeMinAmount,
-      this.versionCheck});
+  DashBoardModel({
+    this.activeMtags,
+    this.code,
+    this.creditCardRecharge,
+    this.customerDetail,
+    this.helpLineNumber,
+    this.jazzCashRecharge,
+    this.picturesURL,
+    this.promotionalPopUpImage,
+    this.questionPending,
+    this.rechargeMaxAmount,
+    this.rechargeMinAmount,
+    this.versionCheck,
+  });
 
   DashBoardModel.fromJson(Map<String, dynamic> json) {
     if (json['ActiveMtags'] != null) {
@@ -39,17 +40,25 @@ class DashBoardModel {
     }
     code = json['Code'];
     creditCardRecharge = json['Credit_Card_Recharge'];
-    customerDetail = json['Customer_Detail'] != null ? CustomerDetail.fromJson(json['Customer_Detail']) : null;
+    customerDetail = json['Customer_Detail'] != null
+        ? CustomerDetail.fromJson(json['Customer_Detail'])
+        : null;
     helpLineNumber = json['HelpLineNumber'];
     jazzCashRecharge = json['Jazz_Cash_Recharge'];
-    picturesURL = json['Pictures_URL'] != null ? PicturesURL.fromJson(json['Pictures_URL']) : null;
+    picturesURL = json['Pictures_URL'] != null
+        ? PicturesURL.fromJson(json['Pictures_URL'])
+        : null;
     promotionalPopUpImage = json['Promotional_PopUp_Image'] != null
         ? PromotionalPopUpImage.fromJson(json['Promotional_PopUp_Image'])
         : null;
-    questionPending = json['Question_Pending'] != null ? QuestionPending.fromJson(json['Question_Pending']) : null;
+    questionPending = json['Question_Pending'] != null
+        ? QuestionPending.fromJson(json['Question_Pending'])
+        : null;
     rechargeMaxAmount = json['Recharge_Max_Amount'];
     rechargeMinAmount = json['Recharge_Min_Amount'];
-    versionCheck = json['Version_Check'] != null ? VersionCheck.fromJson(json['Version_Check']) : null;
+    versionCheck = json['Version_Check'] != null
+        ? VersionCheck.fromJson(json['Version_Check'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -95,7 +104,8 @@ class ActiveMtags {
   String? vehicletype;
   String? amount;
   String? payId;
-  RxBool ?isObscured;
+  RxBool? isObscured;
+  String? chassis_number;
 
   ActiveMtags({
     this.balance,
@@ -109,7 +119,9 @@ class ActiveMtags {
     this.tokenno,
     this.vehicletype,
     this.amount,
-    this.payId, this.isObscured
+    this.payId,
+    this.isObscured,
+    this.chassis_number,
   });
 
   ActiveMtags.fromJson(Map<String, dynamic> json) {
@@ -123,6 +135,7 @@ class ActiveMtags {
     smsStaus = json['sms_staus'];
     tokenno = json['tokenno'];
     vehicletype = json['vehicletype'];
+    chassis_number = json['chassis_number'];
   }
 
   Map<String, dynamic> toJson() {
@@ -137,6 +150,7 @@ class ActiveMtags {
     data['sms_staus'] = smsStaus;
     data['tokenno'] = tokenno;
     data['vehicletype'] = vehicletype;
+    data['chassis_number'] = chassis_number;
     return data;
   }
 }
@@ -147,9 +161,16 @@ class CustomerDetail {
   String? fullName;
   String? mobileNumber;
   String? password;
-  int ? sim_operator;
+  int? sim_operator;
 
-  CustomerDetail({this.cNIC, this.email, this.fullName, this.mobileNumber, this.password,this.sim_operator});
+  CustomerDetail({
+    this.cNIC,
+    this.email,
+    this.fullName,
+    this.mobileNumber,
+    this.password,
+    this.sim_operator,
+  });
 
   CustomerDetail.fromJson(Map<String, dynamic> json) {
     cNIC = json['CNIC'];
@@ -220,8 +241,15 @@ class PromotionalPopUpImage {
   String? dialogBtnText;
   String? dialogText;
 
-  PromotionalPopUpImage(
-      {this.buttonText, this.buttonURL, this.code, this.imgURL, this.termsURL, this.dialogBtnText, this.dialogText});
+  PromotionalPopUpImage({
+    this.buttonText,
+    this.buttonURL,
+    this.code,
+    this.imgURL,
+    this.termsURL,
+    this.dialogBtnText,
+    this.dialogText,
+  });
 
   PromotionalPopUpImage.fromJson(Map<String, dynamic> json) {
     buttonText = json['ButtonText'];

@@ -25,7 +25,10 @@ class HomeController extends GetxController implements GetxService {
   final RxInt currentPage = 0.obs;
   final RxBool isLoading = false.obs;
 
-  final RxBool isBalanceUpdate = false.obs;
+  //new logic for loading
+  var balanceUpdate = false.obs;
+  var transferBalance = false.obs;
+  var chassisNumberUpdate = false.obs;
 
   void setCurrentIndex(int value) => currentPage.value = value;
 
@@ -54,26 +57,11 @@ class HomeController extends GetxController implements GetxService {
   Future<Map<String, dynamic>> getDashboardData({
     String? appVersion,
     String? deviceID,
+    bool? isLoadingValue,
   }) async {
     isLoading.value = true;
     final response = await userRepo.getdashBoardData();
     isLoading.value = false;
-
-    if (response.containsKey(APIRESPONSE.SUCCESS)) {
-      _updateDashboardData(response[APIRESPONSE.SUCCESS]);
-    } else {
-      _handleError(response);
-    }
-    return response;
-  }
-
-  Future<Map<String, dynamic>> updateBalance({
-    String? appVersion,
-    String? deviceID,
-  }) async {
-    isBalanceUpdate.value = true;
-    final response = await userRepo.getdashBoardData(isShowLoading: false);
-    isBalanceUpdate.value = false;
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       _updateDashboardData(response[APIRESPONSE.SUCCESS]);
@@ -110,13 +98,82 @@ class HomeController extends GetxController implements GetxService {
     return response;
   }
 
+  //update chassis call
+
+  Future<Map<String, dynamic>> updateChassisCall({
+    String? cnicNumber,
+    mobileNumber,
+    mtagID,
+    chassisNumber,
+  }) async {
+    final response = await userRepo.updateChassisNumber(
+      cnicNumber,
+      mobileNumber,
+      mtagID,
+      chassisNumber,
+    );
+
+    if (response.containsKey(APIRESPONSE.SUCCESS)) {
+      await refreshDashboardData();
+      showCupertinoModalPopup(
+        context: Get.context!,
+        builder: (_) => CupertinoAlertDialog(
+          content: Text('${response[APIRESPONSE.SUCCESS]['Message']}'),
+          actions: [
+            CupertinoDialogAction(onPressed: Get.back, child: const Text('Ok')),
+          ],
+        ),
+      );
+    } else {
+      _handleError(response);
+    }
+    return response;
+  }
+
+  //transfer balance call
+  Future<Map<String, dynamic>> transferBalanceCall({
+    String? cnicNumber,
+    mobileNumber,
+    fromMtag,
+    toMtag,
+    amount,
+  }) async {
+    final response = await userRepo.transferBalance(
+      cnicNumber,
+      mobileNumber,
+      fromMtag,
+      toMtag,
+      amount,
+    );
+
+    if (response.containsKey(APIRESPONSE.SUCCESS)) {
+      await sendCheckBalance([toMtag, fromMtag]);
+      await refreshDashboardData();
+      showCupertinoModalPopup(
+        context: Get.context!,
+        builder: (_) => CupertinoAlertDialog(
+          content: Text('${response[APIRESPONSE.SUCCESS]['Message']}'),
+          actions: [
+            CupertinoDialogAction(onPressed: Get.back, child: const Text('Ok')),
+          ],
+        ),
+      );
+    } else {
+      _handleError(response);
+    }
+    return response;
+  }
+
   Future<Map<String, dynamic>> sendCheckBalance([List<String>? mtagIds]) async {
+    balanceUpdate.value = true;
     final response = await userRepo.checkBalance(mtagIds ?? []);
 
     Map<String, dynamic> actualData;
     if (response.containsKey("Success")) {
       actualData = response["Success"];
     } else if (response.containsKey("Error")) {
+      debugPrint("❌ API failed with error response: $response");
+      balanceUpdate.value = false;
       _handleError(response);
       return response;
     } else {
@@ -142,7 +199,7 @@ class HomeController extends GetxController implements GetxService {
     } else {
       _handleError(response);
     }
-
+    balanceUpdate.value = false;
     return response;
   }
 
@@ -163,7 +220,8 @@ class HomeController extends GetxController implements GetxService {
   void _handleError(Map<String, dynamic> response) {
     final message = response.containsKey(APIRESPONSE.ERROR)
         ? response[APIRESPONSE.ERROR]['Message']
-        : 'We couldn’t complete your request\n Try again or contact assistance.\nTry again later.';
+        : 'We couldn’t complete your request\n Try again or contact assistance.';
+
     showPopDialog(message, _resetAndNavigate);
   }
 
@@ -179,8 +237,7 @@ class HomeController extends GetxController implements GetxService {
   }
 
   Future<void> pullRefreshDashboardData() async {
-    // await getDashboardData();
-    await sendCheckBalance();
+    await getDashboardData();
     _otherConstants.isRefresh(false);
   }
 

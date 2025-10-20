@@ -10,6 +10,7 @@ import 'package:upgrader/upgrader.dart';
 
 import 'base/app_data.dart';
 import 'bindings.dart';
+import 'constants/analytics.dart';
 import 'db/stations_database.dart';
 import 'db/toll_database.dart';
 import 'fcm_handeler.dart';
@@ -28,8 +29,10 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
     name: 'mtagFlutter',
   );
+  // await Analytics.initialize();
+
   //uncomment when go to production
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   final sharedPreferences = await SharedPreferences.getInstance();
 
   SystemChrome.setSystemUIOverlayStyle(

@@ -1,9 +1,9 @@
-// Import Platform to check OS
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../api/user_repo.dart';
 import '../../base/app_data.dart';
@@ -16,7 +16,7 @@ import '../../widgets/car_loader.dart';
 import '../../widgets/dashboard_widget.dart';
 import '../../widgets/dialog/chat_support_dialog.dart';
 import '../../widgets/shimmer_dashboard.dart';
-import '../activity/activity_screen.dart';
+
 import '../recharge/controller/recharge_controller.dart';
 import '../recharge/recharge_page.dart';
 import '../settings/setting_screen.dart';
@@ -28,7 +28,7 @@ class HomePage extends GetView<HomeController> {
 
   final bottomNavigations = <Widget>[
     Container(),
-    const ActivityScreen(),
+    // const ActivityScreen(),
     SettingScreen(),
     Container(),
   ];
@@ -80,13 +80,7 @@ class HomePage extends GetView<HomeController> {
           ? RefreshIndicator.adaptive(
               displacement: 60,
               onRefresh: () async {
-                final mtagIds =
-                    controller.dashboradData.value.activeMtags
-                        ?.map((e) => e.tokenno)
-                        .whereType<String>()
-                        .toList() ??
-                    [];
-                await controller.sendCheckBalance(mtagIds);
+                await Get.find<HomeController>().pullRefreshDashboardData();
               },
               child: LayoutBuilder(
                 builder: (context, constraints) {
@@ -222,7 +216,7 @@ class HomePage extends GetView<HomeController> {
                                           .isNotEmpty
                                   ? SliverToBoxAdapter(
                                       child: SizedBox(
-                                        height: screenHeight * 0.25,
+                                        height: screenHeight * 0.23,
                                         child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
                                           itemCount: controller
@@ -248,53 +242,65 @@ class HomePage extends GetView<HomeController> {
                                                   ),
 
                                               child: Obx(() {
-                                                return controller
-                                                        .isBalanceUpdate
-                                                        .value
-                                                    ? buildCarLoaderWidget(
-                                                        context,
-                                                        MediaQuery.of(
-                                                              context,
-                                                            ).size.height *
-                                                            0.25,
-                                                      )
-                                                    : mtagDataWidget(
-                                                        context,
-                                                        size: MediaQuery.sizeOf(
-                                                          context,
-                                                        ),
-                                                        height:
-                                                            screenHeight * 0.30,
-                                                        isBlock: e.isactive,
-                                                        jazzCode: controller
-                                                            .dashboradData
-                                                            .value
-                                                            .jazzCashRecharge
-                                                            .toString(),
-                                                        creditCode: controller
-                                                            .dashboradData
-                                                            .value
-                                                            .creditCardRecharge
-                                                            .toString(),
-                                                        vehType: e.vehicletype,
-                                                        mtagId: e.tokenno,
-                                                        userName: e.ownername,
-                                                        regId: e.registration,
-                                                        ball:
-                                                            controller
-                                                                .balances[e
-                                                                .tokenno] ??
-                                                            "0.00",
-                                                        showTransferButton:
-                                                            controller
-                                                                    .dashboradData
-                                                                    .value
-                                                                    .activeMtags!
-                                                                    .length ==
-                                                                1
-                                                            ? false
-                                                            : true,
-                                                      );
+                                                return
+                                                // controller.isLoading.value
+                                                //   ? placeholderWidget(
+                                                //       context,
+                                                //       size: MediaQuery.sizeOf(
+                                                //         context,
+                                                //       ),
+                                                //       height:
+                                                //           screenHeight * 0.29,
+                                                //     )
+                                                //   :
+                                                mtagDataWidget(
+                                                  context,
+                                                  size: MediaQuery.sizeOf(
+                                                    context,
+                                                  ),
+                                                  height: screenHeight * 0.29,
+                                                  isBlock: e.isactive,
+                                                  jazzCode: controller
+                                                      .dashboradData
+                                                      .value
+                                                      .jazzCashRecharge
+                                                      .toString(),
+                                                  creditCode: controller
+                                                      .dashboradData
+                                                      .value
+                                                      .creditCardRecharge
+                                                      .toString(),
+                                                  vehType: e.vehicletype,
+                                                  mtagId: e.tokenno,
+                                                  userName: e.ownername,
+                                                  mobileNum: _otherConstants
+                                                      .mobile
+                                                      .string,
+                                                  cnic: _otherConstants
+                                                      .ownerCNIC
+                                                      .string,
+                                                  regId: e.registration,
+                                                  ball:
+                                                      controller.balances[e
+                                                          .tokenno] ??
+                                                      "0.00",
+                                                  showTransferButton:
+                                                      controller
+                                                              .dashboradData
+                                                              .value
+                                                              .activeMtags!
+                                                              .length ==
+                                                          1
+                                                      ? false
+                                                      : true,
+                                                  balanceDashboard: e.balance,
+                                                  showChassisBadge:
+                                                      e.chassis_number == null
+                                                      ? true
+                                                      : false,
+                                                  chassisNumber:
+                                                      e.chassis_number,
+                                                );
                                               }),
                                             );
                                           },
@@ -430,22 +436,22 @@ class HomePage extends GetView<HomeController> {
               fit: BoxFit.fill,
             ),
           ),
-          BottomNavigationBarItem(
-            activeIcon: SvgPicture.asset(
-              'assets/clock-five.svg',
-              height: 20,
-              width: 20,
-              fit: BoxFit.fill,
-            ),
-            label: 'Activities',
-            tooltip: 'Activities',
-            icon: SvgPicture.asset(
-              'assets/clock-five.svg',
-              height: 20,
-              width: 20,
-              fit: BoxFit.fill,
-            ),
-          ),
+          // BottomNavigationBarItem(
+          //   activeIcon: SvgPicture.asset(
+          //     'assets/clock-five.svg',
+          //     height: 20,
+          //     width: 20,
+          //     fit: BoxFit.fill,
+          //   ),
+          //   label: 'Activities',
+          //   tooltip: 'Activities',
+          //   icon: SvgPicture.asset(
+          //     'assets/clock-five.svg',
+          //     height: 20,
+          //     width: 20,
+          //     fit: BoxFit.fill,
+          //   ),
+          // ),
           BottomNavigationBarItem(
             activeIcon: Image.asset('assets/settings.png', height: 20),
             label: 'Settings',

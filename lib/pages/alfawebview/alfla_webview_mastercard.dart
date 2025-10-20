@@ -89,9 +89,9 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
                           .whereType<String>()
                           .toList() ??
                       [];
-                  await homeController.sendCheckBalance(mtagIds);
+                  // await homeController.sendCheckBalance(mtagIds);
 
-                  // await Get.find<HomeController>().pullRefreshDashboardData();
+                  await Get.find<HomeController>().pullRefreshDashboardData();
                   await Get.offAllNamed('/dashboard');
                 },
                 child: const Text('Ok'),

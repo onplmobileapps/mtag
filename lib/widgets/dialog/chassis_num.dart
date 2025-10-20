@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+
+
+
+import '../../controller/home_controller.dart';
 import '../elevated_button.dart';
 
 class ChassisNumberDialog extends StatefulWidget {
   final String registration;
+  final String mobileNumber;
   final String tokenNo;
   final String balance;
+  final String cnicNumber;
 
   const ChassisNumberDialog({
     super.key,
     required this.registration,
     required this.tokenNo,
     required this.balance,
+    required this.cnicNumber,
+    required this.mobileNumber,
   });
 
   @override
@@ -27,7 +36,7 @@ class _ChassisNumberDialogState extends State<ChassisNumberDialog> {
     final containerPadding = isSmallScreen ? 10.0 : 12.0;
 
     return PopScope(
-      canPop: false,
+      canPop: true,
 
       child: AlertDialog(
         backgroundColor: Theme.of(context).disabledColor,
@@ -114,8 +123,9 @@ class _ChassisNumberDialogState extends State<ChassisNumberDialog> {
             ),
             const SizedBox(height: 12),
 
-            // 🔢 Chassis input field
             TextField(
+              maxLength: 20,
+              maxLines: 1,
               controller: _controller,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
@@ -123,7 +133,7 @@ class _ChassisNumberDialogState extends State<ChassisNumberDialog> {
               ],
               textCapitalization: TextCapitalization.characters,
               decoration: InputDecoration(
-                hintText: "e.g AX129XXX",
+                hintText: "e.g AX129XXXXXXX",
                 hintStyle: TextStyle(
                   fontSize: Theme.of(context).textTheme.bodyMedium?.fontSize,
                   color: Colors.grey.shade500,
@@ -154,10 +164,16 @@ class _ChassisNumberDialogState extends State<ChassisNumberDialog> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton1(
-              onclick: () {
+              onclick: () async {
                 final text = _controller.text.trim();
                 if (text.isNotEmpty) {
-                  Navigator.of(context).pop(text);
+                  Get.back();
+                  await Get.find<HomeController>().updateChassisCall(
+                    cnicNumber: widget.cnicNumber,
+                    mobileNumber: widget.mobileNumber,
+                    mtagID: widget.tokenNo,
+                    chassisNumber: text,
+                  );
                 }
               },
               text: "Submit",

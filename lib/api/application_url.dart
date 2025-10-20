@@ -29,19 +29,7 @@ class ApplicationUrl {
   static const String _DASHBOARD_URL = '$_BASE_URL/Dashboard';
 
   static String get DASHBOARD_URL => _DASHBOARD_URL;
-  static const String _FLEET_LOGIN_URL = '$_BASE_URL/company/loginUser_new';
 
-  static String get FLEET_LOGIN_URL => _FLEET_LOGIN_URL;
-  static const String _VERIFYFLEETOTP_URL = '$_BASE_URL/company/verifyOTP';
-
-  static String get VERIFYFLEETOTP_URL => _VERIFYFLEETOTP_URL;
-  static const String _GENERATEFLEETOTP_URL =
-      '$_BASE_URL/company/generateOTP_6';
-
-  static String get GENERATEFLEETOTP_URL => _GENERATEFLEETOTP_URL;
-  static const String _FLEET_DASHBOARD_URL = '$_BASE_URL/company/dashboard/';
-
-  static String get FLEET_DASHBOARD_URL => _FLEET_DASHBOARD_URL;
   static const String _GETMTAGS_URL = '$_BASE_URL/getActiveMtags_new3';
 
   static String get GETMTAGS_URL => _GETMTAGS_URL;
@@ -155,4 +143,12 @@ class ApplicationUrl {
   static const String _BALANCE_CHECK = '$_BASE_URL/get/balance';
 
   static String get BALANCE_CHECK => _BALANCE_CHECK;
+
+  static const String _UPDATE_CHASSIS = '$_BASE_URL/update/chasis-number';
+
+  static String get UPDATE_CHASSIS => _UPDATE_CHASSIS;
+
+  static const String _BALANCE_TRANSFER = '$_BASE_URL/balance/transfer';
+
+  static String get BALANCE_TRANSFER => _BALANCE_TRANSFER;
 }

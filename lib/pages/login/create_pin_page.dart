@@ -7,6 +7,7 @@ import 'package:local_auth/local_auth.dart';
 
 import '../../api/auth_controller.dart';
 import '../../base/app_data.dart';
+import '../../constants/analytics.dart';
 import '../../constants/auth_utils.dart';
 
 class PinEntryPage extends StatefulWidget {

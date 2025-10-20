@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/controller/home_controller.dart' show HomeController;
+import 'package:mtag_flutterapp/controller/home_controller.dart'
+    show HomeController;
 import '../../api/api_constants.dart';
 import '../../constants/analytics.dart';
 
@@ -47,10 +48,7 @@ class SubUnsubDialog extends StatelessWidget {
                 height: 60.0,
               ),
             ),
-            const Divider(
-              thickness: 0.3,
-              color: Colors.black,
-            ),
+            const Divider(thickness: 0.3, color: Colors.black),
             const SizedBox(height: 10.0),
             SizedBox(
               width: double.infinity,
@@ -67,7 +65,7 @@ class SubUnsubDialog extends StatelessWidget {
                     messageTextUrdu,
                     style: Theme.of(context).dialogTheme.contentTextStyle,
                     textAlign: TextAlign.right,
-                  )
+                  ),
                 ],
               ),
             ),
@@ -77,11 +75,12 @@ class SubUnsubDialog extends StatelessWidget {
               children: [
                 Expanded(
                   child: ElevatedButton1(
-                      backgroundColor: primarSwatch,
-                      onclick: () {
-                        Get.back();
-                      },
-                      text: 'Cancel'),
+                    backgroundColor: primarSwatch,
+                    onclick: () {
+                      Get.back();
+                    },
+                    text: 'Cancel',
+                  ),
                 ),
                 const SizedBox(width: 5.0),
                 Expanded(
@@ -89,29 +88,36 @@ class SubUnsubDialog extends StatelessWidget {
                     textscaller: 0.9,
                     backgroundColor: primarSwatch,
                     onclick: () async {
-                      Analytics.subscribeTapped();
                       Navigator.of(context).pop(true);
                       var response = await Get.find<UpdateSmsStatusController>()
                           .getSmsStatus(newValue: statusValue, mtagID: mtagID);
                       if (response.containsKey(APIRESPONSE.SUCCESS)) {
                         showCupertinoModalPopup(
-                            context: Get.context!,
-                            builder: (_) => CupertinoAlertDialog(
-                                  content: Obx(() =>
-                                      Text(Get.find<UpdateSmsStatusController>().updateSmsModel.value.message ?? '')),
-                                  actions: [
-                                    CupertinoDialogAction(
-                                      child: const Text('Ok'),
-                                      onPressed: () async {
-                                        Navigator.of(Get.context!).pop(true);
-                                        Get.back();
-                                        final controller = Get.find<HomeController>();
-                                        await controller.pullRefreshDashboardData();
-                                        controller.dashboradData.refresh();
-                                      },
-                                    )
-                                  ],
-                                ));
+                          context: Get.context!,
+                          builder: (_) => CupertinoAlertDialog(
+                            content: Obx(
+                              () => Text(
+                                Get.find<UpdateSmsStatusController>()
+                                        .updateSmsModel
+                                        .value
+                                        .message ??
+                                    '',
+                              ),
+                            ),
+                            actions: [
+                              CupertinoDialogAction(
+                                child: const Text('Ok'),
+                                onPressed: () async {
+                                  Navigator.of(Get.context!).pop(true);
+                                  Get.back();
+                                  final controller = Get.find<HomeController>();
+                                  await controller.pullRefreshDashboardData();
+                                  controller.dashboradData.refresh();
+                                },
+                              ),
+                            ],
+                          ),
+                        );
                       }
                     },
                     text: buttonText,
