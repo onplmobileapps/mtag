@@ -1,8 +1,6 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-
 import '../../base/app_data.dart';
 import '../../utils/utils.dart';
 import '../api/api_constants.dart';
@@ -119,7 +117,6 @@ class HomeController extends GetxController implements GetxService {
     if (response.containsKey("Success")) {
       actualData = response["Success"];
     } else if (response.containsKey("Error")) {
-      debugPrint("❌ API failed with error response: $response");
       _handleError(response);
       return response;
     } else {
@@ -143,7 +140,6 @@ class HomeController extends GetxController implements GetxService {
 
       debugPrint("✅ Balance check successful. Found ${data.length} accounts");
     } else {
-      debugPrint("❌ API failed with response: $response");
       _handleError(response);
     }
 

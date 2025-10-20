@@ -80,7 +80,8 @@ class RechargeSelfController extends GetxController {
   // Dependencies
   final PaymentCardController paymentController;
   final HomeController homeController ;
-RechargeSelfController({required this.paymentController,required this.homeController});
+RechargeSelfController({required this.paymentController,
+required this.homeController});
   // Scroll Controllers
   final ScrollController scrollController = ScrollController();
   final ScrollController scrollController1 = ScrollController();
