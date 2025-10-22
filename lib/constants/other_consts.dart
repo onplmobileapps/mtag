@@ -50,6 +50,12 @@ class OtherConsts {
   static final RxString _promoPopUp = ''.obs;
 
   RxString get promoPopUp => _promoPopUp;
-  static const List<String> sliderImages = ['8.webp', '7.jpg'];
+  static const List<String> sliderImages = [
+    '8.webp',
+    '7.jpg',
+    '2.webp',
+    '1.webp',
+    '3.webp',
+  ];
   static const String exception = 'NO DATA FOUND!';
 }
