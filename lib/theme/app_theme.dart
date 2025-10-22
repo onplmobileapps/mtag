@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-ThemeData appTheme = ThemeData(tabBarTheme: TabBarThemeData(labelStyle: TextStyle(fontSize: 11,fontFamily: 'Poppins')),
+final  String fontFamily='Poppins';
+ThemeData appTheme = ThemeData(tabBarTheme: TabBarThemeData(labelStyle: TextStyle(fontSize: 11,fontFamily: fontFamily)),
   pageTransitionsTheme: const PageTransitionsTheme(builders: {}), //add later
   brightness: Brightness.light,
   bannerTheme: const MaterialBannerThemeData(
@@ -27,9 +27,9 @@ ThemeData appTheme = ThemeData(tabBarTheme: TabBarThemeData(labelStyle: TextStyl
       minimumSize: const WidgetStatePropertyAll(
         Size(300, 35),
       ),
-      textStyle: const WidgetStatePropertyAll(
+      textStyle:  WidgetStatePropertyAll(
         TextStyle(
-          fontFamily: 'Poppins',
+          fontFamily: fontFamily,
           fontSize: 12,
         ),
       ),
@@ -59,9 +59,9 @@ ThemeData appTheme = ThemeData(tabBarTheme: TabBarThemeData(labelStyle: TextStyl
     surfaceTintColor: Colors.white,
     backgroundColor: Colors.white,
     contentTextStyle:
-        TextStyle(fontFamily: 'Poppins', fontSize: 13, color: Colors.black),
+        TextStyle(fontFamily: fontFamily, fontSize: 13, color: Colors.black),
     titleTextStyle: TextStyle(
-        fontFamily: 'Poppins',
+        fontFamily: fontFamily,
         fontSize: 17,
         fontWeight: FontWeight.bold,
         color: Colors.black),
@@ -79,26 +79,26 @@ ThemeData appTheme = ThemeData(tabBarTheme: TabBarThemeData(labelStyle: TextStyl
       fixedSize: const WidgetStatePropertyAll(Size(90, 35)),
       maximumSize: const WidgetStatePropertyAll(Size(90, 35)),
       minimumSize: const WidgetStatePropertyAll(Size(90, 35)),
-      textStyle: const WidgetStatePropertyAll(
+      textStyle:  WidgetStatePropertyAll(
         TextStyle(
-            fontSize: 11, fontWeight: FontWeight.w500, fontFamily: 'Poppins'),
+            fontSize: 11, fontWeight: FontWeight.w500, fontFamily: fontFamily),
       ),
     ),
   ),
-  fontFamily: 'Poppins',
+  fontFamily: fontFamily,
   disabledColor: const Color(0xfff5f5f5),
-  datePickerTheme: const DatePickerThemeData(
+  datePickerTheme:  DatePickerThemeData(
     dayForegroundColor: WidgetStatePropertyAll(Colors.black),
     shape: RoundedRectangleBorder(),
     cancelButtonStyle: ButtonStyle(
       textStyle: WidgetStatePropertyAll(
-        TextStyle(fontFamily: 'Poppins', fontSize: 13, color: Colors.black),
+        TextStyle(fontFamily: fontFamily, fontSize: 13, color: Colors.black),
       ),
     ),
     confirmButtonStyle: ButtonStyle(
       textStyle: WidgetStatePropertyAll(
         TextStyle(
-          fontFamily: 'Poppins',
+          fontFamily: fontFamily,
           fontSize: 13,
           color: Colors.black,
         ),
@@ -113,43 +113,43 @@ ThemeData appTheme = ThemeData(tabBarTheme: TabBarThemeData(labelStyle: TextStyl
     ),
     headerHeadlineStyle: TextStyle(
       fontSize: 16,
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
       fontWeight: FontWeight.w700,
     ),
     yearStyle: TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
       fontSize: 11,
     ),
     weekdayStyle: TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
       fontSize: 11,
     ),
     dayStyle: TextStyle(
       fontSize: 11,
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
     ),
     backgroundColor: Colors.white,
     surfaceTintColor: Colors.white,
     headerBackgroundColor: Color(0xFF2C2E65),
   ),
-  listTileTheme: const ListTileThemeData(
+  listTileTheme:  ListTileThemeData(
     iconColor: Color(0xFF2C2E65),
     minLeadingWidth: 20,
     style: ListTileStyle.list,
     horizontalTitleGap: 0,
     minVerticalPadding: 0,
     titleTextStyle: TextStyle(
-        fontFamily: 'Poppins',
+        fontFamily: fontFamily,
         fontWeight: FontWeight.w400,
         color: Colors.black),
     subtitleTextStyle: TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
       fontWeight: FontWeight.w400,
       color: Colors.grey,
       fontSize: 8,
     ),
     leadingAndTrailingTextStyle:
-        TextStyle(fontFamily: 'Poppins', color: Colors.black),
+        TextStyle(fontFamily: fontFamily, color: Colors.black),
   ),
   inputDecorationTheme: InputDecorationTheme(
     enabledBorder: UnderlineInputBorder(
@@ -162,8 +162,8 @@ ThemeData appTheme = ThemeData(tabBarTheme: TabBarThemeData(labelStyle: TextStyl
       width: 0.3,
     )),
     labelStyle: TextStyle(color: primarSwatch),
-    hintStyle: const TextStyle(
-      fontFamily: 'Poppins',
+    hintStyle:  TextStyle(
+      fontFamily: fontFamily,
       fontSize: 13,
       color: Colors.grey,
     ),
@@ -193,8 +193,8 @@ ThemeData appTheme = ThemeData(tabBarTheme: TabBarThemeData(labelStyle: TextStyl
         statusBarIconBrightness: Brightness.light),
     iconTheme: const IconThemeData(color: Colors.white),
     backgroundColor: const Color(0xFF2C2E65),
-    titleTextStyle: const TextStyle(
-      fontFamily: 'Poppins',
+    titleTextStyle:  TextStyle(
+      fontFamily: fontFamily,
       fontSize: 18,
     ),
   ),
@@ -204,71 +204,71 @@ ThemeData appTheme = ThemeData(tabBarTheme: TabBarThemeData(labelStyle: TextStyl
     displayLarge: TextStyle(
       fontSize: 18,
       color: primarSwatch,
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
       fontWeight: FontWeight.w500,
     ),
-    labelLarge: const TextStyle(
+    labelLarge: TextStyle(
       fontSize: 15,
       color: Colors.black,
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
     ),
-    labelMedium: const TextStyle(
+    labelMedium: TextStyle(
       fontSize: 14,
       color: Color(0xFF2C2E65),
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
     ),
-    labelSmall: const TextStyle(
+    labelSmall:  TextStyle(
       fontSize: 10,
       color: Colors.black,
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
     ),
     displayMedium: TextStyle(
       fontSize: 15,
       color: primarSwatch,
       overflow: TextOverflow.ellipsis,
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
       fontWeight: FontWeight.bold,
     ),
-    displaySmall: const TextStyle(
+    displaySmall: TextStyle(
       fontSize: 11,
       color: Colors.black,
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
     ),
-    titleLarge: const TextStyle(
+    titleLarge:  TextStyle(
       fontSize: 18,
       color: Colors.black,
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
     ),
-    titleMedium: const TextStyle(
+    titleMedium:  TextStyle(
       fontSize: 16,
       color: Colors.black,
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
     ),
-    titleSmall: const TextStyle(
+    titleSmall:  TextStyle(
       fontSize: 11,
       color: Colors.black,
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
     ),
-    bodyLarge: const TextStyle(
+    bodyLarge: TextStyle(
       fontSize: 18,
       color: Colors.black,
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
       fontWeight: FontWeight.w500,
     ),
-    bodyMedium: const TextStyle(
+    bodyMedium:  TextStyle(
       fontSize: 15,
       color: Color(0xFF2C2E65),
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
     ),
-    bodySmall: const TextStyle(
+    bodySmall:  TextStyle(
       fontSize: 10,
       color: Colors.black,
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
     ),
   ),
-  chipTheme: const ChipThemeData(
+  chipTheme:  ChipThemeData(
     labelStyle: TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
       fontSize: 14,
       fontWeight: FontWeight.w500,
     ),
@@ -284,15 +284,15 @@ ThemeData darkTheme = ThemeData(
   hintColor: Colors.grey,
   dividerTheme: const DividerThemeData(color: Colors.white),
   dividerColor: Colors.white70,
-  dialogTheme: const DialogThemeData(
+  dialogTheme:  DialogThemeData(
     backgroundColor: Colors.black,
     contentTextStyle: TextStyle(
       color: Colors.white,
       fontSize: 14,
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
     ),
     titleTextStyle: TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
       color: Colors.white,
       fontSize: 16,
     ),
@@ -313,9 +313,9 @@ ThemeData darkTheme = ThemeData(
       minimumSize: const WidgetStatePropertyAll(
         Size(300, 35),
       ),
-      textStyle: const WidgetStatePropertyAll(
+      textStyle:  WidgetStatePropertyAll(
         TextStyle(
-          fontFamily: 'Poppins',
+          fontFamily: fontFamily,
           fontSize: 12,
         ),
       ),
@@ -340,16 +340,16 @@ ThemeData darkTheme = ThemeData(
     iconColor: Colors.white,
     shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8), side: BorderSide.none),
-    titleTextStyle: const TextStyle(
-        fontFamily: 'Poppins',
+    titleTextStyle:  TextStyle(
+        fontFamily: fontFamily,
         fontWeight: FontWeight.w400,
         color: Colors.white),
-    subtitleTextStyle: const TextStyle(
-        fontFamily: 'Poppins',
+    subtitleTextStyle:  TextStyle(
+        fontFamily: fontFamily,
         fontWeight: FontWeight.w400,
         color: Colors.white),
     leadingAndTrailingTextStyle:
-        const TextStyle(fontFamily: 'Poppins', color: Colors.white),
+         TextStyle(fontFamily: fontFamily, color: Colors.white),
   ),
   inputDecorationTheme: InputDecorationTheme(
       enabledBorder: UnderlineInputBorder(
@@ -366,7 +366,7 @@ ThemeData darkTheme = ThemeData(
       
       labelStyle: TextStyle(color: Colors.white),
       hintStyle: TextStyle(
-        fontFamily: 'Poppins',
+        fontFamily: fontFamily,
         fontSize: 12,
         color: Colors.white,
       ),
@@ -386,8 +386,8 @@ ThemeData darkTheme = ThemeData(
         statusBarIconBrightness: Brightness.light),
     iconTheme: const IconThemeData(color: Colors.white),
     backgroundColor: primarSwatch,
-    titleTextStyle: const TextStyle(
-      fontFamily: 'Poppins',
+    titleTextStyle:  TextStyle(
+      fontFamily: fontFamily,
       fontSize: 18,
     ),
   ),
@@ -416,32 +416,32 @@ ThemeData darkTheme = ThemeData(
       secondary: Colors.grey),
   primaryColor: const Color(0xff212121),
   primarySwatch: primarSwatchDark,
-  textTheme: const TextTheme(
+  textTheme:  TextTheme(
     displayLarge: TextStyle(
       fontSize: 18,
       color: Colors.white,
-      fontFamily: 'Poppins',
+      fontFamily: fontFamily,
       fontWeight: FontWeight.w500,
     ),
     displayMedium:
-        TextStyle(fontSize: 13, color: Colors.white, fontFamily: 'Poppins'),
+        TextStyle(fontSize: 13, color: Colors.white, fontFamily: fontFamily),
     displaySmall:
-        TextStyle(fontSize: 11, color: Colors.white, fontFamily: 'Poppins'),
+        TextStyle(fontSize: 11, color: Colors.white, fontFamily: fontFamily),
     titleLarge:
-        TextStyle(fontSize: 18, color: Colors.white, fontFamily: 'Poppins'),
+        TextStyle(fontSize: 18, color: Colors.white, fontFamily: fontFamily),
     titleMedium:
-        TextStyle(fontSize: 16, color: Colors.black, fontFamily: 'Poppins'),
+        TextStyle(fontSize: 16, color: Colors.black, fontFamily: fontFamily),
     titleSmall:
-        TextStyle(fontSize: 11, color: Colors.black, fontFamily: 'Poppins'),
+        TextStyle(fontSize: 11, color: Colors.black, fontFamily: fontFamily),
     bodyLarge: TextStyle(
         fontSize: 18,
         color: Colors.white,
-        fontFamily: 'Poppins',
+        fontFamily: fontFamily,
         fontWeight: FontWeight.w500),
     bodyMedium:
-        TextStyle(fontSize: 15, color: Colors.white, fontFamily: 'Poppins'),
+        TextStyle(fontSize: 15, color: Colors.white, fontFamily: fontFamily),
     bodySmall:
-        TextStyle(fontSize: 11, color: Colors.white, fontFamily: 'Poppins'),
+        TextStyle(fontSize: 11, color: Colors.white, fontFamily: fontFamily),
   ), tabBarTheme: TabBarThemeData(indicatorColor: Colors.white),
 );
 MaterialColor primarSwatch = const MaterialColor(0xFF2C2E65, {
