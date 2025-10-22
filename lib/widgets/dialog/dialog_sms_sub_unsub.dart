@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:mtag_flutterapp/controller/home_controller.dart'
     show HomeController;
 import '../../api/api_constants.dart';
-import '../../constants/analytics.dart';
+
 
 import '../../pages/smsalert/controller/update_sms_controller.dart';
 import '../../theme/app_theme.dart';

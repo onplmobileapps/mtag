@@ -17,21 +17,15 @@ import '../widgets/dialog/promo_dialog.dart';
 class HomeController extends GetxController implements GetxService {
   final balances = <String, String>{}.obs;
   final hiddenStates = <String, bool>{}.obs;
-
   final UserRepo userRepo;
-
   HomeController({required this.userRepo});
-
   final RxInt currentPage = 0.obs;
   final RxBool isLoading = false.obs;
-
   //new logic for loading
   var balanceUpdate = false.obs;
   var transferBalance = false.obs;
   var chassisNumberUpdate = false.obs;
-
   void setCurrentIndex(int value) => currentPage.value = value;
-
   final _otherConstants = OtherConsts();
   final List<MtagModel> dashBoardModel = [
     MtagModel(routeName: '/mTag', title: 'M-TAG', image: 'assets/my_tag.svg'),

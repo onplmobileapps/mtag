@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:mtag_flutterapp/api/user_repo.dart';
-import 'package:mtag_flutterapp/constants/analytics.dart';
 import 'package:mtag_flutterapp/theme/app_theme.dart';
 
 import '../../pages/receipt/controller/receipt_generate_controller.dart';

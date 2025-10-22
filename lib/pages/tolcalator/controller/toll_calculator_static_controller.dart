@@ -393,9 +393,12 @@ class MotorwayStaticController extends GetxController implements GetxService {
         throw Exception(result['Message'] ?? 'Failed to calculate toll');
       }
     } catch (e) {
+      isCalculatingPlaza.value = false;
+      showTollPlaza.value = false;
       debugPrint('Toll plaza calculation error: $e');
       showSnackBar('Calculation failed: $e');
     } finally {
+    
       isCalculatingPlaza.value = false;
     }
   }

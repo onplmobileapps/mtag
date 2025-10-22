@@ -80,10 +80,6 @@ Widget mtagDataWidget(
   final double iconSize = containerHeight * 0.10;
   final double vehicleImageWidth = containerHeight * 0.45;
   final double fontSizeSmall = containerHeight * 0.075;
-  final double fontSizeMedium = containerHeight * 0.085;
-
-  bool? isShowChassisBadge = showChassisBadge;
-
   List<Map<String, dynamic>> allCars = controller
       .dashboradData
       .value
@@ -321,9 +317,6 @@ Widget mtagDataWidget(
 
                                       if (chassisNumber != null &&
                                           chassisNumber.isNotEmpty) {
-                                        print(
-                                          "Entered Chassis Number: $chassisNumber",
-                                        );
                                       }
                                     },
                                     child: Container(

@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:shimmer/shimmer.dart';
-
 import '../../api/user_repo.dart';
 import '../../base/app_data.dart';
 import '../../constants/call_helper.dart';
@@ -12,7 +10,6 @@ import '../../constants/other_consts.dart';
 import '../../controller/home_controller.dart';
 import '../../fcm_handeler.dart';
 import '../../widgets/appbar/app_bar_widget.dart';
-import '../../widgets/car_loader.dart';
 import '../../widgets/dashboard_widget.dart';
 import '../../widgets/dialog/chat_support_dialog.dart';
 import '../../widgets/shimmer_dashboard.dart';

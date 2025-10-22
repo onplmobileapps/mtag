@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 class ApplicationUrl {
   static final ApplicationUrl _instance = ApplicationUrl._internal();
 

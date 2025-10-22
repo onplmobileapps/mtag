@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../constants/analytics.dart';
 import '../../constants/other_consts.dart';
 import '../../pages/editprofile/controller/update_emai_controller.dart';
 import '../../constants/call_helper.dart';

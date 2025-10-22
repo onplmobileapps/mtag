@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../api/user_repo.dart';
-import '../../constants/analytics.dart';
+
 import '../../pages/activity/controller/activity_controller.dart';
 import '../../pages/activity/model/activities_model.dart';
 import '../../widgets/jazz_card_widget.dart';

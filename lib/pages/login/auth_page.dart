@@ -5,7 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import '../../api/auth_controller.dart';
-import '../../constants/analytics.dart';
+
 import '../../constants/input_formater.dart';
 import '../../utils/utils.dart';
 import 'controller/auth_page_controller.dart';

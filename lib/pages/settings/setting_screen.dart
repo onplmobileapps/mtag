@@ -290,12 +290,13 @@ final List<SettingsModel> items = [
       routeName: '/theme'),
   SettingsModel(
       onTap: () {
+
         String shareLinks =
             "Get the M-Tag One Network Application now for exciting features\n"
             "Android: https://bit.ly/3nLrHNX\n"
             "IOS: https://apple.co/3byIb6c\n"
             "Huawei: https://bit.ly/3IFgzLf";
-        SharePlus.instance.share(ShareParams(text:  shareLinks));
+        SharePlus.instance.share(ShareParams(text:  shareLinks,));
       },
       name: 'Share',
       icon: const Icon(Icons.share_outlined),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -140,6 +141,18 @@ class MessagingService {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      if (Platform.isIOS) {
+    final apnsToken = await _fcm.getAPNSToken();
+    if (apnsToken != null) {
+       AppData.setFcmToken(apnsToken);
+      
+    }
+    else{
+      debugPrint("no apns found");
+      return;
+    }
+   
+  }
       fcmToken = await _fcm.getToken();
       if (fcmToken != null) {
         log('FCM Token: $fcmToken');

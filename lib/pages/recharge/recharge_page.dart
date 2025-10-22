@@ -83,18 +83,18 @@ class RechargeSelfController extends GetxController {
 RechargeSelfController({required this.paymentController,
 required this.homeController});
   // Scroll Controllers
-  final ScrollController scrollController = ScrollController();
-  final ScrollController scrollController1 = ScrollController();
-  final ScrollController scrollController2 = ScrollController();
-  final ScrollController scrollController3 = ScrollController();
+  final  scrollController = ScrollController(),
+    scrollController1 = ScrollController(),
+    scrollController2 = ScrollController(),
+  scrollController3 = ScrollController();
 
   // Form
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   
   // Text Controllers
-  final TextEditingController amountController = TextEditingController();
-  final TextEditingController jazzCashController = TextEditingController();
-  final TextEditingController otherMtagController = TextEditingController();
+  final  amountController = TextEditingController(),
+   jazzCashController = TextEditingController(),
+    otherMtagController = TextEditingController();
 
   // State
   final RxList<ActiveMtags> arguments = (Get.arguments is List<ActiveMtags>

@@ -34,7 +34,7 @@ class _BalanceTransferSheetState extends State<BalanceTransferSheet> {
   void initState() {
     super.initState();
     amountController = TextEditingController(text: widget.balance);
-    selectedCar = widget.dropDownCars.first["carNumber"];
+    selectedCar = widget.dropDownCars.first["carNumber"]; 
     selectedCarMtag = widget.dropDownCars.first["mtagID"];
   }
 
@@ -333,7 +333,8 @@ class _BalanceTransferSheetState extends State<BalanceTransferSheet> {
                               decoration: BoxDecoration(
                                 color: Theme.of(
                                   context,
-                                ).primaryColorLight.withOpacity(0.1),
+                                ).primaryColorLight.
+                                withValues(alpha:0.1),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(

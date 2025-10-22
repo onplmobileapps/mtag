@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../api/api_constants.dart';
-import '../../constants/analytics.dart';
 import '../../constants/other_consts.dart';
 import '../../pages/editprofile/controller/update_emai_controller.dart';
 import '../../constants/input_formater.dart';
