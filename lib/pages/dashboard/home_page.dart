@@ -255,7 +255,7 @@ class HomePage extends GetView<HomeController> {
                                                   size: MediaQuery.sizeOf(
                                                     context,
                                                   ),
-                                                  height: screenHeight * 0.29,
+                                                  height: screenHeight * 0.28,
                                                   isBlock: e.isactive,
                                                   jazzCode: controller
                                                       .dashboradData
