@@ -1,15 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/base/app_data.dart';
-import 'package:mtag_flutterapp/controller/home_controller.dart';
-import 'package:mtag_flutterapp/widgets/dialog/change_pin_dialog.dart';
+import '../../base/app_data.dart';
+import '../../controller/home_controller.dart';
+import '../../widgets/dialog/change_pin_dialog.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../api/auth_controller.dart';
 import '../../constants/other_consts.dart';
 import 'package:share_plus/share_plus.dart';
-
 import '../../theme/app_theme.dart';
 
 class SettingScreen extends StatelessWidget {

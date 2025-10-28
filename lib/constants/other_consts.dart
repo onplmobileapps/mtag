@@ -1,6 +1,9 @@
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 
+import '../pages/tolcalator/model/static_mw_model.dart';
+import '../pages/tolcalator/model/vehicle_model.dart';
+
 class OtherConsts {
   static final OtherConsts _instance = OtherConsts._internal();
 
@@ -58,4 +61,27 @@ class OtherConsts {
     '3.webp',
   ];
   static const String exception = 'NO DATA FOUND!';
+  static List<VehicleModel> vehicleList = [
+    VehicleModel(image: 'assets/f1.svg', name: 'Car', id: 1),
+    VehicleModel(name: 'Wagon', image: 'assets/f2.svg', id: 2),
+    VehicleModel(name: 'Coaster', image: 'assets/f3.svg', id: 3),
+    VehicleModel(name: 'Bus', image: 'assets/f4.svg', id: 4),
+    VehicleModel(name: 'Truck', image: 'assets/f5.svg', id: 5),
+    VehicleModel(name: 'Trailer', image: 'assets/f6.svg', id: 6)
+  ].obs;
+
+ static List<StaticMotorwayModel> mwNameList = [
+    StaticMotorwayModel(motorwayName: "M1", motorwayAbbrivation: "Isb-Psh", motorwayID: 4),
+    StaticMotorwayModel(motorwayName: "M2", motorwayAbbrivation: "Isb-Lhr", motorwayID: 7),
+    StaticMotorwayModel(motorwayName: "M3", motorwayAbbrivation: "Lhr-Abhk", motorwayID: 6),
+    StaticMotorwayModel(motorwayName: "M4", motorwayAbbrivation: "Fsd-Pbht", motorwayID: 11),
+    StaticMotorwayModel(motorwayName: "M5", motorwayAbbrivation: "Mlt-Skr", motorwayID: 5),
+    StaticMotorwayModel(motorwayName: "M9", motorwayAbbrivation: "Kar-Hyd", motorwayID: 1),
+    StaticMotorwayModel(motorwayName: "M11-LSM", motorwayAbbrivation: "Lhr-Siak", motorwayID: 2),
+    StaticMotorwayModel(motorwayName: "M14", motorwayAbbrivation: "Yrk-Hak", motorwayID: 14),
+    StaticMotorwayModel(motorwayName: "M15", motorwayAbbrivation: "Hazara", motorwayID: 10),
+    StaticMotorwayModel(motorwayName: "M16-SMP", motorwayAbbrivation: "Swat", motorwayID: 3),
+    StaticMotorwayModel(motorwayName: "N75", motorwayAbbrivation: "\t\t\tMurree\nExpressway", motorwayID: 200),
+    StaticMotorwayModel(motorwayName: "EBP", motorwayAbbrivation: "\t\tEastern\n\t\tBypass", motorwayID: 300),
+  ].obs;
 }

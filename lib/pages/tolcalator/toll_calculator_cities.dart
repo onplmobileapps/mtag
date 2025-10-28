@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import '../../constants/other_consts.dart';
 import '../../widgets/toll_display_widget.dart';
 import 'controller/toll_calculator_static_controller.dart';
 
@@ -53,7 +54,7 @@ class CitiesTab extends StatelessWidget {
                                   entry: controller.entryCity.value.isEmpty ? null : controller.entryCity.value,
                                   exit: controller.exitCity.value.isEmpty ? null : controller.exitCity.value,
                                   vehicleName: controller.selectedVehicle.value != -1
-                                      ? controller.vehicleList[controller.selectedVehicle.value].name
+                                      ? OtherConsts.vehicleList[controller.selectedVehicle.value].name
                                       : null,
                                   toll: controller.calculatedToll.value,
                                   route: controller.calculatedRoute.value,
@@ -183,7 +184,7 @@ class CitiesTab extends StatelessWidget {
               height: isLargeScreen ? 140 : 120,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: controller.vehicleList.length,
+                itemCount: OtherConsts.vehicleList.length,
                 itemBuilder: (context, index) => _buildVehicleItem(index, isLargeScreen, controller),
               ),
             ),
@@ -226,7 +227,7 @@ class CitiesTab extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SvgPicture.asset(
-                    controller.vehicleList[index].image!,
+                    OtherConsts.vehicleList[index].image!,
                     height: isLargeScreen ? 45 : 35,
                     colorFilter: ColorFilter.mode(
                       Theme.of(Get.context!).primaryColor,
@@ -234,7 +235,7 @@ class CitiesTab extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    controller.vehicleList[index].name!,
+                    OtherConsts.vehicleList[index].name!,
                     style: Theme.of(Get.context!).textTheme.bodyMedium,
                   ),
                 ],

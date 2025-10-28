@@ -88,7 +88,7 @@ class _TollCalculatorLocalState extends State<TollCalculatorLocal>
       final result = await controller.calculateToll(
         entry: entryId,
         exit: exitId,
-        type: controller.vehicleList[_selectedVehicle].id.toString(),
+        type: OtherConsts.vehicleList[_selectedVehicle].id.toString(),
       );
 log(result.toString());
       if (result['Code'] == '00' && result['Data'] != null) {
@@ -222,7 +222,7 @@ log(result.toString());
                 height: isLargeScreen ? 140 : 120,
                 child: ListView.builder(padding: EdgeInsets.zero,
                   scrollDirection: Axis.horizontal,
-                  itemCount: controller.mwNameList.length,
+                  itemCount: OtherConsts.mwNameList.length,
                   itemBuilder: (context, index) =>
                       _buildMotorwayItem(index, isLargeScreen),
                 ),
@@ -243,7 +243,7 @@ log(result.toString());
         borderRadius: BorderRadius.circular(12),
         onTap: () => setState(
           () {
-            controller.fetchStations(controller.mwNameList[index].motorwayID??-1);
+            controller.fetchStations(OtherConsts.mwNameList[index].motorwayID??-1);
             _selectedMotorway = index;
             _selectedVehicle = -1;
             _showToll = false;
@@ -279,11 +279,11 @@ log(result.toString());
                 colorFilter: ColorFilter.mode(
                     Theme.of(context).primaryColor, BlendMode.srcIn),
               ),
-              Text(controller.mwNameList[index].motorwayAbbrivation??'',
+              Text(OtherConsts.mwNameList[index].motorwayAbbrivation??'',
                   style: TextStyle(
                       fontSize: isLargeScreen ? 14 : 12,
                       color: Theme.of(context).primaryColor)),
-              Text(controller.mwNameList[index].motorwayName??'',
+              Text(OtherConsts.mwNameList[index].motorwayName??'',
                   style: TextStyle(
                       fontSize: isLargeScreen ? 20 : 18,
                       color: Theme.of(context).primaryColor)),
@@ -366,7 +366,7 @@ Text(label,style: Theme.of(context).textTheme.labelMedium,);
                 height: isLargeScreen ? 130 : 120,
                 child: ListView.builder(padding: EdgeInsets.zero,
                   scrollDirection: Axis.horizontal,
-                  itemCount: controller.vehicleList.length,
+                  itemCount: OtherConsts.vehicleList.length,
                   itemBuilder: (context, index) =>
                       _buildVehicleItem(index, isLargeScreen),
                 ),
@@ -419,12 +419,12 @@ Text(label,style: Theme.of(context).textTheme.labelMedium,);
         
           children: [
             SvgPicture.asset(
-              controller.vehicleList[index].image??'',fit: BoxFit.contain,
+              OtherConsts.vehicleList[index].image??'',fit: BoxFit.contain,
              height: 30,
               colorFilter: ColorFilter.mode(
                   Theme.of(context).primaryColor, BlendMode.srcIn),
             ),
-            Text(controller.vehicleList[index].name??'',
+            Text(OtherConsts.vehicleList[index].name??'',
                 style: Theme.of(context).textTheme.displayMedium),
           ],
         ),
@@ -443,7 +443,7 @@ Text(label,style: Theme.of(context).textTheme.labelMedium,);
               const SizedBox(height: 16),
               _buildDetailRow('Route', '$_entryStation - $_exitStation'),
               _buildDetailRow('Vehicle',
-                  controller.vehicleList[_selectedVehicle].name ?? 'Unknown'),
+                  OtherConsts.vehicleList[_selectedVehicle].name ?? 'Unknown'),
               const Divider(height: 24),
               _isCalculating
                   ? const CircularProgressIndicator()

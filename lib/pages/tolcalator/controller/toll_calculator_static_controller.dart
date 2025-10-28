@@ -1,14 +1,16 @@
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'package:sqflite/sqflite.dart';
 
+import '../../../constants/other_consts.dart';
 import '../../../db/stations_database.dart';
 import '../../../db/toll_database.dart';
 import '../../../widgets/search_stations_dialog.dart';
-import '../model/static_mw_model.dart';
+
 import '../model/stations_model.dart';
-import '../model/vehicle_model.dart';
+
 
 
 class MotorwayStaticController extends GetxController implements GetxService {
@@ -18,29 +20,7 @@ class MotorwayStaticController extends GetxController implements GetxService {
   final StationsDatabase stationsDb = StationsDatabase.instance;
   final TollDatabase _tollDatabase = TollDatabase.instance;
 
-  List<VehicleModel> vehicleList = [
-    VehicleModel(image: 'assets/f1.svg', name: 'Car', id: 1),
-    VehicleModel(name: 'Wagon', image: 'assets/f2.svg', id: 2),
-    VehicleModel(name: 'Coaster', image: 'assets/f3.svg', id: 3),
-    VehicleModel(name: 'Bus', image: 'assets/f4.svg', id: 4),
-    VehicleModel(name: 'Truck', image: 'assets/f5.svg', id: 5),
-    VehicleModel(name: 'Trailer', image: 'assets/f6.svg', id: 6)
-  ].obs;
-
-  List<StaticMotorwayModel> mwNameList = [
-    StaticMotorwayModel(motorwayName: "M1", motorwayAbbrivation: "Isb-Psh", motorwayID: 4),
-    StaticMotorwayModel(motorwayName: "M2", motorwayAbbrivation: "Isb-Lhr", motorwayID: 7),
-    StaticMotorwayModel(motorwayName: "M3", motorwayAbbrivation: "Lhr-Abhk", motorwayID: 6),
-    StaticMotorwayModel(motorwayName: "M4", motorwayAbbrivation: "Fsd-Pbht", motorwayID: 11),
-    StaticMotorwayModel(motorwayName: "M5", motorwayAbbrivation: "Mlt-Skr", motorwayID: 5),
-    StaticMotorwayModel(motorwayName: "M9", motorwayAbbrivation: "Kar-Hyd", motorwayID: 1),
-    StaticMotorwayModel(motorwayName: "M11-LSM", motorwayAbbrivation: "Lhr-Siak", motorwayID: 2),
-    StaticMotorwayModel(motorwayName: "M14", motorwayAbbrivation: "Yrk-Hak", motorwayID: 14),
-    StaticMotorwayModel(motorwayName: "M15", motorwayAbbrivation: "Hazara", motorwayID: 10),
-    StaticMotorwayModel(motorwayName: "M16-SMP", motorwayAbbrivation: "Swat", motorwayID: 3),
-    StaticMotorwayModel(motorwayName: "N75", motorwayAbbrivation: "\t\t\tMurree\nExpressway", motorwayID: 200),
-    StaticMotorwayModel(motorwayName: "EBP", motorwayAbbrivation: "\t\tEastern\n\t\tBypass", motorwayID: 300),
-  ].obs;
+ 
 
   final ScrollController scrollController = ScrollController();
   final RxInt selectedVehicle = (-1).obs;
@@ -303,7 +283,7 @@ class MotorwayStaticController extends GetxController implements GetxService {
       );
 
       if (tollEntry.isNotEmpty) {
-        final vehicleName = vehicleList[selectedVehicle.value].name;
+        final vehicleName =OtherConsts.vehicleList[selectedVehicle.value].name;
         final vehicleKey = vehicleName!.toLowerCase();
         final tollValue = tollEntry[vehicleKey] ?? 0;
 
@@ -322,7 +302,7 @@ class MotorwayStaticController extends GetxController implements GetxService {
           throw Exception('Invalid station IDs for ${entryCity.value} or ${exitCity.value}');
         }
 
-        final vehicleName = vehicleList[selectedVehicle.value].name;
+        final vehicleName =OtherConsts. vehicleList[selectedVehicle.value].name;
         final result = await calculateToll(
           entry: entryStationId,
           exit: exitStationId,
@@ -379,7 +359,7 @@ class MotorwayStaticController extends GetxController implements GetxService {
       final result = await calculateToll(
         entry: entryId,
         exit: exitId,
-        type: vehicleList[selectedVehicle.value].id.toString(),
+        type: OtherConsts. vehicleList[selectedVehicle.value].id.toString(),
       );
 
       if (result['Code'] == '00' && result['Data'] != '') {

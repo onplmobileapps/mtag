@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, constant_identifier_names
 
 class ApplicationUrl {
   static final ApplicationUrl _instance = ApplicationUrl._internal();
@@ -9,9 +9,9 @@ class ApplicationUrl {
     return _instance;
   }
 
-  static const String _BASE_URL = 'https://10.0.1.127:5000';
+  // static const String _BASE_URL = 'https://10.0.1.127:5000';
 
-  // static const String _BASE_URL = 'https://ocotapp.com';
+  static const String _BASE_URL = 'https://ocotapp.com';
 
   static const String _IMAGE_ULR = _BASE_URL;
 

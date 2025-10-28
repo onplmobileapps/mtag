@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
+import '../../constants/other_consts.dart';
 import '../../widgets/toll_display_widget.dart';
 import 'controller/toll_calculator_static_controller.dart';
 class TollPlazaTab extends GetView<MotorwayStaticController> {
@@ -53,8 +54,8 @@ static const Map<int, int> tollMapMurree = {
                   Obx(() {
                     final selectedMotorwayIndex = controller.selectedMotorway.value;
                     final selectedMwID = (selectedMotorwayIndex != -1 &&
-                        controller.mwNameList.length > selectedMotorwayIndex)
-                        ? controller.mwNameList[selectedMotorwayIndex].motorwayID
+                        OtherConsts.mwNameList.length > selectedMotorwayIndex)
+                        ? OtherConsts.mwNameList[selectedMotorwayIndex].motorwayID
                         : null;
 
                     return (selectedMwID != 200 && selectedMwID != 300)
@@ -69,19 +70,19 @@ static const Map<int, int> tollMapMurree = {
                   Obx(() {
                     final selectedMotorwayIndex = controller.selectedMotorway.value;
                     final selectedMwID = (selectedMotorwayIndex != -1 &&
-                        controller.mwNameList.length > selectedMotorwayIndex)
-                        ? controller.mwNameList[selectedMotorwayIndex].motorwayID
+                        OtherConsts.mwNameList.length > selectedMotorwayIndex)
+                        ? OtherConsts.mwNameList[selectedMotorwayIndex].motorwayID
                         : null;
                     final selectedVehicleIndex = controller.selectedVehicle.value;
                     final vehicleName = selectedVehicleIndex != -1 &&
-                        controller.vehicleList.length > selectedVehicleIndex
-                        ? controller.vehicleList[selectedVehicleIndex].name
+                        OtherConsts.vehicleList.length > selectedVehicleIndex
+                        ? OtherConsts.vehicleList[selectedVehicleIndex].name
                         : null;
                     final toll = selectedVehicleIndex != -1
                         ? (selectedMwID == 200
-                        ? tollMapMurree[controller.vehicleList[selectedVehicleIndex].id]?.toString()
+                        ? tollMapMurree[OtherConsts.vehicleList[selectedVehicleIndex].id]?.toString()
                         : selectedMwID == 300
-                        ? tollMapEasternBypass[controller.vehicleList[selectedVehicleIndex].id]?.toString()
+                        ? tollMapEasternBypass[OtherConsts.vehicleList[selectedVehicleIndex].id]?.toString()
                         : controller.calculatedTollPlaza.value)
                         : null;
 
@@ -111,7 +112,7 @@ static const Map<int, int> tollMapMurree = {
                                 vehicleName: vehicleName,
                                 toll: toll,
                                 route: (selectedMwID == 200 || selectedMwID == 300)
-                                    ? controller.mwNameList[selectedMotorwayIndex].motorwayName
+                                    ? OtherConsts.mwNameList[selectedMotorwayIndex].motorwayName
                                     : '${controller.entryStation.value} - ${controller.exitStation.value}',
                               ),
                             ),
@@ -154,7 +155,7 @@ static const Map<int, int> tollMapMurree = {
               child: ListView.builder(
                 padding: EdgeInsets.zero,
                 scrollDirection: Axis.horizontal,
-                itemCount: controller.mwNameList.length,
+                itemCount: OtherConsts.mwNameList.length,
                 itemBuilder: (context, index) => _buildMotorwayItem(context, index, isLargeScreen, controller),
               ),
             ),
@@ -178,9 +179,9 @@ static const Map<int, int> tollMapMurree = {
           controller.showTollPlaza.value = false;
           controller.entryStation.value = '';
           controller.exitStation.value = '';
-          if (controller.mwNameList[index].motorwayID != 200 &&
-              controller.mwNameList[index].motorwayID != 300) {
-            controller.fetchStations(controller.mwNameList[index].motorwayID ?? 0);
+          if (OtherConsts.mwNameList[index].motorwayID != 200 &&
+              OtherConsts.mwNameList[index].motorwayID != 300) {
+            controller.fetchStations(OtherConsts.mwNameList[index].motorwayID ?? 0);
           }
         },
         child: AnimatedContainer(
@@ -206,11 +207,11 @@ static const Map<int, int> tollMapMurree = {
                 colorFilter: ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
               ),
               Text(
-                controller.mwNameList[index].motorwayAbbrivation!,
+                OtherConsts.mwNameList[index].motorwayAbbrivation!,
                 style: TextStyle(fontSize: isLargeScreen ? 14 : 12, color: Theme.of(context).primaryColor),
               ),
               Text(
-                controller.mwNameList[index].motorwayName!,
+                OtherConsts.mwNameList[index].motorwayName!,
                 style: TextStyle(fontSize: isLargeScreen ? 20 : 18, color: Theme.of(context).primaryColor),
               ),
             ],
@@ -314,7 +315,7 @@ static const Map<int, int> tollMapMurree = {
               child: ListView.builder(
                 padding: EdgeInsets.zero,
                 scrollDirection: Axis.horizontal,
-                itemCount: controller.vehicleList.length,
+                itemCount: OtherConsts.vehicleList.length,
                 itemBuilder: (context, index) => _buildVehicleItem(context, index, isLargeScreen, controller),
               ),
             ),
@@ -339,8 +340,8 @@ static const Map<int, int> tollMapMurree = {
           }
           final selectedMotorwayIndex = controller.selectedMotorway.value;
           final selectedMwID = (selectedMotorwayIndex != -1 &&
-              controller.mwNameList.length > selectedMotorwayIndex)
-              ? controller.mwNameList[selectedMotorwayIndex].motorwayID
+              OtherConsts.mwNameList.length > selectedMotorwayIndex)
+              ? OtherConsts.mwNameList[selectedMotorwayIndex].motorwayID
               : null;
 
           if (selectedMwID != 200 &&
@@ -353,12 +354,12 @@ static const Map<int, int> tollMapMurree = {
           controller.selectedVehicle.value = index;
           controller.showTollPlaza.value = true;
           if (selectedMwID == 200) {
-            final toll = tollMapMurree[controller.vehicleList[index].id]?.toString() ?? '0';
+            final toll = tollMapMurree[OtherConsts.vehicleList[index].id]?.toString() ?? '0';
             controller.calculatedTollPlaza.value = toll;
             controller.isCalculatingPlaza.value = false;
             animationController.forward(from: 0);
           } else if (selectedMwID == 300) {
-            final toll = tollMapEasternBypass[controller.vehicleList[index].id]?.toString() ?? '0';
+            final toll = tollMapEasternBypass[OtherConsts.vehicleList[index].id]?.toString() ?? '0';
             controller.calculatedTollPlaza.value = toll;
             controller.isCalculatingPlaza.value = false;
             animationController.forward(from: 0);
@@ -386,13 +387,13 @@ static const Map<int, int> tollMapMurree = {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SvgPicture.asset(
-                  controller.vehicleList[index].image!,
+                  OtherConsts.vehicleList[index].image!,
                   height: isLargeScreen ? 48 : 40,
                   colorFilter: ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
                 ),
               ),
               Text(
-                controller.vehicleList[index].name!,
+                OtherConsts.vehicleList[index].name!,
                 style: TextStyle(fontSize: isLargeScreen ? 18 : 16, color: Theme.of(context).primaryColor),
               ),
             ],
