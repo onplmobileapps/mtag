@@ -68,6 +68,7 @@ class _ChassisNumberDialogState extends State<ChassisNumberDialog> {
                   const SizedBox(height: 12),
 
                   /// Vehicle Info Card
+                  ///
                   Container(
                     padding: EdgeInsets.all(containerPadding),
                     decoration: BoxDecoration(
