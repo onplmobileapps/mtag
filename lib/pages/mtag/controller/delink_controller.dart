@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import '/api/api_constants.dart';
 import '/pages/mtag/model/dlinkoptionsmodel.dart';
@@ -43,10 +42,5 @@ class DelinkController extends GetxController implements GetxService {
       });
     }
     return response;
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
   }
 }

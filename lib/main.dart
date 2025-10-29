@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -10,7 +9,6 @@ import 'package:upgrader/upgrader.dart';
 
 import 'base/app_data.dart';
 import 'bindings.dart';
-import 'constants/analytics.dart';
 import 'db/stations_database.dart';
 import 'db/toll_database.dart';
 import 'fcm_handeler.dart';
@@ -115,7 +113,7 @@ class _MTagAppState extends State<MTagApp> {
               upgrader: Upgrader(
                 upgraderOS: UpgraderOS(),
                 languageCode: "en",
-                countryCode: "US",
+                countryCode: "PK",
                 debugLogging: true,
                 willDisplayUpgrade:
                     ({required display, installedVersion, versionInfo}) =>
