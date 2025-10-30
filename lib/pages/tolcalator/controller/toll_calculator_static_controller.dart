@@ -10,7 +10,6 @@ import '../model/static_mw_model.dart';
 import '../model/stations_model.dart';
 import '../model/vehicle_model.dart';
 
-
 class MotorwayStaticController extends GetxController implements GetxService {
   final RxList<String> stations = <String>[].obs;
   List<StData> fullStationsList = [];
@@ -24,22 +23,70 @@ class MotorwayStaticController extends GetxController implements GetxService {
     VehicleModel(name: 'Coaster', image: 'assets/f3.svg', id: 3),
     VehicleModel(name: 'Bus', image: 'assets/f4.svg', id: 4),
     VehicleModel(name: 'Truck', image: 'assets/f5.svg', id: 5),
-    VehicleModel(name: 'Trailer', image: 'assets/f6.svg', id: 6)
+    VehicleModel(name: 'Trailer', image: 'assets/f6.svg', id: 6),
   ].obs;
 
   List<StaticMotorwayModel> mwNameList = [
-    StaticMotorwayModel(motorwayName: "M1", motorwayAbbrivation: "Isb-Psh", motorwayID: 4),
-    StaticMotorwayModel(motorwayName: "M2", motorwayAbbrivation: "Isb-Lhr", motorwayID: 7),
-    StaticMotorwayModel(motorwayName: "M3", motorwayAbbrivation: "Lhr-Abhk", motorwayID: 6),
-    StaticMotorwayModel(motorwayName: "M4", motorwayAbbrivation: "Fsd-Pbht", motorwayID: 11),
-    StaticMotorwayModel(motorwayName: "M5", motorwayAbbrivation: "Mlt-Skr", motorwayID: 5),
-    StaticMotorwayModel(motorwayName: "M9", motorwayAbbrivation: "Kar-Hyd", motorwayID: 1),
-    StaticMotorwayModel(motorwayName: "M11-LSM", motorwayAbbrivation: "Lhr-Siak", motorwayID: 2),
-    StaticMotorwayModel(motorwayName: "M14", motorwayAbbrivation: "Yrk-Hak", motorwayID: 14),
-    StaticMotorwayModel(motorwayName: "M15", motorwayAbbrivation: "Hazara", motorwayID: 10),
-    StaticMotorwayModel(motorwayName: "M16-SMP", motorwayAbbrivation: "Swat", motorwayID: 3),
-    StaticMotorwayModel(motorwayName: "N75", motorwayAbbrivation: "\t\t\tMurree\nExpressway", motorwayID: 200),
-    StaticMotorwayModel(motorwayName: "EBP", motorwayAbbrivation: "\t\tEastern\n\t\tBypass", motorwayID: 300),
+    StaticMotorwayModel(
+      motorwayName: "M1",
+      motorwayAbbrivation: "Isb-Psh",
+      motorwayID: 4,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "M2",
+      motorwayAbbrivation: "Isb-Lhr",
+      motorwayID: 7,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "M3",
+      motorwayAbbrivation: "Lhr-Abhk",
+      motorwayID: 6,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "M4",
+      motorwayAbbrivation: "Fsd-Pbht",
+      motorwayID: 11,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "M5",
+      motorwayAbbrivation: "Mlt-Skr",
+      motorwayID: 5,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "M9",
+      motorwayAbbrivation: "Kar-Hyd",
+      motorwayID: 1,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "M11-LSM",
+      motorwayAbbrivation: "Lhr-Siak",
+      motorwayID: 2,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "M14",
+      motorwayAbbrivation: "Yrk-Hak",
+      motorwayID: 14,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "M15",
+      motorwayAbbrivation: "Hazara",
+      motorwayID: 10,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "M16-SMP",
+      motorwayAbbrivation: "Swat",
+      motorwayID: 3,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "N75",
+      motorwayAbbrivation: "\t\t\tMurree\nExpressway",
+      motorwayID: 200,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "EBP",
+      motorwayAbbrivation: "\t\tEastern\n\t\tBypass",
+      motorwayID: 300,
+    ),
   ].obs;
 
   final ScrollController scrollController = ScrollController();
@@ -100,10 +147,7 @@ class MotorwayStaticController extends GetxController implements GetxService {
     isCalculatingPlaza.value = false;
     stations.clear();
     fullStationsList.clear();
-  
-    
   }
-  
 
   void scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -119,25 +163,40 @@ class MotorwayStaticController extends GetxController implements GetxService {
     isLoadingTollData.value = true;
     try {
       debugPrint('Loading assets/data/city_toll.csv');
-      final String csvString = await DefaultAssetBundle.of(Get.context!).loadString(
-        'assets/data/city_toll.csv',
-        cache: false,
-      );
+      final String csvString = await DefaultAssetBundle.of(
+        Get.context!,
+      ).loadString('assets/data/city_toll.csv', cache: false);
 
       if (csvString.trim().isEmpty) throw Exception('CSV file is empty');
 
-      debugPrint('Raw CSV content: ${csvString.length > 100 ? '${csvString.substring(0, 100)}...' : csvString}');
+      debugPrint(
+        'Raw CSV content: ${csvString.length > 100 ? '${csvString.substring(0, 100)}...' : csvString}',
+      );
       debugPrint('Parsing CSV data');
 
       final csvTable = const CsvToListConverter().convert(csvString, eol: '\n');
 
       if (csvTable.isEmpty) throw Exception('CSV has no rows');
 
-      final headers = csvTable.first.map((h) => h?.toString().trim().toLowerCase() ?? '').toList();
-      final expectedHeaders = ['entry_city', 'exit_city', 'car', 'wagon', 'coaster', 'bus', 'truck', 'trailer', 'route'];
+      final headers = csvTable.first
+          .map((h) => h?.toString().trim().toLowerCase() ?? '')
+          .toList();
+      final expectedHeaders = [
+        'entry_city',
+        'exit_city',
+        'car',
+        'wagon',
+        'coaster',
+        'bus',
+        'truck',
+        'trailer',
+        'route',
+      ];
 
       if (!expectedHeaders.every((h) => headers.contains(h))) {
-        throw Exception('Invalid CSV headers: Expected $expectedHeaders, got $headers');
+        throw Exception(
+          'Invalid CSV headers: Expected $expectedHeaders, got $headers',
+        );
       }
 
       final rows = csvTable.skip(1);
@@ -160,7 +219,10 @@ class MotorwayStaticController extends GetxController implements GetxService {
         final entryCity = entry['entry_city'];
         final exitCity = entry['exit_city'];
 
-        if (entryCity == null || entryCity.isEmpty || exitCity == null || exitCity.isEmpty) {
+        if (entryCity == null ||
+            entryCity.isEmpty ||
+            exitCity == null ||
+            exitCity.isEmpty) {
           debugPrint('Skipping row with empty cities: $entry');
           continue;
         }
@@ -171,7 +233,9 @@ class MotorwayStaticController extends GetxController implements GetxService {
             try {
               entry[key] = num.parse(entry[key]).toInt();
             } catch (e) {
-              debugPrint('Invalid toll for $entryCity-$exitCity ($vehicle): ${entry[key]}');
+              debugPrint(
+                'Invalid toll for $entryCity-$exitCity ($vehicle): ${entry[key]}',
+              );
               entry[key] = 0;
             }
           } else {
@@ -192,7 +256,9 @@ class MotorwayStaticController extends GetxController implements GetxService {
       tollData.assignAll(parsedData);
       majorCities.assignAll(sortedCities);
 
-      debugPrint('Loaded ${parsedData.length} toll entries, ${sortedCities.length} cities: $sortedCities');
+      debugPrint(
+        'Loaded ${parsedData.length} toll entries, ${sortedCities.length} cities: $sortedCities',
+      );
     } catch (e) {
       debugPrint('Error loading CSV: $e');
       majorCities.assignAll(['Karachi', 'Lahore']);
@@ -219,10 +285,14 @@ class MotorwayStaticController extends GetxController implements GetxService {
           for (var item in data) {
             if (item is Map && item.containsKey('stname')) {
               // stations.add(item['stname'].toString());
-              fullStationsList.add(StData.fromJson(Map<String, dynamic>.from(item)));
+              fullStationsList.add(
+                StData.fromJson(Map<String, dynamic>.from(item)),
+              );
             }
           }
-          fullStationsList.sort((a, b) => (a.stname ?? '').compareTo(b.stname ?? ''));
+          fullStationsList.sort(
+            (a, b) => (a.stname ?? '').compareTo(b.stname ?? ''),
+          );
 
           stations.addAll(fullStationsList.map((s) => s.stname ?? '').toList());
         }
@@ -242,7 +312,7 @@ class MotorwayStaticController extends GetxController implements GetxService {
       (station) => station.stname?.toLowerCase() == stationName.toLowerCase(),
       orElse: () => StData(stid: '', stname: ''),
     );
-    return station.stid?.isNotEmpty??false ? station.stid : null;
+    return station.stid?.isNotEmpty ?? false ? station.stid : null;
   }
 
   Future<Map<String, dynamic>> calculateToll({
@@ -259,11 +329,19 @@ class MotorwayStaticController extends GetxController implements GetxService {
         AND x_sta_id = ?
         AND v_cat = ?
       ''';
-      List<Map<String, dynamic>> result = await db.rawQuery(sqlToll, [entry, exit, type]);
+      List<Map<String, dynamic>> result = await db.rawQuery(sqlToll, [
+        entry,
+        exit,
+        type,
+      ]);
 
       if (result.isNotEmpty) {
         String tollCalc = result[0]['t_toll_r'].toString();
-        return {"Code": "00", "Message": "Record Exists", "Data": {"toll": tollCalc}};
+        return {
+          "Code": "00",
+          "Message": "Record Exists",
+          "Data": {"toll": tollCalc},
+        };
       } else {
         return {"Code": "00", "Message": "Record Doesn't Exist!", "Data": ""};
       }
@@ -292,13 +370,19 @@ class MotorwayStaticController extends GetxController implements GetxService {
 
     isCalculating.value = true;
     try {
-      debugPrint('Calculating toll for ${entryCity.value} to ${exitCity.value}');
+      debugPrint(
+        'Calculating toll for ${entryCity.value} to ${exitCity.value}',
+      );
       final tollEntry = tollData.firstWhere(
         (entry) =>
-            (entry['entry_city'].toString().trim().toLowerCase() == entryCity.value.trim().toLowerCase() &&
-                entry['exit_city'].toString().trim().toLowerCase() == exitCity.value.trim().toLowerCase()) ||
-            (entry['entry_city'].toString().trim().toLowerCase() == exitCity.value.trim().toLowerCase() &&
-                entry['exit_city'].toString().trim().toLowerCase() == entryCity.value.trim().toLowerCase()),
+            (entry['entry_city'].toString().trim().toLowerCase() ==
+                    entryCity.value.trim().toLowerCase() &&
+                entry['exit_city'].toString().trim().toLowerCase() ==
+                    exitCity.value.trim().toLowerCase()) ||
+            (entry['entry_city'].toString().trim().toLowerCase() ==
+                    exitCity.value.trim().toLowerCase() &&
+                entry['exit_city'].toString().trim().toLowerCase() ==
+                    entryCity.value.trim().toLowerCase()),
         orElse: () => <String, dynamic>{},
       );
 
@@ -313,13 +397,17 @@ class MotorwayStaticController extends GetxController implements GetxService {
         showToll.value = true;
         animationController.forward();
         scrollToBottom();
-        debugPrint('Toll (CSV): ${calculatedToll.value}, Route: ${calculatedRoute.value}');
+        debugPrint(
+          'Toll (CSV): ${calculatedToll.value}, Route: ${calculatedRoute.value}',
+        );
       } else {
         final entryStationId = _getStationId(entryCity.value);
         final exitStationId = _getStationId(exitCity.value);
 
         if (entryStationId == null || exitStationId == null) {
-          throw Exception('Invalid station IDs for ${entryCity.value} or ${exitCity.value}');
+          throw Exception(
+            'Invalid station IDs for ${entryCity.value} or ${exitCity.value}',
+          );
         }
 
         final vehicleName = vehicleList[selectedVehicle.value].name;
@@ -336,9 +424,13 @@ class MotorwayStaticController extends GetxController implements GetxService {
           showToll.value = true;
           animationController.forward();
           scrollToBottom();
-          debugPrint('Toll (DB): ${calculatedToll.value}, Route: ${calculatedRoute.value}');
+          debugPrint(
+            'Toll (DB): ${calculatedToll.value}, Route: ${calculatedRoute.value}',
+          );
         } else {
-          throw Exception('No toll data found for ${entryCity.value} to ${exitCity.value}');
+          throw Exception(
+            'No toll data found for ${entryCity.value} to ${exitCity.value}',
+          );
         }
       }
     } catch (e) {
@@ -349,7 +441,9 @@ class MotorwayStaticController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> calculateTollPlaza(AnimationController animationController) async {
+  Future<void> calculateTollPlaza(
+    AnimationController animationController,
+  ) async {
     if (selectedMotorway.value == -1) {
       showSnackBar('Please select a motorway first');
       return;
@@ -373,7 +467,9 @@ class MotorwayStaticController extends GetxController implements GetxService {
       final exitId = _getStationId(exitStation.value);
 
       if (entryId == null || exitId == null) {
-        throw Exception('Station ID not found for ${entryStation.value} or ${exitStation.value}');
+        throw Exception(
+          'Station ID not found for ${entryStation.value} or ${exitStation.value}',
+        );
       }
 
       final result = await calculateToll(
@@ -388,12 +484,16 @@ class MotorwayStaticController extends GetxController implements GetxService {
         showTollPlaza.value = true;
         animationController.forward();
         scrollToBottom();
-        debugPrint('Toll (Plaza): ${calculatedTollPlaza.value}, Route: ${entryStation.value} - ${exitStation.value}');
+        debugPrint(
+          'Toll (Plaza): ${calculatedTollPlaza.value}, Route: ${entryStation.value} - ${exitStation.value}',
+        );
       } else {
         throw Exception(result['Message'] ?? 'Failed to calculate toll');
       }
     } catch (e) {
-      debugPrint('Toll plaza calculation error: $e');
+      debugPrint(
+        'Toll plaza calculation error: $e-Route: ${entryStation.value} - ${exitStation.value}',
+      );
       showSnackBar('Calculation failed: $e');
     } finally {
       isCalculatingPlaza.value = false;
@@ -418,10 +518,13 @@ class MotorwayStaticController extends GetxController implements GetxService {
         title: isEntry ? 'Select Entry City' : 'Select Exit City',
         hintText: 'Search City',
         leadingIcon: Icons.location_on,
-        trailingIconBuilder: (item) => item == (isEntry ? entryCity.value : exitCity.value)
+        trailingIconBuilder: (item) =>
+            item == (isEntry ? entryCity.value : exitCity.value)
             ? Icon(
                 Icons.check,
-                color: Get.theme.brightness == Brightness.dark ? Colors.grey : Get.theme.primaryColor,
+                color: Get.theme.brightness == Brightness.dark
+                    ? Colors.grey
+                    : Get.theme.primaryColor,
               )
             : null,
       ),
@@ -468,10 +571,13 @@ class MotorwayStaticController extends GetxController implements GetxService {
         title: isEntry ? 'Select Entry Station' : 'Select Exit Station',
         hintText: 'Search Station',
         leadingIcon: Icons.location_on,
-        trailingIconBuilder: (item) => item == (isEntry ? entryStation.value : exitStation.value)
+        trailingIconBuilder: (item) =>
+            item == (isEntry ? entryStation.value : exitStation.value)
             ? Icon(
                 Icons.check,
-                color: Get.theme.brightness == Brightness.dark ? Colors.grey : Get.theme.primaryColor,
+                color: Get.theme.brightness == Brightness.dark
+                    ? Colors.grey
+                    : Get.theme.primaryColor,
               )
             : null,
       ),

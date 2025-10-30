@@ -34,8 +34,14 @@ class _BalanceTransferSheetState extends State<BalanceTransferSheet> {
   void initState() {
     super.initState();
     amountController = TextEditingController(text: widget.balance);
-    selectedCar = widget.dropDownCars.first["carNumber"];
-    selectedCarMtag = widget.dropDownCars.first["mtagID"];
+
+    if (widget.dropDownCars.isNotEmpty) {
+      selectedCar = widget.dropDownCars.first["carNumber"] as String?;
+      selectedCarMtag = widget.dropDownCars.first["mtagID"] as String?;
+    } else {
+      selectedCar = null;
+      selectedCarMtag = null;
+    }
   }
 
   Widget _actionButton({
@@ -286,81 +292,102 @@ class _BalanceTransferSheetState extends State<BalanceTransferSheet> {
               ),
             ),
             const SizedBox(height: 12),
-            Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).disabledColor,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Theme.of(context).primaryColorLight,
-                  width: 0.5,
+            if (widget.dropDownCars.isEmpty)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: Theme.of(context).disabledColor,
                 ),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: selectedCar,
-                  icon: const Icon(Icons.keyboard_arrow_down),
-                  isExpanded: true,
-                  dropdownColor: Theme.of(context).disabledColor,
+                child: Text(
+                  "No other vehicles available",
                   style: TextStyle(
-                    color: Theme.of(context).primaryColorLight,
-                    fontSize: textSize,
+                    color: Theme.of(context).hintColor,
                     fontWeight: FontWeight.w600,
                   ),
-                  menuMaxHeight: 300,
-                  items: widget.dropDownCars.map((car) {
-                    return DropdownMenuItem<String>(
-                      value: car["carNumber"],
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).disabledColor,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                car["carNumber"],
-                                style: TextStyle(fontSize: textSize),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Theme.of(
-                                  context,
-                                ).primaryColorLight.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                "Rs.${car["balance"]}",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: isSmall ? 12 : 13,
-                                  color: Theme.of(context).primaryColorLight,
+                ),
+              )
+            else
+              Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).disabledColor,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Theme.of(context).primaryColorLight,
+                    width: 0.5,
+                  ),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 4,
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: selectedCar,
+                    icon: const Icon(Icons.keyboard_arrow_down),
+                    isExpanded: true,
+                    dropdownColor: Theme.of(context).disabledColor,
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColorLight,
+                      fontSize: textSize,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    menuMaxHeight: 300,
+                    items: widget.dropDownCars.map((car) {
+                      return DropdownMenuItem<String>(
+                        value: car["carNumber"],
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).disabledColor,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  car["carNumber"],
+                                  style: TextStyle(fontSize: textSize),
                                 ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 12),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(
+                                    context,
+                                  ).primaryColorLight.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  "Rs.${car["balance"]}",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: isSmall ? 12 : 13,
+                                    color: Theme.of(context).primaryColorLight,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedCar = value;
-                      selectedCarMtag = widget.dropDownCars.firstWhere(
-                        (c) => c["carNumber"] == value,
-                      )["mtagID"];
-                    });
-                  },
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedCar = value;
+                        selectedCarMtag = widget.dropDownCars.firstWhere(
+                          (c) => c["carNumber"] == value,
+                          orElse: () => {},
+                        )["mtagID"];
+                      });
+                    },
+                  ),
                 ),
               ),
-            ),
             SizedBox(height: vPad),
 
             /// --- Transfer Amount ---
@@ -424,7 +451,9 @@ class _BalanceTransferSheetState extends State<BalanceTransferSheet> {
                           isPrimary: true,
                           fontSize: textSize,
                           isLarge: isLarge,
-                          onPressed: _confirmTransfer,
+                          onPressed: (selectedCarMtag == null)
+                              ? null
+                              : _confirmTransfer,
                         ),
                         const SizedBox(height: 12),
                         _actionButton(
@@ -449,7 +478,9 @@ class _BalanceTransferSheetState extends State<BalanceTransferSheet> {
                             isPrimary: true,
                             fontSize: textSize,
                             isLarge: isLarge,
-                            onPressed: _confirmTransfer,
+                            onPressed: (selectedCarMtag == null)
+                                ? null
+                                : _confirmTransfer,
                           ),
                         ),
                         const SizedBox(width: 12),
