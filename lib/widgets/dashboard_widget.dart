@@ -234,7 +234,7 @@ Widget mtagDataWidget(
                                                           : ' Rs $displayBalance',
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .bodyMedium
+                                                          .labelMedium
                                                           ?.copyWith(
                                                             color: Colors.red,
                                                             height: 0.5,
@@ -362,7 +362,7 @@ Widget mtagDataWidget(
                                               color: Theme.of(
                                                 context,
                                               ).primaryColorLight,
-                                              fontSize: containerHeight * 0.05,
+                                              fontSize: containerHeight * 0.04,
                                               letterSpacing: 0.0,
                                             ),
                                           ),

@@ -37,13 +37,15 @@ class ReceiptScreen extends StatelessWidget {
                             ListTile(
                               onTap: () async {
                                 try {
+                                  final box = context.findRenderObject() as RenderBox?;
+                                 
                                   _screenshotController.capture().then((Uint8List? image) async {
                                     if (image != null) {
                                       final directory = await getApplicationDocumentsDirectory();
                                       final imagePath = await File('${directory.path}/receipt.png').create();
                                       await imagePath.writeAsBytes(image);
                         
-                                      await SharePlus.instance.share(ShareParams(files:  [XFile(imagePath.path)]));
+                                      await SharePlus.instance.share(ShareParams(files:  [XFile(imagePath.path)],sharePositionOrigin:  box!.localToGlobal(Offset.zero) & box.size,));
                                     }
                                   });
                                 } catch (e) {
@@ -238,7 +240,7 @@ class ReceiptScreen extends StatelessWidget {
                                           pw.SizedBox(height: 20),
                                           pw.Spacer(),
                                           pw.Center(
-                                            child: pw.Text('Powered by One Network\u00AE',
+                                            child: pw.Text('Powered by One Network',
                                                 style: const pw.TextStyle(fontSize: 20, letterSpacing: 0)),
                                           ),
                                           pw.Spacer(),
@@ -253,14 +255,14 @@ class ReceiptScreen extends StatelessWidget {
                                     pageFormat: const PdfPageFormat(500, 1024),
                                   ),
                                 );
-                        
+                        final box = context.findRenderObject() as RenderBox?;
                                 Directory documentDirectory = await getApplicationDocumentsDirectory();
                                 String documentPath = documentDirectory.path;
                         
                                 File pdfFile = File('$documentPath/${data?.uID}.pdf');
                         
                                 pdfFile.writeAsBytesSync(await pdf.save());
-                                SharePlus.instance.share(ShareParams(files: [XFile(pdfFile.path)]));
+                                SharePlus.instance.share(ShareParams(files: [XFile(pdfFile.path)],sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,));
                               },
                               dense: true,
                               leading: const Icon(

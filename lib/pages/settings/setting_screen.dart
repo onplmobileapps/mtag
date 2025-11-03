@@ -57,30 +57,18 @@ class SettingScreen extends StatelessWidget {
                       () => Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(
-                            height: 5,
-                          ),
+                          const SizedBox(height: 5),
                           Text(
                             _otherConstants.ownerName.value,
-                            style: Theme.of(context)
-                                .textTheme
-                                .displayLarge
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w800,
-                                ),
+                            style: Theme.of(context).textTheme.displayLarge
+                                ?.copyWith(fontWeight: FontWeight.w800),
                           ),
-                          const SizedBox(
-                            height: 5,
-                          ),
+                          const SizedBox(height: 5),
                           Text(
                             _otherConstants.ownerCNIC.value,
-                            style: Theme.of(context)
-                                .textTheme
-                                .displayMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                          )
+                            style: Theme.of(context).textTheme.displayMedium
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                          ),
                         ],
                       ),
                     ),
@@ -90,20 +78,21 @@ class SettingScreen extends StatelessWidget {
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 4),
+                          horizontal: 16,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Theme.of(context).highlightColor,
-                            ),
-                            borderRadius: BorderRadius.circular(8)),
+                          border: Border.all(
+                            color: Theme.of(context).highlightColor,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                         child: const Text('Edit'),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 Expanded(
                   child: CustomScrollView(
                     keyboardDismissBehavior:
@@ -125,18 +114,14 @@ class SettingScreen extends StatelessWidget {
                                 onTap: items[i].onTap,
                                 horizontalTitleGap: 6.0,
                                 dense: true,
-                                leading: Text(
-                                  items[i].name ?? '',
-                                ),
+                                leading: Text(items[i].name ?? ''),
                                 trailing: items[i].icon,
                               ),
-                              const Divider(
-                                thickness: 0.4,
-                              )
+                              const Divider(thickness: 0.4),
                             ],
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -148,12 +133,8 @@ class SettingScreen extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 20),
                         child: Text(
                           'Version ${snapshot.data}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .displaySmall
-                              ?.copyWith(
-                                fontWeight: FontWeight.w100,
-                              ),
+                          style: Theme.of(context).textTheme.displaySmall
+                              ?.copyWith(fontWeight: FontWeight.w100),
                           textAlign: TextAlign.center,
                         ),
                       );
@@ -186,150 +167,151 @@ class SettingsModel {
 
 final List<SettingsModel> items = [
   SettingsModel(
-      onTap: () {
-        Get.bottomSheet(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10))),
-            backgroundColor:
-                Theme.of(Get.context!).bottomSheetTheme.backgroundColor,
-            SafeArea(
-              child: Wrap(
-                children: [
-                  ListTile(
-                    key: UniqueKey(),
-                    onTap: () {
-                      Get.changeThemeMode(ThemeMode.system);
-                      AppData.setThemeMode(null);
-                      Get.back();
-                    },
-                    dense: true,
-                    leading: const Icon(Icons.phone_android_outlined),
-                    title: const Text('System Default'),
-                  ),
-                  const Divider(),
-                  ListTile(
-                    key: UniqueKey(),
-                    onTap: () {
-                      Get.changeThemeMode(ThemeMode.light);
-                      Get.changeTheme(appTheme);
-                      AppData.setThemeMode(false);
-                      Get.back();
-                    },
-                    dense: true,
-                    leading: const Icon(Icons.light_mode_outlined),
-                    title: const Text('Light Mode'),
-                  ),
-                  const Divider(),
-                  ListTile(
-                    key: UniqueKey(),
-                    onTap: () {
-                      Get.changeThemeMode(ThemeMode.dark);
-                      Get.changeTheme(darkTheme);
-                      AppData.setThemeMode(true);
-                      Get.back();
-                    },
-                    dense: true,
-                    leading: const Icon(Icons.dark_mode_outlined),
-                    title: const Text('Dark Mode'),
-                  )
-                ],
-              ),
-            ));
-      },
-      name: 'Dark/Light Mode',
-      icon: const Icon(
-        Icons.light_mode_outlined,
-      ),
-      routeName: '/theme'),
-  SettingsModel(
-      onTap: () {
-        Get.toNamed('/smsAlert');
-      },
-      name: 'Travel SMS Alert',
-      icon: const Icon(
-        Icons.sms_outlined,
-      ),
-      routeName: '/theme'),
-  SettingsModel(
-      onTap: () {
-        Get.toNamed('/feedback');
-      },
-      name: 'Help & Feedback',
-      icon: const Icon(
-        Icons.help_outline,
-      ),
-      routeName: '/theme'),
-  SettingsModel(
-      onTap: () {
-        showChangePinDialog(Get.context!, onSubmit: (oldPin, newPin) {});
-      },
-      name: 'Change PIN',
-      icon: Icon(Icons.password_outlined),
-      routeName: ''),
-  SettingsModel(
-      onTap: () {
-        Get.toNamed('/faqs');
-      },
-      name: 'FAQ\'s',
-      icon: const Icon(
-        Icons.quiz_outlined,
-      ),
-      routeName: '/theme'),
-  SettingsModel(
-      onTap: () {
-        Get.toNamed('/privacyPolicy');
-      },
-      name: 'Privacy Policy',
-      icon: const Icon(
-        Icons.privacy_tip_outlined,
-      ),
-      routeName: '/theme'),
-  SettingsModel(
-      onTap: () {
-
-        String shareLinks =
-            "Get the M-Tag One Network Application now for exciting features\n"
-            "Android: https://bit.ly/3nLrHNX\n"
-            "IOS: https://apple.co/3byIb6c\n"
-            "Huawei: https://bit.ly/3IFgzLf";
-        SharePlus.instance.share(ShareParams(text:  shareLinks,));
-      },
-      name: 'Share',
-      icon: const Icon(Icons.share_outlined),
-      routeName: '/theme'),
-  SettingsModel(
-      onTap: () {
-        showCupertinoModalPopup(
-          context: navigator!.context,
-          builder: (_) => CupertinoAlertDialog(
-            content: const Text('Do you want to logout?'),
-            actions: [
-              CupertinoDialogAction(
-                child: const Text(
-                  'Confirm',
-                ),
-                onPressed: () {
-                  Get.delete<HomeController>(force: true);
-                  Get.find<AuthController>().clearSharedData()
-                      ? Get.offNamedUntil('/pinPage', (v) => false)
-                      : Get.back();
+    onTap: () {
+      Get.bottomSheet(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10),
+            topRight: Radius.circular(10),
+          ),
+        ),
+        backgroundColor: Theme.of(
+          Get.context!,
+        ).bottomSheetTheme.backgroundColor,
+        SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                key: UniqueKey(),
+                onTap: () {
+                  Get.changeThemeMode(ThemeMode.system);
+                  AppData.setThemeMode(null);
+                  Get.back();
                 },
+                dense: true,
+                leading: const Icon(Icons.phone_android_outlined),
+                title: const Text('System Default'),
               ),
-              CupertinoDialogAction(
-                child: const Text(
-                  'Cancel',
-                ),
-                onPressed: () => Get.back(),
+              const Divider(),
+              ListTile(
+                key: UniqueKey(),
+                onTap: () {
+                  Get.changeThemeMode(ThemeMode.light);
+                  Get.changeTheme(appTheme);
+                  AppData.setThemeMode(false);
+                  Get.back();
+                },
+                dense: true,
+                leading: const Icon(Icons.light_mode_outlined),
+                title: const Text('Light Mode'),
+              ),
+              const Divider(),
+              ListTile(
+                key: UniqueKey(),
+                onTap: () {
+                  Get.changeThemeMode(ThemeMode.dark);
+                  Get.changeTheme(darkTheme);
+                  AppData.setThemeMode(true);
+                  Get.back();
+                },
+                dense: true,
+                leading: const Icon(Icons.dark_mode_outlined),
+                title: const Text('Dark Mode'),
               ),
             ],
           ),
-        );
-      },
-      name: 'Logout',
-      icon: const Icon(
-        Icons.logout_outlined,
-      ),
-      routeName: '/theme'),
+        ),
+      );
+    },
+    name: 'Dark/Light Mode',
+    icon: const Icon(Icons.light_mode_outlined),
+    routeName: '/theme',
+  ),
+  SettingsModel(
+    onTap: () {
+      Get.toNamed('/smsAlert');
+    },
+    name: 'Travel SMS Alert',
+    icon: const Icon(Icons.sms_outlined),
+    routeName: '/theme',
+  ),
+  SettingsModel(
+    onTap: () {
+      Get.toNamed('/feedback');
+    },
+    name: 'Help & Feedback',
+    icon: const Icon(Icons.help_outline),
+    routeName: '/theme',
+  ),
+  SettingsModel(
+    onTap: () {
+      showChangePinDialog(Get.context!, onSubmit: (oldPin, newPin) {});
+    },
+    name: 'Change PIN',
+    icon: Icon(Icons.password_outlined),
+    routeName: '',
+  ),
+  SettingsModel(
+    onTap: () {
+      Get.toNamed('/faqs');
+    },
+    name: 'FAQ\'s',
+    icon: const Icon(Icons.quiz_outlined),
+    routeName: '/theme',
+  ),
+  SettingsModel(
+    onTap: () {
+      Get.toNamed('/privacyPolicy');
+    },
+    name: 'Privacy Policy',
+    icon: const Icon(Icons.privacy_tip_outlined),
+    routeName: '/theme',
+  ),
+  SettingsModel(
+    onTap: () {
+      final box = Get.context!.findRenderObject() as RenderBox?;
+      String shareLinks =
+          "Get the M-Tag One Network Application now for exciting features\n"
+          "Android: https://bit.ly/3nLrHNX\n"
+          "IOS: https://apple.co/3byIb6c\n"
+          "Huawei: https://bit.ly/3IFgzLf";
+      SharePlus.instance.share(
+        ShareParams(
+          text: shareLinks,
+          sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+        ),
+      );
+    },
+    name: 'Share',
+    icon: const Icon(Icons.share_outlined),
+    routeName: '/theme',
+  ),
+  SettingsModel(
+    onTap: () {
+      showCupertinoModalPopup(
+        context: navigator!.context,
+        builder: (_) => CupertinoAlertDialog(
+          content: const Text('Do you want to logout?'),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text('Confirm'),
+              onPressed: () {
+                Get.delete<HomeController>(force: true);
+                Get.find<AuthController>().clearSharedData()
+                    ? Get.offNamedUntil('/pinPage', (v) => false)
+                    : Get.back();
+              },
+            ),
+            CupertinoDialogAction(
+              child: const Text('Cancel'),
+              onPressed: () => Get.back(),
+            ),
+          ],
+        ),
+      );
+    },
+    name: 'Logout',
+    icon: const Icon(Icons.logout_outlined),
+    routeName: '/theme',
+  ),
 ];

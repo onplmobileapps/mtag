@@ -5,6 +5,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:pub_semver/pub_semver.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:upgrader/upgrader.dart';
 import 'base/app_data.dart';
@@ -114,17 +115,40 @@ class _MTagAppState extends State<MTagApp> {
               upgrader: Upgrader(
                 upgraderOS: UpgraderOS(),
                 languageCode: "en",
-                countryCode: "US",
+                countryCode: "PK",
+                durationUntilAlertAgain: Duration(seconds: 1),
+                messages: CustomUpgraderMessages()..languageCode,
                 debugLogging: true,
-                willDisplayUpgrade:
-                    ({required display, installedVersion, versionInfo}) =>
-                        display,
-              ),
+       willDisplayUpgrade: ({
+      required bool display,
+      String? installedVersion,
+      UpgraderVersionInfo? versionInfo,
+    }) {
+      debugPrint('🟢 Upgrade check:');
+      debugPrint('Installed version: $installedVersion');
+      debugPrint('App Store version: ${versionInfo?.appStoreVersion}');
+      debugPrint('Display = $display');
+
+      if (installedVersion != null && versionInfo?.appStoreVersion != null) {
+        final installed = Version.parse(installedVersion);
+        final store = versionInfo!.appStoreVersion!; // already a Version object
+
+        if (store > installed) {
+          debugPrint('⬆️ Update available!');
+          Upgrader.clearSavedSettings(); // optional: force showing
+        } else {
+          debugPrint('✅ App is up-to-date.');
+        }
+      }
+    },
+  ),
+  
               dialogStyle: UpgradeDialogStyle.cupertino,
               cupertinoButtonTextStyle: const TextStyle(fontFamily: 'Poppins'),
               barrierDismissible: false,
               showIgnore: false,
               showLater: false,
+              
               showReleaseNotes: true,
               child: AppData.getPinData() != null ? PinEntryPage() : AuthPage(),
             )
@@ -146,4 +170,23 @@ class MyHttpOverrides extends HttpOverrides {
         (X509Certificate cert, String host, int port) => true;
     return client;
   }
+}
+
+
+class CustomUpgraderMessages extends UpgraderMessages {
+  @override
+  String get title => '🚀 New Update Available!';
+
+  @override
+  String get body =>
+      'We’ve made some great improvements and bug fixes. Please update now for the best experience.';
+
+  @override
+  String get buttonTitleUpdate => 'Update Now';
+
+  @override
+  String get buttonTitleIgnore => 'Skip';
+
+  @override
+  String get buttonTitleLater => 'Remind Me Later';
 }
