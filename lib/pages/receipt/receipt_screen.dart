@@ -255,6 +255,7 @@ class ReceiptScreen extends StatelessWidget {
                                     pageFormat: const PdfPageFormat(500, 1024),
                                   ),
                                 );
+                        // ignore: use_build_context_synchronously
                         final box = context.findRenderObject() as RenderBox?;
                                 Directory documentDirectory = await getApplicationDocumentsDirectory();
                                 String documentPath = documentDirectory.path;

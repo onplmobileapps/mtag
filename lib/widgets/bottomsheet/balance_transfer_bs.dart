@@ -359,7 +359,7 @@ class _BalanceTransferSheetState extends State<BalanceTransferSheet> {
                                 decoration: BoxDecoration(
                                   color: Theme.of(
                                     context,
-                                  ).primaryColorLight.withOpacity(0.1),
+                                  ).primaryColorLight.withValues(alpha:0.1),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
