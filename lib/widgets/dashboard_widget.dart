@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/utils/utils.dart';
+import 'package:mtag_flutterapp/widgets/balance_widget.dart';
 import 'package:mtag_flutterapp/widgets/bottomsheet/bottom_sheet_widget.dart';
 
 import '../controller/home_controller.dart';
@@ -197,84 +198,86 @@ Widget mtagDataWidget(
                                             ),
                                       ),
                                       SizedBox(width: elementSpacing * 0.30),
-                                      Obx(() {
-                                        final id = mtagId ?? '';
-                                        final isHidden =
-                                            controller.hiddenStates[id] ?? true;
-                                        final rawBalance =
-                                            controller.balances[id];
-                                        final displayBalance =
-                                            (rawBalance != null &&
-                                                rawBalance.isNotEmpty &&
-                                                rawBalance.toLowerCase() !=
-                                                    'null')
-                                            ? rawBalance
-                                            : '0.00';
-                                        return Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Flexible(
-                                              child: RichText(
-                                                text: TextSpan(
-                                                  text: isHidden ? "" : ":",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .labelMedium
-                                                      ?.copyWith(
-                                                        height: 0.2,
-                                                        color: Theme.of(
-                                                          context,
-                                                        ).primaryColorLight,
-                                                      ),
-                                                  children: <TextSpan>[
-                                                    TextSpan(
-                                                      text: isHidden
-                                                          ? '••••••'
-                                                          // ? 'Rs 12345'
-                                                          : ' Rs $displayBalance',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .labelMedium
-                                                          ?.copyWith(
-                                                            color: Colors.red,
-                                                            height: 0.5,
-                                                            fontWeight:
-                                                                FontWeight.w800,
-                                                          ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: elementSpacing * 0.5,
-                                            ),
-                                            InkWell(
-                                              onTap: () async {
-                                                if (isHidden) {
-                                                  await controller
-                                                      .sendCheckBalance([id]);
-                                                  controller.hiddenStates[id] =
-                                                      false;
-                                                } else {
-                                                  controller.hiddenStates[id] =
-                                                      true;
-                                                }
-                                                controller.hiddenStates
-                                                    .refresh();
-                                              },
-                                              child: Icon(
-                                                isHidden
-                                                    ? Icons.visibility_outlined
-                                                    : Icons
-                                                          .visibility_off_outlined,
-                                                size: iconSize,
-                                                color: Colors.redAccent,
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      }),
+                                      // Obx(() {
+                                      //   final id = mtagId ?? '';
+                                      //   final isHidden =
+                                      //       controller.hiddenStates[id] ?? true;
+                                      //   final rawBalance =
+                                      //       controller.balances[id];
+                                      //   final displayBalance =
+                                      //       (rawBalance != null &&
+                                      //           rawBalance.isNotEmpty &&
+                                      //           rawBalance.toLowerCase() !=
+                                      //               'null')
+                                      //       ? rawBalance
+                                      //       : '0.00';
+                                      //   return Row(
+                                      //     mainAxisSize: MainAxisSize.min,
+                                      //     children: [
+                                      //       Flexible(
+                                      //         child: RichText(
+                                      //           text: TextSpan(
+                                      //             text: isHidden ? "" : ":",
+                                      //             style: Theme.of(context)
+                                      //                 .textTheme
+                                      //                 .labelMedium
+                                      //                 ?.copyWith(
+                                      //                   height: 0.2,
+                                      //                   color: Theme.of(
+                                      //                     context,
+                                      //                   ).primaryColorLight,
+                                      //                 ),
+                                      //             children: <TextSpan>[
+                                      //               TextSpan(
+                                      //                 text: isHidden
+                                      //                     ? '••••••'
+                                      //                     // ? 'Rs 12345'
+                                      //                     : ' Rs $displayBalance',
+                                      //                 style: Theme.of(context)
+                                      //                     .textTheme
+                                      //                     .labelMedium
+                                      //                     ?.copyWith(
+                                      //                       color: Colors.red,
+                                      //                       height: 0.5,
+                                      //                       fontWeight:
+                                      //                           FontWeight.w800,
+                                      //                     ),
+                                      //               ),
+                                      //             ],
+                                      //           ),
+                                      //         ),
+                                      //       ),
+                                      //       SizedBox(
+                                      //         width: elementSpacing * 0.5,
+                                      //       ),
+                                      //       InkWell(
+                                      //         onTap: () async {
+                                      //           if (isHidden) {
+                                      //             await controller
+                                      //                 .sendCheckBalance([id]);
+                                      //             controller.hiddenStates[id] =
+                                      //                 false;
+                                      //           } else {
+                                      //             controller.hiddenStates[id] =
+                                      //                 true;
+                                      //           }
+                                      //           controller.hiddenStates
+                                      //               .refresh();
+                                      //         },
+                                      //         child: Icon(
+                                      //           isHidden
+                                      //               ? Icons.visibility_outlined
+                                      //               : Icons
+                                      //                     .visibility_off_outlined,
+                                      //           size: iconSize,
+                                      //           color: Colors.redAccent,
+                                      //         ),
+                                      //       ),
+                                      //     ],
+                                      //   );
+                                      // }),
+                                      //remove api call parse from ball variable
+                                      BalanceWidget(ball: ball),
                                     ],
                                   ),
                                 ],
@@ -316,8 +319,7 @@ Widget mtagDataWidget(
                                           );
 
                                       if (chassisNumber != null &&
-                                          chassisNumber.isNotEmpty) {
-                                      }
+                                          chassisNumber.isNotEmpty) {}
                                     },
                                     child: Container(
                                       padding: EdgeInsets.symmetric(

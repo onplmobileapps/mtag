@@ -4,10 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/widgets/dashboard_widget.dart';
-<<<<<<< HEAD
 
-=======
->>>>>>> f2d4a880c12e2a5644a39814e645d92a62249448
 import '/pages/recharge/controller/recharge_controller.dart';
 import '../../pages/tollhistory/controller/tollcontroller.dart';
 import '../../widgets/elevated_button.dart';

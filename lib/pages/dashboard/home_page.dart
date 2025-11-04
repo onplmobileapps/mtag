@@ -251,7 +251,7 @@ class HomePage extends GetView<HomeController> {
                                                 //           screenHeight * 0.29,
                                                 //     )
                                                 //   :
-                                                mtagRecoveryWidget(
+                                                mtagDataWidget(
                                                   context,
                                                   size: MediaQuery.sizeOf(
                                                     context,
@@ -278,10 +278,10 @@ class HomePage extends GetView<HomeController> {
                                                       .ownerCNIC
                                                       .string,
                                                   regId: e.registration,
-                                                  ball:
-                                                      controller.balances[e
-                                                          .tokenno] ??
-                                                      "0.00",
+                                                  ball: e.balance,
+                                                  // controller.balances[e
+                                                  //     .tokenno] ??
+                                                  // "0.00",
                                                   showTransferButton:
                                                       controller
                                                               .dashboradData
