@@ -163,7 +163,7 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
     return InkWell(
       onTap: () async {
         controller.isSlected.value = value;
-        controller.serchData(searchData);
+        controller.searchData(searchData);
         if (value == 2) {
           Get.find<ReceiptController>().chechTravel(true);
         }
