@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/utils/utils.dart';
 
-
 import '../constants/input_formater.dart';
 import '../controller/home_controller.dart';
 

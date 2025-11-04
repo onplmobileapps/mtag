@@ -7,12 +7,20 @@ import '../../../api/api_constants.dart';
 
 class TollController extends GetxController implements GetxService {
   final UserRepo userRepo;
+
   TollController({required this.userRepo});
+
   RxList<AllTransactions>? searchList = <AllTransactions>[].obs;
   var tollHistoryModel = Rx<TollHistoryModel?>(null);
   final RxInt isSlected = 0.obs;
-  Future<Map<String, dynamic>> geTollHistory(
-      {String? startDate, String? endDate, String? mtagID, int? pageNo, bool? isLoading}) async {
+
+  Future<Map<String, dynamic>> geTollHistory({
+    String? startDate,
+    String? endDate,
+    String? mtagID,
+    int? pageNo,
+    bool? isLoading,
+  }) async {
     var respone = await userRepo.getTollHistory(
       startDate: startDate ?? '',
       endDate: endDate ?? '',
@@ -36,11 +44,13 @@ class TollController extends GetxController implements GetxService {
     return respone;
   }
 
- void serchData(String cr) {
+  void searchData(String cr) {
     if (cr == '') {
       searchList?.value = tollHistoryModel.value?.data?.allTransactions ?? [];
     } else {
-      var data = tollHistoryModel.value?.data?.allTransactions?.where((element) => element.cR == cr).toList();
+      var data = tollHistoryModel.value?.data?.allTransactions
+          ?.where((element) => element.cR == cr)
+          .toList();
       searchList?.value = data ?? RxList();
     }
   }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/widgets/dialog/mtag_recovery_widget.dart';
 import '../../api/user_repo.dart';
 import '../../base/app_data.dart';
 import '../../constants/call_helper.dart';
@@ -250,12 +251,12 @@ class HomePage extends GetView<HomeController> {
                                                 //           screenHeight * 0.29,
                                                 //     )
                                                 //   :
-                                                mtagDataWidget(
+                                                mtagRecoveryWidget(
                                                   context,
                                                   size: MediaQuery.sizeOf(
                                                     context,
                                                   ),
-                                                  height: screenHeight * 0.28,
+                                                  height: screenHeight * 0.30,
                                                   isBlock: e.isactive,
                                                   jazzCode: controller
                                                       .dashboradData

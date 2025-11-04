@@ -21,7 +21,7 @@ class SettingScreen extends StatelessWidget {
     return packageInfo.version;
   }
 
-  @override
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
