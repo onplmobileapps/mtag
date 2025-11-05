@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class BalanceWidget extends StatefulWidget {
-  final String? ball;
+  final String? balance;
 
-  const BalanceWidget({super.key, required this.ball});
+  const BalanceWidget({super.key, required this.balance});
 
   @override
   State<BalanceWidget> createState() => _BalanceWidgetState();
@@ -18,7 +18,7 @@ class _BalanceWidgetState extends State<BalanceWidget> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          isHidden ? '••••••' : 'Rs ${widget.ball}',
+          isHidden ? '••••••' : 'Rs ${widget.balance}',
           style: TextStyle(
             color: Colors.red,
             fontWeight: FontWeight.bold,
