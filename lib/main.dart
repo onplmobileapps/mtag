@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +28,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
     name: 'mtagFlutter',
   );
-  await Analytics.initialize();
 
   //uncomment when go to production
   // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;

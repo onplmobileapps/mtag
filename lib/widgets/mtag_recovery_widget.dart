@@ -33,7 +33,6 @@ Widget mtagRecoveryWidget(
 
       final double containerHeight = height ?? screenHeight * 0.22;
 
-      // Responsive sizing
       final double horizontalPadding = availableWidth * 0.04;
       final double containerPadding = containerHeight * 0.06;
       final double elementSpacing = containerHeight * 0.04;

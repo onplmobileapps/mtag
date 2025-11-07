@@ -20,13 +20,17 @@ class HomeController extends GetxController implements GetxService {
   final balances = <String, String>{}.obs;
   final hiddenStates = <String, bool>{}.obs;
   final UserRepo userRepo;
+
   HomeController({required this.userRepo});
+
   final RxInt currentPage = 0.obs;
   final RxBool isLoading = false.obs;
+
   //new logic for loading
   var balanceUpdate = false.obs;
   var transferBalance = false.obs;
   var chassisNumberUpdate = false.obs;
+
   void setCurrentIndex(int value) => currentPage.value = value;
   final _otherConstants = OtherConsts();
   final List<MtagModel> dashBoardModel = [
@@ -143,7 +147,7 @@ class HomeController extends GetxController implements GetxService {
     );
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
-      await sendCheckBalance([toMtag, fromMtag]);
+      // await sendCheckBalance([toMtag, fromMtag]);
       await refreshDashboardData();
       showCupertinoModalPopup(
         context: Get.context!,

@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -16,16 +14,20 @@ import '../../pages/payment/model/payment_card_model.dart';
 import '../../widgets/mtag_card_widget.dart';
 import '../../widgets/textform_widget.dart';
 import '../dashboard/model/dashboard_model.dart';
-ValueNotifier   <int>   selected1linkOpt = ValueNotifier<int>(-1);
-ValueNotifier<bool> showPSIDField=ValueNotifier(false);
+
+ValueNotifier<int> selected1linkOpt = ValueNotifier<int>(-1);
+ValueNotifier<bool> showPSIDField = ValueNotifier(false);
+
 class RechargeSelfPage extends StatelessWidget {
   const RechargeSelfPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<RechargeSelfController>(
-      init: RechargeSelfController( paymentController: Get.find(),
-    homeController: Get.find(), ),
+      init: RechargeSelfController(
+        paymentController: Get.find(),
+        homeController: Get.find(),
+      ),
       builder: (controller) => PopScope(
         canPop: true,
         onPopInvokedWithResult: controller.handlePop,
@@ -55,13 +57,17 @@ class RechargeSelfPage extends StatelessWidget {
     );
   }
 
-  Widget _buildContent(BuildContext context, RechargeSelfController controller) {
+  Widget _buildContent(
+    BuildContext context,
+    RechargeSelfController controller,
+  ) {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       controller: controller.scrollController1,
       child: Form(
         key: controller.formKey,
-        child: Column(mainAxisAlignment: MainAxisAlignment.start,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -79,30 +85,35 @@ class RechargeSelfPage extends StatelessWidget {
 class RechargeSelfController extends GetxController {
   // Dependencies
   final PaymentCardController paymentController;
-  final HomeController homeController ;
-RechargeSelfController({required this.paymentController,
-required this.homeController});
+  final HomeController homeController;
+
+  RechargeSelfController({
+    required this.paymentController,
+    required this.homeController,
+  });
+
   // Scroll Controllers
-  final  scrollController = ScrollController(),
-    scrollController1 = ScrollController(),
-    scrollController2 = ScrollController(),
-  scrollController3 = ScrollController();
+  final scrollController = ScrollController(),
+      scrollController1 = ScrollController(),
+      scrollController2 = ScrollController(),
+      scrollController3 = ScrollController();
 
   // Form
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  
+
   // Text Controllers
-  final  amountController = TextEditingController(),
-   jazzCashController = TextEditingController(),
-    otherMtagController = TextEditingController();
+  final amountController = TextEditingController(),
+      jazzCashController = TextEditingController(),
+      otherMtagController = TextEditingController();
 
   // State
-  final RxList<ActiveMtags> arguments = (Get.arguments is List<ActiveMtags>
-          ? Get.arguments as List<ActiveMtags>
-          : Get.arguments is ActiveMtags
+  final RxList<ActiveMtags> arguments =
+      (Get.arguments is List<ActiveMtags>
+              ? Get.arguments as List<ActiveMtags>
+              : Get.arguments is ActiveMtags
               ? [Get.arguments as ActiveMtags]
               : [ActiveMtags()])
-      .obs;
+          .obs;
   final RxInt selectedMtagIndex = (-1).obs;
   final RxString selectedMtag = ''.obs;
   final RxInt selectedPayment = (-1).obs;
@@ -129,21 +140,22 @@ required this.homeController});
   }
 
   void _setupInitialValues() {
-      isJazzShown.value=false;
-      isCardsVisible.value=false;
+    isJazzShown.value = false;
+    isCardsVisible.value = false;
     if (arguments.isNotEmpty) {
-      selectedMtagIndex.value = arguments.length==1?0: -1;
-    
-      selectedMtag.value = arguments.length==1? arguments.first.tokenno ?? '':'';
+      selectedMtagIndex.value = arguments.length == 1 ? 0 : -1;
+
+      selectedMtag.value = arguments.length == 1
+          ? arguments.first.tokenno ?? ''
+          : '';
       amountController.text = arguments.first.amount ?? '';
-      
+
       _handleInitialPayment();
     }
   }
 
   void _handleInitialPayment() {
     if (arguments.first.payId != null) {
-
       fetchPaymentCards(arguments.first.payId!);
       if (arguments.first.payId == '1') {
         isCardsVisible.value = true;
@@ -166,18 +178,16 @@ required this.homeController});
   }
 
   void handlePop(bool didPop, dynamic result) {
- 
-  if (!didPop) {
-  
-    selected1linkOpt.value = -1;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-    
-      Get.back();
-    });
+    if (!didPop) {
+      selected1linkOpt.value = -1;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.back();
+      });
+    }
   }
-}
 
   void scrollLeft() => _scroll(scrollController, -100);
+
   void scrollRight() => _scroll(scrollController, 100);
 
   void _scroll(ScrollController controller, double offset) {
@@ -202,10 +212,11 @@ required this.homeController});
       isLoading.value = true;
       paymentCardModel.value.cardsData?.clear();
       final response = await paymentController.getCardDetails(payId);
-    if(response.containsKey(APIRESPONSE.SUCCESS)) {
-      paymentCardModel.value = 
-          PaymentCardModel.fromJson(response[APIRESPONSE.SUCCESS]);
-    }
+      if (response.containsKey(APIRESPONSE.SUCCESS)) {
+        paymentCardModel.value = PaymentCardModel.fromJson(
+          response[APIRESPONSE.SUCCESS],
+        );
+      }
     } finally {
       isLoading.value = false;
     }
@@ -221,24 +232,35 @@ required this.homeController});
 }
 
 // Widget Builders
-Widget _buildMtagSection(BuildContext context, RechargeSelfController controller) {
-  return Obx(() => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      _buildSectionTitle(context, 'Select Mtag/Vehicle'),
-      Row(
-        children: [
-          if (controller.arguments.length > 2)
-            _buildScrollButton(Icons.keyboard_arrow_left, controller.scrollLeft),
-          Expanded(child: _buildMtagList(context, controller)),
-          if (controller.arguments.length > 2)
-            _buildScrollButton(Icons.keyboard_arrow_right_outlined, controller.scrollRight),
-        ],
-      ),
-      if (controller.isOtherMtagFieldVisible.value)
-        _buildOtherMtagField(context, controller),
-    ],
-  ));
+Widget _buildMtagSection(
+  BuildContext context,
+  RechargeSelfController controller,
+) {
+  return Obx(
+    () => Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle(context, 'Select Mtag/Vehicle'),
+        Row(
+          children: [
+            if (controller.arguments.length > 2)
+              _buildScrollButton(
+                Icons.keyboard_arrow_left,
+                controller.scrollLeft,
+              ),
+            Expanded(child: _buildMtagList(context, controller)),
+            if (controller.arguments.length > 2)
+              _buildScrollButton(
+                Icons.keyboard_arrow_right_outlined,
+                controller.scrollRight,
+              ),
+          ],
+        ),
+        if (controller.isOtherMtagFieldVisible.value)
+          _buildOtherMtagField(context, controller),
+      ],
+    ),
+  );
 }
 
 Widget _buildSectionTitle(BuildContext context, String title) {
@@ -246,19 +268,15 @@ Widget _buildSectionTitle(BuildContext context, String title) {
     padding: const EdgeInsets.only(top: 10),
     child: Text(
       title,
-      style: Theme.of(context)
-          .textTheme
-          .labelLarge
-          ?.copyWith(color: Colors.redAccent),
+      style: Theme.of(
+        context,
+      ).textTheme.labelLarge?.copyWith(color: Colors.redAccent),
     ),
   );
 }
 
 Widget _buildScrollButton(IconData icon, VoidCallback onTap) {
-  return InkWell(
-    onTap: onTap,
-    child: Icon(icon),
-  );
+  return InkWell(onTap: onTap, child: Icon(icon));
 }
 
 Widget _buildMtagList(BuildContext context, RechargeSelfController controller) {
@@ -267,34 +285,39 @@ Widget _buildMtagList(BuildContext context, RechargeSelfController controller) {
     scrollDirection: Axis.horizontal,
     child: Row(
       children: [
-        ...controller.arguments.map((item) => MTagCard(
-          index: controller.arguments.indexOf(item),
-          token: item.tokenno ?? '',
-          registration: item.registration ?? '',
-          isSelected: controller.selectedMtagIndex.value == controller.arguments.indexOf(item),
-          onTap: () => controller.onMTagTap(
-            controller.arguments.indexOf(item),
-            item.tokenno ?? '',
-            false,
+        ...controller.arguments.map(
+          (item) => MTagCard(
+            index: controller.arguments.indexOf(item),
+            token: item.tokenno ?? '',
+            registration: item.registration ?? '',
+            isSelected:
+                controller.selectedMtagIndex.value ==
+                controller.arguments.indexOf(item),
+            onTap: () => controller.onMTagTap(
+              controller.arguments.indexOf(item),
+              item.tokenno ?? '',
+              false,
+            ),
           ),
-        )),
+        ),
         MTagCard(
           index: controller.arguments.length,
           token: 'Other M-TAG',
           registration: 'Recharge',
-          isSelected: controller.selectedMtagIndex.value == controller.arguments.length,
-          onTap: () => controller.onMTagTap(
-            controller.arguments.length,
-            '',
-            true,
-          ),
+          isSelected:
+              controller.selectedMtagIndex.value == controller.arguments.length,
+          onTap: () =>
+              controller.onMTagTap(controller.arguments.length, '', true),
         ),
       ],
     ),
   );
 }
 
-Widget _buildOtherMtagField(BuildContext context, RechargeSelfController controller) {
+Widget _buildOtherMtagField(
+  BuildContext context,
+  RechargeSelfController controller,
+) {
   return CustomTextField(
     controller: controller.otherMtagController,
     hint: "Enter M-Tag Id",
@@ -309,100 +332,119 @@ Widget _buildOtherMtagField(BuildContext context, RechargeSelfController control
   );
 }
 
-Widget _buildAmountSection(BuildContext context, RechargeSelfController controller) {
-  return Obx(() => !controller.showPsidField.value
-      ? Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-               
-                _buildSectionTitle(context, 'Enter Amount'),
-                Text(
-                  'Min: Rs. ${controller.homeController.dashboradData.value.rechargeMinAmount} '
-                  'Max: Rs. ${controller.homeController.dashboradData.value.rechargeMaxAmount}',
-                  style: const TextStyle(fontSize: 7, color: Colors.black),
-                ),
-              ],
-            ),
-            CustomTextField(
-              controller: controller.amountController,
-              keyboardType: const TextInputType.numberWithOptions(signed: true),
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: validateAmount,
-              maxLength: 8,
-              hint: '50',
-              hintStyle: const TextStyle(color: Colors.grey),
-            ),
-            const SizedBox(height: 5),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: AmountChipSelector(
-                amounts: AmountList.amountList,
-                controller: controller.amountController,
+Widget _buildAmountSection(
+  BuildContext context,
+  RechargeSelfController controller,
+) {
+  return Obx(
+    () => !controller.showPsidField.value
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _buildSectionTitle(context, 'Enter Amount'),
+                  Text(
+                    'Min: Rs. ${controller.homeController.dashboradData.value.rechargeMinAmount} '
+                    'Max: Rs. ${controller.homeController.dashboradData.value.rechargeMaxAmount}',
+                    style: const TextStyle(fontSize: 7, color: Colors.black),
+                  ),
+                ],
               ),
-            ),
-          ],
-        )
-      : const SizedBox.shrink());
+              CustomTextField(
+                controller: controller.amountController,
+                keyboardType: const TextInputType.numberWithOptions(
+                  signed: true,
+                ),
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: validateAmount,
+                maxLength: 8,
+                hint: '50',
+                hintStyle: const TextStyle(color: Colors.grey),
+              ),
+              const SizedBox(height: 5),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: AmountChipSelector(
+                  amounts: AmountList.amountList,
+                  controller: controller.amountController,
+                ),
+              ),
+            ],
+          )
+        : const SizedBox.shrink(),
+  );
 }
 
-Widget _buildPaymentSection(BuildContext context, RechargeSelfController controller) {
-  return Obx(() => BuildPaymentOptionsWidget(
-    onChanged: (paymentMethod) => controller.handlePaymentSelection(paymentMethod),
-    amount: controller.amountController,
-    showPSIDField: showPSIDField
-    ,
-    psidController: TextEditingController(),
-    creditCode: '',
-    jazzCode: '',
-    mtagId: controller.selectedMtag.value,
-  ));
+Widget _buildPaymentSection(
+  BuildContext context,
+  RechargeSelfController controller,
+) {
+  return Obx(
+    () => BuildPaymentOptionsWidget(
+      onChanged: (paymentMethod) =>
+          controller.handlePaymentSelection(paymentMethod),
+      amount: controller.amountController,
+      showPSIDField: showPSIDField,
+      psidController: TextEditingController(),
+      creditCode: '',
+      jazzCode: '',
+      mtagId: controller.selectedMtag.value,
+    ),
+  );
 }
 
-Widget _buildCardSection(BuildContext context, RechargeSelfController controller) {
-  return Obx(() => CardSharedUi(
-    cardListData: controller.paymentCardModel.value.cnt == 0
-        ? []
-        : controller.paymentCardModel.value.cardsData ?? [],
-    loading: controller.isLoading.value,
-    payId: controller.selectedPayment.value,
-    paymentHead: controller.selectedPayment.value == 2
-        ? 'JazzCash'
-        : controller.selectedPayment.value == 1
-            ? 'Credit/Debit Card'
-            : '',
-    mtagId: controller.selectedMtag.value,
-    amount: controller.amountController.text,
-  ));
+Widget _buildCardSection(
+  BuildContext context,
+  RechargeSelfController controller,
+) {
+  return Obx(
+    () => CardSharedUi(
+      cardListData: controller.paymentCardModel.value.cnt == 0
+          ? []
+          : controller.paymentCardModel.value.cardsData ?? [],
+      loading: controller.isLoading.value,
+      payId: controller.selectedPayment.value,
+      paymentHead: controller.selectedPayment.value == 2
+          ? 'JazzCash'
+          : controller.selectedPayment.value == 1
+          ? 'Credit/Debit Card'
+          : '',
+      mtagId: controller.selectedMtag.value,
+      amount: controller.amountController.text,
+    ),
+  );
 }
 
 extension RechargeSelfControllerExtensions on RechargeSelfController {
- void handlePaymentSelection(int paymentMethod) {
-  if (!isMtagValid()) {
-    showPopDialog('Select M-Tag / Enter M-Tag', () {
-      selected1linkOpt.value = -1;
-      Get.back();
-    });
-    return;
-  }
-  
-  setPayment(paymentMethod); // Use paymentMethod directly (1 for Credit/Debit, 2 for JazzCash)
-  fetchPaymentCards(paymentMethod.toString());
-  isCardsVisible.value = paymentMethod == 1 || paymentMethod == 2; // Show cards for 1 or 2
-  if (isCardsVisible.value) isJazzShown.value = false;
+  void handlePaymentSelection(int paymentMethod) {
+    if (!isMtagValid()) {
+      showPopDialog('Select M-Tag / Enter M-Tag', () {
+        selected1linkOpt.value = -1;
+        Get.back();
+      });
+      return;
+    }
 
-    
+    setPayment(
+      paymentMethod,
+    ); // Use paymentMethod directly (1 for Credit/Debit, 2 for JazzCash)
+    fetchPaymentCards(paymentMethod.toString());
+    isCardsVisible.value =
+        paymentMethod == 1 || paymentMethod == 2; // Show cards for 1 or 2
+    if (isCardsVisible.value) isJazzShown.value = false;
+
     setPayment(paymentMethod == 1 ? 2 : 1);
     fetchPaymentCards(paymentMethod.toString());
     isCardsVisible.value = paymentMethod <= 1;
     if (isCardsVisible.value) isJazzShown.value = false;
   }
 
-  bool isMtagValid() => 
+  bool isMtagValid() =>
       selectedMtag.value.isNotEmpty && selectedMtag.value.length >= 8;
 }

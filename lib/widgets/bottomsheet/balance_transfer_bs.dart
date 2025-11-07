@@ -27,8 +27,8 @@ class BalanceTransferSheet extends StatefulWidget {
 
 class _BalanceTransferSheetState extends State<BalanceTransferSheet> {
   late TextEditingController amountController;
-  String? selectedCar;
-  String? selectedCarMtag;
+  final RxnString selectedCar = RxnString();
+  final RxnString selectedCarMtag = RxnString();
 
   @override
   void initState() {
@@ -36,11 +36,11 @@ class _BalanceTransferSheetState extends State<BalanceTransferSheet> {
     amountController = TextEditingController(text: widget.balance);
 
     if (widget.dropDownCars.isNotEmpty) {
-      selectedCar = widget.dropDownCars.first["carNumber"] as String?;
-      selectedCarMtag = widget.dropDownCars.first["mtagID"] as String?;
+      selectedCar.value = widget.dropDownCars.first["carNumber"] as String?;
+      selectedCarMtag.value = widget.dropDownCars.first["mtagID"] as String?;
     } else {
-      selectedCar = null;
-      selectedCarMtag = null;
+      selectedCar.value = null;
+      selectedCarMtag.value = null;
     }
   }
 
@@ -139,7 +139,7 @@ class _BalanceTransferSheetState extends State<BalanceTransferSheet> {
       cnicNumber: widget.cnicNumber,
       mobileNumber: widget.mobileNumber,
       fromMtag: widget.mtagid,
-      toMtag: selectedCarMtag!,
+      toMtag: selectedCarMtag.value,
       amount: balance,
     );
   }
@@ -169,337 +169,349 @@ class _BalanceTransferSheetState extends State<BalanceTransferSheet> {
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: hPad, vertical: vPad),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: isSmall ? 36 : 48,
-              height: 5,
-              margin: const EdgeInsets.only(bottom: 20),
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(10),
-              ),
+        child: SingleChildScrollView(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom + 20,
             ),
-
-            /// --- Title ---
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    "Balance Transfer",
-                    style: TextStyle(
-                      fontSize: labelSize,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColorLight,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: vPad),
-
-            /// --- Current Vehicle Info ---
-            Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).disabledColor,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Theme.of(context).primaryColorLight,
-                  width: 0.5,
-                ),
-              ),
-              padding: EdgeInsets.all(isSmall ? 12 : 16),
-              child: Row(
+            child: Obx(
+              () => Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    padding: EdgeInsets.all(isSmall ? 10 : 12),
+                    width: isSmall ? 36 : 48,
+                    height: 5,
+                    margin: const EdgeInsets.only(bottom: 20),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColorLight,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.green.withAlpha(51),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Image.asset(
-                      'assets/suv.png',
-                      width: isSmall ? 24 : 28,
-                      height: isSmall ? 24 : 28,
-                      color: Theme.of(context).disabledColor,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.carRegistration ?? "",
-                          style: TextStyle(
-                            fontSize: textSize,
-                            fontWeight: FontWeight.w600,
-                            color: Theme.of(context).primaryColorLight,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          "Available Balance",
-                          style: TextStyle(
-                            fontSize: isSmall ? 11 : 12,
-                            color: Theme.of(context).primaryColorLight,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColorLight,
+                      color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Text(
-                      "Rs.${widget.balance}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: textSize,
-                        color: Theme.of(context).disabledColor,
+                  ),
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Balance Transfer",
+                          style: TextStyle(
+                            fontSize: labelSize,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColorLight,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: vPad),
+
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).disabledColor,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: Theme.of(context).primaryColorLight,
+                        width: 0.5,
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: vPad),
-
-            /// --- Select Vehicle ---
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Select Vehicle",
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: labelSize,
-                  color: Theme.of(context).primaryColorLight,
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            if (widget.dropDownCars.isEmpty)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: Theme.of(context).disabledColor,
-                ),
-                child: Text(
-                  "No other vehicles available",
-                  style: TextStyle(
-                    color: Theme.of(context).hintColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              )
-            else
-              Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).disabledColor,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Theme.of(context).primaryColorLight,
-                    width: 0.5,
-                  ),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 4,
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: selectedCar,
-                    icon: const Icon(Icons.keyboard_arrow_down),
-                    isExpanded: true,
-                    dropdownColor: Theme.of(context).disabledColor,
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColorLight,
-                      fontSize: textSize,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    menuMaxHeight: 300,
-                    items: widget.dropDownCars.map((car) {
-                      return DropdownMenuItem<String>(
-                        value: car["carNumber"],
-                        child: Container(
+                    padding: EdgeInsets.all(isSmall ? 12 : 16),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(isSmall ? 10 : 12),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).disabledColor,
-                            borderRadius: BorderRadius.circular(8),
+                            color: Theme.of(context).primaryColorLight,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.green.withAlpha(51),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
-                          child: Row(
+                          child: Image.asset(
+                            'assets/suv.png',
+                            width: isSmall ? 24 : 28,
+                            height: isSmall ? 24 : 28,
+                            color: Theme.of(context).disabledColor,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Expanded(
-                                child: Text(
-                                  car["carNumber"],
-                                  style: TextStyle(fontSize: textSize),
+                              Text(
+                                widget.carRegistration ?? "",
+                                style: TextStyle(
+                                  fontSize: textSize,
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).primaryColorLight,
                                 ),
                               ),
-                              const SizedBox(width: 12),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(
-                                    context,
-                                  ).primaryColorLight.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  "Rs.${car["balance"]}",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: isSmall ? 12 : 13,
-                                    color: Theme.of(context).primaryColorLight,
-                                  ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "Available Balance",
+                                style: TextStyle(
+                                  fontSize: isSmall ? 11 : 12,
+                                  color: Theme.of(context).primaryColorLight,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedCar = value;
-                        selectedCarMtag = widget.dropDownCars.firstWhere(
-                          (c) => c["carNumber"] == value,
-                          orElse: () => {},
-                        )["mtagID"];
-                      });
-                    },
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColorLight,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            "Rs.${widget.balance}",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: textSize,
+                              color: Theme.of(context).disabledColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ),
-            SizedBox(height: vPad),
+                  SizedBox(height: vPad),
 
-            /// --- Transfer Amount ---
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Transfer Amount",
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: labelSize,
-                  color: Theme.of(context).primaryColorLight,
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).disabledColor,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Theme.of(context).primaryColorLight,
-                  width: 0.5,
-                ),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      enabled: false,
-                      controller: amountController,
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Select Vehicle",
                       style: TextStyle(
-                        fontSize: textSize,
                         fontWeight: FontWeight.w600,
-                        color: Theme.of(context).hintColor,
-                      ),
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        isDense: true,
+                        fontSize: labelSize,
+                        color: Theme.of(context).primaryColorLight,
                       ),
                     ),
+                  ),
+                  const SizedBox(height: 12),
+                  if (widget.dropDownCars.isEmpty)
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: Theme.of(context).disabledColor,
+                      ),
+                      child: Text(
+                        "No other vehicles available",
+                        style: TextStyle(
+                          color: Theme.of(context).hintColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    )
+                  else
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).disabledColor,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Theme.of(context).primaryColorLight,
+                          width: 0.5,
+                        ),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          value: selectedCar.value,
+                          icon: const Icon(Icons.keyboard_arrow_down),
+                          isExpanded: true,
+                          dropdownColor: Theme.of(context).disabledColor,
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColorLight,
+                            fontSize: textSize,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          menuMaxHeight: 300,
+                          items: widget.dropDownCars.map((car) {
+                            return DropdownMenuItem<String>(
+                              value: car["carNumber"],
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).disabledColor,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        car["carNumber"],
+                                        style: TextStyle(fontSize: textSize),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(
+                                          context,
+                                        ).primaryColorLight.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        "Rs.${car["balance"]}",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: isSmall ? 12 : 13,
+                                          color: Theme.of(
+                                            context,
+                                          ).primaryColorLight,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedCar.value = value;
+                              selectedCarMtag.value = widget.dropDownCars
+                                  .firstWhere(
+                                    (c) => c["carNumber"] == value,
+                                    orElse: () => {},
+                                  )["mtagID"];
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  SizedBox(height: vPad),
+
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Transfer Amount",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: labelSize,
+                        color: Theme.of(context).primaryColorLight,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).disabledColor,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: Theme.of(context).primaryColorLight,
+                        width: 0.5,
+                      ),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            enabled: false,
+                            controller: amountController,
+                            style: TextStyle(
+                              fontSize: textSize,
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(context).hintColor,
+                            ),
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              isDense: true,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: vPad),
+
+                  SafeArea(
+                    top: false,
+                    child: isSmall
+                        ? Column(
+                            children: [
+                              _actionButton(
+                                label: "Confirm Transfer",
+                                bgColor: Theme.of(context).canvasColor,
+                                textColor: Colors.white,
+                                isPrimary: true,
+                                fontSize: textSize,
+                                isLarge: isLarge,
+                                onPressed: (selectedCarMtag.value == null)
+                                    ? null
+                                    : _confirmTransfer,
+                              ),
+                              const SizedBox(height: 12),
+                              _actionButton(
+                                label: "Cancel",
+                                bgColor: Colors.white,
+                                textColor: Theme.of(context).primaryColorLight,
+                                isPrimary: false,
+                                fontSize: textSize,
+                                isLarge: isLarge,
+                                onPressed: () => Get.back(),
+                              ),
+                            ],
+                          )
+                        : Row(
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: _actionButton(
+                                  label: "Confirm Transfer",
+                                  bgColor: Theme.of(context).primaryColorDark,
+                                  textColor: Colors.white,
+                                  isPrimary: true,
+                                  fontSize: textSize,
+                                  isLarge: isLarge,
+                                  onPressed: (selectedCarMtag.value == null)
+                                      ? null
+                                      : _confirmTransfer,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                flex: 2,
+                                child: _actionButton(
+                                  label: "Cancel",
+                                  bgColor: Colors.white,
+                                  textColor: Theme.of(
+                                    context,
+                                  ).primaryColorLight,
+                                  isPrimary: false,
+                                  fontSize: textSize,
+                                  isLarge: isLarge,
+                                  onPressed: () => Get.back(),
+                                ),
+                              ),
+                            ],
+                          ),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: vPad),
-
-            /// --- Buttons ---
-            SafeArea(
-              top: false,
-              child: isSmall
-                  ? Column(
-                      children: [
-                        _actionButton(
-                          label: "Confirm Transfer",
-                          bgColor: Theme.of(context).canvasColor,
-                          textColor: Colors.white,
-                          isPrimary: true,
-                          fontSize: textSize,
-                          isLarge: isLarge,
-                          onPressed: (selectedCarMtag == null)
-                              ? null
-                              : _confirmTransfer,
-                        ),
-                        const SizedBox(height: 12),
-                        _actionButton(
-                          label: "Cancel",
-                          bgColor: Colors.white,
-                          textColor: Theme.of(context).primaryColorLight,
-                          isPrimary: false,
-                          fontSize: textSize,
-                          isLarge: isLarge,
-                          onPressed: () => Get.back(),
-                        ),
-                      ],
-                    )
-                  : Row(
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: _actionButton(
-                            label: "Confirm Transfer",
-                            bgColor: Theme.of(context).primaryColorDark,
-                            textColor: Colors.white,
-                            isPrimary: true,
-                            fontSize: textSize,
-                            isLarge: isLarge,
-                            onPressed: (selectedCarMtag == null)
-                                ? null
-                                : _confirmTransfer,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          flex: 2,
-                          child: _actionButton(
-                            label: "Cancel",
-                            bgColor: Colors.white,
-                            textColor: Theme.of(context).primaryColorLight,
-                            isPrimary: false,
-                            fontSize: textSize,
-                            isLarge: isLarge,
-                            onPressed: () => Get.back(),
-                          ),
-                        ),
-                      ],
-                    ),
-            ),
-          ],
+          ),
         ),
       ),
     );

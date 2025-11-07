@@ -9,18 +9,18 @@ import '../../api/auth_controller.dart';
 import '../../constants/other_consts.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../theme/app_theme.dart';
+import '../dashboard/model/dashboard_model.dart';
 
 class SettingScreen extends StatelessWidget {
   SettingScreen({super.key});
 
   final navigatorKey = GlobalKey<NavigatorState>();
-  final _otherConstants = OtherConsts();
+  final homeController = Get.find<HomeController>();
 
   Future<String> _getAppVersion() async {
     final packageInfo = await PackageInfo.fromPlatform();
     return packageInfo.version;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -51,48 +51,77 @@ class SettingScreen extends StatelessWidget {
             child: Column(
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
+
                   children: [
                     Obx(
                       () => Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+
                         children: [
                           const SizedBox(height: 5),
+                          CircleAvatar(
+                            radius: 40,
+                            backgroundColor: Theme.of(context).primaryColor,
+                            child: Text(
+                              getInitials(
+                                homeController
+                                        .dashboradData
+                                        .value
+                                        .customerDetail
+                                        ?.fullName ??
+                                    "",
+                              ),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Poppins',
+                                fontSize: 40,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 5),
                           Text(
-                            _otherConstants.ownerName.value,
+                            homeController
+                                    .dashboradData
+                                    .value
+                                    .customerDetail
+                                    ?.fullName ??
+                                "",
                             style: Theme.of(context).textTheme.displayLarge
                                 ?.copyWith(fontWeight: FontWeight.w800),
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            _otherConstants.ownerCNIC.value,
+                            homeController
+                                    .dashboradData
+                                    .value
+                                    .customerDetail
+                                    ?.cNIC ??
+                                "",
+                            style: Theme.of(context).textTheme.displayMedium
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            homeController
+                                    .dashboradData
+                                    .value
+                                    .customerDetail
+                                    ?.mobileNumber ??
+                                "",
                             style: Theme.of(context).textTheme.displayMedium
                                 ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                         ],
                       ),
                     ),
-                    InkWell(
-                      onTap: () {
-                        Get.toNamed('/editProfile');
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context).highlightColor,
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Text('Edit'),
-                      ),
-                    ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 5),
+
+                const Divider(thickness: 0.4),
+
                 Expanded(
                   child: CustomScrollView(
                     keyboardDismissBehavior:
@@ -315,3 +344,21 @@ final List<SettingsModel> items = [
     routeName: '/theme',
   ),
 ];
+
+String getInitials(String fullName) {
+  if (fullName.trim().isNotEmpty) {
+    var nameParts = fullName.trim().split(RegExp(r'\s+'));
+    if (nameParts.isNotEmpty) {
+      var firstNameInitial = nameParts[0][0].toUpperCase();
+      var secondNameInitial = nameParts.length > 1
+          ? nameParts[1][0].toUpperCase()
+          : '';
+      if (secondNameInitial.isNotEmpty) {
+        return '$firstNameInitial$secondNameInitial';
+      } else {
+        return firstNameInitial;
+      }
+    }
+  }
+  return '';
+}
