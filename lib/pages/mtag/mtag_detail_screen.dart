@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/widgets/dashboard_widget.dart';
-
 import '/pages/recharge/controller/recharge_controller.dart';
 import '../../pages/tollhistory/controller/tollcontroller.dart';
 import '../../widgets/elevated_button.dart';
@@ -12,13 +11,11 @@ import '../dashboard/model/dashboard_model.dart';
 
 class MatagDetailScreen extends GetView<TollController> {
   MatagDetailScreen({super.key});
-
   final arguments = Get.arguments is List<ActiveMtags>
       ? Get.arguments as List<ActiveMtags>
       : Get.arguments != null
       ? [Get.arguments as ActiveMtags]
       : [ActiveMtags()];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +37,6 @@ class MatagDetailScreen extends GetView<TollController> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Vehicle details container
                 Container(
                   padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
@@ -72,34 +68,33 @@ class MatagDetailScreen extends GetView<TollController> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'M-TAG ${arguments.isNotEmpty ? arguments.first.tokenno ?? '' : ''}',
-                                style: Theme.of(context).textTheme.displaySmall,
-                              ),
-                              const SizedBox(height: 5),
-                              SizedBox(
-                                width: 200,
-                                child: Text(
-                                  'Owner: ${arguments.isNotEmpty ? arguments.first.ownername ?? '' : ''}',
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.displaySmall,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                          DefaultTextStyle(
+                            style: Theme.of(context).textTheme.displaySmall!,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'M-TAG ${arguments.isNotEmpty ? arguments.first.tokenno ?? '' : ''}',
                                 ),
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                'Registration # ${arguments.isNotEmpty ? arguments.first.registration ?? '' : ''}',
-                                style: Theme.of(context).textTheme.displaySmall,
-                              ),
-                              const SizedBox(height: 5),
-                            ],
+                                const SizedBox(height: 5),
+                                SizedBox(
+                                  width: 200,
+                                  child: Text(
+                                    'Owner: ${arguments.isNotEmpty ? arguments.first.ownername ?? '' : ''}',
+
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  'Registration # ${arguments.isNotEmpty ? arguments.first.registration ?? '' : ''}',
+                                ),
+                                const SizedBox(height: 5),
+                              ],
+                            ),
                           ),
                           Column(
                             mainAxisSize: MainAxisSize.min,
@@ -162,7 +157,6 @@ class MatagDetailScreen extends GetView<TollController> {
                 ),
                 const SizedBox(height: 15),
                 const Text('Recharge History'),
-                // Recharge history list
                 Expanded(
                   child: FutureBuilder(
                     future: controller.geTollHistory(
@@ -199,23 +193,19 @@ class MatagDetailScreen extends GetView<TollController> {
                               ListTile(
                                 contentPadding: const EdgeInsets.only(top: 5),
                                 title: Text(data.eXITSTATIONNAME ?? ''),
-                                subtitle: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'M-TAG ${data.iTOKKENNO ?? ''}',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.displaySmall,
-                                    ),
-                                    Text(
-                                      data.tRANSTIME ?? '',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.displaySmall,
-                                    ),
-                                  ],
+                                subtitle: DefaultTextStyle(
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.displaySmall!,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('M-TAG ${data.iTOKKENNO ?? ''}'),
+                                      Text(data.tRANSTIME ?? ''),
+                                    ],
+                                  ),
                                 ),
                                 trailing: Text(
                                   '${data.cR ?? ''} PKR ${data.fARE ?? ''}',

@@ -253,12 +253,10 @@ class MessagingService {
       });
     }
   }
-
   Future<void> _loadBadgeCount() async {
     final prefs = await SharedPreferences.getInstance();
     badgeCountNotifier.value = prefs.getInt(_badgeCountKey) ?? 0;
   }
-
   Future<void> _updateBadgeCountInUI() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_badgeCountKey, badgeCountNotifier.value);
