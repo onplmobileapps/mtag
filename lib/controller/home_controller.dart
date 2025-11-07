@@ -268,17 +268,6 @@ class HomeController extends GetxController implements GetxService {
   }
 
   void _handlePostInitActions() {
-    // Show promotional dialog if applicable
-    if (dashboradData.value.promotionalPopUpImage?.code == '00') {
-      Get.dialog(
-        PromoDialog(
-          imageUrl:
-              "${ApplicationUrl.IMAGE_ULR}/${dashboradData.value.promotionalPopUpImage?.imgURL}",
-        ),
-        barrierDismissible: false,
-      );
-    }
-
     if (dashboradData.value.customerDetail != null &&
         dashboradData.value.customerDetail!.mobileNumber != null &&
         dashboradData.value.customerDetail!.mobileNumber!.isNotEmpty &&
@@ -286,9 +275,6 @@ class HomeController extends GetxController implements GetxService {
       OperatorSelectionDialog.show(
         Get.context!,
         (value) {
-          // if (kDebugMode) {
-          //   print('OpValue=========>: $value',);
-          // }
           sendNetworkOperator(
             CnicNumber: dashboradData.value.customerDetail!.cNIC,
             MobileNum: dashboradData.value.customerDetail!.mobileNumber,

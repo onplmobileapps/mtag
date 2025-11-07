@@ -80,7 +80,6 @@ class PaymentBottomSheet extends StatelessWidget {
                 jazzCode: jazzCode,
                 psidController: psidController,
                 showPSIDField: showPSIDField,
-
                 amount: amountController..text,
               ),
               const SizedBox(height: 20),

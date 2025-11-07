@@ -53,6 +53,11 @@ class OtherConsts {
   static final RxString _promoPopUp = ''.obs;
 
   RxString get promoPopUp => _promoPopUp;
+
+  static final RxString _blackList = '1'.obs;
+
+  RxString get blackList => _blackList;
+
   static const List<String> sliderImages = [
     '8.webp',
     '7.jpg',
@@ -67,21 +72,69 @@ class OtherConsts {
     VehicleModel(name: 'Coaster', image: 'assets/f3.svg', id: 3),
     VehicleModel(name: 'Bus', image: 'assets/f4.svg', id: 4),
     VehicleModel(name: 'Truck', image: 'assets/f5.svg', id: 5),
-    VehicleModel(name: 'Trailer', image: 'assets/f6.svg', id: 6)
+    VehicleModel(name: 'Trailer', image: 'assets/f6.svg', id: 6),
   ].obs;
 
- static List<StaticMotorwayModel> mwNameList = [
-    StaticMotorwayModel(motorwayName: "M1", motorwayAbbrivation: "Isb-Psh", motorwayID: 4),
-    StaticMotorwayModel(motorwayName: "M2", motorwayAbbrivation: "Isb-Lhr", motorwayID: 7),
-    StaticMotorwayModel(motorwayName: "M3", motorwayAbbrivation: "Lhr-Abhk", motorwayID: 6),
-    StaticMotorwayModel(motorwayName: "M4", motorwayAbbrivation: "Fsd-Pbht", motorwayID: 11),
-    StaticMotorwayModel(motorwayName: "M5", motorwayAbbrivation: "Mlt-Skr", motorwayID: 5),
-    StaticMotorwayModel(motorwayName: "M9", motorwayAbbrivation: "Kar-Hyd", motorwayID: 1),
-    StaticMotorwayModel(motorwayName: "M11-LSM", motorwayAbbrivation: "Lhr-Siak", motorwayID: 2),
-    StaticMotorwayModel(motorwayName: "M14", motorwayAbbrivation: "Yrk-Hak", motorwayID: 14),
-    StaticMotorwayModel(motorwayName: "M15", motorwayAbbrivation: "Hazara", motorwayID: 10),
-    StaticMotorwayModel(motorwayName: "M16-SMP", motorwayAbbrivation: "Swat", motorwayID: 3),
-    StaticMotorwayModel(motorwayName: "N75", motorwayAbbrivation: "\t\t\tMurree\nExpressway", motorwayID: 200),
-    StaticMotorwayModel(motorwayName: "EBP", motorwayAbbrivation: "\t\tEastern\n\t\tBypass", motorwayID: 300),
+  static List<StaticMotorwayModel> mwNameList = [
+    StaticMotorwayModel(
+      motorwayName: "M1",
+      motorwayAbbrivation: "Isb-Psh",
+      motorwayID: 4,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "M2",
+      motorwayAbbrivation: "Isb-Lhr",
+      motorwayID: 7,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "M3",
+      motorwayAbbrivation: "Lhr-Abhk",
+      motorwayID: 6,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "M4",
+      motorwayAbbrivation: "Fsd-Pbht",
+      motorwayID: 11,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "M5",
+      motorwayAbbrivation: "Mlt-Skr",
+      motorwayID: 5,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "M9",
+      motorwayAbbrivation: "Kar-Hyd",
+      motorwayID: 1,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "M11-LSM",
+      motorwayAbbrivation: "Lhr-Siak",
+      motorwayID: 2,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "M14",
+      motorwayAbbrivation: "Yrk-Hak",
+      motorwayID: 14,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "M15",
+      motorwayAbbrivation: "Hazara",
+      motorwayID: 10,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "M16-SMP",
+      motorwayAbbrivation: "Swat",
+      motorwayID: 3,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "N75",
+      motorwayAbbrivation: "\t\t\tMurree\nExpressway",
+      motorwayID: 200,
+    ),
+    StaticMotorwayModel(
+      motorwayName: "EBP",
+      motorwayAbbrivation: "\t\tEastern\n\t\tBypass",
+      motorwayID: 300,
+    ),
   ].obs;
 }

@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 
+import 'dashboard_widget.dart';
+
 Widget mtagRecoveryWidget(
   BuildContext context, {
   String? vehType,
@@ -194,9 +196,13 @@ Widget mtagRecoveryWidget(
                       height: buttonHeight,
                       width: buttonWidth,
                       child: ElevatedButton(
-                        onPressed: () {
-                          log("Recover M-Tag pressed for $mtagId");
-                        },
+                        onPressed: () => showPaymentBottomSheet(
+                          context,
+                          mtagId: mtagId,
+                          regId: regId,
+                          jazzCode: jazzCode,
+                          creditCode: creditCode,
+                        ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red.shade700,
                           padding: EdgeInsets.symmetric(

@@ -33,8 +33,8 @@ class ActivityScreen extends StatelessWidget {
               topStart: Radius.circular(15),
             ),
           ),
-          child: GetX<ActivityContorller>(
-            init: ActivityContorller(UserRepo()),
+          child: GetX<ActivityController>(
+            init: ActivityController(UserRepo()),
             builder: (controller) {
               final jazzcashData =
                   controller.activitiesModel.value.jazzcashData;

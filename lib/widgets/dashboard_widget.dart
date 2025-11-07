@@ -611,7 +611,6 @@ void showPaymentBottomSheet(
       amountList: AmountList.amountList,
       onCopyPSID: () {
         showPSIDField.value = true;
-
         Clipboard.setData(ClipboardData(text: psidController.text));
       },
     ),
