@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/widgets/dialog/mtag_recovery_widget.dart';
 import '../../api/user_repo.dart';
 import '../../base/app_data.dart';
 import '../../constants/call_helper.dart';
@@ -12,6 +11,7 @@ import '../../controller/home_controller.dart';
 import '../../fcm_handeler.dart';
 import '../../widgets/appbar/app_bar_widget.dart';
 
+import '../../widgets/dashboard_widget.dart';
 import '../../widgets/dialog/chat_support_dialog.dart';
 import '../../widgets/shimmer_dashboard.dart';
 
@@ -251,7 +251,7 @@ class HomePage extends GetView<HomeController> {
                                                 //           screenHeight * 0.29,
                                                 //     )
                                                 //   :
-                                                mtagRecoveryWidget(
+                                                mtagDataWidget(
                                                   context,
                                                   size: MediaQuery.sizeOf(
                                                     context,
@@ -278,10 +278,10 @@ class HomePage extends GetView<HomeController> {
                                                       .ownerCNIC
                                                       .string,
                                                   regId: e.registration,
-                                                  ball:
-                                                      controller.balances[e
-                                                          .tokenno] ??
-                                                      "0.00",
+                                                  ball: e.balance,
+                                                  // controller.balances[e
+                                                  //     .tokenno] ??
+                                                  // "0.00",
                                                   showTransferButton:
                                                       controller
                                                               .dashboradData
