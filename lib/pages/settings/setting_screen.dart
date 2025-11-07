@@ -6,10 +6,8 @@ import '../../controller/home_controller.dart';
 import '../../widgets/dialog/change_pin_dialog.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../api/auth_controller.dart';
-import '../../constants/other_consts.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../theme/app_theme.dart';
-import '../dashboard/model/dashboard_model.dart';
 
 class SettingScreen extends StatelessWidget {
   SettingScreen({super.key});
