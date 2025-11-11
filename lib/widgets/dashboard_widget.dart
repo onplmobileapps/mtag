@@ -360,7 +360,7 @@ Widget mtagDataWidget(
                                                 color: Theme.of(
                                                   context,
                                                 ).primaryColorLight,
-                                                fontSize: fontSizeBase * 1.3,
+                                                fontSize: fontSizeBase * 1.2,
                                                 fontWeight: FontWeight.w600,
                                               ),
                                               overflow: TextOverflow.ellipsis,
@@ -408,13 +408,13 @@ Widget mtagDataWidget(
                                           color: Colors.green,
                                           size: iconSize * 1.2,
                                         ),
-                                        SizedBox(width: elementSpacing * 0.6),
+                                        SizedBox(width: elementSpacing * 0.3),
                                         Flexible(
                                           child: Text(
                                             'Recharge',
                                             style: TextStyle(
                                               color: Colors.green,
-                                              fontSize: fontSizeBase * 1.3,
+                                              fontSize: fontSizeBase * 1.2,
                                               fontWeight: FontWeight.w600,
                                             ),
                                             overflow: TextOverflow.ellipsis,
@@ -453,7 +453,7 @@ Widget mtagDataWidget(
                                     ),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(
-                                        borderRadius * 0.6,
+                                        borderRadius * 0.4,
                                       ),
                                       color: Theme.of(context).disabledColor,
                                       border: Border.all(
@@ -476,7 +476,7 @@ Widget mtagDataWidget(
                                             'Delete',
                                             style: TextStyle(
                                               color: Colors.redAccent,
-                                              fontSize: fontSizeBase * 1.3,
+                                              fontSize: fontSizeBase * 1.2,
                                               fontWeight: FontWeight.w600,
                                             ),
                                             overflow: TextOverflow.ellipsis,
