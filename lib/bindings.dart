@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/pages/activity/controller/activity_controller.dart';
+
 import 'package:mtag_flutterapp/pages/editprofile/controller/update_emai_controller.dart';
 import 'package:mtag_flutterapp/pages/faqs/controller/delete_account_controller.dart';
 import 'package:mtag_flutterapp/pages/mtag/controller/delink_controller.dart';
