@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import '../../base/app_data.dart';
 import '../../utils/utils.dart';
 import '../api/api_constants.dart';
-import '../api/application_url.dart';
+
 import '../api/auth_controller.dart';
 import '../api/user_repo.dart';
 import '../constants/other_consts.dart';
@@ -14,7 +14,7 @@ import '../pages/dashboard/model/dashboard_model.dart';
 import '../pages/dashboard/model/mtag_model.dart';
 import '../widgets/dialog/cupertino_dialog.dart';
 import '../widgets/dialog/operator_selection_dialog.dart';
-import '../widgets/dialog/promo_dialog.dart';
+
 
 class HomeController extends GetxController implements GetxService {
   final balances = <String, String>{}.obs;
