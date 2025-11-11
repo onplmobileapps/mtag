@@ -35,7 +35,7 @@ Widget mtagRecoveryWidget(
       final double containerHeight = height ?? screenHeight * 0.22;
 
       final double horizontalPadding = availableWidth * 0.04;
-      final double containerPadding = containerHeight * 0.055;
+      final double containerPadding = containerHeight * 0.06;
       final double elementSpacing = containerHeight * 0.04;
       final double fontSizeBase = containerHeight * 0.055;
       final double borderRadius = containerHeight * 0.05;
@@ -96,7 +96,7 @@ Widget mtagRecoveryWidget(
                         'You have pending dues on your account. You are not allowed to enter the motorway until your dues are cleared.',
                         style: TextStyle(
                           fontFamily: "Poppins",
-                          fontSize: fontSizeBase * 0.99,
+                          fontSize: fontSizeBase * 0.94,
                           color: Colors.red.shade700,
                           fontWeight: FontWeight.w900,
                           height: 1.3,

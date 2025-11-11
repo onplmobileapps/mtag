@@ -16,9 +16,8 @@ void showPopDialog(
     builder: (dialogContext) => CupertinoAlertDialog(
       content: DefaultTextStyle(
         style: TextStyle(
-          fontSize: 16,
+          fontSize: 14,
           color: Theme.of(context).primaryColorLight,
-          height: 1.5,
         ),
         child: Text(message, textAlign: TextAlign.justify),
       ),
