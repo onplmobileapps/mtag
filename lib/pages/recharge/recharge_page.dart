@@ -315,7 +315,7 @@ Widget _buildMtagList(BuildContext context, RechargeSelfController controller) {
           onTap: () =>
               controller.onMTagTap(controller.arguments.length, '', true),
 
-          isActive: controller.arguments.first.isactive,
+          isActive: 1,
         ),
       ],
     ),
