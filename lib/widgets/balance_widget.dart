@@ -24,7 +24,7 @@ class _BalanceWidgetState extends State<BalanceWidget> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          isHidden ? '••••••' : ': Rs ${widget.balance}',
+          isHidden ? ' ••••••' : ': Rs ${widget.balance}',
           style: TextStyle(
             color: Colors.red,
             fontWeight: FontWeight.bold,

@@ -206,7 +206,7 @@ Widget mtagDataWidget(
                           Column(
                             children: [
                               Transform.translate(
-                                offset: const Offset(-3, -0),
+                                offset: const Offset(-3, -3),
                                 child: SvgPicture.asset(
                                   getVehicleImage(vehType ?? ''),
                                   colorFilter: ColorFilter.mode(
@@ -218,7 +218,7 @@ Widget mtagDataWidget(
                                 ),
                               ),
                               Transform.translate(
-                                offset: const Offset(-3, -0),
+                                offset: const Offset(-3, -3),
                                 child: InkWell(
                                   onTap: () async {
                                     final chassis = await showDialog<String>(
