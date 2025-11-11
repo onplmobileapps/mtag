@@ -106,6 +106,7 @@ class ActiveMtags {
   String? payId;
   RxBool? isObscured;
   String? chassis_number;
+  double? block_amount;
 
   ActiveMtags({
     this.balance,
@@ -122,6 +123,7 @@ class ActiveMtags {
     this.payId,
     this.isObscured,
     this.chassis_number,
+    this.block_amount,
   });
 
   ActiveMtags.fromJson(Map<String, dynamic> json) {
@@ -136,6 +138,7 @@ class ActiveMtags {
     tokenno = json['tokenno'];
     vehicletype = json['vehicletype'];
     chassis_number = json['chassis_number'];
+    block_amount = json['block_amount'];
   }
 
   Map<String, dynamic> toJson() {
@@ -151,6 +154,7 @@ class ActiveMtags {
     data['tokenno'] = tokenno;
     data['vehicletype'] = vehicletype;
     data['chassis_number'] = chassis_number;
+    data['block_amount'] = block_amount;
     return data;
   }
 }

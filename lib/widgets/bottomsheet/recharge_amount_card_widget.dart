@@ -16,12 +16,18 @@ class BuildRechargeSection extends StatelessWidget {
     this.jazzCode,
     this.mtagId,
     this.regId,
+    required this.blackListRecharge,
+    this.recoveryAmount,
   });
+
   final TextEditingController amountController;
   final ValueListenable<bool> showPSIDField;
   final List<int> amountList;
   final GlobalKey<FormState> formKey;
   final String? mtagId, regId, jazzCode, creditCode;
+  final bool blackListRecharge;
+  final double? recoveryAmount;
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
@@ -31,37 +37,37 @@ class BuildRechargeSection extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Text('$regId-$mtagId'),
-              ],
-            ),
+            SizedBox(height: 10),
+            Row(children: [Text('$regId-$mtagId')]),
             Text(
-              "Recharge Amount",
+              blackListRecharge ? "Recovery Amount" : "Recharge Amount",
               style: Theme.of(context).textTheme.displayLarge,
             ),
-            SizedBox(
-              height: 5,
-            ),
+            SizedBox(height: 5),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 0),
               child: Form(
                 key: formKey,
                 child: RechargeAmountField(
+                  isEnabled: blackListRecharge ? false : true,
                   keyboardType: TextInputType.numberWithOptions(signed: true),
                   controller: amountController,
-                  hintText: "50",
+                  hintText: blackListRecharge == true
+                      ? "$recoveryAmount"
+                      : "50",
                 ),
               ),
             ),
-            // 23
-            SingleChildScrollView(scrollDirection: Axis.horizontal,
-              child: AmountChipSelector(amounts: AmountList.amountList, controller: amountController,
-              ),
-            ),
+
+            blackListRecharge
+                ? Container()
+                : SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: AmountChipSelector(
+                      amounts: AmountList.amountList,
+                      controller: amountController,
+                    ),
+                  ),
           ],
         );
       },

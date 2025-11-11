@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/widgets/mtag_recovery_widget.dart';
 import '../../api/user_repo.dart';
 import '../../base/app_data.dart';
 import '../../constants/call_helper.dart';
@@ -239,65 +240,79 @@ class HomePage extends GetView<HomeController> {
                                                   ),
 
                                               child: Obx(() {
-                                                return
-                                                // controller.isLoading.value
-                                                //   ? placeholderWidget(
-                                                //       context,
-                                                //       size: MediaQuery.sizeOf(
-                                                //         context,
-                                                //       ),
-                                                //       height:
-                                                //           screenHeight * 0.29,
-                                                //     )
-                                                //   :
-                                                mtagDataWidget(
-                                                  context,
-                                                  size: MediaQuery.sizeOf(
-                                                    context,
-                                                  ),
-                                                  height: screenHeight * 0.29,
-                                                  isBlock: e.isactive,
-                                                  jazzCode: controller
-                                                      .dashboradData
-                                                      .value
-                                                      .jazzCashRecharge
-                                                      .toString(),
-                                                  creditCode: controller
-                                                      .dashboradData
-                                                      .value
-                                                      .creditCardRecharge
-                                                      .toString(),
-                                                  vehType: e.vehicletype,
-                                                  mtagId: e.tokenno,
-                                                  userName: e.ownername,
-                                                  mobileNum: _otherConstants
-                                                      .mobile
-                                                      .string,
-                                                  cnic: _otherConstants
-                                                      .ownerCNIC
-                                                      .string,
-                                                  regId: e.registration,
-                                                  ball: e.balance,
-                                                  // controller.balances[e
-                                                  //     .tokenno] ??
-                                                  // "0.00",
-                                                  showTransferButton:
-                                                      controller
-                                                              .dashboradData
-                                                              .value
-                                                              .activeMtags!
-                                                              .length ==
-                                                          1
-                                                      ? false
-                                                      : true,
-                                                  balanceDashboard: e.balance,
-                                                  showChassisBadge:
-                                                      e.chassis_number == null
-                                                      ? true
-                                                      : false,
-                                                  chassisNumber:
-                                                      e.chassis_number,
-                                                );
+                                                //recovery condition
+                                                return e.isactive == 8
+                                                    ? mtagRecoveryWidget(
+                                                        context,
+                                                        size: MediaQuery.sizeOf(
+                                                          context,
+                                                        ),
+                                                        height:
+                                                            screenHeight * 0.29,
+                                                        isBlock: e.isactive,
+
+                                                        mtagId: e.tokenno,
+
+                                                        mobileNum:
+                                                            _otherConstants
+                                                                .mobile
+                                                                .string,
+                                                        cnic: _otherConstants
+                                                            .ownerCNIC
+                                                            .string,
+                                                        regId: e.registration,
+                                                        blockAmount:
+                                                            e.block_amount,
+                                                      )
+                                                    : mtagDataWidget(
+                                                        context,
+                                                        size: MediaQuery.sizeOf(
+                                                          context,
+                                                        ),
+                                                        height:
+                                                            screenHeight * 0.29,
+                                                        isBlock: e.isactive,
+                                                        jazzCode: controller
+                                                            .dashboradData
+                                                            .value
+                                                            .jazzCashRecharge
+                                                            .toString(),
+                                                        creditCode: controller
+                                                            .dashboradData
+                                                            .value
+                                                            .creditCardRecharge
+                                                            .toString(),
+                                                        vehType: e.vehicletype,
+                                                        mtagId: e.tokenno,
+                                                        userName: e.ownername,
+                                                        mobileNum:
+                                                            _otherConstants
+                                                                .mobile
+                                                                .string,
+                                                        cnic: _otherConstants
+                                                            .ownerCNIC
+                                                            .string,
+                                                        regId: e.registration,
+                                                        ball: e.balance,
+                                                        showTransferButton:
+                                                            controller
+                                                                    .dashboradData
+                                                                    .value
+                                                                    .activeMtags!
+                                                                    .length ==
+                                                                1
+                                                            ? false
+                                                            : true,
+                                                        balanceDashboard:
+                                                            e.balance,
+                                                        showChassisBadge:
+                                                            e.chassis_number ==
+                                                                null
+                                                            ? true
+                                                            : false,
+                                                        chassisNumber:
+                                                            e.chassis_number,
+                                                      );
                                               }),
                                             );
                                           },

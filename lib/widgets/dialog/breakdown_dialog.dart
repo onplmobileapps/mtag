@@ -10,7 +10,7 @@ void showBreakdownDialog({
   required double remaining,
   required String psid,
   required ValueNotifier<Duration>? inVoicetimerNotifier,
-  // Callback for the Generate PSID button
+  required blackListRecharge,
 }) {
   showDialog(
     barrierDismissible: false,
@@ -35,16 +35,15 @@ void showBreakdownDialog({
                   children: [
                     Text(
                       'Payment Details',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('M-Tag Balance'),
+                        Text(blackListRecharge ? 'Fine' : 'M-Tag Balance'),
                         Text(
                           '$amount',
                           style: Theme.of(context).dialogTheme.contentTextStyle,
@@ -57,7 +56,7 @@ void showBreakdownDialog({
                       children: [
                         const Text('Bank Charges'),
                         Text(
-                          '-$fee',
+                          blackListRecharge ? '+$fee' : '-$fee',
                           style: Theme.of(context).dialogTheme.contentTextStyle,
                         ),
                       ],
@@ -66,41 +65,54 @@ void showBreakdownDialog({
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Recharge Amount'),
+                        Text(
+                          blackListRecharge
+                              ? 'Payable Amount'
+                              : 'Recharge Amount',
+                        ),
                         Text(
                           '$remaining',
-                          style: Theme.of(context)
-                              .dialogTheme
-                              .contentTextStyle
+                          style: Theme.of(context).dialogTheme.contentTextStyle
                               ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.redAccent),
+                                fontWeight: FontWeight.bold,
+                                color: Colors.redAccent,
+                              ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      blackListRecharge
+                          ? '*Note : Recovery amount is inclusive of bank charges.'
+                          : '',
+                      style: Theme.of(context).dialogTheme.contentTextStyle
+                          ?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.redAccent,
+                            fontSize: 12.0,
+                          ),
                     ),
                     const SizedBox(height: 16),
                     Container(
                       padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all()),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(),
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(psid),
                           InkWell(
-                              onTap: () {
-                                Clipboard.setData(ClipboardData(text: psid));
-                              },
-                              child: Icon(
-                                Icons.copy,
-                              )),
+                            onTap: () {
+                              Clipboard.setData(ClipboardData(text: psid));
+                            },
+                            child: Icon(Icons.copy),
+                          ),
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox(height: 10),
                     Text(
                       "Recharge Instructions",
                       style: TextStyle(
@@ -111,19 +123,19 @@ void showBreakdownDialog({
                     ),
                     const SizedBox(height: 8),
                     // Payment Instructions as Bullet Points
-                    buildBulletPoint(context,
-                        "Copy the above PSID.", ),
+                    buildBulletPoint(context, "Copy the above PSID."),
                     const SizedBox(height: 5),
-                    buildBulletPoint(context,
-                        "Open your banking app, go to 1Bill and select Invoice.",
-                        ),
+                    buildBulletPoint(
+                      context,
+                      "Open your banking app, go to 1Bill and select Invoice.",
+                    ),
                     const SizedBox(height: 5),
-                    buildBulletPoint(context,"Paste the PSID and confirm.",
-                        ),
+                    buildBulletPoint(context, "Paste the PSID and confirm."),
                     const SizedBox(height: 5),
-                    buildBulletPoint(context,
-                        "Your balance will be updated within a few minutes.",
-                        ),
+                    buildBulletPoint(
+                      context,
+                      "Your balance will be updated within a few minutes.",
+                    ),
                     const SizedBox(height: 5),
                     // Timer
                     ValueListenableBuilder(
@@ -133,20 +145,17 @@ void showBreakdownDialog({
                         children: [
                           Text(
                             'PSID will expire in: ',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
+                            style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(fontSize: 14, color: Colors.red),
                           ),
                           Text(
                             '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
+                            style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
-                                    fontSize: 16,
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.bold),
+                                  fontSize: 16,
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                         ],
                       ),
@@ -183,9 +192,10 @@ void showBreakdownDialog({
 
 void showTopUpDialog({
   required BuildContext context,
-  required double amount,
+  required double? amount,
 
   required String psid,
+  required blackListRecharge,
   required ValueNotifier<Duration>? inVoicetimerNotifier,
   // Callback for the Generate PSID button
 }) {
@@ -212,24 +222,26 @@ void showTopUpDialog({
                   children: [
                     Text(
                       'Payment Details',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Recharge Amount'),
+                        Text(
+                          blackListRecharge
+                              ? 'Recovery Amount'
+                              : 'Recharge Amount',
+                        ),
                         Text(
                           '$amount',
-                          style: Theme.of(context)
-                              .dialogTheme
-                              .contentTextStyle
+                          style: Theme.of(context).dialogTheme.contentTextStyle
                               ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.redAccent),
+                                fontWeight: FontWeight.bold,
+                                color: Colors.redAccent,
+                              ),
                         ),
                       ],
                     ),
@@ -237,23 +249,23 @@ void showTopUpDialog({
                     Container(
                       padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all()),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(),
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(psid),
                           InkWell(
-                              onTap: () {
-                                Clipboard.setData(ClipboardData(text: psid));
-                              },
-                              child: Icon(
-                                Icons.copy,
-                              )),
+                            onTap: () {
+                              Clipboard.setData(ClipboardData(text: psid));
+                            },
+                            child: Icon(Icons.copy),
+                          ),
                         ],
                       ),
                     ),
-                      Text(
+                    Text(
                       "Recharge Instructions",
                       style: TextStyle(
                         fontSize: 14,
@@ -263,19 +275,19 @@ void showTopUpDialog({
                     ),
                     const SizedBox(height: 8),
                     // Payment Instructions as Bullet Points
-                    buildBulletPoint(context,
-                        "Copy the above PSID.", ),
+                    buildBulletPoint(context, "Copy the above PSID."),
                     const SizedBox(height: 5),
-                    buildBulletPoint(context,
-                        "Open your banking app, go to 1Bill and select Top Up.",
-                        ),
+                    buildBulletPoint(
+                      context,
+                      "Open your banking app, go to 1Bill and select Top Up.",
+                    ),
                     const SizedBox(height: 5),
-                    buildBulletPoint(context,"Paste the PSID and confirm.",
-                        ),
+                    buildBulletPoint(context, "Paste the PSID and confirm."),
                     const SizedBox(height: 5),
-                    buildBulletPoint(context,
-                        "Your balance will be updated within a few minutes.",
-                        ),
+                    buildBulletPoint(
+                      context,
+                      "Your balance will be updated within a few minutes.",
+                    ),
                     const SizedBox(height: 5),
                     // Timer
                     ValueListenableBuilder(
@@ -285,20 +297,17 @@ void showTopUpDialog({
                         children: [
                           Text(
                             'PSID will expire in: ',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
+                            style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(fontSize: 14, color: Colors.red),
                           ),
                           Text(
                             '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
+                            style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
-                                    fontSize: 16,
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.bold),
+                                  fontSize: 16,
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                         ],
                       ),
@@ -306,8 +315,6 @@ void showTopUpDialog({
                   ],
                 ),
               ),
-                   
-            
 
               // Close Button
               Positioned(

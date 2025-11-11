@@ -293,11 +293,17 @@ Widget _buildMtagList(BuildContext context, RechargeSelfController controller) {
             isSelected:
                 controller.selectedMtagIndex.value ==
                 controller.arguments.indexOf(item),
-            onTap: () => controller.onMTagTap(
-              controller.arguments.indexOf(item),
-              item.tokenno ?? '',
-              false,
-            ),
+            onTap: () => item.isactive == 8
+                ? showPopDialog(
+                    "You have pending dues on your account. You are not allowed to enter the motorway until your dues are cleared.",
+                    () => Get.back(),
+                  )
+                : controller.onMTagTap(
+                    controller.arguments.indexOf(item),
+                    item.tokenno ?? '',
+                    false,
+                  ),
+            isActive: item.isactive,
           ),
         ),
         MTagCard(
@@ -308,6 +314,8 @@ Widget _buildMtagList(BuildContext context, RechargeSelfController controller) {
               controller.selectedMtagIndex.value == controller.arguments.length,
           onTap: () =>
               controller.onMTagTap(controller.arguments.length, '', true),
+
+          isActive: controller.arguments.first.isactive,
         ),
       ],
     ),
@@ -395,6 +403,7 @@ Widget _buildPaymentSection(
       creditCode: '',
       jazzCode: '',
       mtagId: controller.selectedMtag.value,
+      blackListRecharge: false,
     ),
   );
 }

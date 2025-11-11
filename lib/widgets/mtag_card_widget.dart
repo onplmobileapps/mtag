@@ -7,6 +7,7 @@ class MTagCard extends StatelessWidget {
   final String registration;
   final bool isSelected;
   final VoidCallback onTap;
+  final double isActive;
 
   const MTagCard({
     super.key,
@@ -15,6 +16,7 @@ class MTagCard extends StatelessWidget {
     required this.registration,
     required this.isSelected,
     required this.onTap,
+    required this.isActive,
   });
 
   @override
@@ -32,12 +34,15 @@ class MTagCard extends StatelessWidget {
             margin: const EdgeInsets.all(10),
             padding: const EdgeInsets.all(16),
             width: isSelected
-                ? MediaQuery.sizeOf(context).width / 2.8 // Slightly larger when selected
+                ? MediaQuery.sizeOf(context).width /
+                      2.8 // Slightly larger when selected
                 : MediaQuery.sizeOf(context).width / 3.2,
             decoration: BoxDecoration(
               color: Theme.of(context).focusColor,
               border: Border.all(
-                color: isSelected
+                color: isActive == 8
+                    ? Colors.redAccent
+                    : isSelected
                     ? Theme.of(context).primaryColor
                     : Theme.of(context).disabledColor,
                 width: isSelected ? 1.0 : 0.5, // Thicker border when selected
@@ -56,34 +61,63 @@ class MTagCard extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SvgPicture.asset(
-                  'assets/mtag_logo.svg',
-                  fit: BoxFit.fill,
-                  height:  30, // Larger logo when selected
-                  colorFilter: isSelected
-                      ? ColorFilter.mode(
-                          Theme.of(context).primaryColor, BlendMode.srcIn)
-                      : null,
-                ),
+                isActive == 8
+                    ? Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 5,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.red.withAlpha(77),
+                              blurRadius: 4,
+                              offset: Offset(2, 2),
+                            ),
+                          ],
+                        ),
+                        child: Text(
+                          'Blacklisted',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      )
+                    : SvgPicture.asset(
+                        'assets/mtag_logo.svg',
+                        fit: BoxFit.fill,
+                        height: 30, // Larger logo when selected
+                        colorFilter: isSelected
+                            ? ColorFilter.mode(
+                                Theme.of(context).primaryColor,
+                                BlendMode.srcIn,
+                              )
+                            : null,
+                      ),
                 const SizedBox(height: 8),
                 Text(
                   registration,
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: isSelected ? Colors.red : Colors.redAccent,
-                        fontSize: isSelected ? 13 : 12, // Larger text when selected
-                      ),
+                    fontWeight: FontWeight.bold,
+                    color: isSelected ? Colors.red : Colors.redAccent,
+                    fontSize: isSelected ? 13 : 12, // Larger text when selected
+                  ),
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   token,
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                        color: isSelected
-                            ? Theme.of(context).primaryColor
-                            : Theme.of(context).primaryColor.withAlpha(200),
-                        fontSize: isSelected ? 14 : 12,
-                      ),
+                    color: isSelected
+                        ? Theme.of(context).primaryColor
+                        : Theme.of(context).primaryColor.withAlpha(200),
+                    fontSize: isSelected ? 14 : 12,
+                  ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
@@ -93,15 +127,27 @@ class MTagCard extends StatelessWidget {
             child: AnimatedScale(
               duration: const Duration(milliseconds: 200),
               scale: isSelected ? 1.2 : 1.0, // Slightly larger when selected
-              child: CircleAvatar(
-                backgroundColor: isSelected ? Colors.green : Colors.grey,
-                radius: isSelected ? 10 : 9, // Larger circle when selected
-                child: Icon(
-                  Icons.done_rounded,
-                  size: isSelected ? 16 : 15,
-                  color: Colors.white,
-                ),
-              ),
+              child: isActive == 8
+                  ? CircleAvatar(
+                      backgroundColor: Colors.redAccent,
+                      radius: 12,
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: 16,
+                        color: Colors.white,
+                      ),
+                    )
+                  : CircleAvatar(
+                      backgroundColor: isSelected ? Colors.green : Colors.grey,
+                      radius: isSelected
+                          ? 10
+                          : 9, // Larger circle when selected
+                      child: Icon(
+                        Icons.done_rounded,
+                        size: isSelected ? 16 : 15,
+                        color: Colors.white,
+                      ),
+                    ),
             ),
           ),
         ],

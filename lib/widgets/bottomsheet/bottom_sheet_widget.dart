@@ -21,6 +21,8 @@ class PaymentBottomSheet extends StatelessWidget {
   final List<int> amountList;
   final VoidCallback onCopyPSID;
   final String? mtagId, regId, jazzCode, creditCode;
+  final bool blackListRecharge;
+  final double? recoveryAmount;
 
   const PaymentBottomSheet({
     super.key,
@@ -34,6 +36,8 @@ class PaymentBottomSheet extends StatelessWidget {
     this.regId,
     this.creditCode,
     this.jazzCode,
+    required this.blackListRecharge,
+    this.recoveryAmount,
   });
 
   @override
@@ -71,6 +75,8 @@ class PaymentBottomSheet extends StatelessWidget {
                 mtagId: mtagId,
                 jazzCode: jazzCode,
                 creditCode: creditCode,
+                blackListRecharge: blackListRecharge,
+                recoveryAmount: recoveryAmount,
               ),
               BuildPaymentOptionsWidget(
                 key: ValueKey('payment options'),
@@ -81,6 +87,8 @@ class PaymentBottomSheet extends StatelessWidget {
                 psidController: psidController,
                 showPSIDField: showPSIDField,
                 amount: amountController..text,
+                blackListRecharge: blackListRecharge,
+                recoveryAmount: recoveryAmount,
               ),
               const SizedBox(height: 20),
             ],

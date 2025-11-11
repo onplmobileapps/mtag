@@ -1,7 +1,6 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
-
-import 'dashboard_widget.dart';
+import 'package:flutter/services.dart';
+import 'package:mtag_flutterapp/widgets/dashboard_widget.dart';
 
 Widget mtagRecoveryWidget(
   BuildContext context, {
@@ -174,7 +173,7 @@ Widget mtagRecoveryWidget(
                           SizedBox(width: elementSpacing * 0.5),
                           Flexible(
                             child: Text(
-                              "Rs ${blockAmount?.toStringAsFixed(0) ?? '0'}",
+                              "Rs $blockAmount",
                               style: TextStyle(
                                 fontSize: fontSizeBase,
                                 color: Colors.red.shade700,
@@ -198,10 +197,10 @@ Widget mtagRecoveryWidget(
                       child: ElevatedButton(
                         onPressed: () => showPaymentBottomSheet(
                           context,
+                          blackListRecharge: true,
                           mtagId: mtagId,
                           regId: regId,
-                          jazzCode: jazzCode,
-                          creditCode: creditCode,
+                          recoveryAmount: blockAmount,
                         ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red.shade700,

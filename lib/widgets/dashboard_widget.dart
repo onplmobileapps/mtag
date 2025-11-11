@@ -405,6 +405,7 @@ Widget mtagDataWidget(
                                     regId: regId,
                                     jazzCode: jazzCode,
                                     creditCode: creditCode,
+                                    blackListRecharge: false,
                                   ),
                                   child: Container(
                                     padding: EdgeInsets.symmetric(
@@ -591,6 +592,8 @@ void showPaymentBottomSheet(
   String? regId,
   String? jazzCode,
   String? creditCode,
+  required bool blackListRecharge,
+  double? recoveryAmount,
 }) {
   final TextEditingController amountController = TextEditingController();
   final TextEditingController psidController = TextEditingController();
@@ -598,6 +601,7 @@ void showPaymentBottomSheet(
   final ValueNotifier<bool> showPSIDField = ValueNotifier(false);
   final ValueNotifier<int> selectedPaymentOption = ValueNotifier(-1);
   selected1linkOpt.value = -1;
+
   Get.bottomSheet(
     PaymentBottomSheet(
       mtagId: mtagId,
@@ -609,6 +613,8 @@ void showPaymentBottomSheet(
       showPSIDField: showPSIDField,
       selectedPaymentOption: selectedPaymentOption,
       amountList: AmountList.amountList,
+      blackListRecharge: blackListRecharge,
+      recoveryAmount: recoveryAmount,
       onCopyPSID: () {
         showPSIDField.value = true;
         Clipboard.setData(ClipboardData(text: psidController.text));
