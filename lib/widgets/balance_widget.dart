@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 
 class BalanceWidget extends StatefulWidget {
   final String? balance;
+  final double? fontSize, iconSize;
 
-  const BalanceWidget({super.key, required this.balance});
+  const BalanceWidget({
+    super.key,
+    required this.balance,
+    required this.fontSize,
+    required this.iconSize,
+  });
 
   @override
   State<BalanceWidget> createState() => _BalanceWidgetState();
@@ -18,11 +24,11 @@ class _BalanceWidgetState extends State<BalanceWidget> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          isHidden ? '••••••' : 'Rs ${widget.balance}',
+          isHidden ? ' ••••••' : ': Rs ${widget.balance}',
           style: TextStyle(
             color: Colors.red,
             fontWeight: FontWeight.bold,
-            fontSize: 16,
+            fontSize: widget.fontSize,
           ),
         ),
         SizedBox(width: 8),
@@ -33,6 +39,7 @@ class _BalanceWidgetState extends State<BalanceWidget> {
             });
           },
           child: Icon(
+            size: widget.iconSize,
             isHidden
                 ? Icons.visibility_outlined
                 : Icons.visibility_off_outlined,

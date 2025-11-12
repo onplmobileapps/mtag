@@ -34,7 +34,7 @@ Widget mtagRecoveryWidget(
       final double containerHeight = height ?? screenHeight * 0.22;
 
       final double horizontalPadding = availableWidth * 0.04;
-      final double containerPadding = containerHeight * 0.06;
+      final double containerPadding = containerHeight * 0.055;
       final double elementSpacing = containerHeight * 0.04;
       final double fontSizeBase = containerHeight * 0.055;
       final double borderRadius = containerHeight * 0.05;
