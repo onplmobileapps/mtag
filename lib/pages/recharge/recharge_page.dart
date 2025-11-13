@@ -303,7 +303,7 @@ Widget _buildMtagList(BuildContext context, RechargeSelfController controller) {
                     item.tokenno ?? '',
                     false,
                   ),
-            isActive: item.isactive,
+            isActive: item.isactive ?? 1,
           ),
         ),
         MTagCard(

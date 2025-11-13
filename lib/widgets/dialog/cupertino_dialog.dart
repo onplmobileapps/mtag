@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 void showPopDialog(
@@ -14,13 +13,7 @@ void showPopDialog(
     context: context,
     barrierDismissible: false,
     builder: (dialogContext) => CupertinoAlertDialog(
-      content: DefaultTextStyle(
-        style: TextStyle(
-          fontSize: 14,
-          color: Theme.of(context).primaryColorLight,
-        ),
-        child: Text(message, textAlign: TextAlign.justify),
-      ),
+      content: Text(message),
       actions: [
         CupertinoDialogAction(
           onPressed: () {
