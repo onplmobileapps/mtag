@@ -3,7 +3,7 @@ description: "M-Tag A Prime Product of One Network Solutions(FWO)."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 4.3.7+266
 environment:
-  sdk: ">=3.8.0 <4.0.0"
+  sdk: ">=3.9.0 <4.0.0"
 dependencies:
   flutter:
     sdk: flutter
@@ -19,7 +19,7 @@ dependencies:
   firebase_core: ^4.0.0
   flutter_local_notifications: ^19.1.0
   in_app_update: ^4.2.3
-  local_auth: ^2.3.0
+  local_auth: ^3.0.0
   lottie: ^3.1.0
   screenshot: ^3.0.0
   path_provider: ^2.1.3
