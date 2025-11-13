@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+
 
 import '../controller/home_controller.dart';
 import '../pages/mtag/controller/delink_controller.dart';
@@ -87,7 +87,7 @@ Widget mtagDataWidget(
       final double borderRadius = containerHeight * 0.05;
       final double iconSize = containerHeight * 0.08;
       final double buttonHeight = containerHeight * 0.20;
-      final double buttonWidth = availableWidth * 0.30;
+
 
       // Define buttonSpacing (was missing!)
       final double buttonSpacing = containerHeight * 0.02;
