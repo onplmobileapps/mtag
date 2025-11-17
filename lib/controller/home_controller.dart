@@ -79,7 +79,7 @@ class HomeController extends GetxController implements GetxService {
       CnicNumber: CnicNumber,
       MobileNum: MobileNum,
       sim_operator: sim_operator,
-    );
+    ); 
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       showCupertinoModalPopup(
