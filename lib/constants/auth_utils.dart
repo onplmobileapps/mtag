@@ -31,7 +31,7 @@ class AuthenticationUtil {
 
     final result = await auth.authenticate(authMessages: [],
       localizedReason: "Scan your fingerprint to proceed.",
-      options: const AuthenticationOptions(stickyAuth: true, useErrorDialogs: true),
+      biometricOnly: true
     );
 
     if (result) {

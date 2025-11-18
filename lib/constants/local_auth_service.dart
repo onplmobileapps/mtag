@@ -14,11 +14,9 @@ class LocalAuth {
     try {
       if (!await canAuthenticate()) return false;
 
-      return await auth.authenticate(
+      return await auth.authenticate(biometricOnly: true,
         localizedReason: "Scan your fingerprint to proceed.",
-        options: const AuthenticationOptions(
-            biometricOnly: true, stickyAuth: true, useErrorDialogs: true
-        ),
+        
       );
     } catch (e) {
       debugPrint('error $e');

@@ -4,7 +4,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 #mistakly upload this up version now update running in this sequence
 version: 4.4.0+2672
 environment:
-  sdk: ">=3.8.0 <4.0.0"
+  sdk: ">=3.9.0 <4.0.0"
 dependencies:
   flutter:
     sdk: flutter
@@ -20,7 +20,7 @@ dependencies:
   firebase_core: ^4.0.0
   flutter_local_notifications: ^19.1.0
   in_app_update: ^4.2.3
-  local_auth: ^2.3.0
+  local_auth: ^3.0.0
   lottie: ^3.1.0
   screenshot: ^3.0.0
   path_provider: ^2.1.3

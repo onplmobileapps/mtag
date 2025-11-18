@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import '../../base/app_data.dart';
 import '../../utils/utils.dart';
 import '../api/api_constants.dart';
-
 import '../api/auth_controller.dart';
 import '../api/user_repo.dart';
 import '../constants/other_consts.dart';
