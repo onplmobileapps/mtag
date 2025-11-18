@@ -139,7 +139,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: spacing * 1.5),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment:    MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: spacing * 3),

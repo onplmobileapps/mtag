@@ -3,7 +3,7 @@ description: "M-Tag A Prime Product of One Network Solutions(FWO)."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 4.4.0+2672
 environment:
-  sdk: ">=3.9.0 <4.0.0"
+  sdk: ">=3.10.0 <4.0.0"
 dependencies:
   flutter:
     sdk: flutter

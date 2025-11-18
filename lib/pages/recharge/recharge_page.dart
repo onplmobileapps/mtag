@@ -348,13 +348,13 @@ Widget _buildAmountSection(
   return Obx(
     () => !controller.showPsidField.value
         ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: .start,
+            mainAxisAlignment: .start,
+            mainAxisSize:.min,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: .spaceBetween,
+                crossAxisAlignment: .center,
                 children: [
                   _buildSectionTitle(context, 'Enter Amount'),
                   Text(

@@ -28,8 +28,8 @@ class SelectMtag extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: .start,
+                  crossAxisAlignment: .start,
                   children: [
                     Center(
                       child: Image.asset(
@@ -42,8 +42,8 @@ class SelectMtag extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: .start,
+                          crossAxisAlignment: .start,
                           children: [
                             Text(
                               mtags?[index].tokenno ?? '',
