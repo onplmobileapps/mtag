@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-
 import '../controller/home_controller.dart';
 import '../pages/mtag/controller/delink_controller.dart';
 import '../pages/recharge/recharge_page.dart';
@@ -66,7 +65,6 @@ Widget mtagDataWidget(
   String? chassisNumber,
 }) {
   final controller = Get.find<HomeController>();
-  final dlinkVehicleController = Get.find<DelinkController>();
 
   return LayoutBuilder(
     builder: (context, constraints) {
@@ -79,7 +77,6 @@ Widget mtagDataWidget(
 
       final double containerHeight = height ?? screenHeight * 0.22;
 
-      // === EXACT SAME RATIOS AS mtagRecoveryWidget ===
       final double horizontalPadding = availableWidth * 0.04;
       final double containerPadding = containerHeight * 0.06;
       final double elementSpacing = containerHeight * 0.04;
@@ -88,8 +85,6 @@ Widget mtagDataWidget(
       final double iconSize = containerHeight * 0.08;
       final double buttonHeight = containerHeight * 0.20;
 
-
-      // Define buttonSpacing (was missing!)
       final double buttonSpacing = containerHeight * 0.02;
 
       final List<Map<String, dynamic>> allCars = controller
@@ -429,6 +424,8 @@ Widget mtagDataWidget(
                               Expanded(
                                 child: InkWell(
                                   onTap: () {
+                                    final dlinkVehicleController =
+                                        Get.find<DelinkController>();
                                     showDialog(
                                       context: context,
                                       builder: (_) => DeLinkVehicleDialog(

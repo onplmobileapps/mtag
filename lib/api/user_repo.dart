@@ -226,7 +226,7 @@ class UserRepo {
       body: {"MTagId": mtagID, "R_Desc": rDesc, "R_Id": rID},
     );
     return await apiObject.requestAPI(
-      isShowLoading: false,
+      isShowLoading: true,
       isCheckAuthorization: true,
     );
   }

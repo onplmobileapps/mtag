@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/controller/home_controller.dart';
 import '/api/api_constants.dart';
 import '/pages/mtag/model/dlinkoptionsmodel.dart';
 import '../../../widgets/dialog/cupertino_dialog.dart';
@@ -8,10 +9,13 @@ import '../model/vehdelinkmodel.dart';
 
 class DelinkController extends GetxController implements GetxService {
   final UserRepo userRepo;
+
   DelinkController({required this.userRepo});
+
   RxBool isLoading = false.obs;
   Rx<Dlinkoptions> dlinkOptionsModel = Dlinkoptions().obs;
   Rx<DeLinkVehicleModel> delinkVehicle = DeLinkVehicleModel().obs;
+
   Future<Map<String, dynamic>> deLinkVehicle({
     String? mtagID,
     String? rDesc,
@@ -25,6 +29,8 @@ class DelinkController extends GetxController implements GetxService {
     );
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
+      await Get.find<HomeController>().refreshDashboardData();
+
       dlinkOptionsModel.value = Dlinkoptions.fromJson(
         response[APIRESPONSE.SUCCESS],
       );
@@ -39,6 +45,4 @@ class DelinkController extends GetxController implements GetxService {
     }
     return response;
   }
-
- 
 }

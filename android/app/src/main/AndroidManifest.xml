@@ -18,7 +18,7 @@ xmlns:tools="http://schemas.android.com/tools">
         android:layerType="software"
          android:allowBackup="false"
         android:icon="@mipmap/ic_launcher">
-        
+
 
         <activity
 
