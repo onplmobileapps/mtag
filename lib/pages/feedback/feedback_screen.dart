@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../constants/other_consts.dart';
+import '../../controller/home_controller.dart';
 import '../../pages/editprofile/controller/update_emai_controller.dart';
 import '../../constants/call_helper.dart';
 import '../../widgets/elevated_button.dart';
@@ -27,7 +27,7 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
   late final TextEditingController _remarksController;
 
   final _formKey = GlobalKey<FormState>();
-  final _otherConstants = OtherConsts();
+  final homeController = Get.find<HomeController>();
 
   @override
   void initState() {
@@ -38,13 +38,13 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
     _remarksFocusNode = FocusNode();
 
     _nameController = TextEditingController(
-      text: _otherConstants.ownerName.value,
+      text: homeController.dashboradData.value.customerDetail?.fullName,
     );
     _cnicController = TextEditingController(
-      text: _otherConstants.ownerCNIC.value,
+      text: homeController.dashboradData.value.customerDetail?.cNIC,
     );
     _phoneController = TextEditingController(
-      text: _otherConstants.mobile.value,
+      text: homeController.dashboradData.value.customerDetail?.mobileNumber,
     );
     _remarksController = TextEditingController();
   }
