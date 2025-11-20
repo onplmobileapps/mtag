@@ -229,6 +229,7 @@ class AuthPage extends StatelessWidget {
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             style: const TextStyle(height: 1),
+                            focusNode: controller.fullNameFocusNode,
                             controller: controller.userName,
                             decoration: const InputDecoration(
                               hintText: 'Full Name',
@@ -312,7 +313,7 @@ class AuthPage extends StatelessWidget {
                                                   'Select Operator',
                                                   style: theme
                                                       .textTheme
-                                                      .bodySmall
+                                                      .bodyMedium
                                                       ?.copyWith(
                                                         color: colorScheme
                                                             .onSurface,
@@ -501,7 +502,11 @@ class AuthPage extends StatelessWidget {
 
     if (Platform.isIOS) {
       return CustomKeyboardActions(
-        focusNodes: [controller.cnicFocusNode, controller.phoneFocusNode],
+        focusNodes: [
+          controller.cnicFocusNode,
+          controller.phoneFocusNode,
+          controller.fullNameFocusNode,
+        ],
         child: mainContent,
       );
     } else {

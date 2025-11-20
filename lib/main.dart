@@ -82,9 +82,9 @@ class _MTagAppState extends State<MTagApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       smartManagement: SmartManagement.keepFactory,
-      defaultTransition: Transition.fadeIn,
+      defaultTransition: Transition.native,
       transitionDuration: const Duration(milliseconds: 30),
-      popGesture: false,
+      popGesture: true,
       useInheritedMediaQuery: true,
       builder: (context, child) {
         final MediaQueryData data = MediaQuery.of(context);

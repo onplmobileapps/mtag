@@ -493,40 +493,40 @@ Widget mtagDataWidget(
                     ],
                   ),
 
-                  if (isBlock == 0.0)
-                    Positioned(
-                      top: 0,
-                      right: 0,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: containerHeight * 0.035,
-                          vertical: containerHeight * 0.018,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(10),
-                            bottomLeft: Radius.circular(10),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.red.withAlpha(77),
-                              blurRadius: 4,
-                              offset: const Offset(2, 2),
-                            ),
-                          ],
-                        ),
-                        child: Text(
-                          'Blocked',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: fontSizeBase * 1.1,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                      ),
-                    ),
+                  // if (isBlock == 0.0)
+                  //   Positioned(
+                  //     top: 0,
+                  //     right: 0,
+                  //     child: Container(
+                  //       padding: EdgeInsets.symmetric(
+                  //         horizontal: containerHeight * 0.035,
+                  //         vertical: containerHeight * 0.018,
+                  //       ),
+                  //       decoration: BoxDecoration(
+                  //         color: Colors.red,
+                  //         borderRadius: const BorderRadius.only(
+                  //           topRight: Radius.circular(10),
+                  //           bottomLeft: Radius.circular(10),
+                  //         ),
+                  //         boxShadow: [
+                  //           BoxShadow(
+                  //             color: Colors.red.withAlpha(77),
+                  //             blurRadius: 4,
+                  //             offset: const Offset(2, 2),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //       child: Text(
+                  //         'Blocked',
+                  //         style: TextStyle(
+                  //           color: Colors.white,
+                  //           fontWeight: FontWeight.bold,
+                  //           fontSize: fontSizeBase * 1.1,
+                  //           letterSpacing: 0.5,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
                 ],
               ),
             ),

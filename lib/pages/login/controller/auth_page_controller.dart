@@ -5,11 +5,12 @@ class AuthPageController extends GetxController {
   final userName = TextEditingController();
   final phoneController = TextEditingController();
   final cnicController = TextEditingController();
-  final authIndex = 0.obs; // Reactive state for Sign In (0) / Sign Up (1)
+  final authIndex = 0.obs;
   final formKey = GlobalKey<FormState>();
   final cnicFocusNode = FocusNode();
   final phoneFocusNode = FocusNode();
-  final selectedOperator = Rxn<Map<String, dynamic>>(); // Added reactive selectedOperator
+  final fullNameFocusNode = FocusNode();
+  final selectedOperator = Rxn<Map<String, dynamic>>();
 
   @override
   void onClose() {
@@ -18,6 +19,7 @@ class AuthPageController extends GetxController {
     cnicController.dispose();
     cnicFocusNode.dispose();
     phoneFocusNode.dispose();
+    fullNameFocusNode.dispose();
     super.onClose();
   }
 }

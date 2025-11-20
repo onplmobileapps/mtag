@@ -16,9 +16,7 @@ class FeedBackScreen extends StatefulWidget {
 }
 
 class _FeedBackScreenState extends State<FeedBackScreen> {
-  late final FocusNode _nameFocusNode;
-  late final FocusNode _cnicFocusNode;
-  late final FocusNode _phoneFocusNode;
+ 
   late final FocusNode _remarksFocusNode;
 
   late final TextEditingController _nameController;
@@ -32,9 +30,7 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
   @override
   void initState() {
     super.initState();
-    _nameFocusNode = FocusNode();
-    _cnicFocusNode = FocusNode();
-    _phoneFocusNode = FocusNode();
+    
     _remarksFocusNode = FocusNode();
 
     _nameController = TextEditingController(
@@ -51,11 +47,8 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
 
   @override
   void dispose() {
-    _nameFocusNode.dispose();
-    _cnicFocusNode.dispose();
-    _phoneFocusNode.dispose();
+   
     _remarksFocusNode.dispose();
-
     _nameController.dispose();
     _cnicController.dispose();
     _phoneController.dispose();
@@ -117,12 +110,10 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
                     },
                     readOnly: true,
                     controller: _nameController,
-                    focusNode: _nameFocusNode,
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]')),
                     ],
-                    onEditingComplete: () =>
-                        FocusScope.of(context).requestFocus(_cnicFocusNode),
+                    
                     label: 'FULL NAME',
                     keyboardType: TextInputType.name,
                   ),
@@ -136,9 +127,8 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
                     },
                     readOnly: true,
                     controller: _cnicController,
-                    focusNode: _cnicFocusNode,
-                    onEditingComplete: () =>
-                        FocusScope.of(context).requestFocus(_phoneFocusNode),
+                    
+                  
                     inputFormatters: [
                       CnicMaskTextInputFormatter(),
                       FilteringTextInputFormatter.deny(RegExp(r'[a-zA-Z]')),
@@ -158,14 +148,13 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
                     maxLength: 11,
                     controller: _phoneController,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    focusNode: _phoneFocusNode,
-                    onEditingComplete: () =>
-                        FocusScope.of(context).requestFocus(_remarksFocusNode),
                     label: 'MOBILE NUMBER',
                     keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: 10),
-                  TextFormField(
+                  TextFormField(  
+                    onEditingComplete: () =>
+                        FocusScope.of(context).requestFocus(_remarksFocusNode),
                     style: const TextStyle(height: 1, fontSize: 12),
                     maxLines: 4,
                     focusNode: _remarksFocusNode,
@@ -176,7 +165,7 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
                       }
                       return null;
                     },
-                    onEditingComplete: () => FocusScope.of(context).unfocus(),
+                    
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Theme.of(context).disabledColor,
