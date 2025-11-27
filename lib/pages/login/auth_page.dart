@@ -14,109 +14,7 @@ class AuthPage extends StatelessWidget {
 
   final controller = Get.put(AuthPageController());
 
-  final List<Map<String, dynamic>> operatorList = [
-    {
-      'text': 'Jazz',
-      'value': 1,
-      'image': 'assets/jazz-logo-1.png',
-      'prefixes': [
-        '0300',
-        '0301',
-        '0302',
-        '0303',
-        '0304',
-        '0306',
-        '0307',
-        '0308',
-        '0309',
-      ],
-    },
-    {
-      'text': 'Telenor',
-      'value': 2,
-      'image': 'assets/telenor.jpg',
-      'prefixes': [
-        '0340',
-        '0341',
-        '0342',
-        '0343',
-        '0344',
-        '0345',
-        '0346',
-        '0347',
-        '0348',
-        '0349',
-      ],
-    },
-    {
-      'text': 'Ufone',
-      'value': 3,
-      'image': 'assets/ufone.png',
-      'prefixes': [
-        '0330',
-        '0331',
-        '0332',
-        '0333',
-        '0334',
-        '0335',
-        '0336',
-        '0337',
-        '0338',
-      ],
-    },
-    {
-      'text': 'Zong',
-      'value': 5,
-      'image': 'assets/zong.png',
-      'prefixes': [
-        '0310',
-        '0311',
-        '0312',
-        '0313',
-        '0314',
-        '0315',
-        '0316',
-        '0317',
-        '0318',
-        '0319',
-      ],
-    },
-    {
-      'text': 'Warid',
-      'value': 4,
-      'image': 'assets/warid.png',
-      'prefixes': [
-        '0320',
-        '0321',
-        '0322',
-        '0323',
-        '0324',
-        '0325',
-        '0327',
-        '0328',
-        '0329',
-      ],
-    },
-    {
-      'text': 'SCO',
-      'value': 6,
-      'image': 'assets/sco.webp',
-      'prefixes': ['0355'],
-    },
-  ];
-
-  Map<String, dynamic>? _detectOperator(String phoneNumber) {
-    if (phoneNumber.length >= 4) {
-      String prefix = phoneNumber.substring(0, 4);
-      for (var operator in operatorList) {
-        if (operator['prefixes']?.contains(prefix) ?? false) {
-          return operator;
-        }
-      }
-    }
-    return null;
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -153,6 +51,7 @@ class AuthPage extends StatelessWidget {
                             fit: BoxFit.contain,
                           ),
                   ),
+                  
                   SizedBox(height: screenHeight * 0.06),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -229,6 +128,7 @@ class AuthPage extends StatelessWidget {
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             style: const TextStyle(height: 1),
+                            focusNode: controller.fullNameFocusNode,
                             controller: controller.userName,
                             decoration: const InputDecoration(
                               hintText: 'Full Name',
@@ -312,7 +212,7 @@ class AuthPage extends StatelessWidget {
                                                   'Select Operator',
                                                   style: theme
                                                       .textTheme
-                                                      .bodySmall
+                                                      .bodyMedium
                                                       ?.copyWith(
                                                         color: colorScheme
                                                             .onSurface,
@@ -501,7 +401,11 @@ class AuthPage extends StatelessWidget {
 
     if (Platform.isIOS) {
       return CustomKeyboardActions(
-        focusNodes: [controller.cnicFocusNode, controller.phoneFocusNode],
+        focusNodes: [
+          controller.cnicFocusNode,
+          controller.phoneFocusNode,
+          controller.fullNameFocusNode,
+        ],
         child: mainContent,
       );
     } else {
@@ -509,3 +413,14 @@ class AuthPage extends StatelessWidget {
     }
   }
 }
+  Map<String, dynamic>? _detectOperator(String phoneNumber) {
+    if (phoneNumber.length >= 4) {
+      String prefix = phoneNumber.substring(0, 4);
+      for (var operator in operatorList) {
+        if (operator['prefixes']?.contains(prefix) ?? false) {
+          return operator;
+        }
+      }
+    }
+    return null;
+  }

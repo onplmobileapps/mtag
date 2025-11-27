@@ -24,118 +24,78 @@ import '../../pages/notification/notification_expand_screen.dart';
 import '../pages/tolcalator/toll_calculator_local_tabs.dart';
 
 List<GetPage<dynamic>>? getPages = [
-  GetPage(
-    name: '/',
-    page: () => HomePage(),
-    popGesture: true
-  ),
+  GetPage(name: '/', page: () => HomePage()),
   GetPage(
     name: '/notificationsExpandScreen',
     page: () => NotificationsExpandScreen(),
-    popGesture: true
+    popGesture: true,
   ),
-  GetPage(
-    name: '/receipt',
-    page: () => ReceiptScreen(),
-    popGesture: true
-  ),
+  GetPage(name: '/receipt', page: () => ReceiptScreen(), popGesture: true),
   GetPage(
     name: '/alflahwebview',
     page: () => OtherConsts().emergencySwitchProd.value == '1'
         ? MaintenanceScreen()
         : const AlfaWebView2(),
-        popGesture: true
+    popGesture: true,
   ),
   GetPage(
     name: '/notifications',
     page: () => NotificationScreen(),
-    popGesture: true
+    popGesture: true,
   ),
   GetPage(
     name: '/smsAlert',
     page: () => const SMSAlertScreen(),
-    popGesture: true
+    popGesture: true,
   ),
   GetPage(
     name: '/privacyPolicy',
     page: () => const PrivacyPolicyScreen(),
-    popGesture: true
+    popGesture: true,
   ),
-  GetPage(
-    name: '/faqs',
-    page: () => FaqsScreen(),
-    popGesture: true
-  ),
+  GetPage(name: '/faqs', page: () => FaqsScreen(), popGesture: true),
   GetPage(
     name: '/tollCalculator',
     // page: () => const TollCalculatorLocal(),
     page: () => const TollCalculatorLocalTabs(),
-    popGesture: true
+    popGesture: true,
   ),
   GetPage(
     name: '/maintenancePage',
     page: () => const MaintenanceScreen(),
-    popGesture: true
+    popGesture: true,
   ),
-  GetPage(
-    name: '/dashboard',
-    page: () => HomePage(),
-    popGesture: true
-  ),
+  GetPage(name: '/dashboard', page: () => HomePage(), popGesture: true),
   GetPage(
     name: '/tollHostory',
     page: () => const TollHistoryPage(),
-    popGesture: true
+    popGesture: true,
   ),
-  GetPage(
-    name: '/recharge',
-    page: () => RechargeSelfPage(),
-    popGesture: true
-  ),
+  GetPage(name: '/recharge', page: () => RechargeSelfPage(), popGesture: true),
   GetPage(
     name: '/selectrecharge',
     page: () => SelectMtag(onChange: (p0) {}),
-    popGesture: true
+    popGesture: true,
   ),
-  GetPage(
-    name: '/mTag',
-    page: () => MyMtagScreen(),
-    popGesture: true
-  ),
-  GetPage(
-    name: '/settings',
-    page: () => SettingScreen(),
-    popGesture: true
-  ),
-  GetPage(
-    name: '/auth',
-    page: () => AuthPage(),
-    popGesture: true
-  ),
-  GetPage(
-    name: '/pinPage',
-    page: () => PinEntryPage(),
-    popGesture: true
-  ),
-  GetPage(name: '/forgetPin', page: () => ForgetPinPage(),popGesture: true),
+  GetPage(name: '/mTag', page: () => MyMtagScreen(), popGesture: true),
+  GetPage(name: '/settings', page: () => SettingScreen(), popGesture: true),
+  GetPage(name: '/auth', page: () => AuthPage(), popGesture: true),
+  GetPage(name: '/pinPage', page: () => PinEntryPage(), popGesture: true),
+  GetPage(name: '/forgetPin', page: () => ForgetPinPage(), popGesture: true),
   GetPage(
     name: '/mtagDetails',
     page: () => MatagDetailScreen(),
-    popGesture: true
+    popGesture: true,
   ),
   GetPage(
     name: '/editProfile',
     page: () => EditProfileScreen(),
-    popGesture: true
+    popGesture: true,
   ),
-  GetPage(
-    name: '/feedback',
-    page: () => FeedBackScreen(),
-    popGesture: true
-  ),
+  GetPage(name: '/feedback', page: () => FeedBackScreen(), popGesture: true),
   GetPage(
     name: '/notificationIntent',
     page: () => NotificationWithintent(),
-    popGesture: true
+    popGesture: true,
   ),
 ];

@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/widgets/connectivity_banner.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:upgrader/upgrader.dart';
@@ -62,6 +63,7 @@ class _MTagAppState extends State<MTagApp> {
 
   @override
   void initState() {
+
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -90,7 +92,7 @@ class _MTagAppState extends State<MTagApp> {
         final MediaQueryData data = MediaQuery.of(context);
         return MediaQuery(
           data: data.copyWith(textScaler: const TextScaler.linear(1)),
-          child: child!,
+          child: ConnectionBanner(child: child ?? const SizedBox()),
         );
       },
       // ✅ pass sharedPreferences into Binding

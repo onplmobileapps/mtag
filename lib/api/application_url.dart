@@ -15,7 +15,7 @@ class ApplicationUrl {
 
   //temp test
   // static const String _BASE_URL = 'https://ocottapp.com';
-
+////
   static const String _IMAGE_ULR = _BASE_URL;
 
   static String get IMAGE_ULR => _IMAGE_ULR;
