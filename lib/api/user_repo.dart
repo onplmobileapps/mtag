@@ -397,7 +397,7 @@ class UserRepo {
     );
   }
 
-  Future<Map<String, dynamic>> getTransacDetails({
+  Future<Map<String, dynamic>> getTransactionsDetails({
     required String? cr,
     required String? uID,
     String? itoken,

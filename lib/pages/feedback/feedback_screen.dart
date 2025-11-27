@@ -16,7 +16,6 @@ class FeedBackScreen extends StatefulWidget {
 }
 
 class _FeedBackScreenState extends State<FeedBackScreen> {
- 
   late final FocusNode _remarksFocusNode;
 
   late final TextEditingController _nameController;
@@ -30,7 +29,7 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
   @override
   void initState() {
     super.initState();
-    
+
     _remarksFocusNode = FocusNode();
 
     _nameController = TextEditingController(
@@ -47,7 +46,6 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
 
   @override
   void dispose() {
-   
     _remarksFocusNode.dispose();
     _nameController.dispose();
     _cnicController.dispose();
@@ -113,7 +111,7 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]')),
                     ],
-                    
+
                     label: 'FULL NAME',
                     keyboardType: TextInputType.name,
                   ),
@@ -127,8 +125,7 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
                     },
                     readOnly: true,
                     controller: _cnicController,
-                    
-                  
+
                     inputFormatters: [
                       CnicMaskTextInputFormatter(),
                       FilteringTextInputFormatter.deny(RegExp(r'[a-zA-Z]')),
@@ -152,7 +149,7 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
                     keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: 10),
-                  TextFormField(  
+                  TextFormField(
                     onEditingComplete: () =>
                         FocusScope.of(context).requestFocus(_remarksFocusNode),
                     style: const TextStyle(height: 1, fontSize: 12),
@@ -165,7 +162,7 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
                       }
                       return null;
                     },
-                    
+
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Theme.of(context).disabledColor,

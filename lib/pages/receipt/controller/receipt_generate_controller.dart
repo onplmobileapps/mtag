@@ -12,7 +12,7 @@ class ReceiptController extends GetxController implements GetxService {
 
   Future<void> getrechargeDetails({required String? cr, required String? uID, String? itoken}) async {
     var response = isTravel.value
-        ? await userRepo.getTransacDetails(cr: cr, uID: uID, itoken: itoken)
+        ? await userRepo.getTransactionsDetails(cr: cr, uID: uID, itoken: itoken)
         : await userRepo.getRechargeDetails(cr: cr, uID: uID);
     isTravel(false);
     if (response.containsKey(APIRESPONSE.SUCCESS)) {

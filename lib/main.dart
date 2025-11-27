@@ -62,6 +62,7 @@ class _MTagAppState extends State<MTagApp> {
 
   @override
   void initState() {
+
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -190,5 +191,3 @@ class CustomUpgraderMessages extends UpgraderMessages {
   @override
   String get buttonTitleLater => 'Remind Me Later';
 }
-
-//test push
