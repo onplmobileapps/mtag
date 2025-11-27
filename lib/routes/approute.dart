@@ -5,7 +5,6 @@ import 'package:mtag_flutterapp/pages/notification/notification_withintent.dart'
 import '../../constants/other_consts.dart';
 import '../../maintenance/maintenance_screen.dart';
 import '../../pages/dashboard/home_page.dart';
-
 import '../../pages/notification/notification_screen.dart';
 import '../../pages/privacy/privacy_policy_screen.dart';
 import '../../pages/receipt/receipt_screen.dart';
@@ -19,7 +18,6 @@ import '../../pages/editprofile/edit_profile_screen.dart';
 import '../../pages/feedback/feedback_screen.dart';
 import '../../pages/mtag/mtag_detail_screen.dart';
 import '../../pages/settings/setting_screen.dart';
-
 import '../../pages/tollhistory/toll_history_screen.dart';
 import '../../pages/mtag/mtag_screen.dart';
 import '../../pages/notification/notification_expand_screen.dart';
