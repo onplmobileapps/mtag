@@ -33,21 +33,21 @@ class HomeController extends GetxController implements GetxService {
   void setCurrentIndex(int value) => currentPage.value = value;
   final _otherConstants = OtherConsts();
   final List<MtagModel> dashBoardModel = [
-    MtagModel(routeName: '/mTag', title: 'M-TAG', image: 'assets/my_tag.svg'),
+    MtagModel(routeName: '/mTag', title: 'M-TAG', image: 'assets/receipt.png'),
     MtagModel(
       routeName: '/tollHostory',
-      title: 'Toll/Recharge History',
-      image: 'assets/tollhistory.svg',
+      title: 'Toll\nHistory',
+      image: 'assets/history.png',
     ),
     MtagModel(
       routeName: '/tollCalculator',
-      title: 'Toll Calculator',
-      image: 'assets/toll_calc.svg',
+      title: 'Toll\nCalculator',
+      image: 'assets/calculator.png',
     ),
     MtagModel(
       routeName: '/recharge',
       title: 'Recharge',
-      image: 'assets/recharge2.svg',
+      image: 'assets/plus.png',
     ),
   ];
 

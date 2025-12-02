@@ -90,6 +90,206 @@ class HomePage extends GetView<HomeController> {
                         ? buildShimmerEffect(screenWidth, screenHeight)
                         : CustomScrollView(
                             slivers: [
+                              // SliverToBoxAdapter(child: Container(height: screenHeight*0.0,),),
+
+                              controller.dashboradData.value.activeMtags !=
+                                          null &&
+                                      controller
+                                          .dashboradData
+                                          .value
+                                          .activeMtags!
+                                          .isNotEmpty
+                                  ? SliverToBoxAdapter(
+                                      child: SizedBox(
+                                        height: screenHeight * 0.48,
+                                        child: ListView.builder(
+                                          scrollDirection:.horizontal,
+                                          itemCount: controller
+                                              .dashboradData
+                                              .value
+                                              .activeMtags!
+                                              .length,
+                                          itemBuilder: (context, index) {
+                                            final e = controller
+                                                .dashboradData
+                                                .value
+                                                .activeMtags![index];
+                                            if (!controller.hiddenStates
+                                                .containsKey(e.tokenno)) {
+                                              controller.hiddenStates[e.tokenno
+                                                      .toString()] =
+                                                  true;
+                                            }
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 0.0,
+                                                  ),
+
+                                              child: Obx(() {
+                                                //recovery condition
+                                                return e.isactive == 9
+                                                    ? mtagRecoveryWidget(
+                                                        context,
+                                                        size: MediaQuery.sizeOf(
+                                                          context,
+                                                        ),
+                                                        height:
+                                                            screenHeight * 0.29,
+                                                        isBlock: e.isactive,
+
+                                                        mtagId: e.tokenno,
+
+                                                        mobileNum:
+                                                            _otherConstants
+                                                                .mobile
+                                                                .string,
+                                                        cnic: _otherConstants
+                                                            .ownerCNIC
+                                                            .string,
+                                                        regId: e.registration,
+                                                        blockAmount:
+                                                            e.block_amount,
+                                                      )
+                                                    : mtagDataWidget(
+                                                        context,
+                                                        
+                                                      
+                                                        isBlock: e.isactive,
+                                                        jazzCode: controller
+                                                            .dashboradData
+                                                            .value
+                                                            .jazzCashRecharge
+                                                            .toString(),
+                                                        creditCode: controller
+                                                            .dashboradData
+                                                            .value
+                                                            .creditCardRecharge
+                                                            .toString(),
+                                                        vehType: e.vehicletype,
+                                                        mtagId: e.tokenno,
+                                                        userName: e.ownername,
+                                                        mobileNum:
+                                                            _otherConstants
+                                                                .mobile
+                                                                .string,
+                                                        cnic: _otherConstants
+                                                            .ownerCNIC
+                                                            .string,
+                                                        regId: e.registration,
+                                                        ball: e.balance,
+                                                        showTransferButton:
+                                                            controller
+                                                                    .dashboradData
+                                                                    .value
+                                                                    .activeMtags!
+                                                                    .length ==
+                                                                1
+                                                            ? false
+                                                            : true,
+                                                        balanceDashboard:
+                                                            e.balance,
+                                                        showChassisBadge:
+                                                            e.chassis_number ==
+                                                                null
+                                                            ? true
+                                                            : false,
+                                                        chassisNumber:
+                                                            e.chassis_number,
+                                                      );
+                                              }),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    )
+                                  : SliverToBoxAdapter(
+                                      child: Container(
+                                        height: screenHeight / 3,
+                                      ),
+                                    ),
+
+                              SliverPadding(
+                                padding: const EdgeInsets.all(8.0),
+                                sliver: SliverGrid(
+                                  gridDelegate:
+                                      SliverGridDelegateWithMaxCrossAxisExtent(
+                                        maxCrossAxisExtent: screenWidth * 0.5,
+                                        mainAxisSpacing: 10,
+                                        crossAxisSpacing: 10,
+                                        mainAxisExtent: screenHeight * 0.11,
+                                      ),
+                                  delegate: SliverChildBuilderDelegate(
+                                    (context, index) {
+                                      return InkWell(
+                                        onTap: () async {
+                                          final rechctrl =
+                                              Get.find<RechargeController>();
+                                          selected1linkOpt.value = -1;
+                                          await Get.toNamed(
+                                            '${controller.dashBoardModel[index].routeName}',
+                                            arguments: controller
+                                                .dashboradData
+                                                .value
+                                                .activeMtags,
+                                          );
+                                          selected1linkOpt.value = -1;
+                                          rechctrl.isPaymentModdeVisible(false);
+                                          rechctrl.isSummaryVisible(false);
+                                          rechctrl.isRechageVisible(true);
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: .circular(
+                                              8,
+                                            ),
+                                            color:  Theme.of(
+                                              context,
+                                            ).primaryColor,
+                                          ),
+                                          child: Row(spacing: 8,
+                                            mainAxisAlignment:
+                                                .start,
+                                            children: [
+                                              if (controller
+                                                      .dashBoardModel[index]
+                                                      .image !=
+                                                  null)
+
+                                                Padding(
+                                                  padding: .all(8.0),
+                                                  child: Image.asset(
+                                                    controller
+                                                        .dashBoardModel[index]
+                                                        .image!,
+                                                    width: screenWidth * 0.1,
+                                                    height: screenHeight * 0.1,
+                                                    fit: .contain,alignment: .center,
+                                                  ),
+                                                ),
+                                              const SizedBox(height: 8),
+                                              Text(
+                                                controller
+                                                        .dashBoardModel[index]
+                                                        .title ??
+                                                    '',
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  color: Colors.white,
+                                                  fontSize: screenWidth * 0.04,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    childCount:
+                                        controller.dashBoardModel.length,
+                                  ),
+                                ),
+                              ),
                               SliverToBoxAdapter(
                                 child: AspectRatio(
                                   aspectRatio: 2,
@@ -201,204 +401,6 @@ class HomePage extends GetView<HomeController> {
                                         ),
                                       ),
                                     ],
-                                  ),
-                                ),
-                              ),
-
-                              controller.dashboradData.value.activeMtags !=
-                                          null &&
-                                      controller
-                                          .dashboradData
-                                          .value
-                                          .activeMtags!
-                                          .isNotEmpty
-                                  ? SliverToBoxAdapter(
-                                      child: SizedBox(
-                                        height: screenHeight * 0.23,
-                                        child: ListView.builder(
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: controller
-                                              .dashboradData
-                                              .value
-                                              .activeMtags!
-                                              .length,
-                                          itemBuilder: (context, index) {
-                                            final e = controller
-                                                .dashboradData
-                                                .value
-                                                .activeMtags![index];
-                                            if (!controller.hiddenStates
-                                                .containsKey(e.tokenno)) {
-                                              controller.hiddenStates[e.tokenno
-                                                      .toString()] =
-                                                  true;
-                                            }
-                                            return Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 0.0,
-                                                  ),
-
-                                              child: Obx(() {
-                                                //recovery condition
-                                                return e.isactive == 8
-                                                    ? mtagRecoveryWidget(
-                                                        context,
-                                                        size: MediaQuery.sizeOf(
-                                                          context,
-                                                        ),
-                                                        height:
-                                                            screenHeight * 0.29,
-                                                        isBlock: e.isactive,
-
-                                                        mtagId: e.tokenno,
-
-                                                        mobileNum:
-                                                            _otherConstants
-                                                                .mobile
-                                                                .string,
-                                                        cnic: _otherConstants
-                                                            .ownerCNIC
-                                                            .string,
-                                                        regId: e.registration,
-                                                        blockAmount:
-                                                            e.block_amount,
-                                                      )
-                                                    : mtagDataWidget(
-                                                        context,
-                                                        size: MediaQuery.sizeOf(
-                                                          context,
-                                                        ),
-                                                        height:
-                                                            screenHeight * 0.29,
-                                                        isBlock: e.isactive,
-                                                        jazzCode: controller
-                                                            .dashboradData
-                                                            .value
-                                                            .jazzCashRecharge
-                                                            .toString(),
-                                                        creditCode: controller
-                                                            .dashboradData
-                                                            .value
-                                                            .creditCardRecharge
-                                                            .toString(),
-                                                        vehType: e.vehicletype,
-                                                        mtagId: e.tokenno,
-                                                        userName: e.ownername,
-                                                        mobileNum:
-                                                            _otherConstants
-                                                                .mobile
-                                                                .string,
-                                                        cnic: _otherConstants
-                                                            .ownerCNIC
-                                                            .string,
-                                                        regId: e.registration,
-                                                        ball: e.balance,
-                                                        showTransferButton:
-                                                            controller
-                                                                    .dashboradData
-                                                                    .value
-                                                                    .activeMtags!
-                                                                    .length ==
-                                                                1
-                                                            ? false
-                                                            : true,
-                                                        balanceDashboard:
-                                                            e.balance,
-                                                        showChassisBadge:
-                                                            e.chassis_number ==
-                                                                null
-                                                            ? true
-                                                            : false,
-                                                        chassisNumber:
-                                                            e.chassis_number,
-                                                      );
-                                              }),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    )
-                                  : SliverToBoxAdapter(
-                                      child: Container(
-                                        height: screenHeight / 3,
-                                      ),
-                                    ),
-
-                              SliverPadding(
-                                padding: const EdgeInsets.all(8.0),
-                                sliver: SliverGrid(
-                                  gridDelegate:
-                                      SliverGridDelegateWithMaxCrossAxisExtent(
-                                        maxCrossAxisExtent: screenWidth * 0.5,
-                                        mainAxisSpacing: 10,
-                                        crossAxisSpacing: 10,
-                                        mainAxisExtent: screenHeight * 0.20,
-                                      ),
-                                  delegate: SliverChildBuilderDelegate(
-                                    (context, index) {
-                                      return InkWell(
-                                        onTap: () async {
-                                          final rechctrl =
-                                              Get.find<RechargeController>();
-                                          selected1linkOpt.value = -1;
-                                          await Get.toNamed(
-                                            '${controller.dashBoardModel[index].routeName}',
-                                            arguments: controller
-                                                .dashboradData
-                                                .value
-                                                .activeMtags,
-                                          );
-                                          selected1linkOpt.value = -1;
-                                          rechctrl.isPaymentModdeVisible(false);
-                                          rechctrl.isSummaryVisible(false);
-                                          rechctrl.isRechageVisible(true);
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
-                                            color: Theme.of(
-                                              context,
-                                            ).primaryColor,
-                                          ),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              if (controller
-                                                      .dashBoardModel[index]
-                                                      .image !=
-                                                  null)
-                                                SvgPicture.asset(
-                                                  controller
-                                                      .dashBoardModel[index]
-                                                      .image!,
-                                                  width: screenWidth * 0.1,
-                                                  height: screenHeight * 0.1,
-                                                  fit: BoxFit.contain,
-                                                ),
-                                              const SizedBox(height: 8),
-                                              Text(
-                                                controller
-                                                        .dashBoardModel[index]
-                                                        .title ??
-                                                    '',
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontFamily: 'Poppins',
-                                                  color: Colors.white,
-                                                  fontSize: screenWidth * 0.04,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    childCount:
-                                        controller.dashBoardModel.length,
                                   ),
                                 ),
                               ),
