@@ -72,8 +72,6 @@ class _MTagAppState extends State<MTagApp> {
       FirebaseRemoteConfigService().fetchRemoteConfig();
       _messagingService.init(context);
 
-      AppData.setCount(1);
-
       // preload DBs
       await TollDatabase.instance.importDataIfNeeded();
       await StationsDatabase.instance.importDataIfNeeded();

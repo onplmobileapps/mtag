@@ -258,12 +258,14 @@ class HomeController extends GetxController implements GetxService {
 
   /// Increments app count and triggers review at 5 launches.
   Future<void> _handleAppCountAndReview() async {
-    await AppData.setCount(null); // Increment count
+   
+    await AppData.setCount(); // Increment count
     final count = AppData.getAppCount();
-    if (count == 5) {
+    if (count >= 5) {
       AppReviewUtils.requestAppReview();
-      await AppData.setCount(0); // Reset count after review
+      await AppData.setCount(reset: true); // Reset count after review
     }
+     debugPrint("inapp-review called$count");
   }
 
   void _handlePostInitActions() {

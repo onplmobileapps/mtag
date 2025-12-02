@@ -3,60 +3,52 @@ import 'package:flutter/services.dart';
 class CnicMaskTextInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    String newText = newValue.text;
-    String oldText = oldValue.text;
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    // Remove everything except digits
+    String digits = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
 
-    // Remove all non-numeric characters from both new and old values
-    String digitsOnly = newText.replaceAll(RegExp(r'[^0-9]'), '');
-    String oldDigitsOnly = oldText.replaceAll(RegExp(r'[^0-9]'), '');
-
-    // Limit the length to 13 digits
-    if (digitsOnly.length > 13) {
-      digitsOnly = digitsOnly.substring(0, 13);
+    // Max 13 digits
+    if (digits.length > 13) {
+      digits = digits.substring(0, 13);
     }
-    // Create the masked text by adding '-' in the correct places
-    StringBuffer maskedText = StringBuffer();
-    int selectionIndex = newValue.selection.end;
-    int digitsIndex = 0;
 
-    for (int i = 0; i < digitsOnly.length; i++) {
-      if (digitsIndex == 5 || digitsIndex == 12) {
-        maskedText.write('-');
-        if (i < selectionIndex) {
-          selectionIndex++;
-        }
+    // Build masked CNIC
+    final buffer = StringBuffer();
+    for (int i = 0; i < digits.length; i++) {
+      if (i == 5 || i == 12) buffer.write("-");
+      buffer.write(digits[i]);
+    }
+    final masked = buffer.toString();
+
+    // ---- CURSOR FIX ----
+    // Count how many '-' were inserted before the cursor
+   
+
+    // Calculate digits-only cursor position
+    int digitsCursorPos = 0;
+    for (int i = 0; i < newValue.selection.end; i++) {
+      if (newValue.text[i].contains(RegExp(r'[0-9]'))) {
+        digitsCursorPos++;
       }
-      maskedText.write(digitsOnly[i]);
-      digitsIndex++;
     }
 
-    // Adjust the selection index by comparing changes between old and new values
-    int nonDigitChange = newText.length - digitsOnly.length;
-    int selectionOffset = newValue.selection.end - oldValue.selection.end;
-    int diff = digitsOnly.length - oldDigitsOnly.length;
+    // Now calculate where cursor should be in masked text
+    int finalCursorPos = digitsCursorPos;
+    if (digitsCursorPos > 5) finalCursorPos++; // dash after 5th digit
+    if (digitsCursorPos > 12) finalCursorPos++; // dash after 12th digit
 
-    if (diff > 0 && selectionOffset > 0 && nonDigitChange > 0) {
-      // If the user added a digit, adjust the cursor forward
-      selectionIndex = newValue.selection.end +
-          (selectionIndex - newValue.selection.end) +
-          1;
-    } else if (diff < 0 && selectionOffset < 0 && nonDigitChange < 0) {
-      // If the user deleted a digit, adjust the cursor backward
-      selectionIndex = newValue.selection.end +
-          (selectionIndex - newValue.selection.end) -
-          1;
-    }
-
-    // Ensure the selection index is within valid bounds
-    selectionIndex = selectionIndex.clamp(0, maskedText.length);
+    // Ensure bounds
+    finalCursorPos = finalCursorPos.clamp(0, masked.length);
 
     return TextEditingValue(
-      text: maskedText.toString(),
-      selection: TextSelection.collapsed(offset: selectionIndex),
+      text: masked,
+      selection: TextSelection.collapsed(offset: finalCursorPos),
     );
   }
 }
+
 
 var numberInputFormatters = [
   FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),

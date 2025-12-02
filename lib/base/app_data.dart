@@ -28,15 +28,21 @@ sealed class AppData {
     return result;
   }
 
- static Future<void> setCount(int? val) async {
-    int count = _preferences.getInt('app_count') ?? 0; 
-    if (val != null) {
-      count = val;
-    } else {
-      count++;
-    }
-    await _preferences.setInt('app_count', count);
+static Future<void> setCount({int? increment, bool reset = false}) async {
+  int count = _preferences.getInt('app_count') ?? 0;
+
+  if (reset) {
+    count = 0;
+  } else if (increment != null) {
+    count += increment;
+  } else {
+    count++; // default increment
   }
+
+  await _preferences.setInt('app_count', count);
+}
+
+
 
   static int getAppCount() {
    int? c=  _preferences.getInt('app_count');
