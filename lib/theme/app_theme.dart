@@ -137,16 +137,18 @@ ThemeData appTheme = ThemeData(
     ),
   ),
   inputDecorationTheme: InputDecorationTheme(
-    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(width: 0.3)),
-    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 0.3)),
-    labelStyle: TextStyle(color: primarSwatch),
-    hintStyle: TextStyle(
-      fontFamily: fontFamily,
-      fontSize: 13,
-      color: Colors.grey,
-    ),
-    contentPadding: const EdgeInsets.only(left: 4, top: 0, bottom: 0),
+
+            hintStyle: const TextStyle(color: Colors.black),
+            filled: true,
+            fillColor: const Color(0xFFF9FAFB),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
   ),
+
+           
   expansionTileTheme: ExpansionTileThemeData(
     backgroundColor: Colors.white,
     collapsedShape: const RoundedRectangleBorder(side: BorderSide.none),
@@ -203,7 +205,7 @@ ThemeData appTheme = ThemeData(
       color: primarSwatch,
       overflow: TextOverflow.ellipsis,
       fontFamily: fontFamily,
-      fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.w600,
     ),
     displaySmall: TextStyle(
       fontSize: 11,

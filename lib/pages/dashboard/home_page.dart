@@ -1,20 +1,17 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/constants/call_helper.dart';
+import 'package:mtag_flutterapp/features/promotion_page.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
 import 'package:mtag_flutterapp/widgets/mtag_recovery_widget.dart';
 import '../../api/user_repo.dart';
-import '../../base/app_data.dart';
-import '../../constants/call_helper.dart';
 import '../../constants/other_consts.dart';
 import '../../controller/home_controller.dart';
-import '../../fcm_handeler.dart';
-import '../../widgets/appbar/app_bar_widget.dart';
+import '../../features/recharge_center_locator.dart';
 import '../../widgets/dashboard_widget.dart';
-import '../../widgets/dialog/chat_support_dialog.dart';
 import '../../widgets/shimmer_dashboard.dart';
-
 import '../recharge/controller/recharge_controller.dart';
 import '../recharge/recharge_page.dart';
 import '../settings/setting_screen.dart';
@@ -22,17 +19,15 @@ import '../settings/setting_screen.dart';
 class HomePage extends GetView<HomeController> {
   HomePage({super.key});
 
-  final _carouselController = CarouselSliderController();
-
   final bottomNavigations = <Widget>[
     Container(),
+PromotionPage(),
     // const ActivityScreen(),
-    SettingScreen(),
-    Container(),
+  
+    RechargeMapScreen(),
+      SettingScreen(),
   ];
   final _otherConstants = OtherConsts();
-  final MessagingService _messagingService = MessagingService();
-
   @override
   Widget build(BuildContext context) {
     return GetX<HomeController>(
@@ -56,23 +51,7 @@ class HomePage extends GetView<HomeController> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: controller.currentPage.value == 0
-          ? BuilAppBarWidget(
-              isDarkTheme: AppData.theme == true,
-              onSupportTap: () {
-                showCustomDialog(context: context, message: 'Support Center');
-              },
-              onSmsTap: () {
-                Get.toNamed(
-                  '/smsAlert',
-                  arguments: controller.dashboradData.value.activeMtags,
-                );
-              },
-              badgeCountNotifier: _messagingService.badgeCountNotifier,
-              onNotificationTap: () {
-                Get.toNamed('/notifications');
-                _messagingService.resetBadgeCount();
-              },
-            )
+          ? AppBar()
           : null,
       body: controller.currentPage.value == 0
           ? RefreshIndicator.adaptive(
@@ -91,7 +70,6 @@ class HomePage extends GetView<HomeController> {
                         : CustomScrollView(
                             slivers: [
                               // SliverToBoxAdapter(child: Container(height: screenHeight*0.0,),),
-
                               controller.dashboradData.value.activeMtags !=
                                           null &&
                                       controller
@@ -101,9 +79,9 @@ class HomePage extends GetView<HomeController> {
                                           .isNotEmpty
                                   ? SliverToBoxAdapter(
                                       child: SizedBox(
-                                        height: screenHeight * 0.48,
+                                        height: screenHeight * 0.62,
                                         child: ListView.builder(
-                                          scrollDirection:.horizontal,
+                                          scrollDirection: .horizontal,
                                           itemCount: controller
                                               .dashboradData
                                               .value
@@ -153,8 +131,7 @@ class HomePage extends GetView<HomeController> {
                                                       )
                                                     : mtagDataWidget(
                                                         context,
-                                                        
-                                                      
+
                                                         isBlock: e.isactive,
                                                         jazzCode: controller
                                                             .dashboradData
@@ -240,22 +217,19 @@ class HomePage extends GetView<HomeController> {
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(
-                                            borderRadius: .circular(
-                                              8,
-                                            ),
-                                            color:  Theme.of(
+                                            borderRadius: .circular(8),
+                                            color: Theme.of(
                                               context,
-                                            ).primaryColor,
+                                            ).disabledColor,
                                           ),
-                                          child: Row(spacing: 8,
-                                            mainAxisAlignment:
-                                                .start,
+                                          child: Row(
+                                            spacing: 8,
+                                            mainAxisAlignment: .start,
                                             children: [
                                               if (controller
                                                       .dashBoardModel[index]
                                                       .image !=
                                                   null)
-
                                                 Padding(
                                                   padding: .all(8.0),
                                                   child: Image.asset(
@@ -264,7 +238,8 @@ class HomePage extends GetView<HomeController> {
                                                         .image!,
                                                     width: screenWidth * 0.1,
                                                     height: screenHeight * 0.1,
-                                                    fit: .contain,alignment: .center,
+                                                    fit: .contain,
+                                                    alignment: .center,
                                                   ),
                                                 ),
                                               const SizedBox(height: 8),
@@ -274,11 +249,12 @@ class HomePage extends GetView<HomeController> {
                                                         .title ??
                                                     '',
                                                 overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontFamily: 'Poppins',
-                                                  color: Colors.white,
-                                                  fontSize: screenWidth * 0.04,
-                                                ),
+                                                style: TextTheme.of(context)
+                                                    .bodyLarge
+                                                    ?.copyWith(
+                                                      color: primarSwatch,
+                                                      fontWeight: .w600,
+                                                    ),
                                               ),
                                             ],
                                           ),
@@ -291,113 +267,123 @@ class HomePage extends GetView<HomeController> {
                                 ),
                               ),
                               SliverToBoxAdapter(
-                                child: AspectRatio(
-                                  aspectRatio: 2,
-                                  child: Stack(
-                                    fit: StackFit.expand,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.all(8),
-                                        child: CarouselSlider(
-                                          carouselController:
-                                              _carouselController,
-                                          items: OtherConsts.sliderImages.map((
-                                            e,
-                                          ) {
-                                            final imageUrl = 'assets/slider/$e';
-                                            return ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Tap to see what’s new',
+                                    style: TextTheme.of(context).bodyMedium,
+                                  ),
+                                ),
+                              ),
+                              SliverToBoxAdapter(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: SizedBox(
+                                    height: 150, // fixed height for the list
+                                    child: ListView.separated(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount:
+                                          OtherConsts.sliderImages.length,
+                                      separatorBuilder: (_, _) =>
+                                          const SizedBox(width: 8),
+                                      itemBuilder: (context, index) {
+                                        final imageName =
+                                            OtherConsts.sliderImages[index];
+                                        final imageUrl =
+                                            'assets/slider/$imageName';
 
-                                              child: Image.asset(
-                                                imageUrl,
-                                                fit: BoxFit.cover,
-                                                width: double.infinity,
-                                                height: double.infinity,
-                                                errorBuilder:
-                                                    (
-                                                      context,
-                                                      error,
-                                                      stackTrace,
-                                                    ) {
-                                                      return Container(
-                                                        color: Colors.grey[300],
-                                                        child: Center(
-                                                          child: Image.asset(
-                                                            'assets/placeholder.png',
-                                                            fit: BoxFit.cover,
-                                                            width:
-                                                                double.infinity,
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                              ),
-                                            );
-                                          }).toList(),
-                                          options: CarouselOptions(
-                                            height: 600,
-                                            viewportFraction: 1,
-                                            autoPlay: true,
-                                            autoPlayInterval: const Duration(
-                                              seconds: 5,
+                                        return Container(
+                                          height: 150,
+                                          width: 150,
+                                          decoration: BoxDecoration(
+                                            borderRadius: .circular(8),
+                                            border: .all(color: primarSwatch),
+                                            image: DecorationImage(
+                                              image: AssetImage(imageUrl),
+                                              fit: .fill,
                                             ),
-                                            enlargeCenterPage: true,
                                           ),
-                                        ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SliverToBoxAdapter(
+                                child: Container(
+                                  padding: const EdgeInsets.all(12),
+                                  margin: .all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: .all(width: 0.1),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Row(
+                                    spacing: 16,
+
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/phone.svg',
+                                        width: 40,
+                                        height: 40,
                                       ),
-                                      Positioned(
-                                        right: 0,
-                                        bottom: 80,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            CallWhatsappUtil.openWhatsAppChat(
-                                              controller
-                                                          .dashboradData
-                                                          .value
-                                                          .helpLineNumber !=
-                                                      null
-                                                  ? controller
-                                                        .dashboradData
-                                                        .value
-                                                        .helpLineNumber
-                                                        .toString()
-                                                  : "+923105931103",
-                                            );
-                                          },
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 10,
-                                              vertical: 4,
+
+                                      Expanded(
+                                        child: Column(
+                                          spacing: 4,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Help & Customer Support',
+                                              style: Theme.of(
+                                                context,
+                                              ).textTheme.displayMedium,
                                             ),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white.withAlpha(
-                                                139,
+
+                                            Text(
+                                              'Call our helpline 1313 to get quick help on queries related to your M-Tag',
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: Theme.of(
+                                                context,
+                                              ).textTheme.bodySmall,
+                                            ),
+
+                                            OutlinedButton.icon(
+                                              onPressed: () {
+                                                CallWhatsappUtil.openCall1313();
+                                              },
+                                              icon: const Icon(
+                                                Icons.arrow_forward,
+                                                size: 14,
+                                                color: Colors.redAccent,
                                               ),
-                                              borderRadius:
-                                                  const BorderRadius.only(
-                                                    topLeft: Radius.circular(8),
-                                                    bottomLeft: Radius.circular(
-                                                      8,
-                                                    ),
-                                                  ),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black.withAlpha(
-                                                    100,
-                                                  ),
-                                                  blurRadius: 6,
-                                                  offset: const Offset(0, 3),
+                                              label: const Text(
+                                                '1313',
+                                                style: TextStyle(
+                                                  color: Colors.redAccent,
+                                                  fontSize: 12,
                                                 ),
-                                              ],
+                                              ),
+                                              iconAlignment: .end,
+                                              style: OutlinedButton.styleFrom(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                    ),
+                                                minimumSize: const Size(70, 28),
+                                                maximumSize: const Size(70, 28),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(18),
+                                                ),
+                                                side: const BorderSide(
+                                                  color: Colors.redAccent,
+                                                ),
+                                              ),
                                             ),
-                                            child: Image.asset(
-                                              'assets/whatsapp.png',
-                                              width: 40,
-                                              height: 40,
-                                              fit: BoxFit.contain,
-                                            ),
-                                          ),
+                                          ],
                                         ),
                                       ),
                                     ],
@@ -414,7 +400,7 @@ class HomePage extends GetView<HomeController> {
       bottomNavigationBar: BottomNavigationBar(
         iconSize: 20,
         selectedFontSize: 12,
-        type: BottomNavigationBarType.fixed,
+        type: BottomNavigationBarType.shifting,
         selectedItemColor: Theme.of(context).primaryColor,
         onTap: (value) {
           (value == 0 && _otherConstants.isRefresh.value)
@@ -450,27 +436,44 @@ class HomePage extends GetView<HomeController> {
               fit: BoxFit.fill,
             ),
           ),
-          // BottomNavigationBarItem(
-          //   activeIcon: SvgPicture.asset(
-          //     'assets/clock-five.svg',
-          //     height: 20,
-          //     width: 20,
-          //     fit: BoxFit.fill,
-          //   ),
-          //   label: 'Activities',
-          //   tooltip: 'Activities',
-          //   icon: SvgPicture.asset(
-          //     'assets/clock-five.svg',
-          //     height: 20,
-          //     width: 20,
-          //     fit: BoxFit.fill,
-          //   ),
-          // ),
           BottomNavigationBarItem(
-            activeIcon: Image.asset('assets/settings.png', height: 20),
-            label: 'Settings',
-            tooltip: 'Settings',
-            icon: Image.asset('assets/settings.png', height: 20),
+            tooltip: 'Promotions',
+            activeIcon: SvgPicture.asset(
+              'assets/promotion.svg',
+              height: 20,
+              width: 20,
+              fit: BoxFit.fill,
+            ),
+            label: 'Home',
+            icon: SvgPicture.asset(
+              'assets/promotion.svg',
+              height: 20,
+              width: 20,
+              fit: BoxFit.fill,
+            ),
+          ),
+          BottomNavigationBarItem(
+            tooltip: 'Notifications',
+            activeIcon: SvgPicture.asset(
+              'assets/allert.svg',
+              height: 20,
+              width: 20,
+              fit: BoxFit.fill,
+            ),
+            label: 'Notifications',
+            icon: SvgPicture.asset(
+              'assets/allert.svg',
+              height: 20,
+              width: 20,
+              fit: BoxFit.fill,
+            ),
+          ),
+    
+          BottomNavigationBarItem(
+            activeIcon: SvgPicture.asset('assets/user.svg', height: 20),
+            label: 'Profile',
+            tooltip: 'Profile',
+            icon: SvgPicture.asset('assets/user.svg', height: 20),
           ),
         ],
       ),

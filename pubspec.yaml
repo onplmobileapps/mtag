@@ -48,6 +48,10 @@ dependencies:
   csv: ^6.0.0
   timezone: ^0.10.0
   pub_semver: ^2.2.0
+  flutter_map_marker_popup: ^8.1.0
+  flutter_map: ^8.2.2
+  latlong2: ^0.9.1
+  flutter_map_marker_cluster: ^8.2.2
 
 
 dev_dependencies:

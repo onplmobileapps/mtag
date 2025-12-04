@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import 'package:mtag_flutterapp/widgets/dashed_rect_widget.dart';
+
 
 import '../controller/home_controller.dart';
 import '../pages/mtag/controller/delink_controller.dart';
@@ -102,83 +102,18 @@ Widget mtagDataWidget(
         ),
         child: Column(
           children: [
-            /// 🔹 Header Row — MTag & Vehicle No
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: RichText(
-                    
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'M-TAG: ',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColorLight,
-                            fontSize: fontSmall,
-                          ),
-                        ),
-                        TextSpan(
-                          text: mtagId ?? '',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: fontLarge,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Flexible(
-                  child: RichText(
-
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Vehicle No: ',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColorLight,
-                            fontSize: fontSmall,
-                          ),
-                        ),
-                        TextSpan(
-                          text: regId ?? '',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: fontLarge,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 12),
-
-            /// 🔹 Balance
-            Column(
-              children: [
-                BalanceWidget(
-                  balance: ball,
-                  fontSize: fontLarge,
-                  iconSize: fontLarge,
-                ),
-                Text("Balance",
-                    style: TextStyle(
-                        color: Theme.of(context).hintColor, fontSize: fontSmall)),
-              ],
-            ),
-
-            const SizedBox(height: 12),
-
-            /// 🔹 Chassis Number Box
-            InkWell(
-              onTap: () async {
+            Container(padding: .all(16),
+              decoration: BoxDecoration(color: Color(0xff21295E),
+              // Theme.of(context).highlightColor,
+              borderRadius: .circular(8)),
+              child: Column(spacing: 6,mainAxisAlignment: .start,crossAxisAlignment: .start,
+               
+                children: [
+                  mtadDetailsWidget(context,icon: Icons.
+                  folder_outlined,label: 'M-TAG',value: mtagId),
+                  mtadDetailsWidget(context,icon: Icons.delivery_dining,label: 'Vehicle No',value: regId),
+                  mtadDetailsWidget(context,icon: Icons.
+                  description,label: 'Chassis No',value: chassisNumber,ischassis: true,onTap:() async {
                 await showDialog(
                   context: context,
                   builder: (_) => ChassisNumberDialog(
@@ -189,58 +124,58 @@ Widget mtagDataWidget(
                     cnicNumber: cnic ?? '',
                   ),
                 );
-              },
-              child: DashedRect(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (chassisNumber == null || chassisNumber.isEmpty)
-                        Icon(Icons.add,
-                            size: fontSmall + 4,
-                            color: Theme.of(context).primaryColorLight),
-                      const SizedBox(width: 4),
-                      Text(
-                        chassisNumber == null || chassisNumber.isEmpty
-                            ? "Add Chassis Number"
-                            : "Chassis no: $chassisNumber",
-                        style: TextStyle(
-                          fontSize: fontSmall,
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).primaryColorLight,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
+              }, ),
+                   
+                ],
               ),
             ),
+           
 
-            const SizedBox(height: 24),
-
-            /// 🔹 Car Image (Responsive)
-            Transform.scale(
-  scale: 1.6, // enlarge visually but keeps original size in layout
-  child: Image.asset(
-    "assets/honda.png",
-    width: carSize, // keeps parent constraints safe
-    fit: BoxFit.fill,
-  ),
-)
-,
-
-            Spacer(),
-
+        SizedBox(height:36),
+            Row(mainAxisAlignment: .spaceBetween,
+              children: [
+                Icon(Icons.arrow_circle_left_outlined),
+                Transform.scale(scaleY: 2.0,scaleX: 2.4,
+                  // scale: 3, // enlarge visually but keeps original size in layout
+                  child: Image.asset(
+                    "assets/honda.png",
+                    width: carSize, // keeps parent constraints safe
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                  Icon(Icons.arrow_circle_right_outlined),
+              ],
+            ),
+            SizedBox(height: 36,),
+            Row(mainAxisAlignment: .center,
+              children: [
+                
+                Text(
+                  "Balance  ",
+                  style: TextStyle(
+                    color: Theme.of(context).hintColor,
+                    fontSize: fontSmall,
+                  ),
+                ),
+                BalanceWidget(
+                  balance: ball??'',
+                  fontSize: fontLarge,
+                  iconSize: fontLarge,
+                ),
+                
+              ],
+            ),
+            // Spacer(),
+ SizedBox(height: 10,),
             /// 🔹 Bottom Action Buttons (Transfer / Recharge / Delete)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                if (showTransferButton == true)
+                if (showTransferButton == false)
                   _actionBtn(
                     context,
                     label: "Transfer",
-                    icon: Icons.sync_alt_rounded,
+                    icon: Icons.arrow_outward_outlined,
                     avatarRadius: avatarRadius,
                     fontSize: fontSmall,
                     iconSize: buttonIconSize,
@@ -285,7 +220,7 @@ Widget mtagDataWidget(
                 _actionBtn(
                   context,
                   label: "Delete",
-                  icon: Icons.delete_outline,
+                  icon: Icons.delete_outline_rounded,
                   avatarRadius: avatarRadius,
                   fontSize: fontSmall,
                   iconSize: buttonIconSize,
@@ -307,14 +242,51 @@ Widget mtagDataWidget(
                   },
                 ),
               ],
-            )
+            ),
           ],
         ),
       );
     },
   );
 }
-void showPaymentBottomSheet( BuildContext context, { String? mtagId, String? regId, String? jazzCode, String? creditCode, required bool blackListRecharge, double? recoveryAmount, }) { final TextEditingController amountController = TextEditingController(); final TextEditingController psidController = TextEditingController(); final ValueNotifier<bool> showPSIDField = ValueNotifier(false); final ValueNotifier<int> selectedPaymentOption = ValueNotifier(-1); selected1linkOpt.value = -1; Get.bottomSheet( PaymentBottomSheet( mtagId: mtagId, regId: regId, jazzCode: jazzCode, creditCode: creditCode, amountController: amountController, psidController: psidController, showPSIDField: showPSIDField, selectedPaymentOption: selectedPaymentOption, amountList: AmountList.amountList, blackListRecharge: blackListRecharge, recoveryAmount: recoveryAmount, onCopyPSID: () { showPSIDField.value = true; Clipboard.setData(ClipboardData(text: psidController.text)); }, ), isScrollControlled: true, backgroundColor: Theme.of(context).bottomSheetTheme.backgroundColor, ); }
+
+void showPaymentBottomSheet(
+  BuildContext context, {
+  String? mtagId,
+  String? regId,
+  String? jazzCode,
+  String? creditCode,
+  required bool blackListRecharge,
+  double? recoveryAmount,
+}) {
+  final TextEditingController amountController = TextEditingController();
+  final TextEditingController psidController = TextEditingController();
+  final ValueNotifier<bool> showPSIDField = ValueNotifier(false);
+  final ValueNotifier<int> selectedPaymentOption = ValueNotifier(-1);
+  selected1linkOpt.value = -1;
+  Get.bottomSheet(
+    PaymentBottomSheet(
+      mtagId: mtagId,
+      regId: regId,
+      jazzCode: jazzCode,
+      creditCode: creditCode,
+      amountController: amountController,
+      psidController: psidController,
+      showPSIDField: showPSIDField,
+      selectedPaymentOption: selectedPaymentOption,
+      amountList: AmountList.amountList,
+      blackListRecharge: blackListRecharge,
+      recoveryAmount: recoveryAmount,
+      onCopyPSID: () {
+        showPSIDField.value = true;
+        Clipboard.setData(ClipboardData(text: psidController.text));
+      },
+    ),
+    isScrollControlled: true,
+    backgroundColor: Theme.of(context).bottomSheetTheme.backgroundColor,
+  );
+}
+
 /// Reusable button widget
 Widget _actionBtn(
   BuildContext context, {
@@ -326,27 +298,36 @@ Widget _actionBtn(
   required VoidCallback onTap,
 }) {
   return Expanded(
-    child: InkWell(
-      onTap: onTap,
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: avatarRadius,
-            backgroundColor: Colors.white,
-            child: Icon(icon, size: iconSize, color: Colors.black),
-          ),
-          SizedBox(height: 5),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).primaryColorLight,
+    child: Container(margin: .all(8),padding: .all(18),decoration: BoxDecoration(color: Colors.white,borderRadius: .circular(8)),
+      child: InkWell(
+        onTap: onTap,
+        child: Column(
+          children: [
+            Container(padding: .all(2),
+            decoration: BoxDecoration(color: Colors.white,
+              border: .all(width:0.3),borderRadius: .circular(8)),
+              child: Icon(icon, size: iconSize, color: Colors.redAccent),
             ),
-          )
-        ],
+            SizedBox(height: 10),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: fontSize,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).primaryColorLight,
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   );
 }
-
+Widget mtadDetailsWidget(BuildContext context,{IconData? icon,String? label,String? value,bool ischassis=false,void Function()? onTap}){
+  return 
+  Row(spacing: 5,crossAxisAlignment: .center,mainAxisAlignment: .start,
+    children: [Icon(icon,color:Color(0xff9E9EAD),),SizedBox(width: 5,), Text('$label :',style: TextTheme.of(context).bodySmall?.copyWith(color: Color(0xff9E9EAD),fontSize: 14),),Spacer(),SizedBox(width: 15,),Text('$value',style: TextTheme.of(context).bodyMedium?.copyWith(color: Colors.white,fontSize: 16,fontWeight: .w600),), Spacer(),if(ischassis)InkWell(onTap: onTap,
+    child: Icon(Icons.edit_square,size: 16,color: Colors.white,))],);
+  
+ 
+}
