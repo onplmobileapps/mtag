@@ -34,6 +34,7 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	
 	<key>NSCameraUsageDescription</key>
 	<string>Camera usage description</string>
 	<key>NSFaceIDUsageDescription</key>

@@ -43,16 +43,16 @@ class ForgetPinPage extends StatelessWidget {
                   child: Text(
                     'Forgot Login PIN',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
-                SizedBox(height: 5),
+                SizedBox(height: 10),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.09),
                   child: Text(
                     'Verify your information to reset your login PIN',
-                    style: Theme.of(context).textTheme.displaySmall,
+                    style: Theme.of(context).textTheme.displayMedium?.copyWith(color: Color(0xff6C7278)),
                   ),
                 ),
 

@@ -137,10 +137,10 @@ class _PinEntryPageState extends State<PinEntryPage> {
 
         return Material(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: spacing * 1.5),
+            padding: EdgeInsets.symmetric(horizontal: spacing ),
             child: Column(
-              mainAxisAlignment:    MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment:   .start,
+              crossAxisAlignment: .start,
               children: [
                 SizedBox(height: spacing * 3),
                 _buildLogo(size),
@@ -208,8 +208,8 @@ class _PinEntryPageState extends State<PinEntryPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(4, (index) {
               return Container(
-                width: size.width * 0.11,
-                height: size.width * 0.11,
+                width: size.width * 0.14,
+                height: size.width * 0.14,
                 margin: EdgeInsets.symmetric(horizontal: size.width * 0.030),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey, width: 0.5),
@@ -246,7 +246,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
                 },
                 child: Text(
                   'Forgot Login PIN?',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: .w600),
                 ),
               ),
               _isAuthAvailable
@@ -303,7 +303,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
             ],
           ),
         ),
-        SizedBox(height: size.height * 0.015),
+        SizedBox(height: size.height * 0.035),
         Center(
           child: InkWell(
             onTap: () {
@@ -313,7 +313,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
             child: Text(
               'Sign-in with a different account',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                decoration: TextDecoration.underline,
+                decoration: TextDecoration.underline,fontWeight: .w500
               ),
             ),
           ),
@@ -332,13 +332,13 @@ class _PinEntryPageState extends State<PinEntryPage> {
         itemCount: 12,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
-          childAspectRatio: 1.3,
+          childAspectRatio: 1.4,
         ),
         itemBuilder: (context, index) {
           if (index == 9) return const SizedBox.shrink();
           if (index == 11) {
             return _buildKey(
-              child: Icon(Icons.backspace_outlined, size: size.width * 0.07),
+              child: Icon(Icons.backspace_outlined, size: size.width * 0.06),
               onPressed: _onBackspaceTap,
             );
           }
@@ -365,8 +365,10 @@ class _PinEntryPageState extends State<PinEntryPage> {
       child: InkWell(
         onTap: onPressed,
         borderRadius: BorderRadius.circular(50),
-        child: Container(
-          padding: const EdgeInsets.all(12),
+        child: Container(margin: .all(4),
+          decoration: BoxDecoration( color:  const Color(0x1018280D),
+          shape: BoxShape.circle,),
+          padding: const EdgeInsets.all(16),
           alignment: Alignment.center,
           child: child,
         ),

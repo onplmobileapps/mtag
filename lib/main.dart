@@ -25,7 +25,7 @@ void main() async {
   await AppData.initialize();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-    // name: 'mtagFlutter',
+    name: 'mtagFlutter',
   );
 
   //uncomment when go to production

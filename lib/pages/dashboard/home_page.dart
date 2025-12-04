@@ -135,7 +135,7 @@ class HomePage extends GetView<HomeController> {
                                                           context,
                                                         ),
                                                         height:
-                                                            screenHeight * 0.29,
+                                                            screenHeight * 0.40,
                                                         isBlock: e.isactive,
 
                                                         mtagId: e.tokenno,

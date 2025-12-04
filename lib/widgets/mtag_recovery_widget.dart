@@ -48,7 +48,7 @@ Widget mtagRecoveryWidget(
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding,vertical: 10),
             child: Container(
               width: availableWidth - (horizontalPadding * 2),
               padding: EdgeInsets.all(containerPadding),

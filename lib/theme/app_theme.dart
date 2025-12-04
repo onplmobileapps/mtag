@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-final String fontFamily = 'Poppins';
+final String fontFamily = 'PlusJakartaSans';
 ThemeData appTheme = ThemeData(
   tabBarTheme: TabBarThemeData(
     labelStyle: TextStyle(fontSize: 11, fontFamily: fontFamily),
@@ -199,7 +199,7 @@ ThemeData appTheme = ThemeData(
       fontFamily: fontFamily,
     ),
     displayMedium: TextStyle(
-      fontSize: 15,
+      fontSize: 14,
       color: primarSwatch,
       overflow: TextOverflow.ellipsis,
       fontFamily: fontFamily,
@@ -232,7 +232,7 @@ ThemeData appTheme = ThemeData(
       fontWeight: FontWeight.w500,
     ),
     bodyMedium: TextStyle(
-      fontSize: 15,
+      fontSize: 14,
       color: Color(0xFF2C2E65),
       fontFamily: fontFamily,
     ),
@@ -393,7 +393,7 @@ ThemeData darkTheme = ThemeData(
       fontWeight: FontWeight.w500,
     ),
     displayMedium: TextStyle(
-      fontSize: 13,
+      fontSize: 14,
       color: Colors.white,
       fontFamily: fontFamily,
     ),
@@ -424,7 +424,7 @@ ThemeData darkTheme = ThemeData(
       fontWeight: FontWeight.w500,
     ),
     bodyMedium: TextStyle(
-      fontSize: 15,
+      fontSize: 14,
       color: Colors.white,
       fontFamily: fontFamily,
     ),

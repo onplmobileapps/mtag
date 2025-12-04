@@ -118,7 +118,7 @@ class SettingScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
 
-                const Divider(thickness: 0.4),
+                // const Divider(thickness: 0.4),
 
                 Expanded(
                   child: CustomScrollView(
