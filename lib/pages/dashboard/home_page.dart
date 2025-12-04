@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/constants/call_helper.dart';
 import 'package:mtag_flutterapp/features/promotion_page.dart';
+import 'package:mtag_flutterapp/features/story_view_page.dart';
 import 'package:mtag_flutterapp/theme/app_theme.dart';
 import 'package:mtag_flutterapp/widgets/mtag_recovery_widget.dart';
 import '../../api/user_repo.dart';
@@ -292,15 +293,17 @@ PromotionPage(),
                                         final imageUrl =
                                             'assets/slider/$imageName';
 
-                                        return Container(
-                                          height: 150,
-                                          width: 150,
-                                          decoration: BoxDecoration(
-                                            borderRadius: .circular(8),
-                                            border: .all(color: primarSwatch),
-                                            image: DecorationImage(
-                                              image: AssetImage(imageUrl),
-                                              fit: .fill,
+                                        return GestureDetector(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_)=>StoryViewPage(stories: OtherConsts.sliderImages))),
+                                          child: Container(
+                                            height: 150,
+                                            width: 150,
+                                            decoration: BoxDecoration(
+                                              borderRadius: .circular(8),
+                                              border: .all(color: primarSwatch),
+                                              image: DecorationImage(
+                                                image: AssetImage(imageUrl),
+                                                fit: .fill,
+                                              ),
                                             ),
                                           ),
                                         );
