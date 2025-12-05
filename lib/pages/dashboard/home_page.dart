@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:mtag_flutterapp/constants/call_helper.dart';
 import 'package:mtag_flutterapp/features/promotion_page.dart';
 import 'package:mtag_flutterapp/features/story_view_page.dart';
+import 'package:mtag_flutterapp/pages/notification/notification_screen.dart';
 import 'package:mtag_flutterapp/theme/app_theme.dart';
 import 'package:mtag_flutterapp/widgets/mtag_recovery_widget.dart';
 import '../../api/user_repo.dart';
@@ -22,11 +23,9 @@ class HomePage extends GetView<HomeController> {
 
   final bottomNavigations = <Widget>[
     Container(),
-PromotionPage(),
-    // const ActivityScreen(),
-  
-    RechargeMapScreen(),
-      SettingScreen(),
+    PromotionPage(),  
+   NotificationScreen(),
+    SettingScreen(),
   ];
   final _otherConstants = OtherConsts();
   @override
@@ -49,8 +48,32 @@ PromotionPage(),
   }
 
   Widget _buildScaffold(BuildContext context, HomeController controller) {
-    return Scaffold(
+    return Scaffold(floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       resizeToAvoidBottomInset: false,
+      floatingActionButton: InkWell(onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (_)=>RechargeMapScreen()));
+      },
+        child: Container(
+            height: 65,
+            width: 65,
+            decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          colors: [Color(0xFF283593), Color(0xFF512DA8)],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          )
+        ],
+            ),
+            child: Center(
+        child: Icon(Icons.location_on,color: Colors.white,)
+            ),
+          ),
+      ),
       appBar: controller.currentPage.value == 0
           ? AppBar()
           : null,
@@ -403,7 +426,7 @@ PromotionPage(),
       bottomNavigationBar: BottomNavigationBar(
         iconSize: 20,
         selectedFontSize: 12,
-        type: BottomNavigationBarType.shifting,
+        type: BottomNavigationBarType.fixed,
         selectedItemColor: Theme.of(context).primaryColor,
         onTap: (value) {
           (value == 0 && _otherConstants.isRefresh.value)
@@ -447,7 +470,7 @@ PromotionPage(),
               width: 20,
               fit: BoxFit.fill,
             ),
-            label: 'Home',
+            label: 'Promotions',
             icon: SvgPicture.asset(
               'assets/promotion.svg',
               height: 20,

@@ -95,7 +95,7 @@ class _StoryViewPageState extends State<StoryViewPage>
                 child: SizedBox.expand(
                   child: Image.asset(
                     'assets/slider/${widget.stories[index]}',
-                    fit: BoxFit.cover,
+                    fit: BoxFit.fill,
                   ),
                 ),
               );
@@ -104,7 +104,7 @@ class _StoryViewPageState extends State<StoryViewPage>
 
           // Top Progress Indicators
           Positioned(
-            top: 40,
+            top: 50,
             left: 8,
             right: 8,
             child: Row(

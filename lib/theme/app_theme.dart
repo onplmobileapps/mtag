@@ -138,7 +138,7 @@ ThemeData appTheme = ThemeData(
   ),
   inputDecorationTheme: InputDecorationTheme(
 
-            hintStyle: const TextStyle(color: Colors.black),
+            hintStyle: const TextStyle(color: Colors.grey,fontSize: 12),
             filled: true,
             fillColor: const Color(0xFFF9FAFB),
             border: OutlineInputBorder(
