@@ -1,11 +1,17 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:mtag_flutterapp/widgets/dropdown/city_dropdown.dart';
+import 'package:mtag_flutterapp/widgets/zoom_control.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../class/recharge_center.dart';
+import '../widgets/bottomsheet/recharge_center_bottomsheet.dart';
+import '../widgets/elevated_button.dart';
 
 class RechargeMapScreen extends StatefulWidget {
   const RechargeMapScreen({super.key});
@@ -21,17 +27,15 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
   late AnimationController _headerController;
   final TextEditingController _searchTextController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
-  final Debouncer _searchDebouncer = Debouncer(milliseconds: 150);
-
-  String _selectedCity = 'Islamabad';
-  bool _isDropdownOpen = false;
-  List<String> _filteredCities = [];
-  final double _dropdownHeight = 400;
 
   final ValueNotifier<double> _zoomNotifier = ValueNotifier<double>(12.5);
   final ValueNotifier<LatLng> _centerNotifier = ValueNotifier<LatLng>(
     const LatLng(33.6844, 73.0479),
   );
+
+  late List<Marker> _markers;
+  Timer? _timer;
+  final ValueNotifier<bool> _markersNeedUpdate = ValueNotifier<bool>(true);
 
   final Map<String, LatLng> _cities = {
     'Islamabad': const LatLng(33.6844, 73.0479),
@@ -73,19 +77,19 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
       RechargeCenter(
         'I-8 Markaz',
         const LatLng(33.6659, 73.0785),
-        '8 AM - 10 PM',
+        '8 AM - 11 AM',
         "Test Information",
       ),
       RechargeCenter(
         'F-11 Markaz',
         const LatLng(33.6789, 72.9999),
-        '9 AM - 9 PM',
+        '8 AM - 4 PM',
         "Test Information",
       ),
       RechargeCenter(
         'Zero Point - G-7',
         const LatLng(33.6992, 73.0625),
-        '24 Hours',
+        '8 AM - 4 PM',
         "Test Information",
       ),
     ],
@@ -345,12 +349,9 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
     ],
   };
 
-  late final List<Marker> _cachedMarkers = _getAllMarkers();
-
   @override
   void initState() {
     super.initState();
-
     _fabController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -359,18 +360,22 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
-
-    _filteredCities = _cities.keys.toList();
-
     _fabController.forward();
     _headerController.forward();
-
-    _centerNotifier.value = _cities[_selectedCity]!;
     _zoomNotifier.value = 12.5;
+
+    _updateMarkers();
+
+    _timer = Timer.periodic(
+      const Duration(minutes: 1),
+      (_) => _updateMarkers(),
+    );
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
+    _markersNeedUpdate.dispose();
     _fabController.dispose();
     _headerController.dispose();
     _searchTextController.dispose();
@@ -380,61 +385,72 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
     super.dispose();
   }
 
+  void _updateMarkers() {
+    final List<Marker> newMarkers = [];
+
+    for (final centers in _allCenters.values) {
+      for (final center in centers) {
+        final bool isOpen = center.isOpenNow;
+
+        newMarkers.add(
+          Marker(
+            point: center.location,
+            width: 100,
+            height: 100,
+            child: GestureDetector(
+              onTap: () => _showRechargeDetails(center),
+              child: Image.asset(
+                isOpen ? 'assets/location_on.png' : 'assets/location_off.png',
+                width: 50,
+                height: 50,
+              ),
+            ),
+          ),
+        );
+      }
+    }
+
+    setState(() => _markers = newMarkers);
+    _markersNeedUpdate.value = !_markersNeedUpdate.value;
+  }
+
   Future<void> _openInGoogleMaps(LatLng latLng) async {
-    final googleMapsUrl = Uri.parse(
+    final url = Uri.parse(
       'https://www.google.com/maps/search/?api=1&query=${latLng.latitude},${latLng.longitude}',
     );
-
-    if (await canLaunchUrl(googleMapsUrl)) {
-      await launchUrl(googleMapsUrl, mode: LaunchMode.externalApplication);
-    } else {
-      await launchUrl(googleMapsUrl, mode: LaunchMode.platformDefault);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
     }
   }
 
   Future<void> _onCityChanged(String city) async {
-    if (city == _selectedCity && _isDropdownOpen) {
-      _toggleDropdown();
-      return;
-    }
-
     setState(() {
-      _selectedCity = city;
-      _isDropdownOpen = false;
       _searchTextController.clear();
-      _filteredCities = _cities.keys.toList();
     });
 
     final target = _cities[city]!;
-
     final controller = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
-
     final curve = CurvedAnimation(
       parent: controller,
       curve: Curves.fastEaseInToSlowEaseOut,
     );
-
     final startCenter = _mapController.camera.center;
     final startZoom = _mapController.camera.zoom;
-    final targetZoom = 12.5;
 
     controller.addListener(() {
       final t = curve.value;
       final easedT = t < 0.5 ? 4 * t * t * t : 1 - pow(-2 * t + 2, 3) / 2;
-
       final lat =
           startCenter.latitude +
           (target.latitude - startCenter.latitude) * easedT;
       final lng =
           startCenter.longitude +
           (target.longitude - startCenter.longitude) * easedT;
-      final zoom = startZoom + (targetZoom - startZoom) * easedT;
-
+      final zoom = startZoom + (12.5 - startZoom) * easedT;
       _mapController.move(LatLng(lat, lng), zoom);
-
       _centerNotifier.value = LatLng(lat, lng);
       _zoomNotifier.value = zoom;
     });
@@ -443,91 +459,21 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
     controller.dispose();
   }
 
-  List<Marker> _getAllMarkers() {
-    final markers = <Marker>[];
-
-    for (final entry in _allCenters.entries) {
-      for (final center in entry.value) {
-        markers.add(
-          Marker(
-            point: center.location,
-            width: 50,
-            height: 50,
-            child: GestureDetector(
-              onTap: () => _showRechargeDetails(center),
-              child: Material(
-                elevation: 4,
-                shape: const CircleBorder(),
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [Colors.blue.shade50, Colors.white],
-                    ),
-                  ),
-                  padding: const EdgeInsets.all(6),
-                  child: Image.asset('assets/location.png'),
-                ),
-              ),
-            ),
-          ),
-        );
-      }
-    }
-    return markers;
-  }
-
-  void _toggleDropdown() {
-    setState(() {
-      _isDropdownOpen = !_isDropdownOpen;
-      if (!_isDropdownOpen) {
-        _searchTextController.clear();
-        _filteredCities = _cities.keys.toList();
-      } else {
-        Future.delayed(const Duration(milliseconds: 50), () {
-          if (mounted) {
-            _searchFocusNode.requestFocus();
-          }
-        });
-      }
-    });
-  }
-
-  void _filterCities(String query) {
-    _searchDebouncer.run(() {
-      if (mounted) {
-        setState(() {
-          _filteredCities = _cities.keys
-              .where((city) => city.toLowerCase().contains(query.toLowerCase()))
-              .toList();
-        });
-      }
-    });
-  }
-
   void _animateZoom(double delta) {
     final controller = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-
     final currentZoom = _mapController.camera.zoom;
-    final zoomAnim = Tween<double>(
+    final anim = Tween<double>(
       begin: currentZoom,
       end: currentZoom + delta,
-    );
-
-    final curve = CurvedAnimation(parent: controller, curve: Curves.easeInOut);
+    ).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
 
     controller.addListener(() {
-      final zoom = zoomAnim.evaluate(curve);
-      _mapController.move(_mapController.camera.center, zoom);
-      _zoomNotifier.value = zoom;
+      _mapController.move(_mapController.camera.center, anim.value);
+      _zoomNotifier.value = anim.value;
     });
-
     controller.forward().then((_) => controller.dispose());
   }
 
@@ -549,10 +495,9 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                   interactionOptions: const InteractionOptions(
                     flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
                   ),
-                  onPositionChanged: (position, hasGesture) {
-                    if (!hasGesture) return;
-                    _centerNotifier.value = position.center;
-                    _zoomNotifier.value = position.zoom;
+                  onPositionChanged: (pos, _) {
+                    _centerNotifier.value = pos.center;
+                    _zoomNotifier.value = pos.zoom;
                   },
                 ),
                 children: [
@@ -561,55 +506,55 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                         'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
                     userAgentPackageName: 'com.playdev.mtagapp',
                     tileProvider: NetworkTileProvider(),
-                    maxZoom: 19.0,
                   ),
-                  MarkerClusterLayerWidget(
-                    options: MarkerClusterLayerOptions(
-                      maxClusterRadius:
-                          60,
-                      size: const Size(45, 45),
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.all(30),
-                      markers: _cachedMarkers,
-                      builder: (context, markers) {
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.blue.shade600,
-                                Colors.blue.shade800,
+
+                  ValueListenableBuilder<bool>(
+                    valueListenable: _markersNeedUpdate,
+                    builder: (_, _, _) {
+                      return MarkerClusterLayerWidget(
+                        options: MarkerClusterLayerOptions(
+                          maxClusterRadius: 60,
+                          size: const Size(45, 45),
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(30),
+                          markers: _markers,
+                          builder: (context, markers) => AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.blue.shade600,
+                                  Colors.blue.shade800,
+                                ],
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.blue.withAlpha(125),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 2),
+                                ),
                               ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.blue.withAlpha(125),
-                                blurRadius: 6,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Text(
-                              '${markers.length}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                            child: Center(
+                              child: Text(
+                                '${markers.length}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
-                        );
-                      },
-                      spiderfyCircleRadius: 60,
-                      spiderfySpiralDistanceMultiplier: 2,
-                      showPolygon: false,
-                      disableClusteringAtZoom: 15,
-                      zoomToBoundsOnClick: true,
-                    ),
+                          spiderfyCircleRadius: 60,
+                          spiderfySpiralDistanceMultiplier: 2,
+                          showPolygon: false,
+                          disableClusteringAtZoom: 15,
+                          zoomToBoundsOnClick: true,
+                        ),
+                      );
+                    },
                   ),
                 ],
               );
@@ -617,285 +562,13 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
           ),
 
           Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: IgnorePointer(
-              child: Container(
-                height: 100,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.black.withAlpha(125), Colors.transparent],
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          Positioned(
             top: 50,
             left: 16,
             right: 16,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SlideTransition(
-                  position:
-                      Tween<Offset>(
-                        begin: const Offset(0, -1),
-                        end: Offset.zero,
-                      ).animate(
-                        CurvedAnimation(
-                          parent: _headerController,
-                          curve: Curves.easeOutCubic,
-                        ),
-                      ),
-                  child: Material(
-                    elevation: 8,
-                    borderRadius: BorderRadius.circular(
-                      _isDropdownOpen ? 20 : 20,
-                    ),
-                    shadowColor: Colors.black.withAlpha(39),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withAlpha(105),
-                        borderRadius: BorderRadius.circular(
-                          _isDropdownOpen ? 20 : 20,
-                        ),
-                        border: Border.all(
-                          color: Colors.white.withAlpha(105),
-                          width: 1,
-                        ),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                          _isDropdownOpen ? 20 : 20,
-                        ),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                          child: Column(
-                            children: [
-                              // Selected City Display
-                              GestureDetector(
-                                onTap: _toggleDropdown,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 14,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            colors: [
-                                              Colors.blue.shade500,
-                                              Colors.blue.shade700,
-                                            ],
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                        ),
-                                        child: const Icon(
-                                          Icons.location_city,
-                                          color: Colors.white,
-                                          size: 22,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: Text(
-                                          _selectedCity,
-                                          style: const TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black87,
-                                          ),
-                                        ),
-                                      ),
-                                      RotationTransition(
-                                        turns: Tween<double>(begin: 0, end: 0.5)
-                                            .animate(
-                                              CurvedAnimation(
-                                                parent: _headerController,
-                                                curve: Curves.easeInOut,
-                                              ),
-                                            ),
-                                        child: Icon(
-                                          Icons.arrow_drop_down_rounded,
-                                          color: Colors.blue.shade700,
-                                          size: 30,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                              if (_isDropdownOpen) ...[
-                                Divider(
-                                  height: 1,
-                                  color: Colors.grey.shade200,
-                                  indent: 16,
-                                  endIndent: 16,
-                                ),
-
-                                // Search Field
-                                Container(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Material(
-                                    elevation: 2,
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: TextField(
-                                      controller: _searchTextController,
-                                      focusNode: _searchFocusNode,
-                                      decoration: InputDecoration(
-                                        hintText: 'Search city...',
-                                        prefixIcon: const Icon(
-                                          Icons.search,
-                                          color: Colors.grey,
-                                        ),
-                                        suffixIcon:
-                                            _searchTextController
-                                                .text
-                                                .isNotEmpty
-                                            ? IconButton(
-                                                icon: const Icon(
-                                                  Icons.close,
-                                                  size: 18,
-                                                ),
-                                                onPressed: () {
-                                                  _searchTextController.clear();
-                                                  _filterCities('');
-                                                },
-                                              )
-                                            : null,
-                                        filled: true,
-                                        fillColor: Colors.grey.shade50,
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                              horizontal: 16,
-                                              vertical: 14,
-                                            ),
-                                      ),
-                                      onChanged: _filterCities,
-                                    ),
-                                  ),
-                                ),
-
-                                Container(
-                                  constraints: BoxConstraints(
-                                    maxHeight: _dropdownHeight - 130,
-                                  ),
-                                  child: NotificationListener<ScrollNotification>(
-                                    onNotification: (notification) {
-                                      return true;
-                                    },
-                                    child: ListView.builder(
-                                      physics: const BouncingScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemCount: _filteredCities.length,
-                                      padding: const EdgeInsets.only(
-                                        bottom: 16,
-                                      ),
-                                      itemBuilder: (context, index) {
-                                        final city = _filteredCities[index];
-                                        return Material(
-                                          color: Colors.transparent,
-                                          child: InkWell(
-                                            onTap: () => _onCityChanged(city),
-                                            borderRadius: BorderRadius.circular(
-                                              12,
-                                            ),
-                                            child: Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 16,
-                                                    vertical: 4,
-                                                  ),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 12,
-                                                    vertical: 12,
-                                                  ),
-                                              decoration: BoxDecoration(
-                                                color: _selectedCity == city
-                                                    ? Colors.blue.shade50
-                                                    : Colors.transparent,
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                border: _selectedCity == city
-                                                    ? Border.all(
-                                                        color: Colors
-                                                            .blue
-                                                            .shade300,
-                                                        width: 1.5,
-                                                      )
-                                                    : null,
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.location_on,
-                                                    color: _selectedCity == city
-                                                        ? Colors.blue.shade700
-                                                        : Colors.grey.shade600,
-                                                    size: 20,
-                                                  ),
-                                                  const SizedBox(width: 12),
-                                                  Expanded(
-                                                    child: Text(
-                                                      city,
-                                                      style: TextStyle(
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color:
-                                                            _selectedCity ==
-                                                                city
-                                                            ? Colors
-                                                                  .blue
-                                                                  .shade800
-                                                            : Colors.black87,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  if (_selectedCity == city)
-                                                    Icon(
-                                                      Icons
-                                                          .check_circle_rounded,
-                                                      color:
-                                                          Colors.blue.shade700,
-                                                      size: 20,
-                                                    ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+            child: CityDropdown(
+              cities: _cities.keys.toList(),
+              onCitySelected: _onCityChanged,
+              placeholder: "Select City",
             ),
           ),
 
@@ -909,16 +582,9 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
               ),
               child: Column(
                 children: [
-                  _buildFabButton(
-                    Icons.add_rounded,
-                    () => _animateZoom(1),
-                    gradient: true,
-                  ),
-                  const SizedBox(height: 8),
-                  _buildFabButton(
-                    Icons.remove_rounded,
-                    () => _animateZoom(-1),
-                    gradient: true,
+                  ZoomControl(
+                    onPlus: () => _animateZoom(1),
+                    onMinus: () => _animateZoom(-1),
                   ),
                 ],
               ),
@@ -929,255 +595,34 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
     );
   }
 
-  Widget _buildFabButton(
-    IconData icon,
-    VoidCallback onTap, {
-    bool gradient = false,
-  }) {
-    return Material(
-      elevation: 6,
-      borderRadius: BorderRadius.circular(16),
-      shadowColor: Colors.black.withAlpha(50),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: onTap,
-        splashColor: Colors.blue.withAlpha(50),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            gradient: gradient
-                ? LinearGradient(
-                    colors: [Colors.blue.shade600, Colors.blue.shade800],
-                  )
-                : null,
-            color: gradient ? null : Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: gradient ? null : Border.all(color: Colors.grey.shade200),
-          ),
-          child: Icon(
-            icon,
-            color: gradient ? Colors.white : Colors.grey.shade700,
-            size: 22,
-          ),
-        ),
-      ),
-    );
-  }
-
   void _showRechargeDetails(RechargeCenter center) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      barrierColor: Colors.black54,
-      builder: (_) => DraggableScrollableSheet(
-        initialChildSize: 0.5,
-        minChildSize: 0.4,
-        maxChildSize: 0.8,
-        snap: true,
-        snapSizes: const [0.4, 0.6, 0.8],
-        builder: (_, controller) => Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(50),
-                blurRadius: 20,
-                offset: const Offset(0, -5),
-              ),
-            ],
+      barrierColor: Colors.black.withAlpha(80),
+      enableDrag: true,
+      builder: (ctx) {
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => Navigator.pop(ctx),
+          child: DraggableScrollableSheet(
+            initialChildSize: 0.5,
+            minChildSize: 0.4,
+            maxChildSize: 0.8,
+            snap: true,
+            builder: (context, controller) {
+              return GestureDetector(
+                onTap: () {},
+                child: RechargeCenterBottomSheet(
+                  center: center,
+                  onOpenMap: () => _openInGoogleMaps(center.location),
+                ),
+              );
+            },
           ),
-          child: ListView(
-            controller: controller,
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.all(20),
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              _buildCenterHeader(center),
-              const SizedBox(height: 24),
-              _buildInfoRow(
-                Icons.access_time_rounded,
-                'Operating Hours',
-                center.timing,
-              ),
-              const SizedBox(height: 16),
-              _buildInfoRow(
-                Icons.info_outlined,
-                'Information',
-                center.information,
-              ),
-              const SizedBox(height: 32),
-              ElevatedButton.icon(
-                onPressed: () => _openInGoogleMaps(center.location),
-                icon: const Icon(
-                  Icons.directions_rounded,
-                  size: 22,
-                  color: Colors.white,
-                ),
-                label: const Text(
-                  'Open in Google Maps',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green.shade600,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  elevation: 4,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+        );
+      },
     );
-  }
-
-  Widget _buildCenterHeader(RechargeCenter center) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.blue.shade600, Colors.blue.shade800],
-            ),
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.blue.withAlpha(80),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: const Icon(
-            Icons.store_mall_directory_rounded,
-            color: Colors.white,
-            size: 30,
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                center.name,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  height: 1.3,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  'M-Tag Recharge Point',
-                  style: TextStyle(
-                    color: Colors.blue.shade700,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildInfoRow(IconData icon, String label, String value) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(icon, color: Colors.blue.shade700, size: 22),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade600,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class RechargeCenter {
-  final String name;
-  final LatLng location;
-  final String timing;
-
-  final String information;
-
-  RechargeCenter(this.name, this.location, this.timing, this.information);
-}
-
-class Debouncer {
-  final int milliseconds;
-  Timer? _timer;
-
-  Debouncer({required this.milliseconds});
-
-  void run(VoidCallback action) {
-    _timer?.cancel();
-    _timer = Timer(Duration(milliseconds: milliseconds), action);
   }
 }

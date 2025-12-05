@@ -11,6 +11,7 @@ import '../../api/user_repo.dart';
 import '../../constants/other_consts.dart';
 import '../../controller/home_controller.dart';
 import '../../features/recharge_center_locator.dart';
+import '../../widgets/bottomnavbar/bottomnavbar.dart';
 import '../../widgets/dashboard_widget.dart';
 import '../../widgets/shimmer_dashboard.dart';
 import '../recharge/controller/recharge_controller.dart';
@@ -22,13 +23,14 @@ class HomePage extends GetView<HomeController> {
 
   final bottomNavigations = <Widget>[
     Container(),
-PromotionPage(),
+    PromotionPage(),
+
     // const ActivityScreen(),
-  
     RechargeMapScreen(),
-      SettingScreen(),
+    SettingScreen(),
   ];
   final _otherConstants = OtherConsts();
+
   @override
   Widget build(BuildContext context) {
     return GetX<HomeController>(
@@ -51,9 +53,7 @@ PromotionPage(),
   Widget _buildScaffold(BuildContext context, HomeController controller) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: controller.currentPage.value == 0
-          ? AppBar()
-          : null,
+      appBar: controller.currentPage.value == 0 ? AppBar() : null,
       body: controller.currentPage.value == 0
           ? RefreshIndicator.adaptive(
               displacement: 60,
@@ -293,7 +293,16 @@ PromotionPage(),
                                         final imageUrl =
                                             'assets/slider/$imageName';
 
-                                        return GestureDetector(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_)=>StoryViewPage(stories: OtherConsts.sliderImages))),
+                                        return GestureDetector(
+                                          onTap: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) => StoryViewPage(
+                                                stories:
+                                                    OtherConsts.sliderImages,
+                                              ),
+                                            ),
+                                          ),
                                           child: Container(
                                             height: 150,
                                             width: 150,
@@ -400,86 +409,94 @@ PromotionPage(),
               ),
             )
           : bottomNavigations[controller.currentPage.value],
-      bottomNavigationBar: BottomNavigationBar(
-        iconSize: 20,
-        selectedFontSize: 12,
-        type: BottomNavigationBarType.shifting,
-        selectedItemColor: Theme.of(context).primaryColor,
-        onTap: (value) {
-          (value == 0 && _otherConstants.isRefresh.value)
-              ? controller.pullRefreshDashboardData()
-              : null;
-          controller.setCurrentIndex(value);
-        },
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        selectedLabelStyle: TextStyle(
-          fontFamily: 'Poppins',
-          color: Theme.of(context).primaryColor,
-        ),
-        unselectedItemColor: Colors.grey,
+      bottomNavigationBar: CustomBottomNavBar(
         currentIndex: controller.currentPage.value,
-        unselectedFontSize: 11,
-        unselectedIconTheme: const IconThemeData(color: Colors.grey),
-        backgroundColor: Colors.white,
-        items: [
-          BottomNavigationBarItem(
-            tooltip: 'Home',
-            activeIcon: SvgPicture.asset(
-              'assets/house-blank.svg',
-              height: 20,
-              width: 20,
-              fit: BoxFit.fill,
-            ),
-            label: 'Home',
-            icon: SvgPicture.asset(
-              'assets/house-blank.svg',
-              height: 20,
-              width: 20,
-              fit: BoxFit.fill,
-            ),
-          ),
-          BottomNavigationBarItem(
-            tooltip: 'Promotions',
-            activeIcon: SvgPicture.asset(
-              'assets/promotion.svg',
-              height: 20,
-              width: 20,
-              fit: BoxFit.fill,
-            ),
-            label: 'Home',
-            icon: SvgPicture.asset(
-              'assets/promotion.svg',
-              height: 20,
-              width: 20,
-              fit: BoxFit.fill,
-            ),
-          ),
-          BottomNavigationBarItem(
-            tooltip: 'Notifications',
-            activeIcon: SvgPicture.asset(
-              'assets/allert.svg',
-              height: 20,
-              width: 20,
-              fit: BoxFit.fill,
-            ),
-            label: 'Notifications',
-            icon: SvgPicture.asset(
-              'assets/allert.svg',
-              height: 20,
-              width: 20,
-              fit: BoxFit.fill,
-            ),
-          ),
-    
-          BottomNavigationBarItem(
-            activeIcon: SvgPicture.asset('assets/user.svg', height: 20),
-            label: 'Profile',
-            tooltip: 'Profile',
-            icon: SvgPicture.asset('assets/user.svg', height: 20),
-          ),
-        ],
+        canRefresh: _otherConstants.isRefresh.value,
+        onRefreshDashboard: controller.pullRefreshDashboardData,
+        onTap: (index) {
+          controller.setCurrentIndex(index);
+        },
       ),
+      // BottomNavigationBar(
+      //   iconSize: 20,
+      //   selectedFontSize: 12,
+      //   type: BottomNavigationBarType.shifting,
+      //   selectedItemColor: Theme.of(context).primaryColor,
+      //   onTap: (value) {
+      //     (value == 0 && _otherConstants.isRefresh.value)
+      //         ? controller.pullRefreshDashboardData()
+      //         : null;
+      //     controller.setCurrentIndex(value);
+      //   },
+      //   showSelectedLabels: true,
+      //   showUnselectedLabels: true,
+      //   selectedLabelStyle: TextStyle(
+      //     fontFamily: 'Poppins',
+      //     color: Theme.of(context).primaryColor,
+      //   ),
+      //   unselectedItemColor: Colors.grey,
+      //   currentIndex: controller.currentPage.value,
+      //   unselectedFontSize: 11,
+      //   unselectedIconTheme: const IconThemeData(color: Colors.grey),
+      //   backgroundColor: Colors.white,
+      //   items: [
+      //     BottomNavigationBarItem(
+      //       tooltip: 'Home',
+      //       activeIcon: SvgPicture.asset(
+      //         'assets/house-blank.svg',
+      //         height: 20,
+      //         width: 20,
+      //         fit: BoxFit.fill,
+      //       ),
+      //       label: 'Home',
+      //       icon: SvgPicture.asset(
+      //         'assets/house-blank.svg',
+      //         height: 20,
+      //         width: 20,
+      //         fit: BoxFit.fill,
+      //       ),
+      //     ),
+      //     BottomNavigationBarItem(
+      //       tooltip: 'Promotions',
+      //       activeIcon: SvgPicture.asset(
+      //         'assets/promotion.svg',
+      //         height: 20,
+      //         width: 20,
+      //         fit: BoxFit.fill,
+      //       ),
+      //       label: 'Home',
+      //       icon: SvgPicture.asset(
+      //         'assets/promotion.svg',
+      //         height: 20,
+      //         width: 20,
+      //         fit: BoxFit.fill,
+      //       ),
+      //     ),
+      //     BottomNavigationBarItem(
+      //       tooltip: 'Notifications',
+      //       activeIcon: SvgPicture.asset(
+      //         'assets/allert.svg',
+      //         height: 20,
+      //         width: 20,
+      //         fit: BoxFit.fill,
+      //       ),
+      //       label: 'Notifications',
+      //       icon: SvgPicture.asset(
+      //         'assets/allert.svg',
+      //         height: 20,
+      //         width: 20,
+      //         fit: BoxFit.fill,
+      //       ),
+      //     ),
+      //
+      //     BottomNavigationBarItem(
+      //       activeIcon: SvgPicture.asset('assets/user.svg', height: 20),
+      //       label: 'Profile',
+      //       tooltip: 'Profile',
+      //       icon: SvgPicture.asset('assets/user.svg', height: 20),
+      //     ),
+      //   ],
+      // ),
     );
   }
 }
