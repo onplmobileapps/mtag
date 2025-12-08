@@ -62,6 +62,7 @@ class OtherConsts {
     '8.webp',
     '7.jpg',
     '2.webp',
+    '4.png',
     '1.webp',
     '3.webp',
   ];

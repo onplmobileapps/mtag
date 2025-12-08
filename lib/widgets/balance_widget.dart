@@ -24,30 +24,35 @@ class BalanceWidget extends StatelessWidget {
       builder: (context, isHidden, _) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.min, // shrink to content
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                isHidden ? '⁎' * balance.length : 'Rs. $balance',
-                style: TextStyle(
-                  color: primarSwatch,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,letterSpacing: 0.0
-                  // fontFeatures: [FontFeature.tabularFigures()],
+              Flexible(
+                child: Text(
+                  isHidden ? '⁎' * balance.length : 'Rs. $balance',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextTheme.of(context).bodyMedium?.copyWith(
+                    color: primarSwatch,
+                    fontSize: fontSize,
+                    fontWeight: FontWeight.w900,height: 0.5
+                  ),
                 ),
               ),
-              const SizedBox(width: 8),
-              InkWell(
-                borderRadius: BorderRadius.circular(20),
-                onTap: () => isHiddenNotifier.value = !isHidden,
-                child: Icon(
-                  isHidden
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                  size: iconSize,
-                  color: primarSwatch,
+
+              const SizedBox(width: 10),
+              Padding(
+                padding: .only(top:6),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(20),
+                  onTap: () => isHiddenNotifier.value = !isHidden,
+                  child: Icon(
+                    isHidden
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    size: iconSize,
+                    color: primarSwatch,
+                  ),
                 ),
               ),
             ],

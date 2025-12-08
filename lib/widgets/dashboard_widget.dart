@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-
-
 import '../controller/home_controller.dart';
 import '../pages/mtag/controller/delink_controller.dart';
 import '../pages/recharge/recharge_page.dart';
@@ -69,7 +67,6 @@ Widget mtagDataWidget(
     builder: (context, constraints) {
       final maxW = constraints.maxWidth;
       final isSmall = maxW < 330;
-      final padding = isSmall ? 10.0 : 16.0;
       final fontLarge = isSmall ? 15.0 : 18.0;
 
       final fontSmall = isSmall ? 10.0 : 12.0;
@@ -95,47 +92,71 @@ Widget mtagDataWidget(
 
       return Container(
         width: MediaQuery.sizeOf(context).width,
-        padding: EdgeInsets.all(padding),
+    
         decoration: BoxDecoration(
           color: Theme.of(context).disabledColor,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           children: [
-            Container(padding: .all(16),
-              decoration: BoxDecoration(color: Color(0xff21295E),
-              // Theme.of(context).highlightColor,
-              borderRadius: .circular(8)),
-              child: Column(spacing: 6,mainAxisAlignment: .start,crossAxisAlignment: .start,
-               
+            Container(
+              padding: .all(26),
+              decoration: BoxDecoration(
+                color: Color(0xff21295E),
+                // Theme.of(context).highlightColor,
+                borderRadius: .only(bottomLeft:.circular(28)),
+              ),
+              child: Column(
+                spacing: 10,
+                mainAxisAlignment: .start,
+                crossAxisAlignment: .start,
+
                 children: [
-                  mtadDetailsWidget(context,icon: Icons.
-                  folder_outlined,label: 'M-TAG',value: mtagId),
-                  mtadDetailsWidget(context,icon: Icons.delivery_dining,label: 'Vehicle No',value: regId),
-                  mtadDetailsWidget(context,icon: Icons.
-                  description,label: 'Chassis No',value: chassisNumber,ischassis: true,onTap:() async {
-                await showDialog(
-                  context: context,
-                  builder: (_) => ChassisNumberDialog(
-                    registration: regId ?? '',
-                    tokenNo: mtagId ?? '',
-                    mobileNumber: mobileNum ?? '',
-                    balance: ball ?? '',
-                    cnicNumber: cnic ?? '',
+                  SizedBox(height: 26,),
+                  Text('M-TAG',style: TextTheme.of(context).titleLarge?.copyWith(color: Colors.white,fontWeight: .w800,fontSize: 20),),
+                  mtadDetailsWidget(
+                    context,
+                    icon: Icons.folder_outlined,
+                    label: 'M-TAG',
+                    value: mtagId,
                   ),
-                );
-              }, ),
-                   
+                  mtadDetailsWidget(
+                    context,
+                    icon: Icons.delivery_dining,
+                    label: 'Vehicle No',
+                    value: regId,
+                  ),
+                  mtadDetailsWidget(
+                    context,
+                    icon: Icons.description,
+                    label: 'Chassis No',
+                    value: chassisNumber,
+                    ischassis: true,
+                    onTap: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (_) => ChassisNumberDialog(
+                          registration: regId ?? '',
+                          tokenNo: mtagId ?? '',
+                          mobileNumber: mobileNum ?? '',
+                          balance: ball ?? '',
+                          cnicNumber: cnic ?? '',
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
-           
 
-        SizedBox(height:36),
-            Row(mainAxisAlignment: .spaceBetween,
+            SizedBox(height: MediaQuery.sizeOf(context).height*0.045),
+            Row(
+              mainAxisAlignment: .spaceBetween,
               children: [
                 Icon(Icons.arrow_circle_left_outlined),
-                Transform.scale(scaleY: 2.0,scaleX: 2.4,
+                Transform.scale(
+                  scaleY: 2.0,
+                  scaleX: 2.4,
                   // scale: 3, // enlarge visually but keeps original size in layout
                   child: Image.asset(
                     "assets/honda.png",
@@ -143,13 +164,14 @@ Widget mtagDataWidget(
                     fit: BoxFit.fill,
                   ),
                 ),
-                  Icon(Icons.arrow_circle_right_outlined),
+                Icon(Icons.arrow_circle_right_outlined),
               ],
             ),
-            SizedBox(height: 36,),
-            Row(mainAxisAlignment: .center,
+              Spacer(flex: 3,),
+
+            Row(
+              mainAxisAlignment: .center,
               children: [
-                
                 Text(
                   "Balance  ",
                   style: TextStyle(
@@ -158,15 +180,15 @@ Widget mtagDataWidget(
                   ),
                 ),
                 BalanceWidget(
-                  balance: ball??'',
+                  balance: ball ?? '',
                   fontSize: fontLarge,
                   iconSize: fontLarge,
                 ),
-                
               ],
             ),
-            // Spacer(),
- SizedBox(height: 10,),
+            Spacer(),
+            // SizedBox(height: 10),
+
             /// 🔹 Bottom Action Buttons (Transfer / Recharge / Delete)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -298,14 +320,24 @@ Widget _actionBtn(
   required VoidCallback onTap,
 }) {
   return Expanded(
-    child: Container(margin: .all(8),padding: .all(18),decoration: BoxDecoration(color: Colors.white,borderRadius: .circular(8)),
+    child: Container(
+      margin: .all(8),
+      padding: .all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: .circular(8),
+      ),
       child: InkWell(
         onTap: onTap,
         child: Column(
           children: [
-            Container(padding: .all(2),
-            decoration: BoxDecoration(color: Colors.white,
-              border: .all(width:0.3),borderRadius: .circular(8)),
+            Container(
+              padding: .all(2),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: .all(width: 0.3),
+                borderRadius: .circular(8),
+              ),
               child: Icon(icon, size: iconSize, color: Colors.redAccent),
             ),
             SizedBox(height: 10),
@@ -323,11 +355,37 @@ Widget _actionBtn(
     ),
   );
 }
-Widget mtadDetailsWidget(BuildContext context,{IconData? icon,String? label,String? value,bool ischassis=false,void Function()? onTap}){
-  return 
-  Row(spacing: 5,crossAxisAlignment: .center,mainAxisAlignment: .start,
-    children: [Icon(icon,color:Color(0xff9E9EAD),),SizedBox(width: 5,), Text('$label :',style: TextTheme.of(context).bodySmall?.copyWith(color: Color(0xff9E9EAD),fontSize: 14),),Spacer(),SizedBox(width: 15,),Text('$value',style: TextTheme.of(context).bodyMedium?.copyWith(color: Colors.white,fontSize: 16,fontWeight: .w600),), Spacer(),if(ischassis)InkWell(onTap: onTap,
-    child: Icon(Icons.edit_square,size: 16,color: Colors.white,))],);
-  
- 
+
+Widget mtadDetailsWidget(
+  BuildContext context, {
+  IconData? icon,
+  String? label,
+  String? value,
+  bool ischassis = false,
+  void Function()? onTap,
+}) {
+  return Row(
+  children: [
+    Icon(icon, color: Color(0xff9E9EAD)),
+    SizedBox(width: 5),
+    Expanded(
+      flex: 2,
+      child: Text('$label :', style: TextStyle(color: Color(0xff9E9EAD))),
+    ),
+    Expanded(
+      flex: 3,
+      child: Text('$value', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),),
+    ),
+    if (ischassis)
+      InkWell(
+        onTap: onTap,
+        child: Icon(Icons.edit_square, size: 16, color: Colors.white),
+      ),
+  ],
+);
+
 }
