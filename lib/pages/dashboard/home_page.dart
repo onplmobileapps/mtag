@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -105,6 +107,7 @@ class HomePage extends GetView<HomeController> {
                                             e,
                                           ) {
                                             final imageUrl = 'assets/slider/$e';
+                                            log('slider url:$e');
                                             return ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(8),

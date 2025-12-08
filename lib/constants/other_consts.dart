@@ -61,6 +61,7 @@ class OtherConsts {
   static const List<String> sliderImages = [
     '8.webp',
     '7.jpg',
+    '4.png'
     '2.webp',
     '1.webp',
     '3.webp',
