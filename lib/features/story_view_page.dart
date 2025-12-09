@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class StoryViewPage extends StatefulWidget {
-  final List<String> stories; // image paths or URLs
+  final List<String> stories;
 
   const StoryViewPage({super.key, required this.stories});
 
@@ -11,63 +11,62 @@ class StoryViewPage extends StatefulWidget {
 
 class _StoryViewPageState extends State<StoryViewPage>
     with TickerProviderStateMixin {
-  final PageController _controller = PageController();
-  late AnimationController _animationController;
+  late final PageController _controller;
+  AnimationController? _animationController;
   int currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _loadStory();
+    _controller = PageController();
+    _startProgress();
   }
 
-  void _loadStory() {
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 5), // story duration
-    );
+  void _startProgress() {
+    _animationController?.dispose();
+    _animationController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 5))
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              _nextStory();
+            }
+          });
 
-    _animationController.forward();
-    _animationController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _nextStory();
-      }
-    });
+    if (mounted) {
+      _animationController!.forward();
+    }
   }
 
   void _nextStory() {
-    if (currentIndex < widget.stories.length - 1) {
-      setState(() {
-        currentIndex++;
-      });
-      _controller.nextPage(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeInOut,
-      );
-      _animationController.dispose();
-      _loadStory();
-    } else {
+    if (currentIndex >= widget.stories.length - 1) {
       Navigator.pop(context);
+      return;
     }
+
+    currentIndex++;
+    _controller.nextPage(
+      duration: const Duration(milliseconds: 700),
+      curve: Curves.easeInCubic,
+    );
+    setState(() {});
+    _startProgress();
   }
 
   void _previousStory() {
-    if (currentIndex > 0) {
-      setState(() {
-        currentIndex--;
-      });
-      _controller.previousPage(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeInOut,
-      );
-      _animationController.dispose();
-      _loadStory();
-    }
+    if (currentIndex <= 0) return;
+
+    currentIndex--;
+    _controller.previousPage(
+      duration: const Duration(milliseconds: 700),
+      curve: Curves.easeOutCubic,
+    );
+    setState(() {});
+    _startProgress();
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _animationController?.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -80,56 +79,67 @@ class _StoryViewPageState extends State<StoryViewPage>
         children: [
           PageView.builder(
             controller: _controller,
+            physics: const NeverScrollableScrollPhysics(),
+            onPageChanged: (index) {
+              currentIndex = index;
+              setState(() {});
+              _startProgress();
+            },
             itemCount: widget.stories.length,
-            physics: const NeverScrollableScrollPhysics(), // swipe handled manually
             itemBuilder: (_, index) {
               return GestureDetector(
-                onTapUp: (details) {
-                  final w = MediaQuery.of(context).size.width;
-                  if (details.localPosition.dx > w / 2) {
+                onTapDown: (details) {
+                  final width = MediaQuery.of(context).size.width;
+                  if (details.globalPosition.dx > width / 2) {
                     _nextStory();
                   } else {
                     _previousStory();
                   }
                 },
-                child: SizedBox.expand(
-                  child: Image.asset(
-                    'assets/slider/${widget.stories[index]}',
-                    fit: BoxFit.cover,
-                  ),
+                onLongPress: () => _animationController?.stop(),
+                onLongPressEnd: (_) => _animationController?.forward(),
+                child: Image.asset(
+                  'assets/slider/${widget.stories[index]}',
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
                 ),
               );
             },
           ),
 
-          // Top Progress Indicators
           Positioned(
-            top: 40,
-            left: 8,
-            right: 8,
+            top: MediaQuery.of(context).padding.top + 15,
+            left: 10,
+            right: 10,
             child: Row(
-              children: widget.stories
-                  .asMap()
-                  .map((i, e) {
-                    return MapEntry(
-                      i,
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: LinearProgressIndicator(
-                            value: i == currentIndex
-                                ? _animationController.value
-                                : (i < currentIndex ? 1 : 0),
-                            backgroundColor: Colors.white24,
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                                Colors.white),
-                          ),
-                        ),
-                      ),
-                    );
-                  })
-                  .values
-                  .toList(),
+              children: widget.stories.asMap().entries.map((entry) {
+                final i = entry.key;
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: LinearProgressIndicator(
+                      minHeight: 3,
+                      backgroundColor: Colors.white24,
+                      valueColor: const AlwaysStoppedAnimation(Colors.white),
+                      value: i < currentIndex
+                          ? 1.0
+                          : i == currentIndex
+                          ? _animationController?.value ?? 0.0
+                          : 0.0,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 10,
+            right: 10,
+            child: IconButton(
+              icon: const Icon(Icons.close, color: Colors.white, size: 32),
+              onPressed: () => Navigator.pop(context),
             ),
           ),
         ],

@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
+import 'package:latlong2/latlong.dart';
 
+import '../class/recharge_center.dart';
 import '../pages/tolcalator/model/static_mw_model.dart';
 import '../pages/tolcalator/model/vehicle_model.dart';
 
