@@ -49,8 +49,8 @@ class HomePage extends GetView<HomeController> {
     final screenHeight = MediaQuery.sizeOf(context).height;
     final screenWidth = MediaQuery.sizeOf(context).width;
 
-    return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    return Scaffold(floatingActionButtonAnimator: .scaling,
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
       resizeToAvoidBottomInset: false,
       extendBody: false,
       floatingActionButton: GestureDetector(
@@ -424,8 +424,8 @@ class HomePage extends GetView<HomeController> {
             )
           : bottomNavigations[controller.currentPage.value],
       bottomNavigationBar: BottomNavigationBar(
-        iconSize: 20,
-        selectedFontSize: 12,
+  
+        selectedFontSize:0,
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Theme.of(context).primaryColor,
         onTap: (value) {
@@ -498,10 +498,14 @@ class HomePage extends GetView<HomeController> {
         mainAxisSize: MainAxisSize.min,
         children: [
           SvgPicture.asset(
-            asset,
-            height: 15,
-            color: isSelected ? Colors.white : Colors.grey,
-          ),
+  asset,
+  height: 15,
+  colorFilter: ColorFilter.mode(
+    isSelected ? Colors.white : Colors.grey,
+    BlendMode.srcIn,
+  ),
+)
+,
           SizedBox(height: 2),
           Text(
             label,

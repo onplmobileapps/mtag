@@ -361,7 +361,7 @@ final List<SettingsModel> items = [
       );
     },
     name: 'Logout',
-    icon: const Icon(Icons.logout_outlined),
+    icon: const Icon(Icons.login),
     routeName: '/theme',
   ),
 ];
