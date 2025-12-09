@@ -12,7 +12,6 @@ import '../../api/user_repo.dart';
 import '../../constants/other_consts.dart';
 import '../../controller/home_controller.dart';
 import '../../features/recharge_center_locator.dart';
-
 import '../../widgets/dashboard_widget.dart';
 import '../../widgets/shimmer_dashboard.dart';
 import '../recharge/controller/recharge_controller.dart';
@@ -307,7 +306,7 @@ class HomePage extends GetView<HomeController> {
                                   child: ListView.separated(
                                     scrollDirection: Axis.horizontal,
                                     itemCount: OtherConsts.sliderImages.length,
-                                    separatorBuilder: (_, __) =>
+                                    separatorBuilder: (_, _) =>
                                         const SizedBox(width: 8),
                                     itemBuilder: (context, index) {
                                       final imageName =

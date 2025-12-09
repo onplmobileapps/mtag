@@ -41,57 +41,73 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
     'Islamabad': const LatLng(33.6844, 73.0479),
     'Rawalpindi': const LatLng(33.5651, 73.0169),
     'Lahore': const LatLng(31.5204, 74.3587),
-    'Karachi': const LatLng(24.8607, 67.0011),
-    'Faisalabad': const LatLng(31.4504, 73.1350),
+    'Karachi': const LatLng(24.984362758794767,67.22035480754474),
+    'Faisalabad': const LatLng(31.529431504602208,73.06667709551853),
     'Multan': const LatLng(30.1575, 71.5249),
-    'Peshawar': const LatLng(34.0151, 71.5249),
+    'Peshawar': const LatLng(34.03039708462152, 71.66326084028518),
+    'Shujabad':const LatLng(29.994101,71.387735),
     'Quetta': const LatLng(30.1798, 66.9750),
+    'Hyderabad':const LatLng(25.369756757942742,68.21567818242164, )
   };
 
   final Map<String, List<RechargeCenter>> _allCenters = {
-    'Islamabad': [
+    'Islamabad': [ 
+RechargeCenter(
+'Fatima Jinnah',
+const LatLng(33.69583333333333, 73.01555555555555),
+'24 Hours',
+"M-Tag Recharge Center",
+),
+RechargeCenter(
+'I-8 Kachnar',
+const LatLng(33.67611111111111, 73.0761111111111),
+'8 AM - 11 AM',
+"M-Tag Recharge Center",
+),
+RechargeCenter(
+'Gulburg Green',
+const LatLng(33.60413888888889, 73.162),
+'8 AM - 4 PM',
+"M-Tag Recharge Center",
+),
       RechargeCenter(
-        'Blue Area - Jinnah Super',
-        const LatLng(33.7181, 73.0776),
-        '9 AM - 11 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'F-7 Markaz',
-        const LatLng(33.7215, 73.0433),
-        '8 AM - 10 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'F-10 Markaz',
-        const LatLng(33.6955, 73.0128),
-        '9 AM - 11 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'G-9 Markaz',
-        const LatLng(33.6844, 73.0479),
-        '24 Hours',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'I-8 Markaz',
-        const LatLng(33.6659, 73.0785),
-        '8 AM - 11 AM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'F-11 Markaz',
-        const LatLng(33.6789, 72.9999),
-        '8 AM - 4 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Zero Point - G-7',
-        const LatLng(33.6992, 73.0625),
-        '8 AM - 4 PM',
-        "Test Information",
-      ),
+'26 No Chungi',
+const LatLng(33.3634, 72.5402),
+'8 AM - 4 PM',
+"M-Tag Recharge Center",
+),
+RechargeCenter(
+'I 11',
+const LatLng(33.640163, 73.025085),
+'9 AM - 11 PM',
+"M-Tag Recharge Center",
+),
+RechargeCenter(
+'Tarlai CFC',
+const LatLng(33.646388888888886, 73.16222222222223),
+'8 AM - 10 PM',
+"M-Tag Recharge Center",
+),
+RechargeCenter(
+'Lake view Park',
+const LatLng(33.71555555555556, 73.13277777777778),
+'9 AM - 11 PM',
+"M-Tag Recharge Center",
+),
+RechargeCenter(
+'Islamabad Club',
+const LatLng(33.70527777777778, 73.1061111111111),
+'24 Hours',
+"M-Tag Recharge Center",
+),
+RechargeCenter(
+'ETO Islamabad',
+const LatLng(33.67492, 73.0538588),
+'8 AM - 11 AM',
+"M-Tag Recharge Center",
+),
+      
+      
     ],
     'Rawalpindi': [
       RechargeCenter(
@@ -222,7 +238,7 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
     'Faisalabad': [
       RechargeCenter(
         'D-Ground',
-        const LatLng(31.4504, 73.1350),
+        const LatLng(31.529431504602208,73.06667709551853),
         '9 AM - 10 PM',
         "Test Information",
       ),
@@ -253,28 +269,28 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
     ],
     'Multan': [
       RechargeCenter(
-        'Cantonment',
-        const LatLng(30.1575, 71.5249),
+        'Zahir pir',
+        const LatLng(28.84695137286077,70.50889644821397),
         '9 AM - 10 PM',
-        "Test Information",
+        "M-Tag Recharge Center",
       ),
       RechargeCenter(
-        'Gulgasht Colony',
-        const LatLng(30.1978, 71.4714),
+        'Uch Sharif',
+        const LatLng(29.24691748539767,71.03776706881527),
         '10 AM - 11 PM',
-        "Test Information",
+        "M-Tag Recharge Center",
       ),
       RechargeCenter(
-        'Boson Road',
-        const LatLng(30.1921, 71.4678),
+        'ShujaAbad Svc Area North',
+        const LatLng(29.994101,71.387735),
         '9 AM - 9 PM',
-        "Test Information",
+        "M-Tag Recharge Center",
       ),
       RechargeCenter(
-        'Vehari Chowk',
-        const LatLng(30.1812, 71.4923),
+        'Shujabad Svc Area South',
+        const LatLng(29.994101,71.387735),
         '24 Hours',
-        "Test Information",
+        "M-Tag Recharge Center",
       ),
       RechargeCenter(
         'Chowk Kumharanwala',
