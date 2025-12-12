@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 class ZoomControl extends StatelessWidget {
   final VoidCallback onPlus;
   final VoidCallback onMinus;
@@ -8,15 +7,22 @@ class ZoomControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       width: 45,
       height: 120,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface, // background adapts to theme
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey),
+        border: Border.all(color: colorScheme.outline), // use outline for border
         boxShadow: [
-          BoxShadow(color: Colors.grey, blurRadius: 4, offset: Offset(0, 2)),
+          BoxShadow(
+            color: colorScheme.shadow.withValues(alpha:0.1), // subtle shadow
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Column(
@@ -24,18 +30,24 @@ class ZoomControl extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: onPlus,
-            child: const Icon(Icons.add, size: 26),
+            child: Icon(
+              Icons.add,
+              size: 26,
+              color: colorScheme.onSurface, // icon color adapts to theme
+            ),
           ),
-
           Container(
             height: 1,
             margin: const EdgeInsets.symmetric(horizontal: 10),
-            color: Colors.black26,
+            color: colorScheme.outlineVariant, // line color adapts
           ),
-
           GestureDetector(
             onTap: onMinus,
-            child: const Icon(Icons.remove, size: 26),
+            child: Icon(
+              Icons.remove,
+              size: 26,
+              color: colorScheme.onSurface, // icon color adapts to theme
+            ),
           ),
         ],
       ),

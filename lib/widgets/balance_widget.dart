@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mtag_flutterapp/theme/app_theme.dart';
-
 class BalanceWidget extends StatelessWidget {
   final String balance;
   final double fontSize;
@@ -32,9 +30,9 @@ class BalanceWidget extends StatelessWidget {
                 child: Text(
                   isHidden ? '⁎' * balance.length : 'Rs. $balance',
                   overflow: TextOverflow.ellipsis,
-                  style: TextTheme.of(context).bodyMedium?.copyWith(
-                    color: primarSwatch,
-                    fontSize: fontSize,
+                  style: TextTheme.of(context).bodyLarge?.copyWith(
+                    
+
                     fontWeight: FontWeight.w900,height: 0.5
                   ),
                 ),
@@ -51,7 +49,7 @@ class BalanceWidget extends StatelessWidget {
                         ? Icons.visibility_outlined
                         : Icons.visibility_off_outlined,
                     size: iconSize,
-                    color: primarSwatch,
+                    
                   ),
                 ),
               ),

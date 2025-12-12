@@ -6,7 +6,6 @@ import 'package:mtag_flutterapp/constants/call_helper.dart';
 import 'package:mtag_flutterapp/features/promotion_page.dart';
 import 'package:mtag_flutterapp/features/story_view_page.dart';
 import 'package:mtag_flutterapp/pages/notification/notification_screen.dart';
-import 'package:mtag_flutterapp/theme/app_theme.dart';
 import 'package:mtag_flutterapp/widgets/mtag_recovery_widget.dart';
 import '../../api/user_repo.dart';
 import '../../constants/other_consts.dart';
@@ -49,8 +48,11 @@ class HomePage extends GetView<HomeController> {
     final screenHeight = MediaQuery.sizeOf(context).height;
     final screenWidth = MediaQuery.sizeOf(context).width;
 
-    return Scaffold(floatingActionButtonAnimator: .scaling,
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      floatingActionButtonAnimator: .scaling,
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.miniCenterDocked,
       resizeToAvoidBottomInset: false,
       extendBody: false,
       floatingActionButton: GestureDetector(
@@ -60,8 +62,8 @@ class HomePage extends GetView<HomeController> {
         ),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
-          height: 50,
-          width: 50,
+          height: 60,
+          width: 60,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: const LinearGradient(
@@ -78,10 +80,7 @@ class HomePage extends GetView<HomeController> {
             ],
           ),
           child: Center(
-            child: SvgPicture.asset(
-              'assets/location.svg',
-              height: 30,
-            ),
+            child: SvgPicture.asset('assets/location.svg', height: 30),
           ),
         ),
       ),
@@ -96,72 +95,50 @@ class HomePage extends GetView<HomeController> {
                   return [
                     SliverAppBar(
                       pinned: true,
-                      backgroundColor: Colors.white,
+                      backgroundColor: Colors.transparent,
                       elevation: 2,
-                      expandedHeight: screenHeight * 0.45,
+                      expandedHeight: screenHeight * 0.55,
                       flexibleSpace: LayoutBuilder(
                         builder: (context, constraints) {
                           final top = constraints.biggest.height;
                           final isCollapsed = top <= kToolbarHeight;
 
                           return FlexibleSpaceBar(
-                            title: isCollapsed
-                                ? Obx(() {
-                                    final activeMtags = controller
-                                            .dashboradData.value.activeMtags ??
-                                        [];
-                                    if (activeMtags.isEmpty) return SizedBox();
-                                    final e = activeMtags.first;
-                                    return Row(
-                                      children: [
-                                        Text(
-                                          'M-Tag: ${e.tokenno}',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(width: 8),
-                                        Text(
-                                          'Vehicle: ${e.vehicletype}',
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                        SizedBox(width: 8),
-                                        Text(
-                                          'Chassis: ${e.chassis_number ?? "-"}',
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                      ],
-                                    );
-                                  })
-                                : null,
+                            titlePadding: .zero,
                             background: Obx(() {
-                              final activeMtags = controller
-                                      .dashboradData.value.activeMtags ??
+                              final activeMtags =
+                                  controller.dashboradData.value.activeMtags ??
                                   [];
                               if (activeMtags.isEmpty) return SizedBox();
                               if (!isCollapsed) {
-                                return ListView.builder(shrinkWrap: true,
-                                  scrollDirection: Axis.horizontal,physics: NeverScrollableScrollPhysics(),
+                                return ListView.builder(
+                                  padding: .zero,
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.horizontal,
+                                  physics: NeverScrollableScrollPhysics(),
                                   itemCount: activeMtags.length,
                                   itemBuilder: (context, index) {
                                     final e = activeMtags[index];
                                     return Padding(
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 0),
+                                        horizontal: 0,
+                                      ),
                                       child: Obx(() {
                                         return e.isactive == 9
                                             ? mtagRecoveryWidget(
                                                 context,
-                                                size:
-                                                    MediaQuery.sizeOf(context),
+                                                size: MediaQuery.sizeOf(
+                                                  context,
+                                                ),
                                                 height: screenHeight * 0.60,
                                                 isBlock: e.isactive,
                                                 mtagId: e.tokenno,
                                                 mobileNum: _otherConstants
-                                                    .mobile.string,
+                                                    .mobile
+                                                    .string,
                                                 cnic: _otherConstants
-                                                    .ownerCNIC.string,
+                                                    .ownerCNIC
+                                                    .string,
                                                 regId: e.registration,
                                                 blockAmount: e.block_amount,
                                               )
@@ -182,15 +159,17 @@ class HomePage extends GetView<HomeController> {
                                                 mtagId: e.tokenno,
                                                 userName: e.ownername,
                                                 mobileNum: _otherConstants
-                                                    .mobile.string,
+                                                    .mobile
+                                                    .string,
                                                 cnic: _otherConstants
-                                                    .ownerCNIC.string,
+                                                    .ownerCNIC
+                                                    .string,
                                                 regId: e.registration,
                                                 ball: e.balance,
                                                 showTransferButton:
                                                     activeMtags.length == 1
-                                                        ? false
-                                                        : true,
+                                                    ? false
+                                                    : true,
                                                 balanceDashboard: e.balance,
                                                 showChassisBadge:
                                                     e.chassis_number == null,
@@ -221,71 +200,75 @@ class HomePage extends GetView<HomeController> {
                               sliver: SliverGrid(
                                 gridDelegate:
                                     SliverGridDelegateWithMaxCrossAxisExtent(
-                                  maxCrossAxisExtent: screenWidth * 0.5,
-                                  mainAxisSpacing: 10,
-                                  crossAxisSpacing: 10,
-                                  mainAxisExtent: screenHeight * 0.11,
-                                ),
-                                delegate: SliverChildBuilderDelegate(
-                                  (context, index) {
-                                    return InkWell(
-                                      onTap: () async {
-                                        final rechctrl =
-                                            Get.find<RechargeController>();
-                                        selected1linkOpt.value = -1;
-                                        await Get.toNamed(
-                                          '${controller.dashBoardModel[index].routeName}',
-                                          arguments: controller
-                                              .dashboradData
-                                              .value
-                                              .activeMtags,
-                                        );
-                                        selected1linkOpt.value = -1;
-                                        rechctrl.isPaymentModdeVisible(false);
-                                        rechctrl.isSummaryVisible(false);
-                                        rechctrl.isRechageVisible(true);
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: .circular(8),
-                                          color: Theme.of(context).disabledColor,
-                                        ),
-                                        child: Row(
-                                          spacing: 8,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            if (controller.dashBoardModel[index]
-                                                    .image !=
-                                                null)
-                                              Padding(
-                                                padding: .all(8.0),
-                                                child: Image.asset(
-                                                  controller
-                                                      .dashBoardModel[index].image!,
-                                                  width: screenWidth * 0.1,
-                                                  height: screenHeight * 0.1,
-                                                  fit: BoxFit.contain,
-                                                ),
-                                              ),
-                                            const SizedBox(height: 8),
-                                            Text(
-                                              controller.dashBoardModel[index].title ??
-                                                  '',
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextTheme.of(context)
-                                                  .bodyLarge
-                                                  ?.copyWith(
-                                                    color: primarSwatch,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
+                                      maxCrossAxisExtent: screenWidth * 0.5,
+                                      mainAxisSpacing: 10,
+                                      crossAxisSpacing: 10,
+                                      mainAxisExtent: screenHeight * 0.11,
+                                    ),
+                                delegate: SliverChildBuilderDelegate((
+                                  context,
+                                  index,
+                                ) {
+                                  return InkWell(
+                                    onTap: () async {
+                                      final rechctrl =
+                                          Get.find<RechargeController>();
+                                      selected1linkOpt.value = -1;
+                                      await Get.toNamed(
+                                        '${controller.dashBoardModel[index].routeName}',
+                                        arguments: controller
+                                            .dashboradData
+                                            .value
+                                            .activeMtags,
+                                      );
+                                      selected1linkOpt.value = -1;
+                                      rechctrl.isPaymentModdeVisible(false);
+                                      rechctrl.isSummaryVisible(false);
+                                      rechctrl.isRechageVisible(true);
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: .circular(8),
+                                        color: Theme.of(context).disabledColor,
                                       ),
-                                    );
-                                  },
-                                  childCount: controller.dashBoardModel.length,
-                                ),
+                                      child: Row(
+                                        spacing: 8,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          if (controller
+                                                  .dashBoardModel[index]
+                                                  .image !=
+                                              null)
+                                            Padding(
+                                              padding: .all(8.0),
+                                              child: Image.asset(
+                                                controller
+                                                    .dashBoardModel[index]
+                                                    .image!,
+                                                width: screenWidth * 0.1,
+                                                height: screenHeight * 0.1,
+                                                fit: BoxFit.contain,
+                                              ),
+                                            ),
+                                          const SizedBox(height: 8),
+                                          Text(
+                                            controller
+                                                    .dashBoardModel[index]
+                                                    .title ??
+                                                '',
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextTheme.of(context)
+                                                .bodyLarge
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }, childCount: controller.dashBoardModel.length),
                               ),
                             ),
                             // Slider Section
@@ -311,15 +294,15 @@ class HomePage extends GetView<HomeController> {
                                     itemBuilder: (context, index) {
                                       final imageName =
                                           OtherConsts.sliderImages[index];
-                                      final imageUrl = 'assets/slider/$imageName';
+                                      final imageUrl =
+                                          'assets/slider/$imageName';
 
                                       return GestureDetector(
                                         onTap: () => Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (_) => StoryViewPage(
-                                              stories:
-                                                  OtherConsts.sliderImages,
+                                              stories: OtherConsts.sliderImages,
                                             ),
                                           ),
                                         ),
@@ -328,7 +311,11 @@ class HomePage extends GetView<HomeController> {
                                           width: 150,
                                           decoration: BoxDecoration(
                                             borderRadius: .circular(8),
-                                            border: Border.all(color: primarSwatch),
+                                            border: Border.all(
+                                              color: Theme.of(
+                                                context,
+                                              ).highlightColor,
+                                            ),
                                             image: DecorationImage(
                                               image: AssetImage(imageUrl),
                                               fit: BoxFit.fill,
@@ -347,17 +334,25 @@ class HomePage extends GetView<HomeController> {
                                 padding: const EdgeInsets.all(12),
                                 margin: EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(width: 0.1),
+                                  color: ColorScheme.of(context).surfaceDim,
+                                  border: Border.all(
+                                    width: 0.1,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.outline,
+                                  ),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Row(
+                                  mainAxisAlignment: .start,
+                                  crossAxisAlignment: .center,
                                   children: [
                                     SvgPicture.asset(
                                       'assets/phone.svg',
-                                      width: 40,
-                                      height: 40,
+                                      width: 50,
+                                      height: 50,
                                     ),
+                                    SizedBox(width: 16),
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
@@ -367,15 +362,17 @@ class HomePage extends GetView<HomeController> {
                                             'Help & Customer Support',
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .displayMedium,
+                                                .displayLarge
+                                                ?.copyWith(fontWeight: .w900),
                                           ),
+                                          SizedBox(height: 10),
                                           Text(
                                             'Call our helpline 1313 to get quick help on queries related to your M-Tag',
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodySmall,
+                                            style: Theme.of(
+                                              context,
+                                            ).textTheme.displayMedium,
                                           ),
                                           OutlinedButton.icon(
                                             onPressed: () {
@@ -397,8 +394,8 @@ class HomePage extends GetView<HomeController> {
                                             style: OutlinedButton.styleFrom(
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                horizontal: 8,
-                                              ),
+                                                    horizontal: 8,
+                                                  ),
                                               minimumSize: const Size(70, 28),
                                               maximumSize: const Size(70, 28),
                                               shape: RoundedRectangleBorder(
@@ -423,106 +420,99 @@ class HomePage extends GetView<HomeController> {
               ),
             )
           : bottomNavigations[controller.currentPage.value],
-      bottomNavigationBar: BottomNavigationBar(
-  
-        selectedFontSize:0,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Theme.of(context).primaryColor,
-        onTap: (value) {
-          (value == 0 && _otherConstants.isRefresh.value)
-              ? controller.pullRefreshDashboardData()
-              : null;
-          controller.setCurrentIndex(value);
-        },
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        selectedLabelStyle: TextStyle(
-          fontFamily: 'Poppins',
-          color: Theme.of(context).primaryColor,
-        ),
-        unselectedItemColor: Colors.grey,
-        currentIndex: controller.currentPage.value,
-        unselectedFontSize: 11,
-        unselectedIconTheme: const IconThemeData(color: Colors.grey),
-        backgroundColor: Colors.white,
-        items: [
-          buildCustomNavItem(
-            context: context,
-            index: 0,
-            currentIndex: controller.currentPage.value,
-            label: 'Home',
-            asset: 'assets/house-blank.svg',
-          ),
-          buildCustomNavItem(
-            context: context,
-            index: 1,
-            currentIndex: controller.currentPage.value,
-            label: 'Promotions',
-            asset: 'assets/promotion.svg',
-          ),
-          buildCustomNavItem(
-            context: context,
-            index: 2,
-            currentIndex: controller.currentPage.value,
-            label: 'Notifications',
-            asset: 'assets/allert.svg',
-          ),
-          buildCustomNavItem(
-            context: context,
-            index: 3,
-            currentIndex: controller.currentPage.value,
-            label: 'Profile',
-            asset: 'assets/user.svg',
-          ),
-        ],
-      ),
-    );
-  }
-
-  BottomNavigationBarItem buildCustomNavItem({
-    required BuildContext context,
-    required int index,
-    required int currentIndex,
-    required String label,
-    required String asset,
-  }) {
-    bool isSelected = index == currentIndex;
-
-    Widget navContent = Container(
-      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-      decoration: BoxDecoration(
-        color: isSelected ? Theme.of(context).primaryColor : Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SvgPicture.asset(
-  asset,
-  height: 15,
-  colorFilter: ColorFilter.mode(
-    isSelected ? Colors.white : Colors.grey,
-    BlendMode.srcIn,
-  ),
-)
-,
-          SizedBox(height: 2),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 11,
-              fontFamily: 'Poppins',
-              color: isSelected ? Colors.white : Colors.grey,
+      bottomNavigationBar: BottomAppBar(
+        height: 50,
+        padding: .only(top: 8),
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 6, // <--- Gives the glowing/hue space around FAB
+        elevation: 10,
+        color: Colors.grey.withValues(alpha: 0.1),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            buildCustomNavItem(
+              context: context,
+              index: 0,
+              currentIndex: controller.currentPage.value,
+              label: 'Home',
+              asset: 'assets/house-blank.svg',
+              onTap: () {
+                (0 == 0 && _otherConstants.isRefresh.value)
+                    ? controller.pullRefreshDashboardData()
+                    : null;
+                controller.setCurrentIndex(0);
+              },
             ),
-          ),
-        ],
+            buildCustomNavItem(
+              context: context,
+              index: 1,
+              currentIndex: controller.currentPage.value,
+              label: 'Promotions',
+              asset: 'assets/promotion.svg',
+              onTap: () => controller.setCurrentIndex(1),
+            ),
+
+            // gap for center FAB notch
+            buildCustomNavItem(
+              context: context,
+              index: 2,
+              currentIndex: controller.currentPage.value,
+              label: 'Notifications',
+              asset: 'assets/allert.svg',
+              onTap: () => controller.setCurrentIndex(2),
+            ),
+            buildCustomNavItem(
+              context: context,
+              index: 3,
+              currentIndex: controller.currentPage.value,
+              label: 'Profile',
+              asset: 'assets/user.svg',
+              onTap: () => controller.setCurrentIndex(3),
+            ),
+          ],
+        ),
       ),
     );
-
-    return BottomNavigationBarItem(
-      label: label,
-      icon: navContent,
-      activeIcon: SizedBox(height: 50, child: navContent),
-    );
   }
+
+ Widget buildCustomNavItem({
+  required BuildContext context,
+  required int index,
+  required int currentIndex,
+  required String label,
+  required String asset,
+  required Function() onTap,
+}) {
+  final isSelected = index == currentIndex;
+  final colorScheme = Theme.of(context).colorScheme;
+  final iconColor = isSelected
+      ? colorScheme.primary
+      : colorScheme.secondary.withValues(alpha:0.7);
+  return InkWell(
+    onTap: onTap,
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SvgPicture.asset(
+          asset,
+          height: 22,
+        colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),// unselected color from theme
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            color: isSelected
+                ? colorScheme.primary
+                : colorScheme.secondary.withValues(alpha: 0.7), // unselected color from theme
+            fontFamily: 'Poppins',
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 }

@@ -22,7 +22,6 @@ class _CustomKeyboardActionsState extends State<CustomKeyboardActions>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
     for (var node in widget.focusNodes) {
       node.addListener(_onFocusChange);
     }
@@ -84,10 +83,10 @@ class _CustomKeyboardActionsState extends State<CustomKeyboardActions>
                   child: Material(
                     color: Colors.transparent,
                     child: Container(
-                      height: 48,
-                      padding: const EdgeInsets.only(right: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
+                   
+                      padding: const EdgeInsets.only(right: 12,top: 4,bottom: 4),
+                      decoration: BoxDecoration(borderRadius: .circular(4),
+                        color: ColorScheme.of(context).surface,
                         border: Border(
                           top: BorderSide(
                             color: Colors.black.withValues(alpha: 0.08),
@@ -107,11 +106,7 @@ class _CustomKeyboardActionsState extends State<CustomKeyboardActions>
                             ),
                             child: Text(
                               "Done",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                color: Theme.of(context).primaryColor,
-                              ),
+                              style: TextTheme.of(context).bodyLarge
                             ),
                           ),
                         ),

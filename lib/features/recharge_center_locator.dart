@@ -503,7 +503,7 @@ const LatLng(33.67492, 73.0538588),
             builder: (context, zoom, child) {
               return FlutterMap(
                 mapController: _mapController,
-                options: MapOptions(
+                options: MapOptions(backgroundColor: ColorScheme.of(context).surface,
                   initialCenter: _centerNotifier.value,
                   initialZoom: zoom,
                   minZoom: 5.0,
@@ -615,17 +615,17 @@ const LatLng(33.67492, 73.0538588),
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+
       barrierColor: Colors.black.withAlpha(80),
-      enableDrag: true,
+      enableDrag: true,useSafeArea: true,showDragHandle: true,scrollControlDisabledMaxHeightRatio: MediaQuery.devicePixelRatioOf(context),
       builder: (ctx) {
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () => Navigator.pop(ctx),
-          child: DraggableScrollableSheet(
-            initialChildSize: 0.5,
-            minChildSize: 0.4,
-            maxChildSize: 0.8,
+          child: DraggableScrollableSheet(expand: false,
+            initialChildSize: .6,
+            minChildSize: 0.5,
+            maxChildSize: .8,
             snap: true,
             builder: (context, controller) {
               return GestureDetector(

@@ -158,8 +158,7 @@ class SettingScreen extends StatelessWidget {
                                 leading: items[i].icon,
                                 title: Text(
                                   items[i].name ?? '',
-                                  style: TextTheme.of(context).displayMedium
-                                      ?.copyWith(color: Colors.black),
+                                 
                                 ),
                                 trailing: Icon(
                                   Icons.arrow_forward_ios,

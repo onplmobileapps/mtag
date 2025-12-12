@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:mtag_flutterapp/theme/app_theme.dart';
 import 'package:pinput/pinput.dart';
 import 'dart:async';
 import '../../constants/call_helper.dart';
@@ -45,8 +44,8 @@ class OtpVerificationDialog extends StatelessWidget {
       child: PopScope(
         canPop: false,
         child: Dialog(
-          surfaceTintColor: Theme.of(context).dialogTheme.surfaceTintColor,
-          backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
+          backgroundColor: Theme.of(context).colorScheme.surface,
+  surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
           insetPadding: const EdgeInsets.symmetric(horizontal: 20),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           child: Padding(
@@ -92,7 +91,7 @@ class OtpVerificationDialog extends StatelessWidget {
               text: TextSpan(
                 style: const TextStyle(color: Colors.black87, fontSize: 14),
                 children: [
-                  const TextSpan(text: "Wrong phone number? "),
+                   TextSpan(text: "Wrong phone number? ",style: Theme.of(context).textTheme.labelSmall),
                   WidgetSpan(
                     child: GestureDetector(
                       onTap: () {
@@ -100,10 +99,7 @@ class OtpVerificationDialog extends StatelessWidget {
                       },
                       child:  Text(
                         "Edit",
-                        style: TextStyle(
-                          color: primarSwatch,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextTheme.of(context).bodyMedium,
                       ),
                     ),
                   )
@@ -296,7 +292,7 @@ class OtpVerificationDialog extends StatelessWidget {
                                         style: TextStyle(
                                           color: Colors.green.shade800,
                                           fontWeight: FontWeight.bold,
-                                          decoration: TextDecoration.underline,
+                                        
                                         ),
                                       ),
                                     ],

@@ -210,6 +210,7 @@ class AuthController extends GetxController implements GetxService {
       islogin: islogin,
     );
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
+      
       authRepo.saveLoginUserData(
         user: UserModel(
           data: Data(accessToken: response[APIRESPONSE.SUCCESS]['Data']),

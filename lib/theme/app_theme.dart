@@ -20,7 +20,10 @@ ThemeData appTheme = ThemeData(
     primary: Color(0xFF2C2E65),
     onPrimary: Colors.white,
     scrim: Colors.white,
+    surface: Colors.white,
     secondary: Colors.grey,
+    surfaceContainer: Color(0xff21295E),
+      surfaceContainerLowest: Color(0xffE1E1E1)
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ButtonStyle(
@@ -137,18 +140,22 @@ ThemeData appTheme = ThemeData(
     ),
   ),
   inputDecorationTheme: InputDecorationTheme(
-
-            hintStyle: const TextStyle(color: Colors.grey,fontSize: 12),
-            filled: true,
-            fillColor: const Color(0xFFF9FAFB),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
-            ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+    hintStyle: TextStyle(
+      color: Color(0xFF1A1C1E),
+      fontSize: 14,
+      fontFamily: fontFamily,
+      height: 0.10,
+      letterSpacing: -0.14,
+    ),
+    filled: true,
+    fillColor: const Color(0xFFF9FAFB),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide.none,
+    ),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
   ),
 
-           
   expansionTileTheme: ExpansionTileThemeData(
     backgroundColor: Colors.white,
     collapsedShape: const RoundedRectangleBorder(side: BorderSide.none),
@@ -292,7 +299,7 @@ ThemeData darkTheme = ThemeData(
       shape: WidgetStatePropertyAll(
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       ),
-      backgroundColor: const WidgetStatePropertyAll(Color(0xff000000)),
+      backgroundColor: const WidgetStatePropertyAll( Color(0xFF2C2C2C)),
       foregroundColor: const WidgetStatePropertyAll(Colors.white),
     ),
   ),
@@ -308,8 +315,8 @@ ThemeData darkTheme = ThemeData(
     ),
     titleTextStyle: TextStyle(
       fontFamily: fontFamily,
-      fontWeight: FontWeight.w400,
-      color: Colors.white,
+      fontWeight: FontWeight.w500,
+      color: Colors.white,fontSize: 16
     ),
     subtitleTextStyle: TextStyle(
       fontFamily: fontFamily,
@@ -322,14 +329,11 @@ ThemeData darkTheme = ThemeData(
     ),
   ),
   inputDecorationTheme: InputDecorationTheme(
-    enabledBorder: UnderlineInputBorder(
-      borderSide: BorderSide(width: 0.3, color: Colors.white),
-    ),
-    disabledBorder: UnderlineInputBorder(
-      borderSide: BorderSide(width: 0.3, color: Colors.white),
-    ),
-    focusedBorder: UnderlineInputBorder(
-      borderSide: BorderSide(width: 0.3, color: Colors.white),
+     filled: true,
+    fillColor: const Color(0xFF2C2C2C),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide.none,
     ),
 
     labelStyle: TextStyle(color: Colors.white),
@@ -338,7 +342,7 @@ ThemeData darkTheme = ThemeData(
       fontSize: 12,
       color: Colors.white,
     ),
-    contentPadding: EdgeInsets.only(left: 8, top: 0, bottom: 0),
+    contentPadding: EdgeInsets.only(left: 8, top: 0, bottom: 10),
   ),
   expansionTileTheme: ExpansionTileThemeData(
     collapsedTextColor: primarSwatchDark,
@@ -384,6 +388,9 @@ ThemeData darkTheme = ThemeData(
     onPrimary: Colors.white,
     primary: Colors.white,
     secondary: Colors.grey,
+    surfaceContainerLowest: Color(0xFF2C2C2C)
+  
+    
   ),
   primaryColor: const Color(0xff212121),
   primarySwatch: primarSwatchDark,

@@ -18,27 +18,13 @@ class RechargeCenterBottomSheet extends StatelessWidget {
     final isOpen = center.isOpenNow;
 
     return Container(
-      padding: EdgeInsets.zero,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      child: ListView(
-        padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
+
+      child: Column(
+        mainAxisAlignment: .start,
+        crossAxisAlignment: .start,
+
         children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
           Row(
             children: [
               SvgPicture.asset('assets/r_center.svg'),
@@ -107,6 +93,9 @@ class RechargeCenterBottomSheet extends StatelessWidget {
           const SizedBox(height: 32),
 
           ElevatedButton1(
+            backgroundColor: ColorScheme.of(context).primary,
+            width: double.infinity, // theme primary
+            foregroundColor: ColorScheme.of(context).surfaceDim,
             onclick: onOpenMap,
             text: "Open in Google Maps",
             shape: RoundedRectangleBorder(
@@ -129,11 +118,11 @@ class RechargeCenterBottomSheet extends StatelessWidget {
     String value,
   ) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: ColorScheme.of(context).surface,
         borderRadius: BorderRadius.circular(12),
-        border: BoxBorder.all(color: Colors.grey.shade300),
+        border: BoxBorder.all(color: ColorScheme.of(context).outline),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,

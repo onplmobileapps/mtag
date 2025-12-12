@@ -101,8 +101,8 @@ Widget mtagDataWidget(
           children: [
             Container(
               padding: .all(26),
-              decoration: BoxDecoration(
-                color: Color(0xff21295E),
+              decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceContainer,
+                // color: Color(0xff21295E),
                 // Theme.of(context).highlightColor,
                 borderRadius: .only(bottomLeft:.circular(28)),
               ),
@@ -150,6 +150,7 @@ Widget mtagDataWidget(
             ),
 
             SizedBox(height: MediaQuery.sizeOf(context).height*0.045),
+          
             Row(
               mainAxisAlignment: .spaceBetween,
               children: [
@@ -174,10 +175,7 @@ Widget mtagDataWidget(
               children: [
                 Text(
                   "Balance  ",
-                  style: TextStyle(
-                    color: Theme.of(context).hintColor,
-                    fontSize: fontSmall,
-                  ),
+                  style: TextTheme.of(context).bodyLarge?.copyWith(fontWeight: .w500),
                 ),
                 BalanceWidget(
                   balance: ball ?? '',
@@ -324,7 +322,7 @@ Widget _actionBtn(
       margin: .all(8),
       padding: .all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ColorScheme.of(context).surfaceDim,
         borderRadius: .circular(8),
       ),
       child: InkWell(

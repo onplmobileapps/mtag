@@ -30,25 +30,22 @@ class ElevatedButton1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return ElevatedButton.icon(iconAlignment: .end,
+      icon: Icon(Icons.arrow_forward),label: Text(text??''),
       style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
         backgroundColor: WidgetStatePropertyAll(backgroundColor),
         foregroundColor: WidgetStatePropertyAll(foregroundColor),
         fixedSize: WidgetStatePropertyAll(Size(width ?? 300, height ?? 40)),
         minimumSize: WidgetStatePropertyAll(Size(width ?? 300, height ?? 40)),
         maximumSize: WidgetStatePropertyAll(Size(width ?? 300, height ?? 40)),
-        shape: shape != null ? WidgetStatePropertyAll(shape) : null,
+         shape: WidgetStatePropertyAll(
+      shape ?? RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24), // Material 3 rounded
+      ),
+    ),
       ),
       onPressed: onclick,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (icon != null && !iconRight) ...[icon!, const SizedBox(width: 12)],
-          Text(text ?? '', textScaler: TextScaler.linear(textscaller ?? 1.0)),
-          if (icon != null && iconRight) ...[const SizedBox(width: 12), icon!],
-        ],
-      ),
+     
     );
   }
 }

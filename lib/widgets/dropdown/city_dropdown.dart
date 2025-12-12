@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-
 class CityDropdown extends StatefulWidget {
   final List<String> cities;
   final String? selectedCity;
@@ -85,9 +84,9 @@ class _CityDropdownState extends State<CityDropdown>
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
-              color: Colors.white,
+             color: ColorScheme.of(context).surface,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey.shade300),
+              border: Border.all(color: ColorScheme.of(context).outline),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withAlpha(13),
@@ -103,12 +102,7 @@ class _CityDropdownState extends State<CityDropdown>
                 Expanded(
                   child: Text(
                     _selectedCity ?? widget.placeholder,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: _selectedCity != null
-                          ? Colors.black87
-                          : Colors.grey,
-                    ),
+                    style: TextTheme.of(context).bodyMedium,
                   ),
                 ),
                 RotationTransition(
@@ -124,56 +118,52 @@ class _CityDropdownState extends State<CityDropdown>
         ),
 
         if (_isDropdownOpen)
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey.shade300),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha(13),
-                  blurRadius: 5,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: ListView.builder(padding: .zero,
-              shrinkWrap: true,
-              physics: const BouncingScrollPhysics(),
-              itemCount: _filteredCities.length,
-              itemBuilder: (context, index) {
-                final city = _filteredCities[index];
-                final isSelected = city == _selectedCity;
+  Container(
+    decoration: BoxDecoration(
+      color: Theme.of(context).colorScheme.surface, // dropdown background
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: Theme.of(context).colorScheme.outline), // proper border
+      boxShadow: [
+        BoxShadow(
+          color: Theme.of(context).shadowColor.withAlpha(25),
+          blurRadius: 5,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    ),
+    child: ListView.builder(
+      padding: EdgeInsets.zero,
+      shrinkWrap: true,
+      physics: const BouncingScrollPhysics(),
+      itemCount: _filteredCities.length,
+      itemBuilder: (context, index) {
+        final city = _filteredCities[index];
+        final isSelected = city == _selectedCity;
 
-                return InkWell(
-                  onTap: () => _onCitySelected(city),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    color: isSelected ? Colors.blue.shade50 : null,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            city,
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: isSelected
-                                  ? Colors.blue.shade800
-                                  : Colors.black87,
-                            ),
-                          ),
-                        ),
-                        if (isSelected) Icon(Icons.check, color: Colors.blue),
-                      ],
-                    ),
+        return InkWell(
+          onTap: () => _onCitySelected(city),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+            color: isSelected
+                ? Theme.of(context).colorScheme.primaryContainer
+                : Colors.transparent, // selected background
+            child: Text(
+              city,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: isSelected
+                        ? Theme.of(context).colorScheme.surfaceContainerHighest
+                        : Theme.of(context).colorScheme.onSurface, // unselected
                   ),
-                );
-              },
             ),
           ),
+        );
+      },
+    ),
+  ),
+
       ],
     );
   }
