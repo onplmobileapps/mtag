@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 import '../../api/auth_controller.dart';
 import '../../constants/input_formater.dart';
+import '../../widgets/custom_keyboard_actions.dart';
 import '../../widgets/elevated_button.dart';
 import '../../utils/utils.dart';
 
@@ -13,10 +15,11 @@ class ForgetPinPage extends StatelessWidget {
   final _cnicController = TextEditingController();
   final ValueNotifier<int> _authNotifier = ValueNotifier<int>(0);
   final _formKey = GlobalKey<FormState>();
-
+  final _cnicNode = FocusNode();
+  final _phoneFocusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
+    final mainContent = LayoutBuilder(
       builder: (context, constraints) {
         final screenWidth = constraints.maxWidth;
         final screenHeight = constraints.maxHeight;
@@ -43,16 +46,16 @@ class ForgetPinPage extends StatelessWidget {
                   child: Text(
                     'Forgot Login PIN',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
-                SizedBox(height: 5),
+                SizedBox(height: 10),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.09),
                   child: Text(
                     'Verify your information to reset your login PIN',
-                    style: Theme.of(context).textTheme.displaySmall,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(),
                   ),
                 ),
 
@@ -64,10 +67,14 @@ class ForgetPinPage extends StatelessWidget {
                   child: Form(
                     key: _formKey,
                     child: Column(
+                      spacing: 6,
+                      mainAxisAlignment: .start,
+                      crossAxisAlignment: .start,
                       children: [
                         if (value == 1) SizedBox(height: screenHeight * 0.02),
-
+                        Text('CNIC'),
                         TextFormField(
+                          focusNode: _cnicNode,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           keyboardType: TextInputType.number,
                           inputFormatters: [CnicMaskTextInputFormatter()],
@@ -79,12 +86,16 @@ class ForgetPinPage extends StatelessWidget {
                             return null;
                           },
                           controller: _cnicController,
-                          decoration: InputDecoration(hintText: 'CNIC'),
+                          decoration: InputDecoration(
+                            hintText: 'Enter your CNIC number',
+                          ),
                         ),
 
                         SizedBox(height: screenHeight * 0.02),
+                        Text('Phone Number'),
 
                         TextFormField(
+                          focusNode: _phoneFocusNode,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.done,
@@ -135,5 +146,14 @@ class ForgetPinPage extends StatelessWidget {
         );
       },
     );
+    if (Platform.isIOS) {
+      return CustomKeyboardActions(
+        focusNodes: [_cnicNode, _phoneFocusNode],
+        child: mainContent,
+      );
+    } else {
+      return mainContent;
+    }
   }
 }
+

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:mtag_flutterapp/api/user_repo.dart';
 import 'package:mtag_flutterapp/theme/app_theme.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../pages/receipt/controller/receipt_generate_controller.dart';
 import '../../pages/tollhistory/controller/tollcontroller.dart';
@@ -68,13 +68,7 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
           Expanded(
             child: Obx(
               () => isLoading.value
-                  ? Center(
-                      child: LoadingAnimationWidget.flickr(
-                        leftDotColor: Theme.of(context).primaryColor,
-                        rightDotColor: Colors.white,
-                        size: 35.0,
-                      ),
-                    )
+                  ? ListSkeleton()
                   : GetX<TollController>(
                       init: TollController(userRepo: UserRepo()),
                       builder: (controller) =>
@@ -88,7 +82,7 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
   }
 
   Widget _buildTollHistoryContent(TollController controller) {
-    return Container(
+    return Container(margin: .all(4),
       height: MediaQuery.sizeOf(context).height,
       width: double.infinity,
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -185,25 +179,25 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
 
   Widget _buildListTile(dynamic item) {
     return Container(
-      margin: const EdgeInsets.all(1),
+      margin: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: Theme.of(context).disabledColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: ListTile(
         tileColor: Theme.of(context).listTileTheme.tileColor,
-        minVerticalPadding: 6,
+        minVerticalPadding: 4,
         onTap: () => onListTileTap(item),
         title: Text(
           textAlign: TextAlign.left,
           '${item?.eNTRYSTATIONNAME ?? ''}${item?.eXITSTATIONNAME != null ? ' - ' : ''}${item?.eXITSTATIONNAME ?? ''}',
         ),
         trailing: _buildTrailingColumn(item),
-        subtitle: Column(
+        subtitle: Column(spacing: 12,
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('M-TAG ${item?.iTOKKENNO ?? ''}'),
+            Text('M-TAG ${item?.iTOKKENNO ?? ''}',style: TextTheme.of(context).bodySmall,),
             Text(
               item?.tRANSTIME ?? '',
               style: Theme.of(context).textTheme.displaySmall,
@@ -294,3 +288,74 @@ Widget _buildStickyMessage(BuildContext context) {
     ),
   );
 }
+
+class ListSkeleton extends StatelessWidget {
+  final int itemCount;
+
+  const ListSkeleton({super.key, this.itemCount = 5});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: itemCount,
+      padding: const EdgeInsets.all(8),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Shimmer.fromColors(
+            baseColor: colorScheme.surfaceContainerLowest,
+            highlightColor: colorScheme.surface,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+              decoration: BoxDecoration(
+                color: colorScheme.surface.withValues(alpha: 0.8),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  Column(
+                    children: [
+                      ...List.generate(
+                        3,
+                        (i) => Container(
+                          width: i==0? 120:100,
+                          height: 10,
+                          margin: const EdgeInsets.only(right: 8, bottom: 4),
+                          decoration: BoxDecoration(
+                            color: colorScheme.onSurface.withValues(alpha: 0.9),
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // 3 Leading items
+                  const Spacer(),
+                  Column(children: [...List.generate(
+                    2,
+                    (i) => Container(
+                      width: 50,
+                      height: 10,
+                      margin: const EdgeInsets.only(left: 8, top: 2, bottom: 4),
+                      decoration: BoxDecoration(
+                        color: colorScheme.onSurface.withValues(alpha: 0.9),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                  ),],)
+                  // 2 Trailing items
+                  
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+

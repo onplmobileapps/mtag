@@ -137,22 +137,23 @@ class _PinEntryPageState extends State<PinEntryPage> {
 
         return Material(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: spacing * 1.5),
-            child: Column(
-              mainAxisAlignment:    MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            padding: EdgeInsets.symmetric(horizontal: spacing ),
+            child: Column(spacing: 16,
+              mainAxisAlignment:   .start,
+              crossAxisAlignment: .start,
               children: [
-                SizedBox(height: spacing * 3),
+                SizedBox(height: 50,),
+          
                 _buildLogo(size),
-                SizedBox(height: spacing * 1.5),
+             
                 _buildTitle(context),
-                SizedBox(height: spacing / 2),
+           
                 _buildSubtitle(context),
-                SizedBox(height: spacing),
+             
                 _buildPinField(size),
-                SizedBox(height: spacing * 1.5),
+          
                 _buildOptions(size),
-                SizedBox(height: spacing),
+           
                 _buildKeyboard(size),
               ],
             ),
@@ -208,8 +209,8 @@ class _PinEntryPageState extends State<PinEntryPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(4, (index) {
               return Container(
-                width: size.width * 0.11,
-                height: size.width * 0.11,
+                width: size.width * 0.14,
+                height: size.width * 0.14,
                 margin: EdgeInsets.symmetric(horizontal: size.width * 0.030),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey, width: 0.5),
@@ -246,58 +247,59 @@ class _PinEntryPageState extends State<PinEntryPage> {
                 },
                 child: Text(
                   'Forgot Login PIN?',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: .w600),
                 ),
               ),
               _isAuthAvailable
-                  ? _buildKey(
-                      child: Container(
-                        padding: EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: Get.isDarkMode
-                              ? Colors.transparent
-                              : Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: Get.isDarkMode
-                                ? Colors.white
-                                : Theme.of(context).primaryColor,
-                            width: 1,
-                          ),
-                        ),
-                        child: Platform.isIOS
-                            ? Transform.translate(
-                                offset: Offset(
-                                  size.width * 0.008,
-                                  size.height * 0.002,
-                                ),
-                                child: Image.asset(
-                                  "assets/face3.png",
-                                  height: size.width * 0.09,
-                                  width: size.width * 0.09,
-                                  fit: BoxFit.contain,
-                                  color: Get.isDarkMode
-                                      ? Colors.white
-                                      : Theme.of(context).primaryColor,
-                                ),
-                              )
-                            : Image.asset(
-                                "assets/fingerprint.png",
-                                height: size.width * 0.08,
-                                width: size.width * 0.08,
-                                color: Get.isDarkMode
-                                    ? Colors.white
-                                    : Theme.of(context).primaryColor,
-                              ),
-                      ),
-                      onPressed: () {
+                  ?  GestureDetector( onTap: () {
                         if (AppData.getPinData() == null) {
                           _showBiometricDialog(context);
                         } else {
                           _authenticateAndVerify();
                         }
                       },
-                    )
+                    child: Container(margin: .all(16),
+                          padding: EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: Get.isDarkMode
+                                ? Colors.transparent
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: Get.isDarkMode
+                                  ? Colors.transparent
+                                  : Theme.of(context).colorScheme.outline,
+                              width: 1,
+                            ),
+                          ),
+                          child: Platform.isIOS
+                              ? Transform.translate(
+                                  offset: Offset(
+                                    size.width * 0.008,
+                                    size.height * 0.002,
+                                  ),
+                                  child: Image.asset(
+                                    "assets/face3.png",
+                                    height: size.width * 0.09,
+                                    width: size.width * 0.09,
+                                    fit: BoxFit.contain,
+                                    color: Get.isDarkMode
+                                        ? Colors.white
+                                        : Theme.of(context).primaryColor,
+                                  ),
+                                )
+                              : Image.asset(
+                                  "assets/fingerprint.png",
+                                  height: size.width * 0.08,
+                                  width: size.width * 0.08,
+                                  color: Get.isDarkMode
+                                      ? Colors.white
+                                      : Theme.of(context).primaryColor,
+                                ),
+                      
+                       
+                      ),
+                  )
                   : Container(width: size.width * 0.09),
               // Placeholder
             ],
@@ -313,7 +315,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
             child: Text(
               'Sign-in with a different account',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                decoration: TextDecoration.underline,
+                decoration: TextDecoration.underline,fontWeight: .w500
               ),
             ),
           ),
@@ -330,15 +332,15 @@ class _PinEntryPageState extends State<PinEntryPage> {
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount: 12,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: 1.3,
+        gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,crossAxisSpacing: 0,mainAxisSpacing: 10,
+          childAspectRatio: Platform.isAndroid?1.2: 1.4,
         ),
         itemBuilder: (context, index) {
           if (index == 9) return const SizedBox.shrink();
           if (index == 11) {
             return _buildKey(
-              child: Icon(Icons.backspace_outlined, size: size.width * 0.07),
+              child: Icon(Icons.backspace_outlined, size: size.width * 0.05),
               onPressed: _onBackspaceTap,
             );
           }
@@ -359,17 +361,15 @@ class _PinEntryPageState extends State<PinEntryPage> {
 
   /// Reusable key widget for keyboard buttons.
   Widget _buildKey({required Widget child, required VoidCallback onPressed}) {
-    return Material(
-      color: Colors.transparent,
+    return InkWell(
+      onTap: onPressed,
       borderRadius: BorderRadius.circular(50),
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(50),
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          alignment: Alignment.center,
-          child: child,
-        ),
+      child: Container(margin: .all(4),
+        decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceContainerLowest.withValues(alpha: 0.4),
+        shape: BoxShape.circle,),
+        padding: const EdgeInsets.all(16),
+        alignment: Alignment.center,
+        child: child,
       ),
     );
   }
@@ -390,3 +390,4 @@ class _PinEntryPageState extends State<PinEntryPage> {
     );
   }
 }
+
