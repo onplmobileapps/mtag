@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
-
 import '../pages/tolcalator/model/static_mw_model.dart';
 import '../pages/tolcalator/model/vehicle_model.dart';
 

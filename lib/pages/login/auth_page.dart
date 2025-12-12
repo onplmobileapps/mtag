@@ -64,8 +64,8 @@ class AuthPage extends StatelessWidget {
                       Container(
                         padding: .all(2),
                         decoration: BoxDecoration(
-                          color: colorScheme.surfaceContainerHighest.withAlpha(
-                            200,
+                          color: colorScheme.surfaceContainerLowest.withValues(
+                            alpha: 0.9,
                           ),
                           borderRadius: .circular(8),
                         ),
@@ -83,11 +83,9 @@ class AuthPage extends StatelessWidget {
                                       controller.authIndex.value == 0
                                       ? colorScheme
                                             .surface // active: white in light, dark in dark
-                                      : colorScheme.surfaceContainerHighest,
-                                  foregroundColor:
-                                      controller.authIndex.value == 0
-                                      ? theme.colorScheme.primary
-                                      : theme.colorScheme.secondary,
+                                      : colorScheme.surfaceContainerLowest
+                                            .withValues(alpha: 0.7),
+
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 0,
                                   ),
@@ -99,7 +97,7 @@ class AuthPage extends StatelessWidget {
                                     side: controller.authIndex.value == 0
                                         ? const BorderSide(
                                             color: Color(0x7FEFF0F6),
-                                            width: 1,
+                                            width: 0.5,
                                           )
                                         : BorderSide.none,
                                   ),
@@ -109,7 +107,7 @@ class AuthPage extends StatelessWidget {
                                 ),
                                 child: Text(
                                   'Sign In',
-                                  style: theme.textTheme.titleMedium,
+                                  style: theme.textTheme.bodyMedium,
                                 ),
                               ),
                             ),
@@ -127,11 +125,9 @@ class AuthPage extends StatelessWidget {
                                       controller.authIndex.value == 1
                                       ? colorScheme
                                             .surface // active: white in light, dark in dark
-                                      : colorScheme.surfaceContainerHighest,
-                                  foregroundColor:
-                                      controller.authIndex.value == 1
-                                      ? theme.colorScheme.primary
-                                      : theme.colorScheme.secondary,
+                                      : colorScheme.surfaceContainerLowest
+                                            .withValues(alpha: 0.7),
+
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 0,
                                   ),
@@ -143,7 +139,7 @@ class AuthPage extends StatelessWidget {
                                     side: controller.authIndex.value == 1
                                         ? const BorderSide(
                                             color: Color(0x7FEFF0F6),
-                                            width: 1,
+                                            width: 0.5,
                                           )
                                         : BorderSide.none,
                                   ),
@@ -153,7 +149,7 @@ class AuthPage extends StatelessWidget {
                                 ),
                                 child: Text(
                                   'Sign Up',
-                                  style: theme.textTheme.titleMedium,
+                                  style: theme.textTheme.bodyMedium,
                                 ),
                               ),
                             ),

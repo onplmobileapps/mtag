@@ -82,7 +82,7 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
   }
 
   Widget _buildTollHistoryContent(TollController controller) {
-    return Container(
+    return Container(margin: .all(4),
       height: MediaQuery.sizeOf(context).height,
       width: double.infinity,
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -179,25 +179,25 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
 
   Widget _buildListTile(dynamic item) {
     return Container(
-      margin: const EdgeInsets.all(1),
+      margin: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: Theme.of(context).disabledColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: ListTile(
         tileColor: Theme.of(context).listTileTheme.tileColor,
-        minVerticalPadding: 6,
+        minVerticalPadding: 4,
         onTap: () => onListTileTap(item),
         title: Text(
           textAlign: TextAlign.left,
           '${item?.eNTRYSTATIONNAME ?? ''}${item?.eXITSTATIONNAME != null ? ' - ' : ''}${item?.eXITSTATIONNAME ?? ''}',
         ),
         trailing: _buildTrailingColumn(item),
-        subtitle: Column(
+        subtitle: Column(spacing: 12,
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('M-TAG ${item?.iTOKKENNO ?? ''}'),
+            Text('M-TAG ${item?.iTOKKENNO ?? ''}',style: TextTheme.of(context).bodySmall,),
             Text(
               item?.tRANSTIME ?? '',
               style: Theme.of(context).textTheme.displaySmall,
