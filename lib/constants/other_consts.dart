@@ -59,7 +59,7 @@ class OtherConsts {
   RxString get blackList => _blackList;
 
   static const List<String> sliderImages = [
-    '8.webp',
+    // '8.webp',
     '7.jpg',
     '9.webp',
     '2.webp',
