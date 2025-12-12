@@ -2,7 +2,7 @@ name: mtag_flutterapp
 description: "M-Tag A Prime Product of One Network Solutions(FWO)."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 #mistakly upload this up version now update running in this sequence
-version: 4.4.3+2672
+version: 4.4.2+269
 environment:
   sdk: ">=3.10.0 <4.0.0"
 dependencies:
@@ -16,8 +16,8 @@ dependencies:
   dio: ^5.5.0+1
   loading_animation_widget: ^1.2.1
   shared_preferences: ^2.2.3
-  firebase_messaging: ^16.0.0
-  firebase_core: ^4.0.0
+  firebase_messaging: 15.2.9
+  firebase_core: 3.15.2
   flutter_local_notifications: ^19.1.0
   in_app_update: ^4.2.3
   local_auth: ^3.0.0
@@ -29,16 +29,15 @@ dependencies:
   action_slider: 0.7.0
   url_launcher: ^6.2.6
   carousel_slider: ^5.1.1
-  firebase_crashlytics: ^5.0.0
-  firebase_remote_config: ^6.0.0
+  firebase_crashlytics:
+  firebase_remote_config: 
   device_info_plus: ^12.1.0
   connectivity_plus: ^7.0.0
-  firebase_performance: ^0.11.0
   cached_network_image: ^3.3.1
   in_app_review: ^2.0.11
-  firebase_analytics: ^12.0.0
+  firebase_analytics: 
   package_info_plus: ^9.0.0
-  video_player: ^2.8.6
+  video_player:
   smart_auth: ^3.2.0
   flutter_inappwebview: ^6.1.5
   shimmer: ^3.0.0
@@ -48,6 +47,10 @@ dependencies:
   csv: ^6.0.0
   timezone: ^0.10.0
   pub_semver: ^2.2.0
+  flutter_map_marker_popup: ^8.1.0
+  flutter_map: ^8.2.2
+  latlong2: ^0.9.1
+  flutter_map_marker_cluster: ^8.2.2
 
 
 dev_dependencies:
@@ -74,6 +77,11 @@ flutter:
     - family: kredit back
       fonts:
         - asset: fonts/kreditback.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+    - family: PlusJakartaSans
+      fonts:
+        - asset: fonts/PlusJakartaSans-VariableFont_wght.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
