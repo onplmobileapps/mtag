@@ -87,38 +87,51 @@ class SettingScreen extends StatelessWidget {
                                     ?.fullName ??
                                 "",
                             style: Theme.of(context).textTheme.displayLarge
-                                ?.copyWith(fontWeight: FontWeight.w800),
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 20,
+                                ),
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              IconTextInfo(
+                                icon: Icons.contact_mail_outlined,
+                                text:
+                                    homeController
+                                        .dashboradData
+                                        .value
+                                        .customerDetail
+                                        ?.cNIC ??
+                                    "",
+                              ),
+                              Container(
+                                height: 15,
+                                width: 1.5,
+                                color: Colors.grey,
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+                              ),
+                              IconTextInfo(
+                                icon: Icons.call_outlined,
+                                text:
+                                    homeController
+                                        .dashboradData
+                                        .value
+                                        .customerDetail
+                                        ?.mobileNumber ??
+                                    "",
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 5),
-                          Text(
-                            homeController
-                                    .dashboradData
-                                    .value
-                                    .customerDetail
-                                    ?.cNIC ??
-                                "",
-                            style: Theme.of(context).textTheme.displayMedium
-                                ?.copyWith(fontWeight: FontWeight.w600),
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            homeController
-                                    .dashboradData
-                                    .value
-                                    .customerDetail
-                                    ?.mobileNumber ??
-                                "",
-                            style: Theme.of(context).textTheme.displayMedium
-                                ?.copyWith(fontWeight: FontWeight.w600),
-                          ),
                         ],
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 5),
-
-                const Divider(thickness: 0.4),
 
                 Expanded(
                   child: CustomScrollView(
@@ -135,16 +148,25 @@ class SettingScreen extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               ListTile(
+                                contentPadding: .zero,
                                 key: UniqueKey(),
                                 visualDensity:
                                     VisualDensity.adaptivePlatformDensity,
                                 onTap: items[i].onTap,
-                                horizontalTitleGap: 6.0,
+                                horizontalTitleGap: 8.0,
                                 dense: true,
-                                leading: Text(items[i].name ?? ''),
-                                trailing: items[i].icon,
+                                leading: items[i].icon,
+                                title: Text(
+                                  items[i].name ?? '',
+                                 
+                                ),
+                                trailing: Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Colors.grey,
+                                  size: 18,
+                                ),
                               ),
-                              const Divider(thickness: 0.4),
+                              const Divider(thickness: 0.1),
                             ],
                           ),
                         ),
@@ -338,7 +360,7 @@ final List<SettingsModel> items = [
       );
     },
     name: 'Logout',
-    icon: const Icon(Icons.logout_outlined),
+    icon: const Icon(Icons.login),
     routeName: '/theme',
   ),
 ];
@@ -359,4 +381,29 @@ String getInitials(String fullName) {
     }
   }
   return '';
+}
+
+class IconTextInfo extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const IconTextInfo({super.key, required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = Theme.of(
+      context,
+    ).textTheme.displayMedium?.copyWith(fontWeight: FontWeight.w600);
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 18),
+        const SizedBox(width: 5),
+        Flexible(
+          child: Text(text, style: textStyle, overflow: TextOverflow.ellipsis),
+        ),
+      ],
+    );
+  }
 }
