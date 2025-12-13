@@ -92,7 +92,7 @@ static const Map<int, int> tollMapMurree = {
                         const SizedBox(height: 12),
                         FadeTransition(
                           opacity: fadeAnimation,
-                          child: _buildSection(
+                          child: 
                             SafeArea(
                               child: TollDisplay(
                                 padding: padding,
@@ -116,8 +116,7 @@ static const Map<int, int> tollMapMurree = {
                                     : '${controller.entryStation.value} - ${controller.exitStation.value}',
                               ),
                             ),
-                            context,
-                          ),
+                          
                         ),
                       ],
                     )

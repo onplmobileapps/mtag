@@ -85,340 +85,345 @@ class HomePage extends GetView<HomeController> {
         ),
       ),
       body: controller.currentPage.value == 0
-          ? RefreshIndicator.adaptive(
-              displacement: 60,
-              onRefresh: () async {
-                await Get.find<HomeController>().pullRefreshDashboardData();
-              },
-              child: NestedScrollView(
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [
-                    SliverAppBar(
-                      pinned: true,
-                      backgroundColor: Colors.transparent,
-                      elevation: 2,
-                      expandedHeight: screenHeight * 0.55,
-                      flexibleSpace: LayoutBuilder(
-                        builder: (context, constraints) {
-                          final top = constraints.biggest.height;
-                          final isCollapsed = top <= kToolbarHeight;
+          ? controller.isLoading.value
+                ? buildShimmerEffect(screenWidth, screenHeight)
+                : NestedScrollView(
+                    headerSliverBuilder: (context, innerBoxIsScrolled) {
+                      return [
+                        SliverAppBar(
+                          pinned: true,
+                          backgroundColor: Colors.transparent,
+                          elevation: 2,
+                          expandedHeight: screenHeight * 0.52,
+                          flexibleSpace: LayoutBuilder(
+                            builder: (context, constraints) {
+                              final top = constraints.biggest.height;
+                              final isCollapsed = top <= kToolbarHeight;
 
-                          return FlexibleSpaceBar(
-                            titlePadding: .zero,
-                            background: Obx(() {
-                              final activeMtags =
-                                  controller.dashboradData.value.activeMtags ??
-                                  [];
-                              if (activeMtags.isEmpty) return SizedBox();
-                              if (!isCollapsed) {
-                                return ListView.builder(
-                                  padding: .zero,
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.horizontal,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount: activeMtags.length,
-                                  itemBuilder: (context, index) {
-                                    final e = activeMtags[index];
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 0,
-                                      ),
-                                      child: Obx(() {
-                                        return e.isactive == 9
-                                            ? mtagRecoveryWidget(
-                                                context,
-                                                size: MediaQuery.sizeOf(
-                                                  context,
-                                                ),
-                                                height: screenHeight * 0.60,
-                                                isBlock: e.isactive,
-                                                mtagId: e.tokenno,
-                                                mobileNum: _otherConstants
-                                                    .mobile
-                                                    .string,
-                                                cnic: _otherConstants
-                                                    .ownerCNIC
-                                                    .string,
-                                                regId: e.registration,
-                                                blockAmount: e.block_amount,
-                                              )
-                                            : mtagDataWidget(
-                                                context,
-                                                isBlock: e.isactive,
-                                                jazzCode: controller
-                                                    .dashboradData
-                                                    .value
-                                                    .jazzCashRecharge
-                                                    .toString(),
-                                                creditCode: controller
-                                                    .dashboradData
-                                                    .value
-                                                    .creditCardRecharge
-                                                    .toString(),
-                                                vehType: e.vehicletype,
-                                                mtagId: e.tokenno,
-                                                userName: e.ownername,
-                                                mobileNum: _otherConstants
-                                                    .mobile
-                                                    .string,
-                                                cnic: _otherConstants
-                                                    .ownerCNIC
-                                                    .string,
-                                                regId: e.registration,
-                                                ball: e.balance,
-                                                showTransferButton:
-                                                    activeMtags.length == 1
-                                                    ? false
-                                                    : true,
-                                                balanceDashboard: e.balance,
-                                                showChassisBadge:
-                                                    e.chassis_number == null,
-                                                chassisNumber: e.chassis_number,
-                                              );
-                                      }),
+                              return FlexibleSpaceBar(
+                                titlePadding: .zero,
+                                background: Obx(() {
+                                  final activeMtags =
+                                      controller
+                                          .dashboradData
+                                          .value
+                                          .activeMtags ??
+                                      [];
+                                  if (activeMtags.isEmpty) return SizedBox();
+                                  if (!isCollapsed) {
+                                    return ListView.builder(
+                                      padding: .zero,
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: activeMtags.length,
+                                      itemBuilder: (context, index) {
+                                        final index =
+                                            controller.selectedMtagIndex.value;
+                                        final e = activeMtags[index];
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 0,
+                                          ),
+                                          child: Obx(() {
+                                            return e.isactive == 8
+                                                ? mtagRecoveryWidget(
+                                                    context,
+                                                    size: MediaQuery.sizeOf(
+                                                      context,
+                                                    ),
+                                                    height: screenHeight * 0.60,
+                                                    isBlock: e.isactive,
+                                                    mtagId: e.tokenno,
+                                                    mobileNum: _otherConstants
+                                                        .mobile
+                                                        .string,
+                                                    cnic: _otherConstants
+                                                        .ownerCNIC
+                                                        .string,
+                                                    regId: e.registration,
+                                                    blockAmount: e.block_amount,
+                                                  )
+                                                : mtagDataWidget(
+                                                    context,
+                                                    onTapBack: () {
+                                                      controller.goBack();
+                                                    },
+                                                    onTapForward: () {
+                                                      controller.goNext(
+                                                        activeMtags.length,
+                                                      );
+                                                    },
+                                                    isBlock: e.isactive,
+                                                    jazzCode: controller
+                                                        .dashboradData
+                                                        .value
+                                                        .jazzCashRecharge
+                                                        .toString(),
+                                                    creditCode: controller
+                                                        .dashboradData
+                                                        .value
+                                                        .creditCardRecharge
+                                                        .toString(),
+                                                    vehType: e.vehicletype,
+                                                    mtagId: e.tokenno,
+                                                    userName: e.ownername,
+                                                    mobileNum: _otherConstants
+                                                        .mobile
+                                                        .string,
+                                                    cnic: _otherConstants
+                                                        .ownerCNIC
+                                                        .string,
+                                                    regId: e.registration,
+                                                    ball: e.balance,
+                                                    showTransferButton:
+                                                        activeMtags.length == 1
+                                                        ? false
+                                                        : true,
+                                                    balanceDashboard: e.balance,
+                                                    showChassisBadge:
+                                                        e.chassis_number ==
+                                                        null,
+                                                    chassisNumber:
+                                                        e.chassis_number,
+                                                  );
+                                          }),
+                                        );
+                                      },
                                     );
-                                  },
-                                );
-                              }
-                              return SizedBox.shrink();
-                            }),
-                          );
-                        },
-                      ),
-                    ),
-                  ];
-                },
-                body: Obx(
-                  () => controller.isLoading.value
-                      ? buildShimmerEffect(screenWidth, screenHeight)
-                      : CustomScrollView(
-                          slivers: [
-                            // Keep all your existing slivers exactly as-is
-                            // Dashboard Grid
-                            SliverPadding(
-                              padding: const EdgeInsets.all(8.0),
-                              sliver: SliverGrid(
-                                gridDelegate:
-                                    SliverGridDelegateWithMaxCrossAxisExtent(
-                                      maxCrossAxisExtent: screenWidth * 0.5,
-                                      mainAxisSpacing: 10,
-                                      crossAxisSpacing: 10,
-                                      mainAxisExtent: screenHeight * 0.11,
+                                  }
+                                  return SizedBox.shrink();
+                                }),
+                              );
+                            },
+                          ),
+                        ),
+                      ];
+                    },
+                    body: CustomScrollView(
+                      slivers: [
+                        SliverPadding(
+                          padding: const EdgeInsets.all(8.0),
+                          sliver: SliverGrid(
+                            gridDelegate:
+                                SliverGridDelegateWithMaxCrossAxisExtent(
+                                  maxCrossAxisExtent: screenWidth * 0.5,
+                                  mainAxisSpacing: 10,
+                                  crossAxisSpacing: 10,
+                                  mainAxisExtent: screenHeight * 0.11,
+                                ),
+                            delegate: SliverChildBuilderDelegate((
+                              context,
+                              index,
+                            ) {
+                              return InkWell(
+                                onTap: () async {
+                                  final rechctrl =
+                                      Get.find<RechargeController>();
+                                  selected1linkOpt.value = -1;
+                                  await Get.toNamed(
+                                    '${controller.dashBoardModel[index].routeName}',
+                                    arguments: controller
+                                        .dashboradData
+                                        .value
+                                        .activeMtags,
+                                  );
+                                  selected1linkOpt.value = -1;
+                                  rechctrl.isPaymentModdeVisible(false);
+                                  rechctrl.isSummaryVisible(false);
+                                  rechctrl.isRechageVisible(true);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: .circular(8),
+                                    color: Theme.of(context).disabledColor,
+                                  ),
+                                  child: Row(
+                                    spacing: 8,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      if (controller
+                                              .dashBoardModel[index]
+                                              .image !=
+                                          null)
+                                        Padding(
+                                          padding: .all(8.0),
+                                          child: Image.asset(
+                                            controller
+                                                .dashBoardModel[index]
+                                                .image!,
+                                            width: screenWidth * 0.1,
+                                            height: screenHeight * 0.1,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        controller
+                                                .dashBoardModel[index]
+                                                .title ??
+                                            '',
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextTheme.of(context).bodyLarge
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }, childCount: controller.dashBoardModel.length),
+                          ),
+                        ),
+                        // Slider Section
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Tap to see what’s new',
+                              style: TextTheme.of(context).bodyMedium,
+                            ),
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: SizedBox(
+                              height: 150,
+                              child: ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: OtherConsts.sliderImages.length,
+                                separatorBuilder: (_, _) =>
+                                    const SizedBox(width: 8),
+                                itemBuilder: (context, index) {
+                                  final imageName =
+                                      OtherConsts.sliderImages[index];
+                                  final imageUrl = 'assets/slider/$imageName';
+
+                                  return GestureDetector(
+                                    onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => StoryViewPage(
+                                          stories: OtherConsts.sliderImages,
+                                        ),
+                                      ),
                                     ),
-                                delegate: SliverChildBuilderDelegate((
-                                  context,
-                                  index,
-                                ) {
-                                  return InkWell(
-                                    onTap: () async {
-                                      final rechctrl =
-                                          Get.find<RechargeController>();
-                                      selected1linkOpt.value = -1;
-                                      await Get.toNamed(
-                                        '${controller.dashBoardModel[index].routeName}',
-                                        arguments: controller
-                                            .dashboradData
-                                            .value
-                                            .activeMtags,
-                                      );
-                                      selected1linkOpt.value = -1;
-                                      rechctrl.isPaymentModdeVisible(false);
-                                      rechctrl.isSummaryVisible(false);
-                                      rechctrl.isRechageVisible(true);
-                                    },
                                     child: Container(
+                                      height: 150,
+                                      width: 150,
                                       decoration: BoxDecoration(
                                         borderRadius: .circular(8),
-                                        color: Theme.of(context).disabledColor,
-                                      ),
-                                      child: Row(
-                                        spacing: 8,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          if (controller
-                                                  .dashBoardModel[index]
-                                                  .image !=
-                                              null)
-                                            Padding(
-                                              padding: .all(8.0),
-                                              child: Image.asset(
-                                                controller
-                                                    .dashBoardModel[index]
-                                                    .image!,
-                                                width: screenWidth * 0.1,
-                                                height: screenHeight * 0.1,
-                                                fit: BoxFit.contain,
-                                              ),
-                                            ),
-                                          const SizedBox(height: 8),
-                                          Text(
-                                            controller
-                                                    .dashBoardModel[index]
-                                                    .title ??
-                                                '',
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextTheme.of(context)
-                                                .bodyLarge
-                                                ?.copyWith(
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                          ),
-                                        ],
+                                        border: Border.all(
+                                          color: Theme.of(
+                                            context,
+                                          ).highlightColor,
+                                        ),
+                                        image: DecorationImage(
+                                          image: AssetImage(imageUrl),
+                                          fit: BoxFit.fill,
+                                        ),
                                       ),
                                     ),
                                   );
-                                }, childCount: controller.dashBoardModel.length),
+                                },
                               ),
                             ),
-                            // Slider Section
-                            SliverToBoxAdapter(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Tap to see what’s new',
-                                  style: TextTheme.of(context).bodyMedium,
-                                ),
-                              ),
-                            ),
-                            SliverToBoxAdapter(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: SizedBox(
-                                  height: 150,
-                                  child: ListView.separated(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: OtherConsts.sliderImages.length,
-                                    separatorBuilder: (_, _) =>
-                                        const SizedBox(width: 8),
-                                    itemBuilder: (context, index) {
-                                      final imageName =
-                                          OtherConsts.sliderImages[index];
-                                      final imageUrl =
-                                          'assets/slider/$imageName';
-
-                                      return GestureDetector(
-                                        onTap: () => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) => StoryViewPage(
-                                              stories: OtherConsts.sliderImages,
-                                            ),
-                                          ),
-                                        ),
-                                        child: Container(
-                                          height: 150,
-                                          width: 150,
-                                          decoration: BoxDecoration(
-                                            borderRadius: .circular(8),
-                                            border: Border.all(
-                                              color: Theme.of(
-                                                context,
-                                              ).highlightColor,
-                                            ),
-                                            image: DecorationImage(
-                                              image: AssetImage(imageUrl),
-                                              fit: BoxFit.fill,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                            // Help & Customer Support
-                            SliverToBoxAdapter(
-                              child: Container(
-                                padding: const EdgeInsets.all(12),
-                                margin: EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: ColorScheme.of(context).surfaceDim,
-                                  border: Border.all(
-                                    width: 0.1,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.outline,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: .start,
-                                  crossAxisAlignment: .center,
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/phone.svg',
-                                      width: 50,
-                                      height: 50,
-                                    ),
-                                    SizedBox(width: 16),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Help & Customer Support',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .displayLarge
-                                                ?.copyWith(fontWeight: .w900),
-                                          ),
-                                          SizedBox(height: 10),
-                                          Text(
-                                            'Call our helpline 1313 to get quick help on queries related to your M-Tag',
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: Theme.of(
-                                              context,
-                                            ).textTheme.displayMedium,
-                                          ),
-                                          OutlinedButton.icon(
-                                            onPressed: () {
-                                              CallWhatsappUtil.openCall1313();
-                                            },
-                                            icon: const Icon(
-                                              Icons.arrow_forward,
-                                              size: 14,
-                                              color: Colors.redAccent,
-                                            ),
-                                            label: const Text(
-                                              '1313',
-                                              style: TextStyle(
-                                                color: Colors.redAccent,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                            iconAlignment: .end,
-                                            style: OutlinedButton.styleFrom(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 8,
-                                                  ),
-                                              minimumSize: const Size(70, 28),
-                                              maximumSize: const Size(70, 28),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(18),
-                                              ),
-                                              side: const BorderSide(
-                                                color: Colors.redAccent,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                ),
-              ),
-            )
+                        // Help & Customer Support
+                        SliverToBoxAdapter(
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            margin: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: ColorScheme.of(context).surfaceDim,
+                              border: Border.all(
+                                width: 0.1,
+                                color: Theme.of(context).colorScheme.outline,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: .start,
+                              crossAxisAlignment: .center,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/phone.svg',
+                                  width: 50,
+                                  height: 50,
+                                ),
+                                SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Help & Customer Support',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .displayLarge
+                                            ?.copyWith(fontWeight: .w900),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        'Call our helpline 1313 to get quick help on queries related to your M-Tag',
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.displayMedium,
+                                      ),
+                                      OutlinedButton.icon(
+                                        onPressed: () {
+                                          CallWhatsappUtil.openCall1313();
+                                        },
+                                        icon: const Icon(
+                                          Icons.arrow_forward,
+                                          size: 14,
+                                          color: Colors.redAccent,
+                                        ),
+                                        label: const Text(
+                                          '1313',
+                                          style: TextStyle(
+                                            color: Colors.redAccent,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                        iconAlignment: .end,
+                                        style: OutlinedButton.styleFrom(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                          ),
+                                          minimumSize: const Size(70, 28),
+                                          maximumSize: const Size(70, 28),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              18,
+                                            ),
+                                          ),
+                                          side: const BorderSide(
+                                            color: Colors.redAccent,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+          //RefreshIndicator.adaptive(
+          // displacement: 60,
+          // onRefresh: () async {
+          //   await Get.find<HomeController>().pullRefreshDashboardData();
+          // },
           : bottomNavigations[controller.currentPage.value],
       bottomNavigationBar: BottomAppBar(
         height: 50,
@@ -475,44 +480,48 @@ class HomePage extends GetView<HomeController> {
     );
   }
 
- Widget buildCustomNavItem({
-  required BuildContext context,
-  required int index,
-  required int currentIndex,
-  required String label,
-  required String asset,
-  required Function() onTap,
-}) {
-  final isSelected = index == currentIndex;
-  final colorScheme = Theme.of(context).colorScheme;
-  final iconColor = isSelected
-      ? colorScheme.primary
-      : colorScheme.secondary.withValues(alpha:0.7);
-  return InkWell(
-    onTap: onTap,
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SvgPicture.asset(
-          asset,
-          height: 22,
-        colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),// unselected color from theme
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 11,
-            color: isSelected
-                ? colorScheme.primary
-                : colorScheme.secondary.withValues(alpha: 0.7), // unselected color from theme
-            fontFamily: 'Poppins',
+  Widget buildCustomNavItem({
+    required BuildContext context,
+    required int index,
+    required int currentIndex,
+    required String label,
+    required String asset,
+    required Function() onTap,
+  }) {
+    final isSelected = index == currentIndex;
+    final colorScheme = Theme.of(context).colorScheme;
+    final iconColor = isSelected
+        ? colorScheme.primary
+        : colorScheme.secondary.withValues(alpha: 0.7);
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            asset,
+            height: 22,
+            colorFilter: ColorFilter.mode(
+              iconColor,
+              BlendMode.srcIn,
+            ), // unselected color from theme
           ),
-        ),
-      ],
-    ),
-  );
-}
-
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              color: isSelected
+                  ? colorScheme.primary
+                  : colorScheme.secondary.withValues(
+                      alpha: 0.7,
+                    ), // unselected color from theme
+              fontFamily: 'Poppins',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

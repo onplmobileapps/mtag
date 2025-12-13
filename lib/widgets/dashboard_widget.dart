@@ -60,6 +60,9 @@ Widget mtagDataWidget(
   bool? showTransferButton,
   String? chassisNumber,
   bool? showChassisBadge,
+  VoidCallback? onTapBack,
+  VoidCallback? onTapForward,
+
 }) {
   final controller = Get.find<HomeController>();
 
@@ -92,7 +95,7 @@ Widget mtagDataWidget(
 
       return Container(
         width: MediaQuery.sizeOf(context).width,
-    
+
         decoration: BoxDecoration(
           color: Theme.of(context).disabledColor,
           borderRadius: BorderRadius.circular(12),
@@ -101,10 +104,9 @@ Widget mtagDataWidget(
           children: [
             Container(
               padding: .all(26),
-              decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceContainer,
-                // color: Color(0xff21295E),
-                // Theme.of(context).highlightColor,
-                borderRadius: .only(bottomLeft:.circular(28)),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainer,
+                borderRadius: .only(bottomLeft: .circular(28)),
               ),
               child: Column(
                 spacing: 10,
@@ -112,8 +114,15 @@ Widget mtagDataWidget(
                 crossAxisAlignment: .start,
 
                 children: [
-                  SizedBox(height: 26,),
-                  Text('M-TAG',style: TextTheme.of(context).titleLarge?.copyWith(color: Colors.white,fontWeight: .w800,fontSize: 20),),
+                  SizedBox(height: 26),
+                  Text(
+                    'M-TAG',
+                    style: TextTheme.of(context).titleLarge?.copyWith(
+                      color: Colors.white,
+                      fontWeight: .w800,
+                      fontSize: 20,
+                    ),
+                  ),
                   mtadDetailsWidget(
                     context,
                     icon: Icons.folder_outlined,
@@ -149,33 +158,46 @@ Widget mtagDataWidget(
               ),
             ),
 
-            SizedBox(height: MediaQuery.sizeOf(context).height*0.045),
-          
-            Row(
-              mainAxisAlignment: .spaceBetween,
-              children: [
-                Icon(Icons.arrow_circle_left_outlined),
-                Transform.scale(
-                  scaleY: 2.0,
-                  scaleX: 2.4,
-                  // scale: 3, // enlarge visually but keeps original size in layout
-                  child: Image.asset(
-                    "assets/honda.png",
-                    width: carSize, // keeps parent constraints safe
-                    fit: BoxFit.fill,
+            SizedBox(height: MediaQuery.sizeOf(context).height * 0.045),
+
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: .spaceBetween,
+                children: [
+                  InkWell(onTap: onTapBack,
+                    child: CircleAvatar(radius: 16,
+                      backgroundColor: Colors.black.withValues(alpha:0.5),
+                      child: Icon(Icons.arrow_back_ios_rounded,size: 20,)),
                   ),
-                ),
-                Icon(Icons.arrow_circle_right_outlined),
-              ],
+                  Transform.scale(
+                    scaleY: 2.0,
+                    scaleX: 2.4,
+                    // scale: 3, // enlarge visually but keeps original size in layout
+                    child: Image.asset(
+                      "assets/honda.png",
+                      width: carSize, // keeps parent constraints safe
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                  InkWell(onTap: onTapForward,
+                    child: CircleAvatar(radius: 16,
+                      backgroundColor: Colors.black.withValues(alpha:0.5),
+                      child: Icon(Icons.arrow_forward_ios_rounded,size: 20,)),
+                  ),
+                ],
+              ),
             ),
-              Spacer(flex: 3,),
+            Spacer(flex: 3),
 
             Row(
               mainAxisAlignment: .center,
               children: [
                 Text(
                   "Balance  ",
-                  style: TextTheme.of(context).bodyLarge?.copyWith(fontWeight: .w500),
+                  style: TextTheme.of(
+                    context,
+                  ).bodyLarge?.copyWith(fontWeight: .w500),
                 ),
                 BalanceWidget(
                   balance: ball ?? '',
@@ -363,27 +385,29 @@ Widget mtadDetailsWidget(
   void Function()? onTap,
 }) {
   return Row(
-  children: [
-    Icon(icon, color: Color(0xff9E9EAD)),
-    SizedBox(width: 5),
-    Expanded(
-      flex: 2,
-      child: Text('$label :', style: TextStyle(color: Color(0xff9E9EAD))),
-    ),
-    Expanded(
-      flex: 3,
-      child: Text('$value', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+    children: [
+      Icon(icon, color: Color(0xff9E9EAD)),
+      SizedBox(width: 5),
+      Expanded(
+        flex: 2,
+        child: Text('$label :', style: TextStyle(color: Color(0xff9E9EAD))),
+      ),
+      Expanded(
+        flex: 3,
+        child: Text(
+          '$value',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: Colors.white,
             fontSize: 16,
             fontWeight: FontWeight.w600,
-          ),),
-    ),
-    if (ischassis)
-      InkWell(
-        onTap: onTap,
-        child: Icon(Icons.edit_square, size: 16, color: Colors.white),
+          ),
+        ),
       ),
-  ],
-);
-
+      if (ischassis)
+        InkWell(
+          onTap: onTap,
+          child: Icon(Icons.edit_square, size: 16, color: Colors.white),
+        ),
+    ],
+  );
 }

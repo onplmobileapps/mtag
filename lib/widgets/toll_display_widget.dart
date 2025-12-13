@@ -22,54 +22,111 @@ class TollDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      color: Colors.transparent,
-      child: Padding(
-        padding: EdgeInsets.all(padding),
-        child: Column(
-          children: [
-            Text('Toll Details', style: Theme.of(context).textTheme.labelLarge),
-            const SizedBox(height: 6),
-            _buildDetailRow('Route', route ?? '$entry - $exit'),
-            _buildDetailRow('Vehicle', vehicleName ?? 'Unknown'),
-            const Divider(height: 1, color: Colors.grey),
-            isCalculating
-                ? const CircularProgressIndicator()
-                : _buildDetailRow(
-                    'Total Toll',
-                    '$toll PKR',
-                    isTotal: true,
-                    valueStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red, fontSize: 18),
+    return Column(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            color: Color(0xff20285F), // Dark blue to match the image
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(8),
+              topRight: Radius.circular(8),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Toll Details',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
                   ),
-          ],
+                ),
+                const SizedBox(height: 6),
+                _buildDetailRow(
+                  'Route',
+                  route ?? '$entry—$exit', // Use em dash to match image
+                  context,
+                ),
+                _buildDetailRow(
+                  'Vehicle type',
+                  vehicleName ?? 'Unknown',
+                  context,
+                ),
+               
+              ],
+            ),
+          ),
         ),
-      ),
+        Container(
+          decoration: const BoxDecoration(
+            color: Colors.green,
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(8),
+              bottomRight: Radius.circular(8),
+            ),
+          ),
+          child: _buildDetailRow(
+            'Total Toll',
+            toll != null ? 'Rs. $toll PKR' : '',
+            context,
+            isTotal: true,
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildDetailRow(
     String label,
-    String value, {
+    String value,
+    BuildContext context, {
     bool isTotal = false,
-    TextStyle? valueStyle,
   }) {
+    TextStyle labelStyle = TextStyle(
+      color: isTotal ? Colors.white : Colors.white,
+      fontWeight: isTotal ? FontWeight.normal : FontWeight.normal,
+      fontSize: 14,
+    );
+
+    TextStyle valueStyle = TextStyle(
+      color: isTotal ? Colors.white : Colors.white,
+      fontSize: isTotal ? 18 : 14,
+      fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+    );
+
+    if (label == 'Route' && !isTotal) {
+      valueStyle = const TextStyle(
+        color: Colors.white,
+ 
+        fontSize: 14,
+      );
+    }
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      padding: EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: isTotal ? 8 : 4,
+      ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label),
+          Text(
+            '$label:',
+            style: labelStyle,
+          ),
           Text(
             value,
             style: valueStyle,
-            textAlign: TextAlign.right,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
           ),
         ],
       ),
     );
   }
 }
+
+  
+

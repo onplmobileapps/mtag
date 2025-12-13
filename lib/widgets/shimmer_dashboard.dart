@@ -14,8 +14,8 @@ Widget buildShimmerEffect(double screenWidth, double screenHeight) {
               ? Colors.grey.shade600
               : Colors.grey.shade100,
           child: Container(
-            margin: EdgeInsets.only(left: 16, right: 16, bottom: 4),
-            height: screenHeight * 0.38,
+            margin: EdgeInsets.only(left: 16, right: 16, bottom: 4,top: 40),
+            height: screenHeight * 0.30,
             decoration: BoxDecoration(
               color: isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300,
               borderRadius: BorderRadius.circular(8),

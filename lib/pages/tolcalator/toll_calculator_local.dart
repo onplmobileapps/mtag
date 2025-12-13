@@ -189,7 +189,8 @@ log(result.toString());
                   const SizedBox(height: 12),
                   FadeTransition(
                     opacity: _fadeAnimation,
-                    child: _buildSection(_buildTollDisplay(padding), context),
+                    child: _buildSection(
+                      _buildTollDisplay(padding), context),
                   ),
                 ],
                 const SizedBox(height: 20),
