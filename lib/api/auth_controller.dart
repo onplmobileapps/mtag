@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/base/app_data.dart';
-import 'package:mtag_flutterapp/widgets/dialog/cupertino_dialog.dart';
-
+import '../../base/app_data.dart';
+import '../../widgets/dialog/cupertino_dialog.dart';
 import '../../api/api_constants.dart';
 import '../pages/login/create_pin_page.dart';
 import '../pages/login/user_model.dart';

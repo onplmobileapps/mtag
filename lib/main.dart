@@ -20,7 +20,6 @@ import 'remoteconfig/firebase_remote_config.dart';
 import 'routes/approute.dart';
 import 'theme/app_theme.dart';
 import 'utils/utils.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppData.initialize();
