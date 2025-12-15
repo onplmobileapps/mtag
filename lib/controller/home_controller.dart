@@ -250,9 +250,12 @@ class HomeController extends GetxController implements GetxService {
   @override
   void onReady() async {
     super.onReady();
-    await _initializeDashboard();
-    await _handleAppCountAndReview();
+    WidgetsBinding.instance.addPostFrameCallback((_)async {
+       await _initializeDashboard();
+    // await _handleAppCountAndReview();
     _handlePostInitActions();
+    },);
+   
   }
 
   Future<void> _initializeDashboard() async {
@@ -260,16 +263,16 @@ class HomeController extends GetxController implements GetxService {
   }
 
   /// Increments app count and triggers review at 5 launches.
-  Future<void> _handleAppCountAndReview() async {
+  // Future<void> _handleAppCountAndReview() async {
    
-    await AppData.setCount(); // Increment count
-    final count = AppData.getAppCount();
-    if (count >= 5) {
-      AppReviewUtils.requestAppReview();
-      await AppData.setCount(reset: true); // Reset count after review
-    }
-     debugPrint("inapp-review called$count");
-  }
+  //   await AppData.setCount(); // Increment count
+  //   final count = AppData.getAppCount();
+  //   if (count >= 5) {
+  //     AppReviewUtils.requestAppReview();
+  //     await AppData.setCount(reset: true); // Reset count after review
+  //   }
+  //    debugPrint("inapp-review called$count");
+  // }
 
   void _handlePostInitActions() {
     if (dashboradData.value.customerDetail != null &&

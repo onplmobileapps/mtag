@@ -84,7 +84,7 @@ class _MTagAppState extends State<MTagApp> {
       smartManagement: SmartManagement.keepFactory,
       defaultTransition: Transition.native,
       transitionDuration: const Duration(milliseconds: 30),
-      popGesture: true,
+      popGesture:Platform.isIOS,
       useInheritedMediaQuery: true,
       builder: (context, child) {
         final MediaQueryData data = MediaQuery.of(context);
