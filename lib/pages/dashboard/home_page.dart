@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/pages/alfawebview/weather_webview.dart';
 import 'package:mtag_flutterapp/widgets/mtag_recovery_widget.dart';
 import '../../api/user_repo.dart';
 import '../../base/app_data.dart';
@@ -25,6 +26,7 @@ class HomePage extends GetView<HomeController> {
   HomePage({super.key});
 
   final _carouselController = CarouselSliderController();
+  final GlobalKey weatherKey = GlobalKey();
 
   final bottomNavigations = <Widget>[
     Container(),
@@ -152,55 +154,105 @@ class HomePage extends GetView<HomeController> {
                                       Positioned(
                                         right: 0,
                                         bottom: 80,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            CallWhatsappUtil.openWhatsAppChat(
-                                              controller
-                                                          .dashboradData
-                                                          .value
-                                                          .helpLineNumber !=
-                                                      null
-                                                  ? controller
-                                                        .dashboradData
-                                                        .value
-                                                        .helpLineNumber
-                                                        .toString()
-                                                  : "+923105931103",
-                                            );
-                                          },
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 10,
-                                              vertical: 4,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white.withAlpha(
-                                                139,
-                                              ),
-                                              borderRadius:
-                                                  const BorderRadius.only(
-                                                    topLeft: Radius.circular(8),
-                                                    bottomLeft: Radius.circular(
-                                                      8,
+                                        child: Column(
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                CallWhatsappUtil.openWhatsAppChat(
+                                                  controller
+                                                              .dashboradData
+                                                              .value
+                                                              .helpLineNumber !=
+                                                          null
+                                                      ? controller
+                                                            .dashboradData
+                                                            .value
+                                                            .helpLineNumber
+                                                            .toString()
+                                                      : "+923105931103",
+                                                );
+                                              },
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 10,
+                                                      vertical: 4,
                                                     ),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white.withAlpha(
+                                                    139,
                                                   ),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black.withAlpha(
-                                                    100,
-                                                  ),
-                                                  blurRadius: 6,
-                                                  offset: const Offset(0, 3),
+                                                  borderRadius:
+                                                      const BorderRadius.only(
+                                                        topLeft:
+                                                            Radius.circular(8),
+                                                        bottomLeft:
+                                                            Radius.circular(8),
+                                                      ),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black
+                                                          .withAlpha(100),
+                                                      blurRadius: 6,
+                                                      offset: const Offset(
+                                                        0,
+                                                        3,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ],
+                                                child: Image.asset(
+                                                  'assets/whatsapp.png',
+                                                  width: 40,
+                                                  height: 40,
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
                                             ),
-                                            child: Image.asset(
-                                              'assets/whatsapp.png',
-                                              width: 40,
-                                              height: 40,
-                                              fit: BoxFit.contain,
+                                            //weather walay
+                                            SizedBox(height: 10),
+                                            GestureDetector(
+                                              key: weatherKey,
+                                              onTap: () =>
+                                                  _showExpandableFab(context),
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 10,
+                                                      vertical: 4,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white.withAlpha(
+                                                    139,
+                                                  ),
+                                                  borderRadius:
+                                                      const BorderRadius.only(
+                                                        topLeft:
+                                                            Radius.circular(8),
+                                                        bottomLeft:
+                                                            Radius.circular(8),
+                                                      ),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black
+                                                          .withAlpha(100),
+                                                      blurRadius: 6,
+                                                      offset: const Offset(
+                                                        0,
+                                                        3,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Image.asset(
+                                                  'assets/weather.png',
+                                                  width: 40,
+                                                  height: 40,
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                          ],
                                         ),
                                       ),
                                     ],
@@ -475,6 +527,85 @@ class HomePage extends GetView<HomeController> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showExpandableFab(BuildContext context) {
+    final overlay = Overlay.of(context);
+    OverlayEntry? entry;
+
+    final renderObject = weatherKey.currentContext?.findRenderObject();
+    if (renderObject == null || renderObject is! RenderBox) return;
+
+    RenderBox box = renderObject;
+    Offset pos = box.localToGlobal(Offset.zero);
+
+    entry = OverlayEntry(
+      builder: (context) {
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () => entry?.remove(),
+                behavior: HitTestBehavior.translucent,
+              ),
+            ),
+            Positioned(
+              top: pos.dy,
+              left: pos.dx - 110,
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        openWebView(
+                          "https://weatherwalay.com/wowtimeline/m2",
+                          title: "Timeline View",
+                          showLoader: false,
+                        );
+                      });
+                      entry?.remove();
+                    },
+                    child: _smallFab(
+                      Image.asset("assets/journey.png"),
+                      context,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: () {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        openWebView(
+                          "https://one-network-portal.weatherwalay.com/embed-map/m2?token=IsImEiOiJjbHYwazJ0bjgxcWZuMmpyengwNWw4bHQ2In0",
+                          title: "Map View",
+                          showLoader: true,
+                        );
+                      });
+                      entry?.remove();
+                    },
+                    child: _smallFab(Image.asset("assets/map.png"), context),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    overlay.insert(entry);
+  }
+
+  Widget _smallFab(Image image, BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 5)],
+      ),
+      child: Column(children: [SizedBox(height: 25, width: 25, child: image)]),
     );
   }
 }
