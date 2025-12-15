@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/pages/tollhistory/toll_history_screen.dart';
 import 'package:mtag_flutterapp/widgets/dashboard_widget.dart';
 import '/pages/recharge/controller/recharge_controller.dart';
 import '../../pages/tollhistory/controller/tollcontroller.dart';
@@ -166,7 +167,7 @@ class MatagDetailScreen extends GetView<TollController> {
                     ),
                     builder: (_, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: Text('Please Wait'));
+                        return ListSkeleton();
                       }
 
                       var transactions = controller

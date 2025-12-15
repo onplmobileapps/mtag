@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/widgets/mtag_recovery_widget.dart';
+import '../../widgets/mtag_recovery_widget.dart';
 import '../../api/user_repo.dart';
 import '../../base/app_data.dart';
 import '../../constants/call_helper.dart';
@@ -141,7 +141,7 @@ class HomePage extends GetView<HomeController> {
                                           options: CarouselOptions(
                                             height: 600,
                                             viewportFraction: 1,
-                                            autoPlay: true,
+                                            autoPlay: controller.currentPage.value == 0,
                                             autoPlayInterval: const Duration(
                                               seconds: 5,
                                             ),

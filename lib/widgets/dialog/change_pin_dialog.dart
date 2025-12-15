@@ -17,10 +17,7 @@ void showChangePinDialog(
 class ChangePinDialog extends StatefulWidget {
   final Function(String oldPin, String newPin) onSubmit;
 
-  const ChangePinDialog({
-    super.key,
-    required this.onSubmit,
-  });
+  const ChangePinDialog({super.key, required this.onSubmit});
 
   @override
   State<ChangePinDialog> createState() => _ChangePinDialogState();
@@ -48,7 +45,9 @@ class _ChangePinDialogState extends State<ChangePinDialog> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      child: Dialog(backgroundColor: Theme.of(context).dialogTheme.backgroundColor,surfaceTintColor: Theme.of(context).dialogTheme.surfaceTintColor,
+      child: Dialog(
+        backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
+        surfaceTintColor: Theme.of(context).dialogTheme.surfaceTintColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Stack(
           clipBehavior: Clip.none,
@@ -58,10 +57,7 @@ class _ChangePinDialogState extends State<ChangePinDialog> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    'Change PIN',
-                    style: TextStyle(fontSize: 18),
-                  ),
+                  Text('Change PIN', style: TextStyle(fontSize: 18)),
                   SizedBox(height: 20),
                   Form(
                     key: _formKey,
@@ -76,21 +72,21 @@ class _ChangePinDialogState extends State<ChangePinDialog> {
                           decoration: InputDecoration(
                             counterText: "",
                             labelText: 'Old PIN',
-                            labelStyle: Theme.of(context)
-                                .inputDecorationTheme
-                                .labelStyle, // Dynamic label
-                            border: Theme.of(context)
-                                .inputDecorationTheme
-                                .border, // Dynamic border
+                            labelStyle: Theme.of(
+                              context,
+                            ).inputDecorationTheme.labelStyle, // Dynamic label
+                            border: Theme.of(
+                              context,
+                            ).inputDecorationTheme.border, // Dynamic border
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _obscureOldPin
                                     ? Icons.visibility_off
                                     : Icons.visibility,
                                 size: 20,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primary, // Adjust based on theme
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.primary, // Adjust based on theme
                               ),
                               onPressed: () {
                                 setState(() {
@@ -99,35 +95,36 @@ class _ChangePinDialogState extends State<ChangePinDialog> {
                               },
                             ),
                           ),
-                          validator: (value) => value == null || value.isEmpty||value.length<4
+                          validator: (value) =>
+                              value == null || value.isEmpty || value.length < 4
                               ? 'Please enter your old PIN'
                               : null,
                         ),
                         SizedBox(height: 12),
                         TextFormField(
-  controller: _newPinController,
-  focusNode: _newPinFocusNode,
-  keyboardType: TextInputType.number,
-  obscureText: _obscureNewPin,
-  maxLength: 4,
-  decoration: InputDecoration(
+                          controller: _newPinController,
+                          focusNode: _newPinFocusNode,
+                          keyboardType: TextInputType.number,
+                          obscureText: _obscureNewPin,
+                          maxLength: 4,
+                          decoration: InputDecoration(
                             counterText: "",
                             labelText: 'New Pin',
-                            labelStyle: Theme.of(context)
-                                .inputDecorationTheme
-                                .labelStyle, // Dynamic label
-                            border: Theme.of(context)
-                                .inputDecorationTheme
-                                .border, // Dynamic border
+                            labelStyle: Theme.of(
+                              context,
+                            ).inputDecorationTheme.labelStyle, // Dynamic label
+                            border: Theme.of(
+                              context,
+                            ).inputDecorationTheme.border, // Dynamic border
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _obscureNewPin
                                     ? Icons.visibility_off
                                     : Icons.visibility,
                                 size: 20,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primary, // Adjust based on theme
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.primary, // Adjust based on theme
                               ),
                               onPressed: () {
                                 setState(() {
@@ -136,40 +133,42 @@ class _ChangePinDialogState extends State<ChangePinDialog> {
                               },
                             ),
                           ),
-  validator: (value) =>
-      value == null || value.isEmpty || value.length < 4
-          ? 'Please enter a new PIN'
-          : null,
-  onFieldSubmitted: (_) {
-    FocusScope.of(context).requestFocus(_reenterPinFocusNode);
-  },
-),
+                          validator: (value) =>
+                              value == null || value.isEmpty || value.length < 4
+                              ? 'Please enter a new PIN'
+                              : null,
+                          onFieldSubmitted: (_) {
+                            FocusScope.of(
+                              context,
+                            ).requestFocus(_reenterPinFocusNode);
+                          },
+                        ),
 
                         SizedBox(height: 12),
                         TextFormField(
-  controller: _reenterPinController,
-  focusNode: _reenterPinFocusNode,
-  keyboardType: TextInputType.number,
-  obscureText: _obscureReenterPin,
-  maxLength: 4,
-  decoration: InputDecoration(
+                          controller: _reenterPinController,
+                          focusNode: _reenterPinFocusNode,
+                          keyboardType: TextInputType.number,
+                          obscureText: _obscureReenterPin,
+                          maxLength: 4,
+                          decoration: InputDecoration(
                             counterText: "",
                             labelText: 'Re-Enter New PIN',
-                            labelStyle: Theme.of(context)
-                                .inputDecorationTheme
-                                .labelStyle, // Dynamic label
-                            border: Theme.of(context)
-                                .inputDecorationTheme
-                                .border, // Dynamic border
+                            labelStyle: Theme.of(
+                              context,
+                            ).inputDecorationTheme.labelStyle, // Dynamic label
+                            border: Theme.of(
+                              context,
+                            ).inputDecorationTheme.border, // Dynamic border
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _obscureReenterPin
                                     ? Icons.visibility_off
                                     : Icons.visibility,
                                 size: 20,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primary, // Adjust based on theme
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.primary, // Adjust based on theme
                               ),
                               onPressed: () {
                                 setState(() {
@@ -178,26 +177,27 @@ class _ChangePinDialogState extends State<ChangePinDialog> {
                               },
                             ),
                           ),
-  validator: (value) {
-    if (value == null || value.isEmpty || value.length < 4) {
-      return 'Please re-enter your new PIN';
-    } else if (!_isPinsMatching()) {
-      return "New Pin & Re-Enter Pin doesn't match";
-    }
-    return null;
-  },
-  textInputAction: TextInputAction.done,
-  onFieldSubmitted: (_) {
-    if (_formKey.currentState!.validate()) {
-      widget.onSubmit(
-        _oldPinController.text,
-        _newPinController.text,
-      );
-      Navigator.pop(context);
-    }
-  },
-),
-
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.length < 4) {
+                              return 'Please re-enter your new PIN';
+                            } else if (!_isPinsMatching()) {
+                              return "New Pin & Re-Enter Pin doesn't match";
+                            }
+                            return null;
+                          },
+                          textInputAction: TextInputAction.done,
+                          onFieldSubmitted: (_) {
+                            if (_formKey.currentState!.validate()) {
+                              widget.onSubmit(
+                                _oldPinController.text,
+                                _newPinController.text,
+                              );
+                              Navigator.pop(context);
+                            }
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -235,22 +235,21 @@ class _ChangePinDialogState extends State<ChangePinDialog> {
               ),
             ),
             Positioned(
-  top: 0,
-  right: 0,
-  child: InkWell(
-    onTap: () => Navigator.pop(context),
-    borderRadius: BorderRadius.circular(20),
-    child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: CircleAvatar(
-        backgroundColor: Colors.red,
-        radius: 16,
-        child: Icon(Icons.close, color: Colors.white, size: 18),
-      ),
-    ),
-  ),
-),
-
+              top: 0,
+              right: 0,
+              child: InkWell(
+                onTap: () => Navigator.pop(context),
+                borderRadius: BorderRadius.circular(20),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.red,
+                    radius: 16,
+                    child: Icon(Icons.close, color: Colors.white, size: 18),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

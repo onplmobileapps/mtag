@@ -21,10 +21,8 @@ class HomeController extends GetxController implements GetxService {
   final UserRepo userRepo;
 
   HomeController({required this.userRepo});
-
   final RxInt currentPage = 0.obs;
   final RxBool isLoading = false.obs;
-
   //new logic for loading
   var balanceUpdate = false.obs;
   var transferBalance = false.obs;

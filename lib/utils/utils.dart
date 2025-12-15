@@ -69,7 +69,7 @@ sealed class AppReviewUtils {
 
         // Fallback if Google skips dialog
         Future.delayed(const Duration(seconds: 2), () {
-          review.openStoreListing();
+          review.requestReview();
         });
       } catch (_) {
         review.openStoreListing();

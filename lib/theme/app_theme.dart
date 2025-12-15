@@ -299,7 +299,7 @@ ThemeData darkTheme = ThemeData(
       shape: WidgetStatePropertyAll(
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       ),
-      backgroundColor: const WidgetStatePropertyAll( Color(0xFF2C2C2C)),
+      backgroundColor: const WidgetStatePropertyAll(Color(0xff000000)),
       foregroundColor: const WidgetStatePropertyAll(Colors.white),
     ),
   ),
@@ -342,7 +342,7 @@ ThemeData darkTheme = ThemeData(
       fontSize: 12,
       color: Colors.white,
     ),
-    contentPadding: EdgeInsets.only(left: 8, top: 0, bottom: 10),
+    contentPadding: EdgeInsets.only(left: 8, top: 0, bottom: 0),
   ),
   expansionTileTheme: ExpansionTileThemeData(
     collapsedTextColor: primarSwatchDark,
@@ -469,4 +469,3 @@ MaterialColor primarSwatchDark = const MaterialColor(0xff000000, {
   800: Color(0xff000000),
   900: Color(0xff000000),
 });
-
