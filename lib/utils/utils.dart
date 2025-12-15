@@ -44,14 +44,52 @@ sealed class DeviceInfo {
   }
 }
 
+
+
+
+
+
+
 sealed class AppReviewUtils {
-  static void requestAppReview() async {
-    final InAppReview inAppReview = InAppReview.instance;
-    if (await inAppReview.isAvailable()) {
-      inAppReview.requestReview();
+  static void requestAppReview() {
+    if (Platform.isAndroid) {
+      _android();
+    } else if (Platform.isIOS) {
+      _ios();
     }
   }
+
+  /// ✅ ANDROID — fire & forget (NO await)
+  static void _android() {
+    final review = InAppReview.instance;
+
+    Future.delayed(const Duration(milliseconds: 600), () {
+      try {
+        review.requestReview(); // ❗ DO NOT await
+
+        // Fallback if Google skips dialog
+        Future.delayed(const Duration(seconds: 2), () {
+          review.openStoreListing();
+        });
+      } catch (_) {
+        review.openStoreListing();
+      }
+    });
+  }
+
+  /// ✅ IOS — safe to await
+  static Future<void> _ios() async {
+    final review = InAppReview.instance;
+    if (!await review.isAvailable()) return;
+
+    await Future.delayed(const Duration(milliseconds: 300));
+    await review.requestReview();
+  }
 }
+
+
+
+
 
 sealed class AppUpdate {
   static Future<void> checkForUpdates() async {
