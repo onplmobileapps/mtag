@@ -31,17 +31,7 @@ class HomeController extends GetxController implements GetxService {
   var chassisNumberUpdate = false.obs;
  RxInt selectedMtagIndex = 0.obs;
 
-  void goNext(int maxLength) {
-    if (selectedMtagIndex.value < maxLength - 1) {
-      selectedMtagIndex.value++;
-    }
-  }
-
-  void goBack() {
-    if (selectedMtagIndex.value > 0) {
-      selectedMtagIndex.value--;
-    }
-  }
+  
   
   void setCurrentIndex(int value) => currentPage.value = value;
   final _otherConstants = OtherConsts();

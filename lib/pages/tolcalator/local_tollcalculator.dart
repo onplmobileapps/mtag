@@ -46,7 +46,7 @@ static const Map<int, int> tollMapMurree = {
             padding: EdgeInsets.symmetric(horizontal: padding),
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 800, minHeight: constraints.maxHeight),
-              child: Column(
+              child: Column(mainAxisAlignment: .start,crossAxisAlignment: .start,
                 children: [
                   const SizedBox(height: 8),
                   _buildSection(_buildMotorwaySelector(context, isLargeScreen, controller), context),
@@ -145,9 +145,9 @@ static const Map<int, int> tollMapMurree = {
       Card(
         elevation: 0,
         color: Colors.transparent,
-        child: Column(
+        child: Column(mainAxisAlignment: .start,crossAxisAlignment: .start,
           children: [
-            Text('Select Motorway', style: Theme.of(context).textTheme.labelLarge),
+            Text('Select Motorway', style: Theme.of(context).textTheme.bodyLarge),
             const SizedBox(height: 12),
             SizedBox(
               height: isLargeScreen ? 120 : 110,
@@ -200,15 +200,16 @@ static const Map<int, int> tollMapMurree = {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(
-                'assets/line.svg',
-                height: isLargeScreen ? 45 : 35,
-                colorFilter: ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
-              ),
               Text(
                 OtherConsts.mwNameList[index].motorwayAbbrivation!,
                 style: TextStyle(fontSize: isLargeScreen ? 14 : 12, color: Theme.of(context).primaryColor),
               ),
+              Image.asset(
+                'assets/road.png',
+                height: isLargeScreen ? 45 : 50,width: 60,
+               
+              ),
+              
               Text(
                 OtherConsts.mwNameList[index].motorwayName!,
                 style: TextStyle(fontSize: isLargeScreen ? 20 : 18, color: Theme.of(context).primaryColor),
@@ -226,12 +227,12 @@ static const Map<int, int> tollMapMurree = {
     child: Padding(
       padding: EdgeInsets.all(padding),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment: .start,
         children: [
-          Center(child: Text('Select Interchange', style: Theme.of(context).textTheme.labelLarge)),
+          Text('Select Interchange', style: Theme.of(context).textTheme.bodyLarge),
           const SizedBox(height: 10),
           Obx(() => _buildDropdownField(
-            icon: const Icon(Icons.location_on_outlined, color: Colors.green),
+            icon: Image.asset('assets/station.png',height: 20,width: 20,),
             label: 'Entry Station',
             value: controller.entryStation.value.isEmpty ? null : controller.entryStation.value,
             hint: 'Enter starting point',
@@ -242,7 +243,7 @@ static const Map<int, int> tollMapMurree = {
             children: [
               const SizedBox(height: 10),
               _buildDropdownField(
-                icon: const Icon(Icons.location_on, color: Colors.redAccent),
+                icon: Image.asset('assets/station.png',height: 20,width: 20,),
                 label: 'Exit Station',
                 value: controller.exitStation.value.isEmpty ? null : controller.exitStation.value,
                 hint: 'Enter destination',
@@ -277,7 +278,7 @@ static const Map<int, int> tollMapMurree = {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            decoration: BoxDecoration(
+            decoration: BoxDecoration(color: Colors.white,
               border: Border.all(color: borderColor, width: 0.5),
               borderRadius: BorderRadius.circular(12),
             ),
@@ -291,7 +292,7 @@ static const Map<int, int> tollMapMurree = {
                     style: TextStyle(color: textColor, fontSize: 16),
                   ),
                 ),
-                Icon(Icons.arrow_drop_down, color: textColor),
+                Icon(Icons.keyboard_arrow_down, color: textColor),
               ],
             ),
           ),
@@ -305,13 +306,13 @@ static const Map<int, int> tollMapMurree = {
       Card(
         elevation: 0,
         color: Colors.transparent,
-        child: Column(
+        child: Column(mainAxisAlignment: .start,crossAxisAlignment: .start,
           children: [
-            Text('Select Vehicle Type', style: Theme.of(context).textTheme.labelLarge),
+            Text('Select Vehicle Type', style: Theme.of(context).textTheme.bodyLarge),
             const SizedBox(height: 12),
             SizedBox(
               height: isLargeScreen ? 160 : 120,
-              child: ListView.builder(
+              child: ListView.builder(shrinkWrap: true,
                 padding: EdgeInsets.zero,
                 scrollDirection: Axis.horizontal,
                 itemCount: OtherConsts.vehicleList.length,

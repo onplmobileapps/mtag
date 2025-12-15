@@ -146,14 +146,7 @@ class HomePage extends GetView<HomeController> {
                                                   )
                                                 : mtagDataWidget(
                                                     context,
-                                                    onTapBack: () {
-                                                      controller.goBack();
-                                                    },
-                                                    onTapForward: () {
-                                                      controller.goNext(
-                                                        activeMtags.length,
-                                                      );
-                                                    },
+                                                
                                                     isBlock: e.isactive,
                                                     jazzCode: controller
                                                         .dashboradData

@@ -32,7 +32,7 @@ class ChangePinController extends GetxController {
   }
 
   Future<void> submit(Function(String, String) onSubmit) async {
-    if (formKey.currentState!.validate()) {
+    if (formKey.currentState?.validate() ?? false) {
       onSubmit(oldPinController.text, newPinController.text);
       await Get.find<AuthController>().createPIN(
         cnic: AppData.getPinData()?['cnic'],
@@ -81,31 +81,37 @@ class PinTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => TextFormField(
-          controller: controller,
-          focusNode: focusNode,
-          keyboardType: TextInputType.number,
-          obscureText: obscureText.value,
-          maxLength: 4,
-          decoration: InputDecoration(
-            counterText: "",
-            labelText: labelText,
-            labelStyle: const TextStyle(fontSize: 14), // Smaller label size for unfocused state
-            floatingLabelStyle: Theme.of(context).inputDecorationTheme.floatingLabelStyle, // Use theme for focused
-            border: Theme.of(context).inputDecorationTheme.border,
-            suffixIcon: IconButton(
-              icon: Icon(
-                obscureText.value ? Icons.visibility_off : Icons.visibility,
-                size: 20,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              onPressed: () => obscureText.value = !obscureText.value,
+    return Obx(
+      () => TextFormField(
+        controller: controller,
+        focusNode: focusNode,
+        keyboardType: TextInputType.number,
+        obscureText: obscureText.value,
+        maxLength: 4,
+        decoration: InputDecoration(
+          counterText: "",
+          labelText: labelText,
+          labelStyle: const TextStyle(
+            fontSize: 14,
+          ), // Smaller label size for unfocused state
+          floatingLabelStyle: Theme.of(
+            context,
+          ).inputDecorationTheme.floatingLabelStyle, // Use theme for focused
+          border: Theme.of(context).inputDecorationTheme.border,
+          suffixIcon: IconButton(
+            icon: Icon(
+              obscureText.value ? Icons.visibility_off : Icons.visibility,
+              size: 20,
+              color: Theme.of(context).colorScheme.primary,
             ),
+            onPressed: () => obscureText.value = !obscureText.value,
           ),
-          validator: validator,
-          textInputAction: textInputAction,
-          onFieldSubmitted: onFieldSubmitted,
-        ));
+        ),
+        validator: validator,
+        textInputAction: textInputAction,
+        onFieldSubmitted: onFieldSubmitted,
+      ),
+    );
   }
 }
 
@@ -121,8 +127,8 @@ class ChangePinDialog extends StatelessWidget {
     return PopScope(
       canPop: false,
       child: Dialog(
-        backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
-        surfaceTintColor: Theme.of(context).dialogTheme.surfaceTintColor,
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Stack(
           clipBehavior: Clip.none,
@@ -150,8 +156,8 @@ class ChangePinDialog extends StatelessWidget {
                           obscureText: ctrl.obscureOldPin,
                           validator: (value) =>
                               value == null || value.isEmpty || value.length < 4
-                                  ? 'Please enter your old PIN'
-                                  : null,
+                              ? 'Please enter your old PIN'
+                              : null,
                         ),
                         const SizedBox(height: 12),
                         PinTextField(
@@ -161,10 +167,12 @@ class ChangePinDialog extends StatelessWidget {
                           obscureText: ctrl.obscureNewPin,
                           validator: (value) =>
                               value == null || value.isEmpty || value.length < 4
-                                  ? 'Please enter a new PIN'
-                                  : null,
+                              ? 'Please enter a new PIN'
+                              : null,
                           onFieldSubmitted: (_) {
-                            FocusScope.of(context).requestFocus(ctrl.reenterPinFocusNode);
+                            FocusScope.of(
+                              context,
+                            ).requestFocus(ctrl.reenterPinFocusNode);
                           },
                         ),
                         const SizedBox(height: 12),
@@ -174,7 +182,9 @@ class ChangePinDialog extends StatelessWidget {
                           focusNode: ctrl.reenterPinFocusNode,
                           obscureText: ctrl.obscureReenterPin,
                           validator: (value) {
-                            if (value == null || value.isEmpty || value.length < 4) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.length < 4) {
                               return 'Please re-enter your new PIN';
                             } else if (!ctrl.isPinsMatching()) {
                               return "New Pin & Re-Enter Pin doesn't match";

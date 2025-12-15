@@ -57,13 +57,13 @@ class TollDisplay extends StatelessWidget {
                   context,
                 ),
                
-              ],
+              ],  
             ),
           ),
         ),
         Container(
           decoration: const BoxDecoration(
-            color: Colors.green,
+            color: Color(0xff12B76A),
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(8),
               bottomRight: Radius.circular(8),

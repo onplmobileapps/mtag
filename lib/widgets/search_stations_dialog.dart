@@ -79,7 +79,7 @@ class _StationSearchDialogState extends State<StationSearchDialog> {
                   onChanged: _filterItems,
                   cursorColor: borderColor,
                   style: TextStyle(color: borderColor),
-                  decoration: InputDecoration(
+                  decoration: InputDecoration(contentPadding: .zero,
                     hintText: widget.hintText,
                     hintStyle: TextStyle(color: borderColor, fontSize: 14),
                     prefixIcon: Icon(Icons.search, color: borderColor),
@@ -99,12 +99,12 @@ class _StationSearchDialogState extends State<StationSearchDialog> {
                 ),
               ),
               Expanded(
-                child: ListView.builder(
+                child: ListView.builder(padding: .zero,
                   shrinkWrap: true,
                   itemCount: _filteredItems.length,
                   itemBuilder: (_, index) {
                     final item = _filteredItems[index];
-                    return ListTile(
+                    return ListTile(minVerticalPadding: 0,
                       title: Text(
                         item,
                         style: TextStyle(
@@ -116,9 +116,9 @@ class _StationSearchDialogState extends State<StationSearchDialog> {
                       leading: widget.leadingIcon != null
                           ? Icon(
                               widget.leadingIcon,
-                              color: isDarkMode
-                                  ? Colors.grey
-                                  : Theme.of(context).primaryColor,
+                              color: 
+                                 Colors.grey
+                                  
                             )
                           : null,
                       trailing: widget.trailingIconBuilder != null
