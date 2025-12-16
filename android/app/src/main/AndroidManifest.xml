@@ -23,11 +23,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="M-TAG"
         android:layerType="software"
-         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher"
-        android:enableOnBackInvokedCallback="true"
-        >
-
+        android:usesCleartextTraffic="true">
 
 
         <activity
@@ -72,9 +68,9 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="high_importance_channel" />
-        <meta-data
+        <!-- <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
-            android:value="false" />
+            android:value="false" /> -->
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

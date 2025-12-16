@@ -100,7 +100,7 @@ class HomeController extends GetxController implements GetxService {
     isLoading.value = true;
 
     try {
-      final response = await userRepo.getdashBoardData();
+      final response = await userRepo.getdashBoardData(isShowLoading: false);
       if (response.containsKey(APIRESPONSE.SUCCESS)) {
         _updateDashboardData(response[APIRESPONSE.SUCCESS]);
       } else {

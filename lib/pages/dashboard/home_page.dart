@@ -150,54 +150,52 @@ class HomePage extends StatelessWidget {
 
         return SizedBox(
           height: screenHeight * 0.23,
-          child: ListView.builder(shrinkWrap: true,
+          child: ListView.builder(padding: .zero,
+            shrinkWrap: true,
             scrollDirection: Axis.horizontal,
             itemCount: activeMtags.length,
             itemBuilder: (context, index) {
               final e = activeMtags[index];
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: e.isactive == 8
-                    ? mtagRecoveryWidget(
-                        context,
-                        size: MediaQuery.sizeOf(context),
-                        height: screenHeight * 0.29,
-                        isBlock: e.isactive,
-                        mtagId: e.tokenno,
-                        mobileNum: _otherConstants.mobile.string,
-                        cnic: _otherConstants.ownerCNIC.string,
-                        regId: e.registration,
-                        blockAmount: e.block_amount,
-                      )
-                    : mtagDataWidget(
-                        context,
-                        size: MediaQuery.sizeOf(context),
-                        height: screenHeight * 0.29,
-                        isBlock: e.isactive,
-                        jazzCode: controller
-                            .dashboradData
-                            .value
-                            .jazzCashRecharge
-                            .toString(),
-                        creditCode: controller
-                            .dashboradData
-                            .value
-                            .creditCardRecharge
-                            .toString(),
-                        vehType: e.vehicletype,
-                        mtagId: e.tokenno,
-                        userName: e.ownername,
-                        mobileNum: _otherConstants.mobile.string,
-                        cnic: _otherConstants.ownerCNIC.string,
-                        regId: e.registration,
-                        ball: e.balance,
-                        showTransferButton: activeMtags.length > 1,
-                        balanceDashboard: e.balance,
-                        showChassisBadge: e.chassis_number == null,
-                        chassisNumber: e.chassis_number,
-                      ),
-              );
+              return e.isactive == 8
+                  ? mtagRecoveryWidget(
+                      context,
+                      size: MediaQuery.sizeOf(context),
+                      height: screenHeight * 0.29,
+                      isBlock: e.isactive,
+                      mtagId: e.tokenno,
+                      mobileNum: _otherConstants.mobile.string,
+                      cnic: _otherConstants.ownerCNIC.string,
+                      regId: e.registration,
+                      blockAmount: e.block_amount,
+                    )
+                  : mtagDataWidget(
+                      context,
+                      size: MediaQuery.sizeOf(context),
+                      height: screenHeight * 0.29,
+                      isBlock: e.isactive,
+                      jazzCode: controller
+                          .dashboradData
+                          .value
+                          .jazzCashRecharge
+                          .toString(),
+                      creditCode: controller
+                          .dashboradData
+                          .value
+                          .creditCardRecharge
+                          .toString(),
+                      vehType: e.vehicletype,
+                      mtagId: e.tokenno,
+                      userName: e.ownername,
+                      mobileNum: _otherConstants.mobile.string,
+                      cnic: _otherConstants.ownerCNIC.string,
+                      regId: e.registration,
+                      ball: e.balance,
+                      showTransferButton: activeMtags.length > 1,
+                      balanceDashboard: e.balance,
+                      showChassisBadge: e.chassis_number == null,
+                      chassisNumber: e.chassis_number,
+                    );
             },
           ),
         );
