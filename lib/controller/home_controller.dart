@@ -151,15 +151,15 @@ class HomeController extends GetxController implements GetxService {
 
   // --------------------- API Calls ---------------------
   Future<Map<String, dynamic>> sendNetworkOperator({
-    String? CnicNumber,
-    String? MobileNum,
-    int? sim_operator,
+    String? cnicNumber,
+    String? mobileNum,
+    int? simOperator,
   }) async {
     try {
       final response = await userRepo.updateSimOperator(
-        CnicNumber: CnicNumber,
-        MobileNum: MobileNum,
-        sim_operator: sim_operator,
+        CnicNumber: cnicNumber,
+        MobileNum: mobileNum,
+        sim_operator: simOperator,
       );
       if (response.containsKey(APIRESPONSE.SUCCESS)) {
         _showSuccessDialog(
@@ -255,10 +255,11 @@ class HomeController extends GetxController implements GetxService {
         'We couldn\'t complete your request. Please try again or contact support.';
     if (response.containsKey(APIRESPONSE.ERROR)) {
       final error = response[APIRESPONSE.ERROR];
-      if (error is Map)
+      if (error is Map) {
         message = error['Message']?.toString() ?? message;
-      else
+      } else {
         message = error?.toString() ?? message;
+      }
     }
 
     if (Get.context != null && Get.context!.mounted) {
@@ -313,9 +314,9 @@ class HomeController extends GetxController implements GetxService {
         OperatorSelectionDialog.show(
           Get.context!,
           (value) => sendNetworkOperator(
-            CnicNumber: customer?.cNIC,
-            MobileNum: customer?.mobileNumber,
-            sim_operator: value,
+            cnicNumber: customer?.cNIC,
+            mobileNum: customer?.mobileNumber,
+            simOperator: value,
           ),
           mobileNumber: customer?.mobileNumber,
         );

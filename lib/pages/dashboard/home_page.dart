@@ -1,12 +1,10 @@
-import 'package:carousel_slider/carousel_controller.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/pages/alfawebview/weather_webview.dart';
-import 'package:mtag_flutterapp/widgets/mtag_recovery_widget.dart';
 
-import '../../api/user_repo.dart';
+import 'package:mtag_flutterapp/widgets/mtag_recovery_widget.dart';
 import '../../base/app_data.dart';
 import '../../constants/other_consts.dart';
 import '../../controller/home_controller.dart';
@@ -25,7 +23,6 @@ import '../settings/setting_screen.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
-
   final HomeController controller = Get.find<HomeController>();
   final _otherConstants = OtherConsts();
   final MessagingService _messagingService = MessagingService();
@@ -153,7 +150,7 @@ class HomePage extends StatelessWidget {
 
         return SizedBox(
           height: screenHeight * 0.23,
-          child: ListView.builder(
+          child: ListView.builder(shrinkWrap: true,
             scrollDirection: Axis.horizontal,
             itemCount: activeMtags.length,
             itemBuilder: (context, index) {

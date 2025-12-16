@@ -59,16 +59,10 @@ sealed class AppReviewUtils {
 
     Future.delayed(const Duration(milliseconds: 300), () {
       try {
-<<<<<<< HEAD
-        review.requestReview(); // ❗ DO NOT await
-=======
-        Future.delayed(const Duration(seconds: 2), () {
-          review.requestReview();
-        });
->>>>>>> ca50666c709bceac20c0abdd75b56e404d2de36f
-      } catch (_) {
+        review.requestReview();
+       } catch (_) {
         review.openStoreListing();
-      }
+        }
     });
   }
 
