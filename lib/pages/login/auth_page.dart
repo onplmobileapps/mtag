@@ -15,6 +15,7 @@ class AuthPage extends StatelessWidget {
 
   final controller = Get.put(AuthPageController());
   final ScrollController scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -54,10 +55,12 @@ class AuthPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: screenHeight * 0.03),
-                      Text(
-                        'Welcome to M-TAG One Network',
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          fontWeight: .w900,
+                      Center(
+                        child: Text(
+                          'Welcome to M-TAG One Network',
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            fontWeight: .w900,
+                          ),
                         ),
                       ),
                       SizedBox(height: screenHeight * 0.06),
@@ -492,4 +495,3 @@ Map<String, dynamic>? _detectOperator(String phoneNumber) {
   }
   return null;
 }
-

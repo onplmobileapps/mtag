@@ -331,7 +331,6 @@ Widget _buildOtherMtagField(
     hint: "Enter M-Tag Id",
     hintStyle: const TextStyle(color: Colors.grey),
     textInputAction: TextInputAction.done,
-    fillColor: Theme.of(context).primaryColorDark,
     keyboardType: const TextInputType.numberWithOptions(signed: true),
     maxLength: 8,
     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -350,7 +349,7 @@ Widget _buildAmountSection(
         ? Column(
             crossAxisAlignment: .start,
             mainAxisAlignment: .start,
-            mainAxisSize:.min,
+            mainAxisSize: .min,
             children: [
               Row(
                 mainAxisAlignment: .spaceBetween,
