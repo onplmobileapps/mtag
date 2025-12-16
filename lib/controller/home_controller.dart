@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
@@ -18,23 +16,17 @@ import '../widgets/dialog/cupertino_dialog.dart';
 import '../widgets/dialog/operator_selection_dialog.dart';
 
 class HomeController extends GetxController implements GetxService {
-  // Observables
-  final balances = <String, String>{}.obs;
+  // --------------------- Observables ---------------------
   final hiddenStates = <String, bool>{}.obs;
   final RxInt currentPage = 0.obs;
   final RxBool isLoading = false.obs;
   final RxBool isInitialized = false.obs;
-
-  // Loading states
-  final balanceUpdate = false.obs;
-  final transferBalance = false.obs;
-  final chassisNumberUpdate = false.obs;
-
-  // Back press handling
   final RxBool _backPressedOnce = false.obs;
+
+  // --------------------- Timer ---------------------
   Timer? _backPressTimer;
 
-  // Data models
+  // --------------------- Dashboard & Models ---------------------
   final dashboradData = DashBoardModel().obs;
   final List<MtagModel> dashBoardModel = [
     MtagModel(routeName: '/mTag', title: 'M-TAG', image: 'assets/my_tag.svg'),
@@ -55,94 +47,74 @@ class HomeController extends GetxController implements GetxService {
     ),
   ];
 
-  // Dependencies
+  // --------------------- Repos & Constants ---------------------
   final UserRepo userRepo;
   final OtherConsts _otherConstants = OtherConsts();
 
-  // Constructor with proper initialization
   HomeController({required this.userRepo}) {
-    log('HomeController constructor called');
-    // Initialize observables safely
+    log('HomeController created');
     _initializeController();
   }
 
+  // --------------------- Lifecycle ---------------------
   @override
   void onInit() {
     super.onInit();
-    log('HomeController onInit called');
-
-    // Start initialization
     _initializeAsync();
   }
 
+  @override
+  void onReady() {
+    super.onReady();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      _handlePostInitActions();
+      _handleAppCountAndReview();
+    });
+  }
+
+  @override
+  void onClose() {
+    _backPressTimer?.cancel();
+    super.onClose();
+  }
+
+  bool get isReady => isInitialized.value && !isLoading.value;
+
+  // --------------------- Initialization ---------------------
   void _initializeController() {
-    try {
-      // Initialize hidden states for existing balances
-      for (var key in balances.keys) {
-        hiddenStates.putIfAbsent(key, () => true);
-      }
-
-      // Initialize other constants
-      _otherConstants.jazzCode.value = 0;
-      _otherConstants.creditCode.value = 0;
-
-      log('HomeController initialized successfully');
-    } catch (e) {
-      log('Error initializing HomeController: $e');
-    }
+    _otherConstants.jazzCode.value = 0;
+    _otherConstants.creditCode.value = 0;
+    log('Controller initialized');
   }
 
   Future<void> _initializeAsync() async {
-    try {
-      if (!isInitialized.value) {
-        await getDashboardData();
-        isInitialized.value = true;
-      }
-    } catch (e) {
-      log('Error in async initialization: $e');
-      // Don't crash the app, just log the error
-      isLoading.value = false;
+    if (!isInitialized.value) {
+      await getDashboardData();
+      isInitialized.value = true;
     }
   }
 
-  void setCurrentIndex(int value) => currentPage.value = value;
+  // --------------------- Dashboard Data ---------------------
+  Future<Map<String, dynamic>> getDashboardData() async {
+    if (isLoading.value) return {};
+    isLoading.value = true;
 
-  Future<Map<String, dynamic>> getDashboardData({
-    String? appVersion,
-    String? deviceID,
-    bool? isLoadingValue,
-  }) async {
     try {
-      if (isLoading.value) {
-        log('Dashboard data already loading, skipping duplicate call');
-        return {};
-      }
-
-      isLoading.value = true;
-      log('Fetching dashboard data...');
-
       final response = await userRepo.getdashBoardData();
-
       if (response.containsKey(APIRESPONSE.SUCCESS)) {
-        log('Dashboard data fetched successfully');
         _updateDashboardData(response[APIRESPONSE.SUCCESS]);
       } else {
-        log(
-          'Dashboard data fetch failed: ${response.containsKey(APIRESPONSE.ERROR) ? response[APIRESPONSE.ERROR] : 'Unknown error'}',
-        );
         _handleError(response);
       }
-
       return response;
-    } catch (e, stackTrace) {
-      log('Exception in getDashboardData: $e\n$stackTrace');
-      _handleError({'Error': 'Network error occurred: $e'});
-      return {'Error': 'Exception occurred: $e'};
+    } catch (e) {
+      _handleError({'Error': 'Network error: $e'});
+      return {'Error': 'Exception: $e'};
     } finally {
-      // Always set loading to false
-      Future.delayed(const Duration(milliseconds: 300), () {
-        isLoading.value = false;
-      });
+      Future.delayed(
+        const Duration(milliseconds: 300),
+        () => isLoading.value = false,
+      );
     }
   }
 
@@ -151,7 +123,7 @@ class HomeController extends GetxController implements GetxService {
       final newData = DashBoardModel.fromJson(data);
       dashboradData.value = newData;
 
-      // Update constants safely
+      // Update constants
       final customer = newData.customerDetail;
       if (customer != null) {
         _otherConstants.ownerName.value = customer.fullName ?? '';
@@ -161,24 +133,23 @@ class HomeController extends GetxController implements GetxService {
         _otherConstants.password.value = customer.password ?? '';
       }
 
-      // Update jazz and credit codes
       _otherConstants.jazzCode(newData.jazzCashRecharge);
       _otherConstants.creditCode(newData.creditCardRecharge);
 
-      // Initialize hidden states for new MTags
-      if (newData.activeMtags != null) {
-        for (var mtag in newData.activeMtags!) {
-          hiddenStates.putIfAbsent(mtag.tokenno.toString(), () => true);
-        }
-      }
-
-      log('Dashboard data updated successfully');
-    } catch (e, stackTrace) {
-      log('Error updating dashboard data: $e\n$stackTrace');
-      // Don't crash, just log the error
+      // Hidden states for MTags
+      newData.activeMtags?.forEach((mtag) {
+        hiddenStates.putIfAbsent(mtag.tokenno.toString(), () => true);
+      });
+    } catch (e) {
+      log('Error updating dashboard: $e');
     }
   }
 
+  Future<void> refreshDashboardData() async => await getDashboardData();
+
+  Future<void> pullRefreshDashboardData() async => await getDashboardData();
+
+  // --------------------- API Calls ---------------------
   Future<Map<String, dynamic>> sendNetworkOperator({
     String? CnicNumber,
     String? MobileNum,
@@ -190,18 +161,15 @@ class HomeController extends GetxController implements GetxService {
         MobileNum: MobileNum,
         sim_operator: sim_operator,
       );
-
       if (response.containsKey(APIRESPONSE.SUCCESS)) {
         _showSuccessDialog(
-          response[APIRESPONSE.SUCCESS]['Message']?.toString() ??
-              'Operation successful',
+          response[APIRESPONSE.SUCCESS]['Message']?.toString() ?? 'Success',
         );
       } else {
         _handleError(response);
       }
       return response;
     } catch (e) {
-      log('Error in sendNetworkOperator: $e');
       _handleError({'Error': 'Failed to update network operator'});
       return {'Error': 'Exception occurred'};
     }
@@ -220,19 +188,17 @@ class HomeController extends GetxController implements GetxService {
         mtagID,
         chassisNumber,
       );
-
       if (response.containsKey(APIRESPONSE.SUCCESS)) {
         await refreshDashboardData();
         _showSuccessDialog(
           response[APIRESPONSE.SUCCESS]['Message']?.toString() ??
-              'Chassis number updated',
+              'Chassis updated',
         );
       } else {
         _handleError(response);
       }
       return response;
     } catch (e) {
-      log('Error in updateChassisCall: $e');
       _handleError({'Error': 'Failed to update chassis number'});
       return {'Error': 'Exception occurred'};
     }
@@ -253,64 +219,23 @@ class HomeController extends GetxController implements GetxService {
         toMtag,
         amount,
       );
-
       if (response.containsKey(APIRESPONSE.SUCCESS)) {
         await refreshDashboardData();
         _showSuccessDialog(
           response[APIRESPONSE.SUCCESS]['Message']?.toString() ??
-              'Balance transferred successfully',
+              'Balance transferred',
         );
       } else {
         _handleError(response);
       }
       return response;
     } catch (e) {
-      log('Error in transferBalanceCall: $e');
       _handleError({'Error': 'Failed to transfer balance'});
       return {'Error': 'Exception occurred'};
     }
   }
 
-  Future<Map<String, dynamic>> sendCheckBalance([List<String>? mtagIds]) async {
-    try {
-      balanceUpdate.value = true;
-      final response = await userRepo.checkBalance(mtagIds ?? []);
-
-      if (response.containsKey("Success")) {
-        final actualData = response["Success"];
-        final code = actualData["Code"]?.toString();
-
-        if (code == "00" && actualData["Data"] != null) {
-          final data = actualData["Data"] as List<dynamic>;
-
-          for (final e in data) {
-            final id = e["itokenno"].toString();
-            final amount = (e["amount"] != null)
-                ? e["amount"].toString()
-                : "0.00";
-
-            balances[id] = amount;
-            hiddenStates.putIfAbsent(id, () => true);
-          }
-
-          hiddenStates.refresh();
-          log('Balance check successful. Found ${data.length} accounts');
-        } else {
-          log('Balance check failed with code: $code');
-        }
-      } else {
-        log('Balance check API error: $response');
-      }
-
-      return response;
-    } catch (e, stackTrace) {
-      log('Error in sendCheckBalance: $e\n$stackTrace');
-      return {'Error': 'Failed to check balance'};
-    } finally {
-      balanceUpdate.value = false;
-    }
-  }
-
+  // --------------------- Dialogs ---------------------
   void _showSuccessDialog(String message) {
     if (Get.context != null && Get.context!.mounted) {
       showCupertinoModalPopup(
@@ -326,176 +251,86 @@ class HomeController extends GetxController implements GetxService {
   }
 
   void _handleError(Map<String, dynamic> response) {
-    try {
-      String message =
-          'We couldn\'t complete your request. Please try again or contact assistance.';
+    String message =
+        'We couldn\'t complete your request. Please try again or contact support.';
+    if (response.containsKey(APIRESPONSE.ERROR)) {
+      final error = response[APIRESPONSE.ERROR];
+      if (error is Map)
+        message = error['Message']?.toString() ?? message;
+      else
+        message = error?.toString() ?? message;
+    }
 
-      if (response.containsKey(APIRESPONSE.ERROR)) {
-        if (response[APIRESPONSE.ERROR] is Map) {
-          message =
-              response[APIRESPONSE.ERROR]['Message']?.toString() ?? message;
-        } else {
-          message = response[APIRESPONSE.ERROR]?.toString() ?? message;
-        }
-      }
-
-      log('Error handled: $message');
-
-      if (Get.context != null && Get.context!.mounted) {
-        showPopDialog(message, _resetAndNavigate);
-      }
-    } catch (e) {
-      log('Error in _handleError: $e');
+    if (Get.context != null && Get.context!.mounted) {
+      showPopDialog(message, _resetAndNavigate);
     }
   }
 
   void _resetAndNavigate() {
-    try {
-      Get.find<AuthController>().clearSharedData();
-      Get.offAllNamed('/pinPage');
-    } catch (e) {
-      log('Error in _resetAndNavigate: $e');
-    }
+    Get.find<AuthController>().clearSharedData();
+    Get.offAllNamed('/pinPage');
   }
 
-  Future<void> refreshDashboardData() async {
-    try {
-      await getDashboardData();
-      _otherConstants.isRefresh(false);
-    } catch (e) {
-      log('Error in refreshDashboardData: $e');
-    }
-  }
-
-  Future<void> pullRefreshDashboardData() async {
-    try {
-      await getDashboardData();
-      _otherConstants.isRefresh(false);
-    } catch (e) {
-      log('Error in pullRefreshDashboardData: $e');
-    }
-  }
-
-  // Back press handling methods
+  // --------------------- Back Press ---------------------
   void initializeBackHandler(BuildContext context) {
-    try {
-      SystemChannels.platform.setMethodCallHandler((call) async {
-        if (call.method == 'SystemNavigator.pop') {
-          return await handleBackPress();
-        }
-        return null;
-      });
-    } catch (e) {
-      log('Error initializing back handler: $e');
-    }
-  }
-
-  Future<bool> handleBackPress() async {
-    try {
-      if (_backPressedOnce.value) {
-        _backPressTimer?.cancel();
-        return true;
-      }
-
-      _backPressedOnce.value = true;
-
-      Get.snackbar(
-        'Press back again to exit',
-        '',
-        duration: const Duration(seconds: 2),
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.black54,
-        colorText: Colors.white,
-      );
-
-      _backPressTimer = Timer(const Duration(seconds: 2), () {
-        _backPressedOnce.value = false;
-      });
-
-      return false;
-    } catch (e) {
-      log('Error in handleBackPress: $e');
-      return false;
-    }
-  }
-
-  @override
-  void onClose() {
-    log('HomeController onClose called');
-    _backPressTimer?.cancel();
-    super.onClose();
-  }
-
-  void refreshBalance() {
-    // Implement balance refresh logic here
-    sendCheckBalance();
-  }
-
-  // App lifecycle methods
-  Future<void> _handleAppCountAndReview() async {
-    try {
-      await AppData.setCount();
-      final count = AppData.getAppCount();
-
-      log("App launch count: $count");
-
-      if (count >= 5) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          try {
-            AppReviewUtils.requestAppReview();
-          } catch (e) {
-            log('Error requesting app review: $e');
-          }
-        });
-
-        await AppData.setCount(reset: true);
-      }
-    } catch (e) {
-      log('Error in _handleAppCountAndReview: $e');
-    }
-  }
-
-  void _handlePostInitActions() {
-    try {
-      if (dashboradData.value.customerDetail != null &&
-          dashboradData.value.customerDetail!.mobileNumber != null &&
-          dashboradData.value.customerDetail!.mobileNumber!.isNotEmpty &&
-          dashboradData.value.customerDetail?.sim_operator == 0) {
-        if (Get.context != null && Get.context!.mounted) {
-          OperatorSelectionDialog.show(
-            Get.context!,
-            (value) {
-              sendNetworkOperator(
-                CnicNumber: dashboradData.value.customerDetail!.cNIC,
-                MobileNum: dashboradData.value.customerDetail!.mobileNumber,
-                sim_operator: value,
-              );
-            },
-            mobileNumber: dashboradData.value.customerDetail!.mobileNumber,
-          );
-        }
-      }
-    } catch (e) {
-      log('Error in _handlePostInitActions: $e');
-    }
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-    log('HomeController onReady called');
-
-    // Handle post-init actions after a small delay to ensure UI is ready
-    Future.delayed(const Duration(milliseconds: 500), () {
-      try {
-        _handlePostInitActions();
-        _handleAppCountAndReview();
-      } catch (e) {
-        log('Error in onReady delayed tasks: $e');
-      }
+    SystemChannels.platform.setMethodCallHandler((call) async {
+      if (call.method == 'SystemNavigator.pop') return await handleBackPress();
+      return null;
     });
   }
 
-  // Helper method to check if controller is ready
-  bool get isReady => isInitialized.value && !isLoading.value;
+  Future<bool> handleBackPress() async {
+    if (_backPressedOnce.value) {
+      _backPressTimer?.cancel();
+      return true;
+    }
+
+    _backPressedOnce.value = true;
+    Get.snackbar(
+      'Press back again to exit',
+      '',
+      duration: const Duration(seconds: 2),
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.black54,
+      colorText: Colors.white,
+    );
+
+    _backPressTimer = Timer(
+      const Duration(seconds: 2),
+      () => _backPressedOnce.value = false,
+    );
+    return false;
+  }
+
+  // --------------------- Utilities ---------------------
+  void setCurrentIndex(int value) => currentPage.value = value;
+
+  void _handlePostInitActions() {
+    final customer = dashboradData.value.customerDetail;
+    if (customer?.mobileNumber?.isNotEmpty == true &&
+        customer?.sim_operator == 0) {
+      if (Get.context != null && Get.context!.mounted) {
+        OperatorSelectionDialog.show(
+          Get.context!,
+          (value) => sendNetworkOperator(
+            CnicNumber: customer?.cNIC,
+            MobileNum: customer?.mobileNumber,
+            sim_operator: value,
+          ),
+          mobileNumber: customer?.mobileNumber,
+        );
+      }
+    }
+  }
+
+  Future<void> _handleAppCountAndReview() async {
+    await AppData.setCount();
+    final count = AppData.getAppCount();
+    if (count >= 5) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => AppReviewUtils.requestAppReview(),
+      );
+      await AppData.setCount(reset: true);
+    }
+  }
 }
