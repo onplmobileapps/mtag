@@ -24,7 +24,7 @@ import '../settings/setting_screen.dart';
 class HomePage extends GetView<HomeController> {
   HomePage({super.key});
 
-  final _carouselController = CarouselSliderController();
+ 
 
   final bottomNavigations = <Widget>[
     Container(),
@@ -54,7 +54,8 @@ class HomePage extends GetView<HomeController> {
     );
   }
 
-  Widget _buildScaffold(BuildContext context, HomeController controller) {
+  Widget _buildScaffold(BuildContext context, HomeController controller)
+  {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: controller.currentPage.value == 0
@@ -90,19 +91,19 @@ class HomePage extends GetView<HomeController> {
                   return Obx(
                     () => controller.isLoading.value
                         ? buildShimmerEffect(screenWidth, screenHeight)
-                        : CustomScrollView(
+                        : CustomScrollView(scrollDirection: Axis.vertical,
                             slivers: [
                               SliverToBoxAdapter(
                                 child: AspectRatio(
                                   aspectRatio: 2,
                                   child: Stack(
-                                    fit: StackFit.expand,
+                                    // fit: StackFit.expand,
                                     children: [
                                       Padding(
                                         padding: EdgeInsets.all(8),
                                         child: CarouselSlider(
                                           carouselController:
-                                              _carouselController,
+                                              controller.carouselController,
                                           items: OtherConsts.sliderImages.map((
                                             e,
                                           ) {
@@ -141,7 +142,7 @@ class HomePage extends GetView<HomeController> {
                                           options: CarouselOptions(
                                             height: 600,
                                             viewportFraction: 1,
-                                            autoPlay: controller.currentPage.value == 0,
+                                            autoPlay: true,
                                             autoPlayInterval: const Duration(
                                               seconds: 5,
                                             ),

@@ -25,9 +25,11 @@ class Binding extends Bindings {
 
   @override
   void dependencies() {
-    Get.put(
-      AuthController(authRepo: AuthRepo(sharedPreferences: sharedPreferences)),
-      permanent: true,
+    Get.lazyPut(
+      () => AuthController(
+        authRepo: AuthRepo(sharedPreferences: sharedPreferences),
+      ),
+      fenix: true,
     );
 
     Get.lazyPut(() => HomeController(userRepo: UserRepo()), fenix: true);

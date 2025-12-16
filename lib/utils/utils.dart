@@ -63,14 +63,9 @@ sealed class AppReviewUtils {
   static void _android() {
     final review = InAppReview.instance;
 
-    Future.delayed(const Duration(milliseconds: 600), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       try {
         review.requestReview(); // ❗ DO NOT await
-
-        // Fallback if Google skips dialog
-        Future.delayed(const Duration(seconds: 2), () {
-          review.requestReview();
-        });
       } catch (_) {
         review.openStoreListing();
       }

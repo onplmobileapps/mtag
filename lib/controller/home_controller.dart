@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:async';
+import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import '../../base/app_data.dart';
@@ -27,7 +28,7 @@ class HomeController extends GetxController implements GetxService {
   var balanceUpdate = false.obs;
   var transferBalance = false.obs;
   var chassisNumberUpdate = false.obs;
-
+ final carouselController = CarouselSliderController();
   void setCurrentIndex(int value) => currentPage.value = value;
   final _otherConstants = OtherConsts();
   final List<MtagModel> dashBoardModel = [
@@ -94,9 +95,6 @@ class HomeController extends GetxController implements GetxService {
     }
     return response;
   }
-
-  //update chassis call
-
   Future<Map<String, dynamic>> updateChassisCall({
     String? cnicNumber,
     mobileNumber,
@@ -127,7 +125,6 @@ class HomeController extends GetxController implements GetxService {
     return response;
   }
 
-  //transfer balance call
   Future<Map<String, dynamic>> transferBalanceCall({
     String? cnicNumber,
     mobileNumber,
@@ -253,7 +250,11 @@ class HomeController extends GetxController implements GetxService {
   Future<void> _initializeDashboard() async {
     await getDashboardData();
   }
-
+  @override
+  void onClose() {
+    carouselController.stopAutoPlay();  
+    super.onClose();
+  }
   /// Increments app count and triggers review at 5 launches.
   Future<void> _handleAppCountAndReview() async {
   await AppData.setCount();

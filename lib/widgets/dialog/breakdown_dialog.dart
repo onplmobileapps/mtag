@@ -21,8 +21,8 @@ void showBreakdownDialog({
         onPopInvokedWithResult: (didPop, result) {},
         canPop: false,
         child: Dialog(
-          surfaceTintColor: Theme.of(context).dialogTheme.surfaceTintColor,
-          backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
+          surfaceTintColor:ColorScheme.of(context).surfaceTint,
+          backgroundColor: ColorScheme.of(context).surface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -208,8 +208,8 @@ void showTopUpDialog({
         onPopInvokedWithResult: (didPop, result) {},
         canPop: false,
         child: Dialog(
-          surfaceTintColor: Theme.of(context).dialogTheme.surfaceTintColor,
-          backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
+          surfaceTintColor: ColorScheme.of(context).surfaceTint,
+          backgroundColor: ColorScheme.of(context).surface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),

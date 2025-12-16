@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+// import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -29,7 +29,7 @@ void main() async {
   );
 
   //uncomment when go to production
-   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  //  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   final sharedPreferences = await SharedPreferences.getInstance();
 
   SystemChrome.setSystemUIOverlayStyle(
@@ -67,10 +67,10 @@ class _MTagAppState extends State<MTagApp> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (Platform.isAndroid) AppUpdate.checkForUpdates();
-      DeviceInfo.getDeviceInfo();
+      if (Platform.isAndroid) await AppUpdate.checkForUpdates();
+   await   DeviceInfo.getDeviceInfo();
       FirebaseRemoteConfigService().fetchRemoteConfig();
-      _messagingService.init(context);
+    if(mounted)  _messagingService.init(context);
 
       // preload DBs
       await TollDatabase.instance.importDataIfNeeded();
@@ -84,7 +84,7 @@ class _MTagAppState extends State<MTagApp> {
       smartManagement: SmartManagement.keepFactory,
       defaultTransition: Transition.native,
       transitionDuration: const Duration(milliseconds: 30),
-      popGesture: true,
+      popGesture: Platform.isIOS,
       useInheritedMediaQuery: true,
       builder: (context, child) {
         final MediaQueryData data = MediaQuery.of(context);
