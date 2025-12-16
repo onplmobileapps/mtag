@@ -44,12 +44,6 @@ sealed class DeviceInfo {
   }
 }
 
-
-
-
-
-
-
 sealed class AppReviewUtils {
   static void requestAppReview() {
     if (Platform.isAndroid) {
@@ -65,7 +59,13 @@ sealed class AppReviewUtils {
 
     Future.delayed(const Duration(milliseconds: 300), () {
       try {
+<<<<<<< HEAD
         review.requestReview(); // ❗ DO NOT await
+=======
+        Future.delayed(const Duration(seconds: 2), () {
+          review.requestReview();
+        });
+>>>>>>> ca50666c709bceac20c0abdd75b56e404d2de36f
       } catch (_) {
         review.openStoreListing();
       }
@@ -81,10 +81,6 @@ sealed class AppReviewUtils {
     await review.requestReview();
   }
 }
-
-
-
-
 
 sealed class AppUpdate {
   static Future<void> checkForUpdates() async {
@@ -199,95 +195,94 @@ String maskString(String value) {
 
   return '';
 }
+
 final List<Map<String, dynamic>> operatorList = [
-    {
-      'text': 'Jazz',
-      'value': 1,
-      'image': 'assets/jazz-logo-1.png',
-      'prefixes': [
-        '0300',
-        '0301',
-        '0302',
-        '0303',
-        '0304',
-        '0306',
-        '0307',
-        '0308',
-        '0309',
-      ],
-    },
-    {
-      'text': 'Telenor',
-      'value': 2,
-      'image': 'assets/telenor.jpg',
-      'prefixes': [
-        '0340',
-        '0341',
-        '0342',
-        '0343',
-        '0344',
-        '0345',
-        '0346',
-        '0347',
-        '0348',
-        '0349',
-      ],
-    },
-    {
-      'text': 'Ufone',
-      'value': 3,
-      'image': 'assets/ufone.png',
-      'prefixes': [
-        '0330',
-        '0331',
-        '0332',
-        '0333',
-        '0334',
-        '0335',
-        '0336',
-        '0337',
-        '0338',
-      ],
-    },
-    {
-      'text': 'Zong',
-      'value': 5,
-      'image': 'assets/zong.png',
-      'prefixes': [
-        '0310',
-        '0311',
-        '0312',
-        '0313',
-        '0314',
-        '0315',
-        '0316',
-        '0317',
-        '0318',
-        '0319',
-      ],
-    },
-    {
-      'text': 'Warid',
-      'value': 4,
-      'image': 'assets/warid.png',
-      'prefixes': [
-        '0320',
-        '0321',
-        '0322',
-        '0323',
-        '0324',
-        '0325',
-        '0327',
-        '0328',
-        '0329',
-      ],
-    },
-    {
-      'text': 'SCO',
-      'value': 6,
-      'image': 'assets/sco.webp',
-      'prefixes': ['0355'],
-    },
-  ];
-
-
+  {
+    'text': 'Jazz',
+    'value': 1,
+    'image': 'assets/jazz-logo-1.png',
+    'prefixes': [
+      '0300',
+      '0301',
+      '0302',
+      '0303',
+      '0304',
+      '0306',
+      '0307',
+      '0308',
+      '0309',
+    ],
+  },
+  {
+    'text': 'Telenor',
+    'value': 2,
+    'image': 'assets/telenor.jpg',
+    'prefixes': [
+      '0340',
+      '0341',
+      '0342',
+      '0343',
+      '0344',
+      '0345',
+      '0346',
+      '0347',
+      '0348',
+      '0349',
+    ],
+  },
+  {
+    'text': 'Ufone',
+    'value': 3,
+    'image': 'assets/ufone.png',
+    'prefixes': [
+      '0330',
+      '0331',
+      '0332',
+      '0333',
+      '0334',
+      '0335',
+      '0336',
+      '0337',
+      '0338',
+    ],
+  },
+  {
+    'text': 'Zong',
+    'value': 5,
+    'image': 'assets/zong.png',
+    'prefixes': [
+      '0310',
+      '0311',
+      '0312',
+      '0313',
+      '0314',
+      '0315',
+      '0316',
+      '0317',
+      '0318',
+      '0319',
+    ],
+  },
+  {
+    'text': 'Warid',
+    'value': 4,
+    'image': 'assets/warid.png',
+    'prefixes': [
+      '0320',
+      '0321',
+      '0322',
+      '0323',
+      '0324',
+      '0325',
+      '0327',
+      '0328',
+      '0329',
+    ],
+  },
+  {
+    'text': 'SCO',
+    'value': 6,
+    'image': 'assets/sco.webp',
+    'prefixes': ['0355'],
+  },
+];
