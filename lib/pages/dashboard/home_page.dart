@@ -1,6 +1,7 @@
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
@@ -31,22 +32,23 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light,
-      ),
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: _buildAppBar(),
-        body: _buildBody(),
-        bottomNavigationBar: _buildBottomNav(context),
+    return  Obx(()=>
+       Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: controller.currentPage.value == 0 
+            ? _buildAppBar()
+            : null,
+      
+          body: _buildBody(),
+          bottomNavigationBar: _buildBottomNav(context),
+      
       ),
     );
   }
 
   // --------------------- AppBar ---------------------
   PreferredSizeWidget? _buildAppBar() {
+    log('current page:${controller.currentPage.value}');
     if (controller.currentPage.value != 0) return null;
 
     return BuilAppBarWidget(
@@ -235,39 +237,41 @@ class HomePage extends StatelessWidget {
 
   // --------------------- Bottom Navigation ---------------------
   Widget _buildBottomNav(BuildContext context) {
-    return CustomBottomNavBar(
-      currentIndex: controller.currentPage.value,
-      onTap: (index) {
-        if (index == 0 && _otherConstants.isRefresh.value) {
-          controller.pullRefreshDashboardData();
-        }
-        controller.setCurrentIndex(index);
-      },
-      selectedColor: Theme.of(context).primaryColor,
-      unselectedColor: Colors.grey,
-      backgroundColor: Colors.white,
-      items: [
-        BottomNavigationBarItem(
-          icon: SvgPicture.asset(
-            'assets/house-blank.svg',
-            height: 20,
-            width: 20,
+    return Obx(()=>
+       CustomBottomNavBar(
+        currentIndex: controller.currentPage.value,
+        onTap: (index) {
+          if (index == 0 && _otherConstants.isRefresh.value) {
+            controller.pullRefreshDashboardData();
+          }
+          controller.setCurrentIndex(index);
+        },
+        selectedColor: Theme.of(context).primaryColor,
+        unselectedColor: Colors.grey,
+        backgroundColor: Colors.white,
+        items: [
+          BottomNavigationBarItem(
+            icon: SvgPicture.asset(
+              'assets/house-blank.svg',
+              height: 20,
+              width: 20,
+            ),
+            activeIcon: SvgPicture.asset(
+              'assets/house-blank.svg',
+              height: 20,
+              width: 20,
+            ),
+            label: 'Home',
+            tooltip: 'Home',
           ),
-          activeIcon: SvgPicture.asset(
-            'assets/house-blank.svg',
-            height: 20,
-            width: 20,
+          BottomNavigationBarItem(
+            icon: Image.asset('assets/settings.png', height: 20),
+            activeIcon: Image.asset('assets/settings.png', height: 20),
+            label: 'Settings',
+            tooltip: 'Settings',
           ),
-          label: 'Home',
-          tooltip: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Image.asset('assets/settings.png', height: 20),
-          activeIcon: Image.asset('assets/settings.png', height: 20),
-          label: 'Settings',
-          tooltip: 'Settings',
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

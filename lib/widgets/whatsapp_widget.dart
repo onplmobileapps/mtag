@@ -30,7 +30,7 @@ class WhatsAppButton extends StatelessWidget {
       child: Container(
         padding: padding,
         decoration: BoxDecoration(
-          color: backgroundColor,
+          color: backgroundColor.withValues(alpha: 0.5),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(borderRadius),
             bottomLeft: Radius.circular(borderRadius),
