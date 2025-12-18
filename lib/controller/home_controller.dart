@@ -3,14 +3,14 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import '../../base/app_data.dart';
-import '../../utils/utils.dart';
 import '../api/api_constants.dart';
 import '../api/auth_controller.dart';
 import '../api/user_repo.dart';
+import '../base/app_data.dart';
 import '../constants/other_consts.dart';
 import '../pages/dashboard/model/dashboard_model.dart';
 import '../pages/dashboard/model/mtag_model.dart';
+import '../utils/utils.dart';
 import '../widgets/dialog/cupertino_dialog.dart';
 import '../widgets/dialog/operator_selection_dialog.dart';
 
@@ -252,7 +252,7 @@ class HomeController extends GetxController implements GetxService {
     super.onReady();
     WidgetsBinding.instance.addPostFrameCallback((_)async {
        await _initializeDashboard();
-    // await _handleAppCountAndReview();
+    await _handleAppCountAndReview();
     _handlePostInitActions();
     },);
    
@@ -262,17 +262,17 @@ class HomeController extends GetxController implements GetxService {
     await getDashboardData();
   }
 
-  /// Increments app count and triggers review at 5 launches.
-  // Future<void> _handleAppCountAndReview() async {
+  // / Increments app count and triggers review at 5 launches.
+  Future<void> _handleAppCountAndReview() async {
    
-  //   await AppData.setCount(); // Increment count
-  //   final count = AppData.getAppCount();
-  //   if (count >= 5) {
-  //     AppReviewUtils.requestAppReview();
-  //     await AppData.setCount(reset: true); // Reset count after review
-  //   }
-  //    debugPrint("inapp-review called$count");
-  // }
+    await AppData.setCount(); // Increment count
+    final count = AppData.getAppCount();
+    if (count >= 5) {
+      AppReviewUtils.requestAppReview();
+      await AppData.setCount(reset: true); // Reset count after review
+    }
+     debugPrint("inapp-review called$count");
+  }
 
   void _handlePostInitActions() {
     if (dashboradData.value.customerDetail != null &&

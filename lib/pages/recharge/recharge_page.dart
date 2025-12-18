@@ -331,7 +331,7 @@ Widget _buildOtherMtagField(
     hint: "Enter M-Tag Id",
     hintStyle: const TextStyle(color: Colors.grey),
     textInputAction: TextInputAction.done,
-    fillColor: Theme.of(context).primaryColorDark,
+    fillColor: ColorScheme.of(context).surface,
     keyboardType: const TextInputType.numberWithOptions(signed: true),
     maxLength: 8,
     inputFormatters: [FilteringTextInputFormatter.digitsOnly],

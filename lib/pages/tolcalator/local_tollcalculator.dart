@@ -32,7 +32,7 @@ static const Map<int, int> tollMapMurree = {
     5: 300,
     6: 550,
   };
-  @override
+
  @override
   Widget build(BuildContext context) {
     return GetBuilder<MotorwayStaticController>(
@@ -150,7 +150,7 @@ static const Map<int, int> tollMapMurree = {
             Text('Select Motorway', style: Theme.of(context).textTheme.bodyLarge),
             const SizedBox(height: 12),
             SizedBox(
-              height: isLargeScreen ? 120 : 110,
+              height: isLargeScreen ? 120 : 120,
               child: ListView.builder(
                 padding: EdgeInsets.zero,
                 scrollDirection: Axis.horizontal,
@@ -185,7 +185,7 @@ static const Map<int, int> tollMapMurree = {
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          width: isLargeScreen ? 150 : 120,
+          width: isLargeScreen ? 150 : 140,
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(
