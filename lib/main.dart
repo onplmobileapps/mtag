@@ -43,7 +43,7 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-
+ 
   HttpOverrides.global = MyHttpOverrides();
 
   runApp(MTagApp(sharedPreferences: sharedPreferences));

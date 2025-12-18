@@ -1,237 +1,288 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/widgets/dialog/cupertino_dialog.dart';
 import '../../api/auth_controller.dart';
 import '../../base/app_data.dart';
 
-void showChangePinDialog({
+
+
+void showChangePinDialog(
+  BuildContext context, {
   required Function(String oldPin, String newPin) onSubmit,
 }) {
-  Get.put(ChangePinController());
-  Get.dialog(
-    ChangePinDialog(onSubmit: onSubmit),
+  showDialog(
+    context: context,
     barrierDismissible: false,
-  ).then((_) => Get.delete<ChangePinController>());
+    builder: (context) => const ChangePinDialog(),
+  );
 }
 
-class ChangePinController extends GetxController {
-  final oldPinController = TextEditingController();
-  final newPinController = TextEditingController();
-  final reenterPinController = TextEditingController();
-  final formKey = GlobalKey<FormState>();
+class ChangePinDialog extends StatefulWidget {
+  const ChangePinDialog({super.key});
 
-  final oldPinFocusNode = FocusNode();
-  final newPinFocusNode = FocusNode();
-  final reenterPinFocusNode = FocusNode();
+  @override
+  State<ChangePinDialog> createState() => _ChangePinDialogState();
+}
 
-  var obscureOldPin = true.obs;
-  var obscureNewPin = true.obs;
-  var obscureReenterPin = true.obs;
+class _ChangePinDialogState extends State<ChangePinDialog> {
+  final _oldPinController = TextEditingController();
+  final _newPinController = TextEditingController();
+  final _reenterPinController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-  bool isPinsMatching() {
-    return newPinController.text == reenterPinController.text;
+  final _oldPinFocusNode = FocusNode();
+  final _newPinFocusNode = FocusNode();
+  final _reenterPinFocusNode = FocusNode();
+
+  bool _obscureOldPin = true;
+  bool _obscureNewPin = true;
+  bool _obscureReenterPin = true;
+  bool _isSubmitting = false;
+
+  bool _isPinsMatching() {
+    return _newPinController.text == _reenterPinController.text;
   }
 
-  Future<void> submit(Function(String, String) onSubmit) async {
-    if (formKey.currentState?.validate() ?? false) {
-      onSubmit(oldPinController.text, newPinController.text);
-      await Get.find<AuthController>().createPIN(
+  Future<void> _submitForm() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    if (_isSubmitting) return;
+    
+    setState(() => _isSubmitting = true);
+    
+    try {
+      // Call the parent submit callback
+      final onSubmit = ModalRoute.of(context)!.settings.arguments as Function(String, String)?;
+      if (onSubmit != null) {
+        onSubmit(_oldPinController.text, _newPinController.text);
+      }
+
+      // Call your API
+      final authController = Get.find<AuthController>();
+    var resposne=  await authController.createPIN(
         cnic: AppData.getPinData()?['cnic'],
         mobileNum: AppData.getPinData()?['mobile'],
         isResetPin: 1,
         isCreatePin: 0,
         isForgetPin: 0,
-        pin: oldPinController.text,
-        newPin: newPinController.text,
+        pin: _oldPinController.text,
+        newPin: _newPinController.text,
       );
-      Get.back();
+showPopDialog(resposne['Message'], Get.back);
+      if (mounted) Navigator.pop(context);
+    } catch (e) {
+      // Handle error
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 
   @override
-  void onClose() {
-    oldPinController.dispose();
-    newPinController.dispose();
-    reenterPinController.dispose();
-    oldPinFocusNode.dispose();
-    newPinFocusNode.dispose();
-    reenterPinFocusNode.dispose();
-    super.onClose();
-  }
-}
-
-class PinTextField extends StatelessWidget {
-  final String labelText;
-  final TextEditingController controller;
-  final FocusNode focusNode;
-  final RxBool obscureText;
-  final String? Function(String?)? validator;
-  final TextInputAction textInputAction;
-  final Function(String)? onFieldSubmitted;
-
-  const PinTextField({
-    super.key,
-    required this.labelText,
-    required this.controller,
-    required this.focusNode,
-    required this.obscureText,
-    this.validator,
-    this.textInputAction = TextInputAction.next,
-    this.onFieldSubmitted,
-  });
-
-  @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => TextFormField(
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return PopScope(
+      canPop: !_isSubmitting,
+      child: Dialog(
+        backgroundColor: colorScheme.surface,
+        surfaceTintColor: colorScheme.surfaceTint,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 400),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/padlock.png', height: 50),
+                    const SizedBox(height: 12),
+                    Text('Change PIN', 
+                      style: theme.textTheme.headlineSmall
+                    ),
+                    const SizedBox(height: 20),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          _buildPinField(
+                            context: context,
+                            controller: _oldPinController,
+                            focusNode: _oldPinFocusNode,
+                            obscureText: _obscureOldPin,
+                            labelText: 'Old PIN',
+                            onToggleVisibility: () => setState(() => _obscureOldPin = !_obscureOldPin),
+                            validator: (value) => value == null || value.length != 4
+                                ? 'Enter 4-digit PIN'
+                                : null,
+                          ),
+                          const SizedBox(height: 8),
+                          _buildPinField(
+                            context: context,
+                            controller: _newPinController,
+                            focusNode: _newPinFocusNode,
+                            obscureText: _obscureNewPin,
+                            labelText: 'New PIN',
+                            onToggleVisibility: () => setState(() => _obscureNewPin = !_obscureNewPin),
+                            validator: (value) => value == null || value.length != 4
+                                ? 'Enter 4-digit PIN'
+                                : null,
+                            onFieldSubmitted: (_) => _reenterPinFocusNode.requestFocus(),
+                          ),
+                          const SizedBox(height: 8),
+                          _buildPinField(
+                            context: context,
+                            controller: _reenterPinController,
+                            focusNode: _reenterPinFocusNode,
+                            obscureText: _obscureReenterPin,
+                            labelText: 'Re-Enter New PIN',
+                            onToggleVisibility: () => setState(() => _obscureReenterPin = !_obscureReenterPin),
+                            validator: (value) {
+                              if (value == null || value.length != 4) {
+                                return 'Enter 4-digit PIN';
+                              }
+                              if (!_isPinsMatching()) {
+                                return "PINs don't match";
+                              }
+                              return null;
+                            },
+                            textInputAction: TextInputAction.done,
+                            onFieldSubmitted: (_) => _submitForm(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 36, // Reduced height
+                      child: ElevatedButton(
+                        onPressed: _isSubmitting ? null : _submitForm,
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                        ),
+                        child: _isSubmitting
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : Text(
+                                'SUBMIT',
+                               
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                top: 8,
+                right: 8,
+                child: IconButton(
+                  onPressed: _isSubmitting ? null : () => Navigator.pop(context),
+                  icon: CircleAvatar(radius: 16,
+                    backgroundColor: colorScheme.surface,
+                    child: Icon(Icons.close, size: 20,color: colorScheme.primary, )),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                  splashRadius: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPinField({
+    required BuildContext context,
+    required TextEditingController controller,
+    required FocusNode focusNode,
+    required bool obscureText,
+    required String labelText,
+    required VoidCallback onToggleVisibility,
+    required String? Function(String?) validator,
+    TextInputAction textInputAction = TextInputAction.next,
+    void Function(String)? onFieldSubmitted,
+  }) {
+    final theme = Theme.of(context);
+    
+    return SizedBox(
+      height: 48, // Reduced field height
+      child: TextFormField(
         controller: controller,
         focusNode: focusNode,
         keyboardType: TextInputType.number,
-        obscureText: obscureText.value,
+        obscureText: obscureText,
         maxLength: 4,
+        textInputAction: textInputAction,
+        onFieldSubmitted: onFieldSubmitted,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          fontSize: 14, // Smaller font size
+        ),
         decoration: InputDecoration(
           counterText: "",
           labelText: labelText,
-          labelStyle: const TextStyle(
+          labelStyle: theme.textTheme.bodyMedium?.copyWith(
             fontSize: 14,
-          ), // Smaller label size for unfocused state
-          floatingLabelStyle: Theme.of(
-            context,
-          ).inputDecorationTheme.floatingLabelStyle, // Use theme for focused
-          border: Theme.of(context).inputDecorationTheme.border,
-          suffixIcon: IconButton(
-            icon: Icon(
-              obscureText.value ? Icons.visibility_off : Icons.visibility,
-              size: 20,
-              color: Theme.of(context).colorScheme.primary,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: theme.dividerColor),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: theme.dividerColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: theme.colorScheme.primary, width: 1.5),
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 10, // Reduced vertical padding
+          ),
+          suffixIcon: Padding(
+            padding: const EdgeInsets.only(right: 4),
+            child: IconButton(
+              onPressed: onToggleVisibility,
+              icon: Icon(
+                obscureText ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                size: 18, // Smaller icon
+                color: theme.colorScheme.onSurface.withValues(alpha:0.6),
+              ),
+              splashRadius: 16,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(
+                minWidth: 32,
+                minHeight: 32,
+              ),
             ),
-            onPressed: () => obscureText.value = !obscureText.value,
           ),
         ),
         validator: validator,
-        textInputAction: textInputAction,
-        onFieldSubmitted: onFieldSubmitted,
       ),
     );
   }
-}
-
-class ChangePinDialog extends StatelessWidget {
-  final Function(String oldPin, String newPin) onSubmit;
-
-  const ChangePinDialog({super.key, required this.onSubmit});
 
   @override
-  Widget build(BuildContext context) {
-    final ctrl = Get.find<ChangePinController>();
-
-    return PopScope(
-      canPop: false,
-      child: Dialog(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset('assets/padlock.png', height: 64, width: 64),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Change PIN',
-                    style: Theme.of(context).textTheme.headlineLarge,
-                  ),
-                  const SizedBox(height: 20),
-                  Form(
-                    key: ctrl.formKey,
-                    child: Column(
-                      children: [
-                        PinTextField(
-                          labelText: 'Old PIN',
-                          controller: ctrl.oldPinController,
-                          focusNode: ctrl.oldPinFocusNode,
-                          obscureText: ctrl.obscureOldPin,
-                          validator: (value) =>
-                              value == null || value.isEmpty || value.length < 4
-                              ? 'Please enter your old PIN'
-                              : null,
-                        ),
-                        const SizedBox(height: 12),
-                        PinTextField(
-                          labelText: 'New Pin',
-                          controller: ctrl.newPinController,
-                          focusNode: ctrl.newPinFocusNode,
-                          obscureText: ctrl.obscureNewPin,
-                          validator: (value) =>
-                              value == null || value.isEmpty || value.length < 4
-                              ? 'Please enter a new PIN'
-                              : null,
-                          onFieldSubmitted: (_) {
-                            FocusScope.of(
-                              context,
-                            ).requestFocus(ctrl.reenterPinFocusNode);
-                          },
-                        ),
-                        const SizedBox(height: 12),
-                        PinTextField(
-                          labelText: 'Re-Enter New PIN',
-                          controller: ctrl.reenterPinController,
-                          focusNode: ctrl.reenterPinFocusNode,
-                          obscureText: ctrl.obscureReenterPin,
-                          validator: (value) {
-                            if (value == null ||
-                                value.isEmpty ||
-                                value.length < 4) {
-                              return 'Please re-enter your new PIN';
-                            } else if (!ctrl.isPinsMatching()) {
-                              return "New Pin & Re-Enter Pin doesn't match";
-                            }
-                            return null;
-                          },
-                          textInputAction: TextInputAction.done,
-                          onFieldSubmitted: (_) => ctrl.submit(onSubmit),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => ctrl.submit(onSubmit),
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                    ),
-                    child: Text(
-                      'Submit'.toUpperCase(),
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              top: 0,
-              right: 0,
-              child: InkWell(
-                onTap: () => Get.back(),
-                borderRadius: BorderRadius.circular(20),
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                    backgroundColor: Colors.red,
-                    radius: 16,
-                    child: Icon(Icons.close, color: Colors.white, size: 18),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  void dispose() {
+    _oldPinController.dispose();
+    _newPinController.dispose();
+    _reenterPinController.dispose();
+    _oldPinFocusNode.dispose();
+    _newPinFocusNode.dispose();
+    _reenterPinFocusNode.dispose();
+    super.dispose();
   }
 }
+

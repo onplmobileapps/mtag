@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../../base/app_data.dart';
 import '../../controller/home_controller.dart';
 import '../../widgets/dialog/change_pin_dialog.dart';
@@ -294,7 +295,7 @@ final List<SettingsModel> items = [
   ),
   SettingsModel(
     onTap: () {
-      showChangePinDialog( onSubmit: (oldPin, newPin) {});
+      showChangePinDialog(Get.context!, onSubmit: (oldPin, newPin) {});
     },
     name: 'Change PIN',
     icon: Icon(Icons.password_outlined),

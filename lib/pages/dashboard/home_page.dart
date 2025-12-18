@@ -86,7 +86,9 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildBottomNavigationBar(
-      BuildContext context, HomeController controller) {
+    BuildContext context,
+    HomeController controller,
+  ) {
     return BottomAppBar(
       height: 50,
       padding: const EdgeInsets.only(top: 8),
@@ -229,7 +231,6 @@ class _HomeContentBody extends StatefulWidget {
 class _HomeContentBodyState extends State<_HomeContentBody> {
   final PageController _mtagPageController = PageController();
 
-
   @override
   void initState() {
     super.initState();
@@ -271,12 +272,10 @@ class _HomeContentBodyState extends State<_HomeContentBody> {
           ),
         ];
       },
-      body: 
-        _DashboardGridSection(
-          controller: widget.controller,
-          otherConstants: widget.otherConstants,
-        ),
-      
+      body: _DashboardGridSection(
+        controller: widget.controller,
+        otherConstants: widget.otherConstants,
+      ),
     );
   }
 }
@@ -317,26 +316,27 @@ class _MtagHeaderSection extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 0),
                     child: mtagDataWidget(
-                            context,
-                            isBlock: e.isactive,
-                            jazzCode: controller
-                                .dashboradData.value.jazzCashRecharge
-                                .toString(),
-                            creditCode: controller
-                                .dashboradData.value.creditCardRecharge
-                                .toString(),
-                            vehType: e.vehicletype,
-                            mtagId: e.tokenno,
-                            userName: e.ownername,
-                            mobileNum: otherConstants.mobile.string,
-                            cnic: otherConstants.ownerCNIC.string,
-                            regId: e.registration,
-                            ball: e.balance,
-                            showTransferButton: activeMtags.length > 1,
-                            balanceDashboard: e.balance,
-                            showChassisBadge: e.chassis_number == null,
-                            chassisNumber: e.chassis_number,
-                          ),
+                      context,
+                      isBlock: e.isactive,
+                      jazzCode: controller.dashboradData.value.jazzCashRecharge
+                          .toString(),
+                      creditCode: controller
+                          .dashboradData
+                          .value
+                          .creditCardRecharge
+                          .toString(),
+                      vehType: e.vehicletype,
+                      mtagId: e.tokenno,
+                      userName: e.ownername,
+                      mobileNum: otherConstants.mobile.string,
+                      cnic: otherConstants.ownerCNIC.string,
+                      regId: e.registration,
+                      ball: e.balance,
+                      showTransferButton: activeMtags.length > 1,
+                      balanceDashboard: e.balance,
+                      showChassisBadge: e.chassis_number == null,
+                      chassisNumber: e.chassis_number,
+                    ),
                   );
                 },
               ),
@@ -388,68 +388,62 @@ class _DashboardGridSection extends StatelessWidget {
               crossAxisSpacing: 10,
               mainAxisExtent: MediaQuery.sizeOf(context).height * 0.11,
             ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final item = controller.dashBoardModel[index];
-                return InkWell(
-                  onTap: () async {
-                    final rechctrl = Get.find<RechargeController>();
-                    // selected1linkOpt.value = -1;
-                    
-                    if (item.routeName != null) {
-                      await Get.toNamed(
-                        item.routeName!,
-                        arguments: controller.dashboradData.value.activeMtags,
-                      );
-                    }
-                    
-                    // selected1linkOpt.value = -1;
-                    rechctrl.isPaymentModdeVisible(false);
-                    rechctrl.isSummaryVisible(false);
-                    rechctrl.isRechageVisible(true);
-                  },
-                  borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Theme.of(context).colorScheme.surfaceContainerLowest.withValues(alpha: 0.2),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        if (item.image != null)
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset(
-                              item.image!,
-                              width: MediaQuery.sizeOf(context).width * 0.1,
-                              height: MediaQuery.sizeOf(context).height * 0.1,
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            item.title ?? '',
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                            maxLines: 2,
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final item = controller.dashBoardModel[index];
+              return InkWell(
+                onTap: () async {
+                  final rechctrl = Get.find<RechargeController>();
+
+                  if (item.routeName != null) {
+                    await Get.toNamed(
+                      item.routeName!,
+                      arguments: controller.dashboradData.value.activeMtags,
+                    );
+                  }
+
+                  rechctrl.isPaymentModdeVisible(false);
+                  rechctrl.isSummaryVisible(false);
+                  rechctrl.isRechageVisible(true);
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerLowest.withValues(alpha: 0.2),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      if (item.image != null)
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.asset(
+                            item.image!,
+                            width: MediaQuery.sizeOf(context).width * 0.1,
+                            height: MediaQuery.sizeOf(context).height * 0.1,
+                            fit: BoxFit.contain,
                           ),
                         ),
-                      ],
-                    ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          item.title ?? '',
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(fontWeight: FontWeight.w600),
+                          maxLines: 2,
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              },
-              childCount: controller.dashBoardModel.length,
-            ),
+                ),
+              );
+            }, childCount: controller.dashBoardModel.length),
           ),
         ),
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 8),
-        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 8)),
         _SliderSection(),
         _HelpSection(),
       ],
@@ -476,7 +470,7 @@ class _SliderSection extends StatelessWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: OtherConsts.sliderImages.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                separatorBuilder: (_, _) => const SizedBox(width: 8),
                 itemBuilder: (context, index) {
                   final imageName = OtherConsts.sliderImages[index];
                   final imageUrl = 'assets/slider/$imageName';
@@ -485,9 +479,8 @@ class _SliderSection extends StatelessWidget {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => StoryViewPage(
-                          stories: OtherConsts.sliderImages,
-                        ),
+                        builder: (_) =>
+                            StoryViewPage(stories: OtherConsts.sliderImages),
                       ),
                     ),
                     child: Container(
@@ -534,11 +527,7 @@ class _HelpSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SvgPicture.asset(
-              'assets/phone.svg',
-              width: 50,
-              height: 50,
-            ),
+            SvgPicture.asset('assets/phone.svg', width: 50, height: 50),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -546,10 +535,9 @@ class _HelpSection extends StatelessWidget {
                 children: [
                   Text(
                     'Help & Customer Support',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(fontWeight: FontWeight.w900),
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Text(
@@ -568,10 +556,7 @@ class _HelpSection extends StatelessWidget {
                     ),
                     label: const Text(
                       '1313',
-                      style: TextStyle(
-                        color: Colors.redAccent,
-                        fontSize: 12,
-                      ),
+                      style: TextStyle(color: Colors.redAccent, fontSize: 12),
                     ),
                     iconAlignment: IconAlignment.end,
                     style: OutlinedButton.styleFrom(
