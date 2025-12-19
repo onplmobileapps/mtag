@@ -10,330 +10,232 @@ class RechargeCenter {
 
   static final Map<String, LatLng> cities = {
     'Islamabad': const LatLng(33.6844, 73.0479),
-    'Rawalpindi': const LatLng(33.5651, 73.0169),
-    'Lahore': const LatLng(31.5204, 74.3587),
-    'Karachi': const LatLng(24.8607, 67.0011),
-    'Faisalabad': const LatLng(31.4504, 73.1350),
-    'Multan': const LatLng(30.1575, 71.5249),
-    'Peshawar': const LatLng(34.0151, 71.5249),
-    'Quetta': const LatLng(30.1798, 66.9750),
+    'Karachi': const LatLng(24.984362758794767,67.22035480754474),
+    'Hyderabad': const LatLng(25.369756757942742,68.21567818242164),
+    'Peshawar': const LatLng(34.03039708462152,71.66326084028518),
+    'Swabi ': const LatLng(34.04347989118024,72.41418227031748),
+    'Swat ': const LatLng(34.63046755761476,72.031054036588),
+    'Abbottabad ': const LatLng(34.097700671625326,73.16850922716046),
+    'Mansehra ': const LatLng(34.3301, 73.1996),
+    'Mianwali ': const LatLng(32.890437448342944,71.55341896256714),
+    'Bhera ': const LatLng(32.455369501857994,72.88520196004258),
+    'Sheikhupura ': const LatLng(31.7131, 73.9783),
+    'Sial Morr ': const LatLng(31.967397826742324,73.11229467470422),
+    'Lahore': const LatLng(31.556942890173637,74.24293983040823),
+    'Sialkot': const LatLng(32.46647220553786,74.39397918838688),
+    'Khanewal': const LatLng(30.328147,71.849320),
+    'Faisalabad': const LatLng(31.529431504602208,73.06667709551853),
+    'Rahim Yar Khan': const LatLng(28.84695137286077,70.50889644821397),
+    'Uch Sharif': const LatLng(29.24691748539767,71.03776706881527),
+    'Rohri': const LatLng(27.663561,68.932347),
+    'Multan': const LatLng(29.994101,71.387735),
+    'Murree': const LatLng(33.778690,73.255337),
   };
   static final Map<String, List<RechargeCenter>> allCenters = {
     'Islamabad': [
       RechargeCenter(
-        'Fatima Jinnah',
-        dmsToLatLng("33°41'45\"N 73°00'56\"E"),
-        '9 AM - 11 PM',
+        'Islamabad M1',
+        LatLng(33.59779656249329,72.86474179630815),
+        '24 Hours',
         "Test Information",
       ),
       RechargeCenter(
-        'I-8 Kachnar',
+        'Islamabad M2',
+        LatLng(33.5834262511135,72.87554699842836),
+        '24 Hours',
+        "Test Information",
+      ),
+      RechargeCenter(
+        'ETO Islamabad',
+        LatLng(33.67492 ,73.0538588),
+        '9 AM - 5 PM',
+        "Test Information",
+      ),
+      RechargeCenter(
+        'Fatima Jinnah Park',
+        dmsToLatLng("33°41'45\"N 73°00'56\"E"),
+        '9 AM - 9 PM',
+        "Test Information",
+      ),
+      RechargeCenter(
+        'Kachnar Park I-8',
         dmsToLatLng("33°40'34\"N 73°04'34\"E"),
-        '8 AM - 10 PM',
+        '9 AM - 9 PM',
         "Test Information",
       ),
       RechargeCenter(
         'Gulburg Green',
         dmsToLatLng("33°36'14.9\"N 73°09'43.2\"E"),
-        '9 AM - 11 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'F-7-Islamabad',
-        const LatLng(33.726009, 73.058243),
-        '24 Hours',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'I-11-Islamabad',
-        const LatLng(33.640163, 73.025085),
-        '8 AM - 11 AM',
+        '9 AM - 9 PM',
         "Test Information",
       ),
       RechargeCenter(
         'Tarlai CFC',
         dmsToLatLng("33°38'47\"N 73°09'44\"E"),
-        '8 AM - 4 PM',
+        '9 AM - 9 PM',
         "Test Information",
       ),
       RechargeCenter(
         'Lake View Park',
         dmsToLatLng("33°42'56\"N 73°07'58\"E"),
-        '8 AM - 4 PM',
+        '9 AM - 9 PM',
         "Test Information",
       ),
       RechargeCenter(
         'Islamabad Club',
         dmsToLatLng("33°42'19\"N 73°06'22\"E"),
-        '8 AM - 4 PM',
+        '9 AM - 9 PM',
         "Test Information",
       ),
-      RechargeCenter(
-        'ETO Islamabad',
-        LatLng(33.67492, 73.0538588),
-        '8 AM - 4 PM',
-        "Test Information",
-      ),
+
       RechargeCenter(
         '26 No Chungi',
         dmsToLatLng("33°36'34\"N 72°54'02\"E"),
-        '8 AM - 4 PM',
-        "Test Information",
-      ),
-    ],
-    'Rawalpindi': [
-      RechargeCenter(
-        'Saddar Cantt',
-        const LatLng(33.5965, 73.0473),
-        '9 AM - 10 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Bahria Town Phase 8',
-        const LatLng(33.5272, 73.1116),
-        '10 AM - 11 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Committee Chowk',
-        const LatLng(33.5965, 73.0473),
-        '24 Hours',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Satellite Town',
-        const LatLng(33.6167, 73.0786),
         '9 AM - 9 PM',
         "Test Information",
       ),
       RechargeCenter(
-        'Faizabad',
-        const LatLng(33.6142, 73.1011),
-        '8 AM - 10 PM',
+        'F7/3 Gol Market',
+        LatLng(33.726009 , 73.058243),
+        '9 AM - 9 PM',
         "Test Information",
       ),
       RechargeCenter(
-        '6th Road',
-        const LatLng(33.6269, 73.0807),
-        '9 AM - 11 PM',
-        "Test Information",
-      ),
-    ],
-    'Lahore': [
-      RechargeCenter(
-        'Gulberg III - Liberty',
-        const LatLng(31.5204, 74.3587),
-        '9 AM - 11 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'DHA Phase 5',
-        const LatLng(31.4697, 74.4085),
-        '10 AM - 11 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Johar Town',
-        const LatLng(31.4697, 74.2728),
-        '9 AM - 10 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Model Town Link Road',
-        const LatLng(31.4825, 74.3205),
-        '8 AM - 11 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Thokar Niaz Baig',
-        const LatLng(31.4567, 74.2289),
-        '24 Hours',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Canal Bank - Shadman',
-        const LatLng(31.5138, 74.3436),
-        '9 AM - 11 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Mall Road',
-        const LatLng(31.5546, 74.3371),
+        'Metro Cash & Carry I-11 DT-1',
+        LatLng(33.640163 , 73.025085),
         '9 AM - 9 PM',
         "Test Information",
       ),
     ],
     'Karachi': [
       RechargeCenter(
-        'Clifton - Sea View',
-        const LatLng(24.8138, 67.0299),
-        '9 AM - 11 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Saddar - Empress Market',
-        const LatLng(24.8607, 67.0011),
+        'Karachi',
+        const LatLng(24.984362758794767,67.22035480754474),
         '24 Hours',
         "Test Information",
       ),
-      RechargeCenter(
-        'Gulshan-e-Iqbal',
-        const LatLng(24.9211, 67.0877),
-        '9 AM - 10 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'DHA Phase 8',
-        const LatLng(24.7945, 67.0654),
-        '10 AM - 11 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'North Nazimabad',
-        const LatLng(24.9293, 67.0363),
-        '9 AM - 9 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Shahrah-e-Faisal',
-        const LatLng(24.8674, 67.0589),
-        '8 AM - 11 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Korangi Road',
-        const LatLng(24.8378, 67.0872),
-        '9 AM - 10 PM',
-        "Test Information",
-      ),
+
     ],
-    'Faisalabad': [
+    'Hyderabad': [
       RechargeCenter(
-        'D-Ground',
-        const LatLng(31.4504, 73.1350),
-        '9 AM - 10 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Kohinoor City',
-        const LatLng(31.3926, 73.0862),
-        '10 AM - 11 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Peoples Colony',
-        const LatLng(31.4158, 73.0927),
-        '9 AM - 9 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Clock Tower',
-        const LatLng(31.4181, 73.0794),
+        'Hyderabad',
+        const LatLng(25.369756757942742,68.21567818242164),
         '24 Hours',
         "Test Information",
       ),
-      RechargeCenter(
-        'Satiana Road',
-        const LatLng(31.4012, 73.1098),
-        '9 AM - 10 PM',
-        "Test Information",
-      ),
-    ],
-    'Multan': [
-      RechargeCenter(
-        'Cantonment',
-        const LatLng(30.1575, 71.5249),
-        '9 AM - 10 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Gulgasht Colony',
-        const LatLng(30.1978, 71.4714),
-        '10 AM - 11 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Boson Road',
-        const LatLng(30.1921, 71.4678),
-        '9 AM - 9 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Vehari Chowk',
-        const LatLng(30.1812, 71.4923),
-        '24 Hours',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Chowk Kumharanwala',
-        const LatLng(30.2067, 71.4798),
-        '9 AM - 10 PM',
-        "Test Information",
-      ),
+
     ],
     'Peshawar': [
       RechargeCenter(
-        'Saddar Cantt',
-        const LatLng(34.0151, 71.5249),
-        '9 AM - 10 PM',
-        "Test Information",
+        'Peshawar',
+        const LatLng(34.03039708462152,71.66326084028518),
+        '24 Hours',
+        "",
+      ),
+
+    ],
+    'Swabi':[
+      RechargeCenter("Swabi", LatLng(34.04347989118024,72.41418227031748), "24 Hours","")
+    ],
+    'Swat':[
+      RechargeCenter("Maba Dheri", LatLng(34.63046755761476,72.031054036588), "24 Hours","")
+    ],
+    'Abbottabad':[
+      RechargeCenter("Havelian", LatLng(34.097700671625326,73.16850922716046), "24 Hours","")
+    ],
+    'Mansehra':[
+      RechargeCenter("Mansehra Svc Area North/South", LatLng(34.276458754635584,73.21919607728485), "24 Hours","")
+    ],
+    'Mianwali':[
+      RechargeCenter("Daud Khel", LatLng(32.890437448342944,71.55341896256714), "7 AM -7 PM","")
+    ],
+    'Bhera':[
+      RechargeCenter("Bhera Service Area North", LatLng(32.455369501857994,72.88520196004258), "24 Hours",""),
+      RechargeCenter("Bhera Service Area South", LatLng(32.453800409812516,72.88877116753743), "24 Hours","")
+    ],
+    'Sheikhupura':[
+      RechargeCenter("Sheikhupura", LatLng(31.745014559641177,74.00833399409476), "24 Hours","")
+    ],
+    'Sial Morr':[
+      RechargeCenter("Sial Mor Service Area South", LatLng(31.967397826742324,73.11229467470422), "24 Hours","")
+    ],
+    'Lahore':[
+      RechargeCenter("Ravi Drive Thru", LatLng(31.556942890173637,74.24293983040823), "24 Hours",""),
+      RechargeCenter("Ravi Toll Plaza Entry", LatLng(31.557397246034093,74.24134328156109), "24 Hours",""),
+      RechargeCenter("Ravi Toll Plaza Exit", LatLng(31.557417294809696,74.24144262286782), "24 Hours",""),
+      RechargeCenter("Adda Plot", LatLng(31.608217832048275,74.3005018315312), "7 AM - 7 PM",""),
+      RechargeCenter("Nawaz Sharif", LatLng(31.464179991379087,74.4337395322497), "24 Hours",""),
+    ],
+    'Sialkot':[
+      RechargeCenter("Sambrial", LatLng(32.46647220553786,74.39397918838688), "24 Hours","")
+    ],
+    'Khanewal':[
+      RechargeCenter("Khanewal", LatLng(30.328147,71.849320), "24 Hours","")
+    ],
+    'Faisalabad': [
+      RechargeCenter(
+        'Faisalabad',
+        const LatLng(31.529431504602208,73.06667709551853),
+        '24 Hours',
+        "",
       ),
       RechargeCenter(
-        'Hayatabad Phase 3',
-        const LatLng(33.9719, 71.3848),
-        '10 AM - 11 PM',
-        "Test Information",
+        'Sahianwala Service Area North',
+        const LatLng(31.69252826939195,73.23437371092342),
+        '24 Hours',
+        "",
       ),
       RechargeCenter(
-        'University Road',
-        const LatLng(34.0114, 71.4689),
-        '9 AM - 11 PM',
-        "Test Information",
+        'Sahianwala Service Area South',
+        const LatLng(31.692750280023205,73.23326936767734),
+        '24 Hours',
+        "",
       ),
       RechargeCenter(
-        'Ring Road',
-        const LatLng(33.9989, 71.4567),
+        'Jaranwala Service Area North',
+        const LatLng(31.160465203704554,73.29828851576679),
         '24 Hours',
         "Test Information",
       ),
       RechargeCenter(
-        'GT Road',
-        const LatLng(34.0089, 71.5623),
-        '8 AM - 10 PM',
-        "Test Information",
+        'Jaranwala Service Area South',
+        const LatLng(31.16090564105646,73.29504221318815),
+        '24 Hours',
+        "",
+      ),
+      RechargeCenter(
+        'DT-1 Samundari',
+        const LatLng(31.0408143315026,73.0273424961958),
+        '24 Hours',
+        "",
       ),
     ],
-    'Quetta': [
+    'Rahim Yar Khan':[
+      RechargeCenter("Zahir pir", LatLng(28.84695137286077,70.50889644821397), "24 Hours","")
+    ],
+    'Uch Sharif':[
+      RechargeCenter("Uch Sharif", LatLng(29.24691748539767,71.03776706881527), "24 Hours","")
+    ],
+    'Rohri':[
+      RechargeCenter("Uch Sharif", LatLng(27.663561,68.932347), "24 Hours","")
+    ],
+    'Multan': [
       RechargeCenter(
-        'Jinnah Road',
-        const LatLng(30.1798, 66.9750),
-        '9 AM - 9 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Satellite Town',
-        const LatLng(30.2163, 67.0246),
-        '10 AM - 10 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Sariab Road',
-        const LatLng(30.1867, 67.0134),
-        '9 AM - 11 PM',
-        "Test Information",
-      ),
-      RechargeCenter(
-        'Brewery Road',
-        const LatLng(30.1923, 67.0089),
+        'ShujaAbad Svc Area South/North',
+        const LatLng(29.994101,71.387735),
         '24 Hours',
-        "Test Information",
+        "",
       ),
+
+    ],
+    'Murree': [
       RechargeCenter(
-        'Alamdar Road',
-        const LatLng(30.1987, 67.0356),
-        '9 AM - 10 PM',
-        "Test Information",
+        'Phulgaran (Murree Exp)',
+        const LatLng(33.778690,73.255337),
+        '24 Hours',
+        "",
       ),
+
     ],
   };
 

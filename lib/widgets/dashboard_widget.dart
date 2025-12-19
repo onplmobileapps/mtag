@@ -77,9 +77,8 @@ Widget mtagDataWidget(
       /// Car Image Size
       final carSize = isSmall ? 80.0 : 80.0;
 
-      /// Button radius and icons
-      final buttonIconSize = isSmall ? 18.0 : 22.0;
-      final avatarRadius = isSmall ? 18.0 : 22.0;
+
+
 
       /// Other MTAGs list
       final allCars = controller.dashboradData.value.activeMtags!
@@ -217,10 +216,10 @@ Widget mtagDataWidget(
                   actionBtn(
                     context,
                     label: "Transfer",
-                    icon: Icons.arrow_outward_outlined,
-                    avatarRadius: avatarRadius,
+                    icon: 'assets/send.png',
+
                     fontSize: fontSmall,
-                    iconSize: buttonIconSize,
+
                     onTap: () {
                       showModalBottomSheet(
                         context: context,
@@ -243,10 +242,10 @@ Widget mtagDataWidget(
                 actionBtn(
                   context,
                   label: "Recharge",
-                  icon: Icons.add,
-                  avatarRadius: avatarRadius,
+                  icon: 'assets/plus1.png',
+
                   fontSize: fontSmall,
-                  iconSize: buttonIconSize,
+
                   onTap: () {
                     showPaymentBottomSheet(
                       context,
@@ -262,10 +261,10 @@ Widget mtagDataWidget(
                 actionBtn(
                   context,
                   label: "Delete",
-                  icon: Icons.delete_outline_rounded,
-                  avatarRadius: avatarRadius,
+                  icon: 'assets/delete.png',
+
                   fontSize: fontSmall,
-                  iconSize: buttonIconSize,
+
                   onTap: () {
                     Get.dialog(
                       DeLinkVehicleDialog(
@@ -333,9 +332,9 @@ void showPaymentBottomSheet(
 Widget actionBtn(
   BuildContext context, {
   required String label,
-  required IconData icon,
-  required double avatarRadius,
-  required double iconSize,
+  required String icon,
+
+
   required double fontSize,
   required VoidCallback onTap,
 }) {
@@ -351,15 +350,7 @@ Widget actionBtn(
         onTap: onTap,
         child: Column(
           children: [
-            Container(
-              padding: .all(2),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: .all(width: 0.3),
-                borderRadius: .circular(8),
-              ),
-              child: Icon(icon, size: iconSize, color: Colors.redAccent),
-            ),
+            Image.asset(icon,height: 40,width: 40,),
             SizedBox(height: 10),
             Text(
               label,

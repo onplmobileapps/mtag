@@ -30,10 +30,10 @@ class BalanceWidget extends StatelessWidget {
                 child: Text(
                   isHidden ? '⁎' * balance.length : 'Rs. $balance',
                   overflow: TextOverflow.ellipsis,
-                  style: TextTheme.of(context).bodyLarge?.copyWith(
-                    
+                  style: TextTheme.of(context).headlineLarge?.copyWith(
+                    fontSize: 30,
 
-                    fontWeight: FontWeight.w900,height: 0.5
+                    fontWeight: FontWeight.bold,letterSpacing: 0.1
                   ),
                 ),
               ),

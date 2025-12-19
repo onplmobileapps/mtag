@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 import '../../class/recharge_center.dart';
-import '../elevated_button.dart';
 
 class RechargeCenterBottomSheet extends StatelessWidget {
   final RechargeCenter center;
@@ -15,132 +15,154 @@ class RechargeCenterBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final isOpen = center.isOpenNow;
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/r_center.svg',
+              width: 80,
+              height: 80,
+            ),
+            Text(
+              center.name,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
 
-      child: Column(
-        mainAxisAlignment: .start,
-        crossAxisAlignment: .start,
+            const SizedBox(height: 10),
 
-        children: [
-          Row(
-            children: [
-              SvgPicture.asset('assets/r_center.svg'),
-              const SizedBox(width: 16),
-
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      center.name,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    SvgPicture.asset('assets/rbadge.svg'),
-                    const SizedBox(height: 8),
-
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.access_time,
-                          size: 18,
-                          color: isOpen ? Colors.green : Colors.red,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          isOpen ? 'Open Now' : 'Closed',
-                          style: TextStyle(
-                            color: isOpen ? Colors.green : Colors.red,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 4,
+              ),
+              decoration: BoxDecoration(
+                color: isOpen
+                    ? Colors.green.withValues(alpha: 0.12)
+                    : Colors.red.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                isOpen ? 'Open Now' : 'Closed',
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: isOpen ? Colors.green : Colors.red,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-            ],
-          ),
-
-          const SizedBox(height: 10),
-
-          Text(
-            'Call our helpline 1313 to get quick help on queries related to your M-Tag',
-            style: TextStyle(
-              color: Theme.of(context).primaryColorLight,
-              fontWeight: FontWeight.w400,
-              fontSize: 16.0,
             ),
-          ),
 
-          const SizedBox(height: 24),
+            const SizedBox(height: 12),
 
-          _infoRow(context, Icons.access_time_rounded, 'Timing', center.timing),
-          const SizedBox(height: 16),
-          _infoRow(
-            context,
-            Icons.info_outlined,
-            'Information',
-            center.information,
-          ),
-
-          const SizedBox(height: 32),
-
-          ElevatedButton1(
-            backgroundColor: ColorScheme.of(context).primary,
-            width: double.infinity, // theme primary
-            foregroundColor: ColorScheme.of(context).surfaceDim,
-            onclick: onOpenMap,
-            text: "Open in Google Maps",
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(50),
+            SvgPicture.asset(
+              'assets/rbadge.svg',
+              height: 24,
             ),
-            height: 50,
-            textscaller: 1.5,
-            icon: const Icon(Icons.arrow_forward),
-            iconRight: true,
-          ),
-        ],
+
+            const SizedBox(height: 14),
+
+            Text(
+              'Call our helpline 1313 to get quick help on queries related to your M-Tag.',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                height: 1.4,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            _infoRow(
+              context,
+              Icons.access_time_rounded,
+              'Timing',
+              center.timing,
+            ),
+
+            const SizedBox(height: 26),
+
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: ElevatedButton.icon(
+                onPressed: onOpenMap,
+                icon: const Icon(Icons.map_outlined),
+                label: const Text(
+                  'Open in Google Maps',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: theme.colorScheme.primary,
+                  foregroundColor: theme.colorScheme.onPrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(28),
+                  ),
+                  elevation: 2,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _infoRow(
-    BuildContext context,
-    IconData icon,
-    String title,
-    String value,
-  ) {
+      BuildContext context,
+      IconData icon,
+      String title,
+      String value,
+      ) {
+    final theme = Theme.of(context);
+
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: ColorScheme.of(context).surface,
-        borderRadius: BorderRadius.circular(12),
-        border: BoxBorder.all(color: ColorScheme.of(context).outline),
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.3),
+        ),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(icon, size: 30, color: Theme.of(context).primaryColorLight),
-          const SizedBox(width: 12),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              icon,
+              size: 22,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+          const SizedBox(width: 14),
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontSize: 14)),
+                Text(
+                  title,
+                  style: theme.textTheme.labelMedium,
+                ),
                 const SizedBox(height: 4),
                 Text(
                   value,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColorLight,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],

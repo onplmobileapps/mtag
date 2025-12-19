@@ -1,17 +1,14 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
-
 import 'package:latlong2/latlong.dart';
 import 'package:mtag_flutterapp/widgets/dropdown/city_dropdown.dart';
 import 'package:mtag_flutterapp/widgets/zoom_control.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../class/recharge_center.dart';
 import '../widgets/bottomsheet/recharge_center_bottomsheet.dart';
-
 
 class RechargeMapScreen extends StatefulWidget {
   const RechargeMapScreen({super.key});
@@ -28,135 +25,179 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
   final TextEditingController _searchTextController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
 
-  final ValueNotifier<double> _zoomNotifier = ValueNotifier<double>(12.5);
+  static const LatLng _pakistanCenter = LatLng(30.3753, 69.3451);
+  static const double _pakistanZoom = 5.0;
+
+  final ValueNotifier<double> _zoomNotifier = ValueNotifier<double>(
+      _pakistanZoom);
   final ValueNotifier<LatLng> _centerNotifier = ValueNotifier<LatLng>(
-    const LatLng(33.6844, 73.0479),
-  );
+      _pakistanCenter);
 
-  late List<Marker> _markers;
-  Timer? _timer;
-  final ValueNotifier<bool> _markersNeedUpdate = ValueNotifier<bool>(true);
+  late List<Marker> _markers = [];
+  Timer? _updateTimer;
+  Timer? _markerRebuildTimer;
+  final ValueNotifier<int> _markerVersion = ValueNotifier<int>(0);
 
- 
+  bool _isInitialized = false;
+  bool _isAnimating = false;
 
- 
+  final Map<String, Widget> _markerWidgetCache = {};
 
   @override
   void initState() {
     super.initState();
+
     _fabController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 600),
       vsync: this,
     );
     _headerController = AnimationController(
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 400),
       vsync: this,
     );
-    _fabController.forward();
-    _headerController.forward();
-    _zoomNotifier.value = 12.5;
 
-    _updateMarkers();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _fabController.forward();
+        _headerController.forward();
+      }
+    });
 
-    _timer = Timer.periodic(
-      const Duration(minutes: 1),
-      (_) => _updateMarkers(),
+    _buildMarkersAsync();
+
+    _updateTimer = Timer.periodic(
+      const Duration(minutes: 5),
+          (_) => _buildMarkersAsync(),
     );
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
-    _markersNeedUpdate.dispose();
+    _updateTimer?.cancel();
+    _markerRebuildTimer?.cancel();
+    _markerVersion.dispose();
     _fabController.dispose();
     _headerController.dispose();
     _searchTextController.dispose();
     _searchFocusNode.dispose();
     _zoomNotifier.dispose();
     _centerNotifier.dispose();
+    _markerWidgetCache.clear();
     super.dispose();
   }
 
- void _updateMarkers() {
-  final List<Marker> newMarkers = [];
-
-  for (final centers in RechargeCenter.allCenters.values) {
-    for (final center in centers) {
-      final bool isOpen = center.isOpenNow;
-      final markerIcon = isOpen 
-          ? 'assets/location_on.png' 
-          : 'assets/location_off.png';
-
-      newMarkers.add(
-        Marker(
-          point: center.location,
-          width: 150,  // Increased for info window
-          height: 120, // Increased for info window + marker
-          child: GestureDetector(
-            onTap: () => _showRechargeDetails(center),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Info Window (always visible)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-                  margin: const EdgeInsets.only(bottom: 1),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(6),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha:0.15),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                    border: Border.all(color: Colors.grey.shade300, width: 0.5),
-                  ),
-                  constraints: const BoxConstraints(maxWidth: 100),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        center.name,
-                        style: const TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                        ),
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 1),
-                      Text(
-                        isOpen ? 'Open' : 'Closed',
-                        style: TextStyle(
-                          fontSize: 9,
-                          color: isOpen ? Colors.green.shade700 : Colors.red.shade700,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // Marker Icon
-                Image.asset(markerIcon, width: 62, height: 62),
-              ],
-            ),
-          ),
-        ),
-      );
+  Future<void> _buildMarkersAsync() async {
+    final markers = await _computeMarkers();
+    if (mounted) {
+      setState(() {
+        _markers = markers;
+        _isInitialized = true;
+      });
+      _markerVersion.value++;
     }
   }
 
-  setState(() => _markers = newMarkers);
-  _markersNeedUpdate.value = !_markersNeedUpdate.value;
-}
+  Future<List<Marker>> _computeMarkers() async {
+    final List<Marker> newMarkers = [];
+
+    await Future.microtask(() {
+      for (final centers in RechargeCenter.allCenters.values) {
+        for (final center in centers) {
+          final bool isOpen = center.isOpenNow;
+          final String cacheKey = '${center.name}_$isOpen';
+
+          newMarkers.add(
+            Marker(
+              point: center.location,
+              width: 120,
+              height: 150,
+              alignment: Alignment.topCenter,
+              child: _buildMarkerWidget(center, isOpen, cacheKey),
+            ),
+          );
+        }
+      }
+    });
+
+    return newMarkers;
+  }
+
+  Widget _buildMarkerWidget(RechargeCenter center, bool isOpen, String cacheKey) {
+    return GestureDetector(
+      onTap: () => _showRechargeDetails(center),
+      behavior: HitTestBehavior.opaque,
+      child: SizedBox(
+        height: 170, // MUST match Marker height
+        child: Column(
+          mainAxisSize: MainAxisSize.max, // ✅ FIX
+          children: [
+            // label
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              margin: const EdgeInsets.only(bottom: 4),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColorLight,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              constraints: const BoxConstraints(maxWidth: 110),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    center.name,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  _statusChip(isOpen),
+                ],
+              ),
+            ),
+
+            const Spacer(), // ✅ absorbs extra space
+
+            Image.asset(
+              isOpen
+                  ? 'assets/location_on.png'
+                  : 'assets/location_off.png',
+              width: 80,
+              height: 80,
+              fit: BoxFit.contain,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _statusChip(bool isOpen) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: isOpen ? Colors.green.shade50 : Colors.red.shade50,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        isOpen ? 'Open' : 'Closed',
+        style: TextStyle(
+          fontSize: 9,
+          fontWeight: FontWeight.w600,
+          color: isOpen ? Colors.green.shade700 : Colors.red.shade700,
+        ),
+      ),
+    );
+  }
 
   Future<void> _openInGoogleMaps(LatLng latLng) async {
     final url = Uri.parse(
-      'https://www.google.com/maps/search/?api=1&query=${latLng.latitude},${latLng.longitude}',
+      'https://www.google.com/maps/search/?api=1&query=${latLng
+          .latitude},${latLng.longitude}',
     );
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
@@ -164,56 +205,79 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
   }
 
   Future<void> _onCityChanged(String city) async {
+    if (_isAnimating) return;
+
     setState(() {
       _searchTextController.clear();
+      _isAnimating = true;
     });
 
     final target = RechargeCenter.cities[city]!;
+    const targetZoom = 13.0;
+
     final controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 800),
       vsync: this,
     );
+
     final curve = CurvedAnimation(
       parent: controller,
-      curve: Curves.fastEaseInToSlowEaseOut,
+      curve: Curves.easeInOutCubic,
     );
+
     final startCenter = _mapController.camera.center;
     final startZoom = _mapController.camera.zoom;
 
     controller.addListener(() {
+      if (!mounted) return;
+
       final t = curve.value;
-      final easedT = t < 0.5 ? 4 * t * t * t : 1 - pow(-2 * t + 2, 3) / 2;
-      final lat =
-          startCenter.latitude +
-          (target.latitude - startCenter.latitude) * easedT;
-      final lng =
-          startCenter.longitude +
-          (target.longitude - startCenter.longitude) * easedT;
-      final zoom = startZoom + (12.5 - startZoom) * easedT;
+      final lat = startCenter.latitude +
+          (target.latitude - startCenter.latitude) * t;
+      final lng = startCenter.longitude +
+          (target.longitude - startCenter.longitude) * t;
+      final zoom = startZoom + (targetZoom - startZoom) * t;
+
       _mapController.move(LatLng(lat, lng), zoom);
       _centerNotifier.value = LatLng(lat, lng);
       _zoomNotifier.value = zoom;
     });
 
+    controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed && mounted) {
+        setState(() => _isAnimating = false);
+        controller.dispose();
+      }
+    });
+
     await controller.forward();
-    controller.dispose();
   }
 
   void _animateZoom(double delta) {
+    if (_isAnimating) return;
+
     final controller = AnimationController(
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 250),
       vsync: this,
     );
+
     final currentZoom = _mapController.camera.zoom;
+    final targetZoom = (currentZoom + delta).clamp(5.0, 18.0);
+
     final anim = Tween<double>(
       begin: currentZoom,
-      end: currentZoom + delta,
-    ).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
+      end: targetZoom,
+    ).animate(CurvedAnimation(
+      parent: controller,
+      curve: Curves.easeOutCubic,
+    ));
 
     controller.addListener(() {
+      if (!mounted) return;
       _mapController.move(_mapController.camera.center, anim.value);
       _zoomNotifier.value = anim.value;
     });
+
     controller.forward().then((_) => controller.dispose());
   }
 
@@ -222,93 +286,158 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
     return Scaffold(
       body: Stack(
         children: [
-          ValueListenableBuilder<double>(
-            valueListenable: _zoomNotifier,
-            builder: (context, zoom, child) {
-              return FlutterMap(
-                mapController: _mapController,
-                options: MapOptions(backgroundColor: ColorScheme.of(context).surface,
-                  initialCenter: _centerNotifier.value,
-                  initialZoom: zoom,
-                  minZoom: 5.0,
-                  maxZoom: 18.0,
-                  interactionOptions: const InteractionOptions(
-                    flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
-                  ),
-                  onPositionChanged: (pos, _) {
-                    _centerNotifier.value = pos.center;
-                    _zoomNotifier.value = pos.zoom;
-                  },
-                ),
-                children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
-                    userAgentPackageName: 'com.playdev.mtagapp',
-                    tileProvider: NetworkTileProvider(),
-                  ),
+          RepaintBoundary(
+            child: ValueListenableBuilder<double>(
+              valueListenable: _zoomNotifier,
+              builder: (context, zoom, child) {
+                return FlutterMap(
+                  mapController: _mapController,
+                  options: MapOptions(
+                    backgroundColor: Theme
+                        .of(context)
+                        .colorScheme
+                        .surface,
+                    initialCenter: _pakistanCenter,
+                    initialZoom: _pakistanZoom,
+                    minZoom: 5.0,
+                    maxZoom: 18.0,
+                    interactionOptions: const InteractionOptions(
+                      flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                      enableMultiFingerGestureRace: true,
+                    ),
+                    onPositionChanged: (pos, hasGesture) {
+                      if (!hasGesture || _isAnimating) return;
 
-                  ValueListenableBuilder<bool>(
-                    valueListenable: _markersNeedUpdate,
-                    builder: (_, _, _) {
-                      return MarkerClusterLayerWidget(
-                        options: MarkerClusterLayerOptions(
-                          maxClusterRadius: 60,
-                          size: const Size(45, 45),
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.all(30),
-                          markers: _markers,
-                          builder: (context, markers) => AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.blue.shade600,
-                                  Colors.blue.shade800,
-                                ],
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.blue.withAlpha(125),
-                                  blurRadius: 6,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Text(
-                                '${markers.length}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          spiderfyCircleRadius: 60,
-                          spiderfySpiralDistanceMultiplier: 2,
-                          showPolygon: false,
-                          disableClusteringAtZoom: 15,
-                          zoomToBoundsOnClick: true,
-                        ),
+                      _markerRebuildTimer?.cancel();
+                      _markerRebuildTimer = Timer(
+                        const Duration(milliseconds: 50),
+                            () {
+                          if (mounted) {
+                            _centerNotifier.value = pos.center;
+                            _zoomNotifier.value = pos.zoom;
+                          }
+                        },
                       );
                     },
                   ),
-                ],
-              );
-            },
+                  children: [
+                    TileLayer(
+                      urlTemplate: 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+                      userAgentPackageName: 'com.playdev.mtagapp',
+                      tileProvider: NetworkTileProvider(),
+                      maxNativeZoom: 18,
+                      maxZoom: 18,
+                      keepBuffer: 2,
+                    ),
+                    if (_isInitialized)
+                      ValueListenableBuilder<int>(
+                        valueListenable: _markerVersion,
+                        builder: (_, version, _) {
+                          return MarkerClusterLayerWidget(
+                            options: MarkerClusterLayerOptions(
+                              maxClusterRadius: 80,
+                              size: const Size(50, 50),
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.all(40),
+                              markers: _markers,
+                              polygonOptions: const PolygonOptions(
+                                borderColor: Colors.transparent,
+                                color: Colors.transparent,
+                                borderStrokeWidth: 0,
+                              ),
+                              builder: (context, markers) {
+                                final count = markers.length;
+                                final size = count > 100 ? 60.0 :
+                                count > 50 ? 55.0 : 50.0;
+
+                                return AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  width: size,
+                                  height: size,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Colors.blue.shade500,
+                                        Colors.blue.shade700,
+                                      ],
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.blue.withValues(
+                                            alpha: 0.4),
+                                        blurRadius: 12,
+                                        spreadRadius: 2,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 3,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      count > 999 ? '999+' : '$count',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: count > 99 ? 14 : 16,
+                                        fontWeight: FontWeight.bold,
+                                        shadows: const [
+                                          Shadow(
+                                            color: Colors.black26,
+                                            offset: Offset(0, 1),
+                                            blurRadius: 2,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              spiderfyCircleRadius: 80,
+                              spiderfySpiralDistanceMultiplier: 3,
+                              circleSpiralSwitchover: 12,
+                              showPolygon: false,
+                              disableClusteringAtZoom: 16,
+                              zoomToBoundsOnClick: true,
+                              centerMarkerOnClick: true,
+                              rotate: true,
+                            ),
+                          );
+                        },
+                      ),
+                  ],
+                );
+              },
+            ),
           ),
 
           Positioned(
-            top: 50,
+            top: MediaQuery
+                .of(context)
+                .padding
+                .top + 16,
             left: 16,
             right: 16,
-            child: CityDropdown(
-              cities: RechargeCenter.cities.keys.toList(),
-              onCitySelected: _onCityChanged,
-              placeholder: "Select City",
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0, -1),
+                end: Offset.zero,
+              ).animate(CurvedAnimation(
+                parent: _headerController,
+                curve: Curves.easeOutCubic,
+              )),
+              child: FadeTransition(
+                opacity: _headerController,
+                child: CityDropdown(
+                  cities: RechargeCenter.cities.keys.toList(),
+                  onCitySelected: _onCityChanged,
+                  placeholder: "Select City",
+                ),
+              ),
             ),
           ),
 
@@ -318,18 +447,34 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
             child: ScaleTransition(
               scale: CurvedAnimation(
                 parent: _fabController,
-                curve: Curves.elasticOut,
+                curve: Curves.easeOutBack,
               ),
-              child: Column(
-                children: [
-                  ZoomControl(
-                    onPlus: () => _animateZoom(1),
-                    onMinus: () => _animateZoom(-1),
-                  ),
-                ],
+              child: ZoomControl(
+                onPlus: () => _animateZoom(1),
+                onMinus: () => _animateZoom(-1),
               ),
             ),
           ),
+
+          if (!_isInitialized)
+            Positioned.fill(
+              child: Container(
+                color: Theme
+                    .of(context)
+                    .colorScheme
+                    .surface,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Theme
+                          .of(context)
+                          .colorScheme
+                          .primary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -339,27 +484,28 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-
-      barrierColor: Colors.black.withAlpha(80),
-      enableDrag: true,useSafeArea: true,showDragHandle: true,scrollControlDisabledMaxHeightRatio: MediaQuery.devicePixelRatioOf(context),
+      enableDrag: true,
+      isDismissible: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withAlpha(128),
+      useSafeArea: true,
       builder: (ctx) {
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => Navigator.pop(ctx),
-          child: DraggableScrollableSheet(expand: false,
-            initialChildSize: .6,
-            minChildSize: 0.5,
-            maxChildSize: .8,
-            snap: true,
-            builder: (context, controller) {
-              return GestureDetector(
-                onTap: () {},
-                child: RechargeCenterBottomSheet(
-                  center: center,
-                  onOpenMap: () => _openInGoogleMaps(center.location),
-                ),
-              );
-            },
+        return Container(
+          decoration: BoxDecoration(
+            color: Theme.of(ctx).colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(20),
+            ),
+          ),
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(ctx).viewInsets.bottom,
+          ),
+          child: SafeArea(
+            top: false,
+            child: RechargeCenterBottomSheet(
+              center: center,
+              onOpenMap: () => _openInGoogleMaps(center.location),
+            ),
           ),
         );
       },
