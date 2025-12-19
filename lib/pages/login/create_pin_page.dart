@@ -366,27 +366,28 @@ class _PinEntryPageState extends State<PinEntryPage> {
   }
 
   /// Reusable key widget for keyboard buttons.
-  Widget _buildKey({required Widget child, required VoidCallback onPressed}) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(50),
-        child: Container(
-          margin: .all(4),
-          decoration: BoxDecoration(
-            color: Theme.of(
-              context,
-            ).colorScheme.surfaceContainerLowest.withValues(alpha: 0.4),
-            shape: BoxShape.circle,
-          ),
-          padding: const EdgeInsets.all(16),
-          alignment: Alignment.center,
-          child: child,
+Widget _buildKey({required Widget child, required VoidCallback onPressed}) {
+  return Material(
+    color: Colors.transparent,
+    child: InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(50),
+      // Customize the splash color
+      splashColor: Theme.of(context).colorScheme.primary.withValues(alpha:0.3),
+      highlightColor: Theme.of(context).colorScheme.primary.withValues(alpha:0.1),
+      child: Container(
+        margin: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainerLowest.withValues(alpha:0.4),
+          shape: BoxShape.circle,
         ),
+        padding: const EdgeInsets.all(16),
+        alignment: Alignment.center,
+        child: child,
       ),
-    );
-  }
+    ),
+  );
+}
 
   /// Shows a dialog when biometric is unavailable or not set up.
   void _showBiometricDialog(BuildContext context) {

@@ -77,32 +77,82 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
     super.dispose();
   }
 
-  void _updateMarkers() {
-    final List<Marker> newMarkers = [];
+ void _updateMarkers() {
+  final List<Marker> newMarkers = [];
 
-    for (final centers in RechargeCenter.allCenters.values) {
-      for (final center in centers) {
-        final bool isOpen = center.isOpenNow;
+  for (final centers in RechargeCenter.allCenters.values) {
+    for (final center in centers) {
+      final bool isOpen = center.isOpenNow;
+      final markerIcon = isOpen 
+          ? 'assets/location_on.png' 
+          : 'assets/location_off.png';
 
-        newMarkers.add(
-          Marker(
-            point: center.location,
-            width: 100,
-            height: 100,
-            child: GestureDetector(
-              onTap: () => _showRechargeDetails(center),
-              child: Image.asset(
-                isOpen ? 'assets/location_on.png' : 'assets/location_off.png',
-              ),
+      newMarkers.add(
+        Marker(
+          point: center.location,
+          width: 150,  // Increased for info window
+          height: 120, // Increased for info window + marker
+          child: GestureDetector(
+            onTap: () => _showRechargeDetails(center),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Info Window (always visible)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                  margin: const EdgeInsets.only(bottom: 1),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(6),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha:0.15),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                    border: Border.all(color: Colors.grey.shade300, width: 0.5),
+                  ),
+                  constraints: const BoxConstraints(maxWidth: 100),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        center.name,
+                        style: const TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 1),
+                      Text(
+                        isOpen ? 'Open' : 'Closed',
+                        style: TextStyle(
+                          fontSize: 9,
+                          color: isOpen ? Colors.green.shade700 : Colors.red.shade700,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Marker Icon
+                Image.asset(markerIcon, width: 62, height: 62),
+              ],
             ),
           ),
-        );
-      }
+        ),
+      );
     }
-
-    setState(() => _markers = newMarkers);
-    _markersNeedUpdate.value = !_markersNeedUpdate.value;
   }
+
+  setState(() => _markers = newMarkers);
+  _markersNeedUpdate.value = !_markersNeedUpdate.value;
+}
 
   Future<void> _openInGoogleMaps(LatLng latLng) async {
     final url = Uri.parse(

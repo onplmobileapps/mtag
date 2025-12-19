@@ -214,7 +214,7 @@ Widget mtagDataWidget(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 if (showTransferButton == false)
-                  _actionBtn(
+                  actionBtn(
                     context,
                     label: "Transfer",
                     icon: Icons.arrow_outward_outlined,
@@ -240,7 +240,7 @@ Widget mtagDataWidget(
                 else
                   const SizedBox(width: 0),
 
-                _actionBtn(
+                actionBtn(
                   context,
                   label: "Recharge",
                   icon: Icons.add,
@@ -259,7 +259,7 @@ Widget mtagDataWidget(
                   },
                 ),
 
-                _actionBtn(
+                actionBtn(
                   context,
                   label: "Delete",
                   icon: Icons.delete_outline_rounded,
@@ -330,7 +330,7 @@ void showPaymentBottomSheet(
 }
 
 /// Reusable button widget
-Widget _actionBtn(
+Widget actionBtn(
   BuildContext context, {
   required String label,
   required IconData icon,
@@ -344,7 +344,7 @@ Widget _actionBtn(
       margin: .all(8),
       padding: .all(18),
       decoration: BoxDecoration(
-        color: ColorScheme.of(context).surfaceDim,
+        color: ColorScheme.of(context).surface,
         borderRadius: .circular(8),
       ),
       child: InkWell(

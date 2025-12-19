@@ -216,61 +216,58 @@ showPopDialog(resposne['Message'], Get.back);
   }) {
     final theme = Theme.of(context);
     
-    return SizedBox(
-      height: 48, // Reduced field height
-      child: TextFormField(
-        controller: controller,
-        focusNode: focusNode,
-        keyboardType: TextInputType.number,
-        obscureText: obscureText,
-        maxLength: 4,
-        textInputAction: textInputAction,
-        onFieldSubmitted: onFieldSubmitted,
-        style: theme.textTheme.bodyMedium?.copyWith(
-          fontSize: 14, // Smaller font size
+    return TextFormField(
+      controller: controller,
+      focusNode: focusNode,
+      keyboardType: TextInputType.number,
+      obscureText: obscureText,
+      maxLength: 4,
+      textInputAction: textInputAction,
+      onFieldSubmitted: onFieldSubmitted,
+      style: theme.textTheme.bodyMedium?.copyWith(
+        fontSize: 14, // Smaller font size
+      ),
+      decoration: InputDecoration(
+        counterText: "",
+        labelText: labelText,
+        labelStyle: theme.textTheme.bodyMedium?.copyWith(
+          fontSize: 14,
         ),
-        decoration: InputDecoration(
-          counterText: "",
-          labelText: labelText,
-          labelStyle: theme.textTheme.bodyMedium?.copyWith(
-            fontSize: 14,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: theme.dividerColor),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: theme.dividerColor),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: theme.colorScheme.primary, width: 1.5),
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 10, // Reduced vertical padding
-          ),
-          suffixIcon: Padding(
-            padding: const EdgeInsets.only(right: 4),
-            child: IconButton(
-              onPressed: onToggleVisibility,
-              icon: Icon(
-                obscureText ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-                size: 18, // Smaller icon
-                color: theme.colorScheme.onSurface.withValues(alpha:0.6),
-              ),
-              splashRadius: 16,
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(
-                minWidth: 32,
-                minHeight: 32,
-              ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: theme.dividerColor),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: theme.dividerColor),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: theme.colorScheme.primary, width: 1.5),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 0, // Reduced vertical padding
+        ),
+        suffixIcon: Padding(
+          padding: const EdgeInsets.only(right: 4),
+          child: IconButton(
+            onPressed: onToggleVisibility,
+            icon: Icon(
+              obscureText ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+              size: 18, // Smaller icon
+              color: theme.colorScheme.onSurface.withValues(alpha:0.6),
+            ),
+            splashRadius: 16,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(
+              minWidth: 32,
+              minHeight: 32,maxHeight: 32,maxWidth: 32
             ),
           ),
         ),
-        validator: validator,
       ),
+      validator: validator,
     );
   }
 

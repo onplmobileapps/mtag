@@ -65,7 +65,6 @@ flutter:
     - assets/slider/
     - assets/lottie/
     - assets/data/
-    - shorebird.yaml
 
   #   - images/a_dot_ham.jpeg
   fonts:
