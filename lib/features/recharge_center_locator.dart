@@ -29,9 +29,11 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
   static const double _pakistanZoom = 5.0;
 
   final ValueNotifier<double> _zoomNotifier = ValueNotifier<double>(
-      _pakistanZoom);
+    _pakistanZoom,
+  );
   final ValueNotifier<LatLng> _centerNotifier = ValueNotifier<LatLng>(
-      _pakistanCenter);
+    _pakistanCenter,
+  );
 
   late List<Marker> _markers = [];
   Timer? _updateTimer;
@@ -67,7 +69,7 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
 
     _updateTimer = Timer.periodic(
       const Duration(minutes: 5),
-          (_) => _buildMarkersAsync(),
+      (_) => _buildMarkersAsync(),
     );
   }
 
@@ -110,7 +112,7 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
             Marker(
               point: center.location,
               width: 120,
-              height: 150,
+              height: 124,
               alignment: Alignment.topCenter,
               child: _buildMarkerWidget(center, isOpen, cacheKey),
             ),
@@ -122,52 +124,53 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
     return newMarkers;
   }
 
-  Widget _buildMarkerWidget(RechargeCenter center, bool isOpen, String cacheKey) {
+  Widget _buildMarkerWidget(
+    RechargeCenter center,
+    bool isOpen,
+    String cacheKey,
+  ) {
     return GestureDetector(
       onTap: () => _showRechargeDetails(center),
       behavior: HitTestBehavior.opaque,
       child: SizedBox(
-        height: 170, // MUST match Marker height
+        height: 130, // MUST match Marker height
         child: Column(
+          mainAxisAlignment: .start,
+          crossAxisAlignment: .start,
           mainAxisSize: MainAxisSize.max, // ✅ FIX
           children: [
             // label
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              margin: const EdgeInsets.only(bottom: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 1),
+              margin: const EdgeInsets.only(bottom: 1),
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColorLight,
+                color: ColorScheme.of(context).surface,
                 borderRadius: BorderRadius.circular(8),
               ),
-              constraints: const BoxConstraints(maxWidth: 110),
+              constraints: const BoxConstraints(maxWidth: 120),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     center.name,
-                    maxLines: 3,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
+                    style: TextTheme.of(
+                      context,
+                    ).displaySmall?.copyWith(color: Colors.white, fontSize: 9),
                   ),
-                  const SizedBox(height: 4),
+
                   _statusChip(isOpen),
                 ],
               ),
             ),
 
-            const Spacer(), // ✅ absorbs extra space
-
+            // ✅ absorbs extra space
             Image.asset(
-              isOpen
-                  ? 'assets/location_on.png'
-                  : 'assets/location_off.png',
-              width: 80,
-              height: 80,
+              isOpen ? 'assets/location_on.png' : 'assets/location_off.png',
+              width: 60,
+              height: 60,
               fit: BoxFit.contain,
             ),
           ],
@@ -186,7 +189,7 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
       child: Text(
         isOpen ? 'Open' : 'Closed',
         style: TextStyle(
-          fontSize: 9,
+          fontSize: 7,
           fontWeight: FontWeight.w600,
           color: isOpen ? Colors.green.shade700 : Colors.red.shade700,
         ),
@@ -196,8 +199,7 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
 
   Future<void> _openInGoogleMaps(LatLng latLng) async {
     final url = Uri.parse(
-      'https://www.google.com/maps/search/?api=1&query=${latLng
-          .latitude},${latLng.longitude}',
+      'https://www.google.com/maps/search/?api=1&query=${latLng.latitude},${latLng.longitude}',
     );
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
@@ -232,9 +234,10 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
       if (!mounted) return;
 
       final t = curve.value;
-      final lat = startCenter.latitude +
-          (target.latitude - startCenter.latitude) * t;
-      final lng = startCenter.longitude +
+      final lat =
+          startCenter.latitude + (target.latitude - startCenter.latitude) * t;
+      final lng =
+          startCenter.longitude +
           (target.longitude - startCenter.longitude) * t;
       final zoom = startZoom + (targetZoom - startZoom) * t;
 
@@ -267,10 +270,7 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
     final anim = Tween<double>(
       begin: currentZoom,
       end: targetZoom,
-    ).animate(CurvedAnimation(
-      parent: controller,
-      curve: Curves.easeOutCubic,
-    ));
+    ).animate(CurvedAnimation(parent: controller, curve: Curves.easeOutCubic));
 
     controller.addListener(() {
       if (!mounted) return;
@@ -293,10 +293,7 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                 return FlutterMap(
                   mapController: _mapController,
                   options: MapOptions(
-                    backgroundColor: Theme
-                        .of(context)
-                        .colorScheme
-                        .surface,
+                    backgroundColor: Theme.of(context).colorScheme.surface,
                     initialCenter: _pakistanCenter,
                     initialZoom: _pakistanZoom,
                     minZoom: 5.0,
@@ -311,7 +308,7 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                       _markerRebuildTimer?.cancel();
                       _markerRebuildTimer = Timer(
                         const Duration(milliseconds: 50),
-                            () {
+                        () {
                           if (mounted) {
                             _centerNotifier.value = pos.center;
                             _zoomNotifier.value = pos.zoom;
@@ -322,7 +319,8 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                   ),
                   children: [
                     TileLayer(
-                      urlTemplate: 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+                      urlTemplate:
+                          'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
                       userAgentPackageName: 'com.playdev.mtagapp',
                       tileProvider: NetworkTileProvider(),
                       maxNativeZoom: 18,
@@ -347,8 +345,11 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                               ),
                               builder: (context, markers) {
                                 final count = markers.length;
-                                final size = count > 100 ? 60.0 :
-                                count > 50 ? 55.0 : 50.0;
+                                final size = count > 100
+                                    ? 60.0
+                                    : count > 50
+                                    ? 55.0
+                                    : 50.0;
 
                                 return AnimatedContainer(
                                   duration: const Duration(milliseconds: 200),
@@ -367,7 +368,8 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                                     boxShadow: [
                                       BoxShadow(
                                         color: Colors.blue.withValues(
-                                            alpha: 0.4),
+                                          alpha: 0.4,
+                                        ),
                                         blurRadius: 12,
                                         spreadRadius: 2,
                                         offset: const Offset(0, 4),
@@ -416,20 +418,20 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
           ),
 
           Positioned(
-            top: MediaQuery
-                .of(context)
-                .padding
-                .top + 16,
+            top: MediaQuery.of(context).padding.top + 16,
             left: 16,
             right: 16,
             child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(0, -1),
-                end: Offset.zero,
-              ).animate(CurvedAnimation(
-                parent: _headerController,
-                curve: Curves.easeOutCubic,
-              )),
+              position:
+                  Tween<Offset>(
+                    begin: const Offset(0, -1),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(
+                      parent: _headerController,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ),
               child: FadeTransition(
                 opacity: _headerController,
                 child: CityDropdown(
@@ -459,17 +461,11 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
           if (!_isInitialized)
             Positioned.fill(
               child: Container(
-                color: Theme
-                    .of(context)
-                    .colorScheme
-                    .surface,
+                color: Theme.of(context).colorScheme.surface,
                 child: Center(
                   child: CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme
-                          .of(context)
-                          .colorScheme
-                          .primary,
+                      Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ),
@@ -493,9 +489,7 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
         return Container(
           decoration: BoxDecoration(
             color: Theme.of(ctx).colorScheme.surface,
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(20),
-            ),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           ),
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(ctx).viewInsets.bottom,

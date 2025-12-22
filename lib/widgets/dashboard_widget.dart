@@ -306,6 +306,7 @@ void showPaymentBottomSheet(
   final ValueNotifier<int> selectedPaymentOption = ValueNotifier(-1);
   selected1linkOpt.value = -1;
   Get.bottomSheet(
+  
     PaymentBottomSheet(
       mtagId: mtagId,
       regId: regId,

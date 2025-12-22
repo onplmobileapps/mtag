@@ -17,9 +17,9 @@ class NotificationScreen extends GetView<NotificationController> {
         controller.isSelectionMode(false);
       },
       child: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+   
         appBar: AppBar(
-          elevation: 0,
+          elevation: 0,centerTitle: true,
           title: const Text("Notifications"),
           actions: [
             Obx(
@@ -69,7 +69,7 @@ class NotificationScreen extends GetView<NotificationController> {
           child: Container(
             height: size.height,
             width: size.width,
-            margin: const EdgeInsets.only(top: 10),
+         
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: const BorderRadius.only(

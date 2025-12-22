@@ -360,7 +360,7 @@ ThemeData darkTheme = ThemeData(
       statusBarIconBrightness: Brightness.light,
     ),
     iconTheme: const IconThemeData(color: Colors.white),
-    backgroundColor: primarSwatch,
+    backgroundColor: Colors.black,
     titleTextStyle: TextStyle(fontFamily: fontFamily, fontSize: 18),
   ),
 

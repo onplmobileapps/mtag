@@ -232,7 +232,7 @@ static const Map<int, int> tollMapMurree = {
           Text('Select Interchange', style: Theme.of(context).textTheme.bodyLarge),
           const SizedBox(height: 10),
           Obx(() => _buildDropdownField(
-            icon: Image.asset('assets/station.png',height: 20,width: 20,),
+            icon: Image.asset('assets/station.png',height: 20,width: 20,color: Colors.grey,),
             label: 'Entry Station',
             value: controller.entryStation.value.isEmpty ? null : controller.entryStation.value,
             hint: 'Enter starting point',
@@ -243,7 +243,7 @@ static const Map<int, int> tollMapMurree = {
             children: [
               const SizedBox(height: 10),
               _buildDropdownField(
-                icon: Image.asset('assets/station.png',height: 20,width: 20,),
+                icon: Image.asset('assets/station.png',height: 20,width: 20,color: Colors.grey,),
                 label: 'Exit Station',
                 value: controller.exitStation.value.isEmpty ? null : controller.exitStation.value,
                 hint: 'Enter destination',
@@ -278,7 +278,7 @@ static const Map<int, int> tollMapMurree = {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            decoration: BoxDecoration(color: Colors.white,
+            decoration: BoxDecoration(color:ColorScheme.of(Get.context!).surface,
               border: Border.all(color: borderColor, width: 0.5),
               borderRadius: BorderRadius.circular(12),
             ),

@@ -1,9 +1,9 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-
-// Import your existing files...
+import '/widgets/elevated_button.dart';
 import '../../constants/call_helper.dart';
 import '../../features/promotion_page.dart';
 import '../../features/story_view_page.dart';
@@ -45,6 +45,7 @@ class HomePage extends StatelessWidget {
             statusBarBrightness: Brightness.light,
           ),
           child: Scaffold(
+            resizeToAvoidBottomInset: false,
             backgroundColor: Theme.of(context).colorScheme.surface,
             floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
             floatingActionButtonLocation:
@@ -70,7 +71,12 @@ class HomePage extends StatelessWidget {
         decoration: const BoxDecoration(
           shape: BoxShape.circle,
           gradient: LinearGradient(
-            colors: [Color(0xFF00296B), Color(0xFF8A2E87)],
+            colors: [
+              Color(0xFF00296B),
+              Color(0xFF00296B),
+
+              //  Color(0xFF8A2E87)
+            ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -210,7 +216,35 @@ class _HomeContent extends StatelessWidget {
           return buildShimmerEffect(size.width, size.height);
         }
 
-        return _HomeContentBody(controller: controller);
+        return Stack(
+          children: [
+            _HomeContentBody(controller: controller),
+            Positioned(
+              bottom: 50,
+              right: 0,
+              child: InkWell(
+                onTap: () {
+                  CallWhatsappUtil.openWhatsAppChat('+923105931103');
+                },
+                child: Container(
+                  padding: .only(left: 5, right: 15, bottom: 4, top: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.1),
+                    borderRadius: .only(
+                      topLeft: .circular(12),
+                      bottomLeft: .circular(12),
+                    ),
+                  ),
+                  child: Image.asset(
+                    'assets/whatsapp.png',
+                    height: 40,
+                    width: 40,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
       },
     );
   }
@@ -255,6 +289,7 @@ class _HomeContentBodyState extends State<_HomeContentBody> {
     return CustomScrollView(
       slivers: [
         SliverAppBar(
+          floating: false,
           pinned: true,
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -284,10 +319,12 @@ class _MtagHeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlexibleSpaceBar(
+      collapseMode: CollapseMode.none,
       titlePadding: EdgeInsets.zero,
       background: Obx(() {
         final activeMtags = controller.dashboradData.value.activeMtags ?? [];
-        if (activeMtags.isEmpty) return const SizedBox();
+
+        if (activeMtags.isEmpty) return const SizedBox(height: 100);
 
         return _MtagContent(
           activeMtags: activeMtags,
@@ -352,7 +389,8 @@ class _MtagContentState extends State<_MtagContent> {
   @override
   Widget build(BuildContext context) {
     final currentMtag = widget.activeMtags[_currentPage];
-
+    final hasblackListMtag = currentMtag.isactive == 8;
+    log('is active$hasblackListMtag');
     return Column(
       children: [
         // Static Header
@@ -361,6 +399,10 @@ class _MtagContentState extends State<_MtagContent> {
         Expanded(
           child: Container(
             decoration: BoxDecoration(
+              borderRadius: .only(
+                topRight: .circular(12),
+                topLeft: .circular(12),
+              ),
               color: ColorScheme.of(
                 context,
               ).surfaceContainerLowest.withAlpha(102),
@@ -380,17 +422,17 @@ class _MtagContentState extends State<_MtagContent> {
                 ),
                 if (widget.activeMtags.length > 1)
                   Positioned.fill(
-                    top: -100,
+                    top: hasblackListMtag ? -5 : -150,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         _buildNavigationArrow(
-                          icon: Icons.arrow_back_ios_rounded,
+                          icon: Icons.arrow_back_outlined,
                           enabled: _currentPage > 0,
                           onTap: () => _goToPage(_currentPage - 1),
                         ),
                         _buildNavigationArrow(
-                          icon: Icons.arrow_forward_ios_rounded,
+                          icon: Icons.arrow_forward_outlined,
                           enabled: _currentPage < widget.activeMtags.length - 1,
                           onTap: () => _goToPage(_currentPage + 1),
                         ),
@@ -407,44 +449,136 @@ class _MtagContentState extends State<_MtagContent> {
 
   Widget _buildHeader(BuildContext context, ActiveMtags mtag) {
     return Container(
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer,
+        color: ColorScheme.of(context).surfaceContainer,
         borderRadius: const BorderRadius.only(
           bottomLeft: .circular(28),
           bottomRight: .circular(28),
         ),
       ),
       child: Column(
+        mainAxisAlignment: .start,
+        mainAxisSize: .min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 40),
-          Text(
-            'M-TAG',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w800,
-              fontSize: 20,
+          Padding(
+            padding: .only(left: 8, right: 8),
+            child: Column(
+              children: [
+                SizedBox(height: 60),
+                Image.asset(
+                  'assets/darklogo.png',
+                  height: 40,
+                  width: 80,
+                  fit: .fill,
+                ),
+                SizedBox(height: 10),
+                if (mtag.isactive == 8)
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        'assets/m-tag.svg',
+                        height: 13,
+                        colorFilter: ColorFilter.mode(Colors.grey, .srcIn),
+                      ),
+
+                      const SizedBox(width: 8),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          'M-TAG:',
+                          style: TextStyle(
+                            color: const Color(0xff9E9EAD),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+
+                      Expanded(
+                        flex: 3,
+                        child: Row(
+                          children: [
+                            Text(
+                              mtag.tokenno ?? '',
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.red.shade900,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                'BLACK LISTED',
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                const SizedBox(height: 4),
+                if (mtag.isactive != 8)
+                  _MtagDetailRow(
+                    icon: 'assets/folder.png',
+                    label: 'M-TAG',
+                    value: mtag.tokenno,
+                  ),
+                const SizedBox(height: 4),
+                _MtagDetailRow(
+                  icon: 'assets/delivery.png',
+                  label: 'Vehicle No',
+                  value: mtag.registration,
+                ),
+              ],
             ),
           ),
-          _MtagDetailRow(
-            icon: 'assets/folder.png',
-            label: 'M-TAG',
-            value: mtag.tokenno,
-          ),
-          _MtagDetailRow(
-            icon: 'assets/delivery.png',
-            label: 'Vehicle No',
-            value: mtag.registration,
-          ),
-          _MtagDetailRow.chassis(
-            chassisNumber: mtag.chassis_number,
-            registration: mtag.registration ?? '',
-            tokenNo: mtag.tokenno ?? '',
-            mobileNumber: _otherConstants.mobile.string,
-            balance: mtag.balance ?? '',
-            cnicNumber: _otherConstants.ownerCNIC.string,
-          ),
+          const SizedBox(height: 8),
+          if (mtag.isactive == 8)
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.red.shade900,
+                borderRadius: .only(
+                  bottomRight: .circular(18),
+                  bottomLeft: .circular(18),
+                ),
+              ),
+              padding: .all(8),
+              child: _MtagDetailRow(
+                icon: 'assets/card.png',
+                label: 'Recovery Amount',
+                color: Colors.white,
+                value: "Rs. ${mtag.block_amount}",
+              ),
+            ),
+          if (mtag.isactive != 8)
+            Padding(
+              padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+              child: _MtagDetailRow.chassis(
+                chassisNumber: mtag.chassis_number,
+                registration: mtag.registration ?? '',
+                tokenNo: mtag.tokenno ?? '',
+                mobileNumber: _otherConstants.mobile.string,
+                balance: mtag.balance ?? '',
+                cnicNumber: _otherConstants.ownerCNIC.string,
+              ),
+            ),
         ],
       ),
     );
@@ -454,39 +588,96 @@ class _MtagContentState extends State<_MtagContent> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Spacer(),
-        Image.asset('assets/car2.png',height: 100,width: 100,),
-        const Spacer(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Balance",
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(color: Colors.grey.shade700),
+        const Spacer(flex: 1),
+
+        if (mtag.isactive == 8)
+          Center(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+
+              decoration: BoxDecoration(
+                color: Colors.red.shade50,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: Colors.red.shade300, width: 1.5),
+              ),
+              child: Text(
+                "M-Tag is blacklisted due to pending dues.",
+                textAlign: TextAlign.center,
+                style: TextTheme.of(
+                  context,
+                ).displaySmall?.copyWith(fontSize: 15, color: Colors.red),
+              ),
             ),
-            BalanceWidget(
-              balance: mtag.balance ?? '',
-              fontSize: 34,
-              iconSize: 24,
-            ),
-          ],
+          ),
+
+        Spacer(flex: 4),
+        Transform.scale(
+          scale: 2.5,
+          child: Image.asset(
+            'assets/vehicles/car.png',
+            height: MediaQuery.sizeOf(context).height * 0.09,
+            width: 100,
+          ),
         ),
-       
-        _buildActionButtons(mtag),
+        const Spacer(),
+        // const SizedBox(height:25),
+        if (mtag.isactive != 8.0)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Balance",
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(color: Colors.grey.shade700),
+              ),
+              BalanceWidget(
+                balance: mtag.balance ?? '',
+                fontSize: 34,
+                iconSize: 24,
+              ),
+            ],
+          ),
+        const Spacer(),
+        mtag.isactive == 8
+            ? ElevatedButton1(
+                onclick: () {
+                  showPaymentBottomSheet(
+                    context,
+                    blackListRecharge: true,
+                    mtagId: mtag.tokenno,
+                    regId: mtag.registration,
+                    recoveryAmount: mtag.block_amount,
+                  );
+                },
+                text: "Pay Now".toUpperCase(),
+                backgroundColor: Colors.redAccent.shade700,
+              )
+            : _buildActionButtons(mtag),
+        const Spacer(),
       ],
     );
   }
 
   Widget _buildActionButtons(ActiveMtags mtag) {
+    final allCars = Get.find<HomeController>().dashboradData.value.activeMtags!
+        .where((car) => car.registration != mtag.registration)
+        .map(
+          (car) => {
+            "carNumber": car.registration,
+            "balance": double.tryParse(car.balance ?? '0.0') ?? 0.0,
+            "mtagID": car.tokenno,
+          },
+        )
+        .toList();
+    log('all cars:$allCars');
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         _ActionButton(
           label: "Transfer",
           icon: 'assets/send.png',
-          onTap: () => _showBalanceTransferSheet(mtag),
+          onTap: () => _showBalanceTransferSheet(mtag, allCars),
         ),
         _ActionButton(
           label: "Recharge",
@@ -502,19 +693,21 @@ class _MtagContentState extends State<_MtagContent> {
     );
   }
 
-  void _showBalanceTransferSheet(ActiveMtags mtag) {
+  void _showBalanceTransferSheet(ActiveMtags mtag, allCars) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => BalanceTransferSheet(
-        carRegistration: mtag.registration,
-        balance: mtag.balance,
-        cnicNumber: '24242424444',
-        mobileNumber: mtag.mobilenum,
-        mtagid: mtag.tokenno,
-        dropDownCars: [],
-      ),
+      builder: (_) {
+        return BalanceTransferSheet(
+          carRegistration: mtag.registration,
+          balance: mtag.balance,
+          cnicNumber: _otherConstants.ownerCNIC.value,
+          mobileNumber: mtag.mobilenum,
+          mtagid: mtag.tokenno,
+          dropDownCars: allCars,
+        );
+      },
     );
   }
 
@@ -555,25 +748,18 @@ class _MtagContentState extends State<_MtagContent> {
       opacity: enabled ? 1.0 : 0.3,
       child: GestureDetector(
         onTap: enabled ? onTap : null,
-        child: Container(margin: .all(4),
+        child: Container(
+          margin: .all(8),
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: enabled
-                ? Theme.of(context).colorScheme.primary.withAlpha(26)
-                : Colors.grey.shade300,
             shape: BoxShape.circle,
             border: Border.all(
-              color: enabled
-                  ? Theme.of(context).colorScheme.primary.withAlpha(77)
-                  : Colors.grey.shade300,
+              width: 2,
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
-          child: Icon(
-            icon,
-            size: 18,
-            
-          ),
+          child: Icon(icon, size: 18),
         ),
       ),
     );
@@ -586,6 +772,7 @@ class _MtagDetailRow extends StatelessWidget {
   final String? value;
   final bool isChassis;
   final VoidCallback? onTap;
+  final Color? color;
 
   const _MtagDetailRow({
     required this.icon,
@@ -593,6 +780,7 @@ class _MtagDetailRow extends StatelessWidget {
     required this.value,
     this.isChassis = false,
     this.onTap,
+    this.color,
   });
 
   factory _MtagDetailRow.chassis({
@@ -609,6 +797,7 @@ class _MtagDetailRow extends StatelessWidget {
       value: chassisNumber,
       isChassis: true,
       onTap: () async {
+        log('clicked:');
         final context = Get.context;
         if (context != null) {
           await showDialog(
@@ -629,16 +818,16 @@ class _MtagDetailRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Image.asset(icon,width: 25,height: 25),
+          Image.asset(icon, width: 25, height: 25),
           const SizedBox(width: 8),
           Expanded(
             flex: 2,
             child: Text(
               '$label:',
-              style: const TextStyle(color: Color(0xff9E9EAD), fontSize: 14),
+              style: TextStyle(color: color ?? Color(0xff9E9EAD), fontSize: 14),
             ),
           ),
           Expanded(
@@ -652,13 +841,16 @@ class _MtagDetailRow extends StatelessWidget {
               ),
             ),
           ),
-          if (isChassis && value == null)
+          if (isChassis)
             GestureDetector(
               onTap: onTap,
-              child: const Icon(
-                Icons.edit_square,
-                size: 16,
-                color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: const Icon(
+                  Icons.edit_square,
+                  size: 24,
+                  color: Colors.white,
+                ),
               ),
             ),
         ],
@@ -749,7 +941,7 @@ class _DashboardGridItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Image.asset(
-        item.image!,
+        item.image ?? '',
         width: MediaQuery.sizeOf(context).width * 0.1,
         height: MediaQuery.sizeOf(context).height * 0.1,
         fit: BoxFit.contain,
@@ -830,9 +1022,7 @@ class _SliderItem extends StatelessWidget {
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (_) => StoryViewPage(stories: OtherConsts.sliderImages),
-        ),
+        MaterialPageRoute(builder: (_) => StoryViewPage(stories: [imageUrl])),
       ),
       child: Container(
         height: 150,
@@ -840,10 +1030,7 @@ class _SliderItem extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Theme.of(context).highlightColor),
-          image: DecorationImage(
-            image: AssetImage(imageUrl),
-            fit: BoxFit.cover,
-          ),
+          image: DecorationImage(image: AssetImage(imageUrl), fit: BoxFit.fill),
         ),
       ),
     );

@@ -58,12 +58,12 @@ class OtherConsts {
   RxString get blackList => _blackList;
 
   static const List<String> sliderImages = [
-    
-    '7.jpg',
-    '2.webp',
-    '4.png',
-    '1.webp',
-    '3.webp',
+   
+    '14.webp',
+    '15.webp',
+    '13.webp',
+    '12.webp',
+     
   ];
   static const String exception = 'NO DATA FOUND!';
   static List<VehicleModel> vehicleList = [

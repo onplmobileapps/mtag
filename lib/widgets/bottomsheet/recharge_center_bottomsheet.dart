@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../class/recharge_center.dart';
+import '../elevated_button.dart';
 
 class RechargeCenterBottomSheet extends StatelessWidget {
   final RechargeCenter center;
@@ -24,11 +25,7 @@ class RechargeCenterBottomSheet extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SvgPicture.asset(
-              'assets/r_center.svg',
-              width: 80,
-              height: 80,
-            ),
+            SvgPicture.asset('assets/r_center.svg', width: 80, height: 80),
             Text(
               center.name,
               textAlign: TextAlign.center,
@@ -40,10 +37,7 @@ class RechargeCenterBottomSheet extends StatelessWidget {
             const SizedBox(height: 10),
 
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 4,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
                 color: isOpen
                     ? Colors.green.withValues(alpha: 0.12)
@@ -61,10 +55,7 @@ class RechargeCenterBottomSheet extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            SvgPicture.asset(
-              'assets/rbadge.svg',
-              height: 24,
-            ),
+            SvgPicture.asset('assets/rbadge.svg', height: 24),
 
             const SizedBox(height: 14),
 
@@ -91,24 +82,10 @@ class RechargeCenterBottomSheet extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               height: 52,
-              child: ElevatedButton.icon(
-                onPressed: onOpenMap,
+              child: ElevatedButton1(
+                onclick: onOpenMap,
                 icon: const Icon(Icons.map_outlined),
-                label: const Text(
-                  'Open in Google Maps',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: theme.colorScheme.primary,
-                  foregroundColor: theme.colorScheme.onPrimary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(28),
-                  ),
-                  elevation: 2,
-                ),
+                text: 'Open in Google Maps',
               ),
             ),
           ],
@@ -118,11 +95,11 @@ class RechargeCenterBottomSheet extends StatelessWidget {
   }
 
   Widget _infoRow(
-      BuildContext context,
-      IconData icon,
-      String title,
-      String value,
-      ) {
+    BuildContext context,
+    IconData icon,
+    String title,
+    String value,
+  ) {
     final theme = Theme.of(context);
 
     return Container(
@@ -142,11 +119,7 @@ class RechargeCenterBottomSheet extends StatelessWidget {
               color: theme.colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(
-              icon,
-              size: 22,
-              color: theme.colorScheme.primary,
-            ),
+            child: Icon(icon, size: 22, color: theme.colorScheme.primary),
           ),
           const SizedBox(width: 14),
 
@@ -154,10 +127,7 @@ class RechargeCenterBottomSheet extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: theme.textTheme.labelMedium,
-                ),
+                Text(title, style: theme.textTheme.labelMedium),
                 const SizedBox(height: 4),
                 Text(
                   value,

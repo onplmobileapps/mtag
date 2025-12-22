@@ -31,7 +31,7 @@ class ElevatedButton1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(iconAlignment: .end,
-      icon: Icon(Icons.arrow_forward),label: Text(text??''),
+      icon: icon?? Icon(Icons.arrow_forward),label: Text(text??''),
       style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
         backgroundColor: WidgetStatePropertyAll(backgroundColor),
         foregroundColor: WidgetStatePropertyAll(foregroundColor),
