@@ -12,7 +12,7 @@ class BalanceWidget extends StatelessWidget {
     required this.balance,
     required this.fontSize,
     required this.iconSize,
-    bool initialHidden = true,
+    bool initialHidden = false,
   }) : isHiddenNotifier = ValueNotifier<bool>(initialHidden);
 
   @override

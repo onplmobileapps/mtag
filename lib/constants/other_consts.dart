@@ -58,21 +58,19 @@ class OtherConsts {
   RxString get blackList => _blackList;
 
   static const List<String> sliderImages = [
-   
     '14.webp',
     '15.webp',
     '13.webp',
     '12.webp',
-     
   ];
   static const String exception = 'NO DATA FOUND!';
   static List<VehicleModel> vehicleList = [
-    VehicleModel(image: 'assets/f1.svg', name: 'Car', id: 1),
-    VehicleModel(name: 'Wagon', image: 'assets/f2.svg', id: 2),
-    VehicleModel(name: 'Coaster', image: 'assets/f3.svg', id: 3),
-    VehicleModel(name: 'Bus', image: 'assets/f4.svg', id: 4),
-    VehicleModel(name: 'Truck', image: 'assets/f5.svg', id: 5),
-    VehicleModel(name: 'Trailer', image: 'assets/f6.svg', id: 6),
+    VehicleModel(image: 'assets/vehicles/car.png', name: 'Car', id: 1),
+    VehicleModel(name: 'Wagon', image: 'assets/vehicles/wagon.png', id: 2),
+    VehicleModel(name: 'Coaster', image: 'assets/vehicles/coaster.png', id: 3),
+    VehicleModel(name: 'Bus', image: 'assets/vehicles/bus.png', id: 4),
+    VehicleModel(name: 'Truck', image: 'assets/vehicles/truck.png', id: 5),
+    VehicleModel(name: 'Trailer', image: 'assets/vehicles/trailer.png', id: 6),
   ].obs;
 
   static List<StaticMotorwayModel> mwNameList = [

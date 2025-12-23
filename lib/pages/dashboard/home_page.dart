@@ -1,8 +1,8 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import '../../utils/utils.dart';
 import '/widgets/elevated_button.dart';
 import '../../constants/call_helper.dart';
 import '../../features/promotion_page.dart';
@@ -18,7 +18,6 @@ import '../../widgets/dialog/delink_dialog.dart';
 import '../../api/user_repo.dart';
 import '../../constants/other_consts.dart';
 import '../../controller/home_controller.dart';
-import '../../features/recharge_center_locator.dart';
 import '../../widgets/shimmer_dashboard.dart';
 import '../recharge/controller/recharge_controller.dart';
 import '../settings/setting_screen.dart';
@@ -51,47 +50,15 @@ class HomePage extends StatelessWidget {
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.miniCenterDocked,
             body: bottomNavigations[controller.currentPage.value],
-            floatingActionButton: _buildFloatingButton(context),
+            floatingActionButton: Image.asset(
+              'assets/whatsapp.png',
+              height: 50,
+              width: 50,
+            ),
             bottomNavigationBar: _buildBottomNavigationBar(context, controller),
           ),
         );
       },
-    );
-  }
-
-  Widget _buildFloatingButton(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => RechargeMapScreen()),
-      ),
-      child: Container(
-        height: 60,
-        width: 60,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFF00296B),
-              Color(0xFF00296B),
-
-              //  Color(0xFF8A2E87)
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 12,
-              offset: Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Center(
-          child: SvgPicture.asset('assets/location.svg', height: 30),
-        ),
-      ),
     );
   }
 
@@ -216,35 +183,7 @@ class _HomeContent extends StatelessWidget {
           return buildShimmerEffect(size.width, size.height);
         }
 
-        return Stack(
-          children: [
-            _HomeContentBody(controller: controller),
-            Positioned(
-              bottom: 50,
-              right: 0,
-              child: InkWell(
-                onTap: () {
-                  CallWhatsappUtil.openWhatsAppChat('+923105931103');
-                },
-                child: Container(
-                  padding: .only(left: 5, right: 15, bottom: 4, top: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.1),
-                    borderRadius: .only(
-                      topLeft: .circular(12),
-                      bottomLeft: .circular(12),
-                    ),
-                  ),
-                  child: Image.asset(
-                    'assets/whatsapp.png',
-                    height: 40,
-                    width: 40,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        );
+        return _HomeContentBody(controller: controller);
       },
     );
   }
@@ -261,11 +200,17 @@ class _HomeContentBody extends StatefulWidget {
 
 class _HomeContentBodyState extends State<_HomeContentBody> {
   late final PageController _pageController;
+  final ValueNotifier<int> _currentPageNotifier = ValueNotifier<int>(0);
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(viewportFraction: 1);
+    _pageController = PageController(
+      viewportFraction: 1,
+      initialPage: widget.controller.selectedMtagIndex.value,
+    );
+    _currentPageNotifier.value = widget.controller.selectedMtagIndex.value;
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final activeMtags =
           widget.controller.dashboradData.value.activeMtags ?? [];
@@ -279,6 +224,7 @@ class _HomeContentBodyState extends State<_HomeContentBody> {
   @override
   void dispose() {
     _pageController.dispose();
+    _currentPageNotifier.dispose();
     super.dispose();
   }
 
@@ -293,10 +239,21 @@ class _HomeContentBodyState extends State<_HomeContentBody> {
           pinned: true,
           backgroundColor: Colors.transparent,
           elevation: 0,
-          expandedHeight: size.height * 0.55,
-          flexibleSpace: _MtagHeaderSection(
-            controller: widget.controller,
-            pageController: _pageController,
+          expandedHeight: size.height * 0.62,
+          flexibleSpace: LayoutBuilder(
+            builder: (context, constraints) {
+              return ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
+                  maxHeight: constraints.maxHeight,
+                ),
+                child: _MtagHeaderSection(
+                  controller: widget.controller,
+                  pageController: _pageController,
+                  currentPageNotifier: _currentPageNotifier,
+                ),
+              );
+            },
           ),
         ),
         _DashboardGridSection(controller: widget.controller),
@@ -310,10 +267,12 @@ class _HomeContentBodyState extends State<_HomeContentBody> {
 class _MtagHeaderSection extends StatelessWidget {
   final HomeController controller;
   final PageController pageController;
+  final ValueNotifier<int> currentPageNotifier;
 
   const _MtagHeaderSection({
     required this.controller,
     required this.pageController,
+    required this.currentPageNotifier,
   });
 
   @override
@@ -330,6 +289,7 @@ class _MtagHeaderSection extends StatelessWidget {
           activeMtags: activeMtags,
           controller: controller,
           pageController: pageController,
+          currentPageNotifier: currentPageNotifier,
         );
       }),
     );
@@ -340,11 +300,13 @@ class _MtagContent extends StatefulWidget {
   final List<ActiveMtags> activeMtags;
   final HomeController controller;
   final PageController pageController;
+  final ValueNotifier<int> currentPageNotifier;
 
   const _MtagContent({
     required this.activeMtags,
     required this.controller,
     required this.pageController,
+    required this.currentPageNotifier,
   });
 
   @override
@@ -358,7 +320,7 @@ class _MtagContentState extends State<_MtagContent> {
   @override
   void initState() {
     super.initState();
-    _currentPage = widget.controller.selectedMtagIndex.value;
+    _currentPage = widget.currentPageNotifier.value;
     widget.pageController.addListener(_onPageChanged);
   }
 
@@ -366,8 +328,8 @@ class _MtagContentState extends State<_MtagContent> {
     final page = widget.pageController.page?.round();
     if (page != null && page != _currentPage) {
       _currentPage = page;
+      widget.currentPageNotifier.value = page;
       widget.controller.selectedMtagIndex.value = page;
-      setState(() {});
     }
   }
 
@@ -388,100 +350,118 @@ class _MtagContentState extends State<_MtagContent> {
 
   @override
   Widget build(BuildContext context) {
-    final currentMtag = widget.activeMtags[_currentPage];
-    final hasblackListMtag = currentMtag.isactive == 8;
-    log('is active$hasblackListMtag');
-    return Column(
-      children: [
-        // Static Header
-        _buildHeader(context, currentMtag),
-        // Scrollable Content
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: .only(
-                topRight: .circular(12),
-                topLeft: .circular(12),
+    return ValueListenableBuilder<int>(
+      valueListenable: widget.currentPageNotifier,
+      builder: (context, currentPageIndex, child) {
+        final currentMtag = widget.activeMtags[currentPageIndex];
+        final hasblackListMtag = currentMtag.isactive == 8;
+
+        return Column(
+          children: [
+            AppBar(
+              systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarBrightness: Brightness.light,
+                statusBarIconBrightness: Brightness.light,
+                statusBarColor: Colors.black,
               ),
-              color: ColorScheme.of(
-                context,
-              ).surfaceContainerLowest.withAlpha(102),
+              backgroundColor: Colors.transparent,
+              title: Image.asset('assets/logolight.png', height: 80, width: 80),
+              centerTitle: true,
             ),
-            child: Stack(
-              children: [
-                PageView.builder(
-                  controller: widget.pageController,
-                  itemCount: widget.activeMtags.length,
-                  onPageChanged: (index) {
-                    _currentPage = index;
-                    widget.controller.selectedMtagIndex.value = index;
-                  },
-                  itemBuilder: (context, index) {
-                    return _buildPageContent(widget.activeMtags[index]);
-                  },
+            // Static Header
+            _buildHeader(context, currentMtag),
+            // Scrollable Content
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainerLowest.withAlpha(102),
                 ),
-                if (widget.activeMtags.length > 1)
-                  Positioned.fill(
-                    top: hasblackListMtag ? -5 : -150,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _buildNavigationArrow(
-                          icon: Icons.arrow_back_outlined,
-                          enabled: _currentPage > 0,
-                          onTap: () => _goToPage(_currentPage - 1),
-                        ),
-                        _buildNavigationArrow(
-                          icon: Icons.arrow_forward_outlined,
-                          enabled: _currentPage < widget.activeMtags.length - 1,
-                          onTap: () => _goToPage(_currentPage + 1),
-                        ),
-                      ],
+                child: Stack(
+                  children: [
+                    PageView.builder(
+                      key: ValueKey('pageview_${widget.activeMtags.length}'),
+                      pageSnapping: false,
+                      physics: const PageScrollPhysics(),
+                      controller: widget.pageController,
+                      itemCount: widget.activeMtags.length,
+                      onPageChanged: (index) {
+                        _currentPage = index;
+                        widget.currentPageNotifier.value = index;
+                        widget.controller.selectedMtagIndex.value = index;
+                      },
+                      itemBuilder: (context, index) {
+                        return _buildPageContent(widget.activeMtags[index]);
+                      },
                     ),
-                  ),
-              ],
+                    if (widget.activeMtags.length > 1)
+                      Positioned.fill(
+                        top: hasblackListMtag ? 150 : 70,
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _buildNavigationArrow(
+                                icon: Icons.arrow_back_outlined,
+                                enabled: currentPageIndex > 0,
+                                onTap: () => _goToPage(currentPageIndex - 1),
+                              ),
+                              const Spacer(),
+                              _buildNavigationArrow(
+                                icon: Icons.arrow_forward_outlined,
+                                enabled:
+                                    currentPageIndex <
+                                    widget.activeMtags.length - 1,
+                                onTap: () => _goToPage(currentPageIndex + 1),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 
   Widget _buildHeader(BuildContext context, ActiveMtags mtag) {
     return Container(
+      margin: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: ColorScheme.of(context).surfaceContainer,
-        borderRadius: const BorderRadius.only(
-          bottomLeft: .circular(28),
-          bottomRight: .circular(28),
-        ),
+        color: Theme.of(
+          context,
+        ).colorScheme.surfaceContainerLowest.withAlpha(30),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
-        mainAxisAlignment: .start,
-        mainAxisSize: .min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: .only(left: 8, right: 8),
+            padding: const EdgeInsets.only(left: 8, right: 8),
             child: Column(
               children: [
-                SizedBox(height: 60),
-                Image.asset(
-                  'assets/darklogo.png',
-                  height: 40,
-                  width: 80,
-                  fit: .fill,
-                ),
-                SizedBox(height: 10),
                 if (mtag.isactive == 8)
                   Row(
                     children: [
                       SvgPicture.asset(
                         'assets/m-tag.svg',
                         height: 13,
-                        colorFilter: ColorFilter.mode(Colors.grey, .srcIn),
+                        colorFilter: const ColorFilter.mode(
+                          Colors.grey,
+                          BlendMode.srcIn,
+                        ),
                       ),
-
                       const SizedBox(width: 8),
                       Expanded(
                         flex: 2,
@@ -493,7 +473,6 @@ class _MtagContentState extends State<_MtagContent> {
                           ),
                         ),
                       ),
-
                       Expanded(
                         flex: 3,
                         child: Row(
@@ -502,7 +481,6 @@ class _MtagContentState extends State<_MtagContent> {
                               mtag.tokenno ?? '',
                               style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(
-                                    color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -554,12 +532,9 @@ class _MtagContentState extends State<_MtagContent> {
             Container(
               decoration: BoxDecoration(
                 color: Colors.red.shade900,
-                borderRadius: .only(
-                  bottomRight: .circular(18),
-                  bottomLeft: .circular(18),
-                ),
+                borderRadius: BorderRadius.circular(12),
               ),
-              padding: .all(8),
+              padding: const EdgeInsets.all(4),
               child: _MtagDetailRow(
                 icon: 'assets/card.png',
                 label: 'Recovery Amount',
@@ -589,12 +564,11 @@ class _MtagContentState extends State<_MtagContent> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Spacer(flex: 1),
-
         if (mtag.isactive == 8)
           Center(
-            child: Container(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
                 borderRadius: BorderRadius.circular(18),
@@ -603,24 +577,23 @@ class _MtagContentState extends State<_MtagContent> {
               child: Text(
                 "M-Tag is blacklisted due to pending dues.",
                 textAlign: TextAlign.center,
-                style: TextTheme.of(
-                  context,
-                ).displaySmall?.copyWith(fontSize: 15, color: Colors.red),
+                style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                  fontSize: 15,
+                  color: Colors.red,
+                ),
               ),
             ),
           ),
-
-        Spacer(flex: 4),
+        const Spacer(flex: 3),
         Transform.scale(
-          scale: 2.5,
+          scale: MediaQuery.of(context).size.aspectRatio * 5.09,
           child: Image.asset(
-            'assets/vehicles/car.png',
-            height: MediaQuery.sizeOf(context).height * 0.09,
+            getVehicleImagePath(mtag.vehicletype),
+            height: MediaQuery.of(context).size.height * 0.09,
             width: 100,
           ),
         ),
         const Spacer(),
-        // const SizedBox(height:25),
         if (mtag.isactive != 8.0)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -670,7 +643,7 @@ class _MtagContentState extends State<_MtagContent> {
           },
         )
         .toList();
-    log('all cars:$allCars');
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -693,7 +666,10 @@ class _MtagContentState extends State<_MtagContent> {
     );
   }
 
-  void _showBalanceTransferSheet(ActiveMtags mtag, allCars) {
+  void _showBalanceTransferSheet(
+    ActiveMtags mtag,
+    List<Map<String, dynamic>> allCars,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -749,7 +725,7 @@ class _MtagContentState extends State<_MtagContent> {
       child: GestureDetector(
         onTap: enabled ? onTap : null,
         child: Container(
-          margin: .all(8),
+          margin: const EdgeInsets.all(8),
           width: 40,
           height: 40,
           decoration: BoxDecoration(
@@ -797,7 +773,6 @@ class _MtagDetailRow extends StatelessWidget {
       value: chassisNumber,
       isChassis: true,
       onTap: () async {
-        log('clicked:');
         final context = Get.context;
         if (context != null) {
           await showDialog(
@@ -827,7 +802,10 @@ class _MtagDetailRow extends StatelessWidget {
             flex: 2,
             child: Text(
               '$label:',
-              style: TextStyle(color: color ?? Color(0xff9E9EAD), fontSize: 14),
+              style: TextStyle(
+                color: color ?? const Color(0xff9E9EAD),
+                fontSize: 14,
+              ),
             ),
           ),
           Expanded(
@@ -835,7 +813,6 @@ class _MtagDetailRow extends StatelessWidget {
             child: Text(
               value ?? 'N/A',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
@@ -844,13 +821,9 @@ class _MtagDetailRow extends StatelessWidget {
           if (isChassis)
             GestureDetector(
               onTap: onTap,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: const Icon(
-                  Icons.edit_square,
-                  size: 24,
-                  color: Colors.white,
-                ),
+              child: const Padding(
+                padding: EdgeInsets.only(right: 10),
+                child: Icon(Icons.edit_square, size: 24, color: Colors.white),
               ),
             ),
         ],
@@ -877,7 +850,6 @@ class _ActionButton extends StatelessWidget {
       label: label,
       icon: icon,
       fontSize: 12,
-
       onTap: onTap,
     );
   }
@@ -894,10 +866,10 @@ class _DashboardGridSection extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: MediaQuery.sizeOf(context).width * 0.5,
+          maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.5,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
-          mainAxisExtent: MediaQuery.sizeOf(context).height * 0.1,
+          mainAxisExtent: MediaQuery.of(context).size.height * 0.1,
         ),
         delegate: SliverChildBuilderDelegate((context, index) {
           final item = controller.dashBoardModel[index];
@@ -930,7 +902,7 @@ class _DashboardGridItem extends StatelessWidget {
           children: [
             if (item.image != null) _buildImage(context),
             const SizedBox(width: 8),
-            Expanded(child: _buildTitle()),
+            Expanded(child: _buildTitle(context)),
           ],
         ),
       ),
@@ -942,18 +914,18 @@ class _DashboardGridItem extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Image.asset(
         item.image ?? '',
-        width: MediaQuery.sizeOf(context).width * 0.1,
-        height: MediaQuery.sizeOf(context).height * 0.1,
+        width: MediaQuery.of(context).size.width * 0.1,
+        height: MediaQuery.of(context).size.height * 0.1,
         fit: BoxFit.contain,
       ),
     );
   }
 
-  Widget _buildTitle() {
+  Widget _buildTitle(BuildContext context) {
     return Text(
       item.title ?? '',
       overflow: TextOverflow.ellipsis,
-      style: const TextStyle(fontWeight: FontWeight.w600),
+      style: Theme.of(context).textTheme.bodyLarge,
       maxLines: 2,
     );
   }
@@ -996,7 +968,7 @@ class _SliderSection extends StatelessWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: OtherConsts.sliderImages.length,
-                separatorBuilder: (_, _) => const SizedBox(width: 8),
+                separatorBuilder: (_, __) => const SizedBox(width: 8),
                 itemBuilder: (context, index) {
                   return _SliderItem(imageIndex: index);
                 },
@@ -1057,7 +1029,7 @@ class _HelpSection extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SvgPicture.asset('assets/phone.svg', width: 50, height: 50),
+            Image.asset('assets/help.png', width: 50, height: 50),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -1077,7 +1049,35 @@ class _HelpSection extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 8),
-                  _buildCallButton(),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildCallButton(
+                          onTap: CallWhatsappUtil.openCall1313,
+                          text: '1313',
+                          icon: const Icon(
+                            Icons.arrow_forward,
+                            size: 14,
+                            color: Colors.redAccent,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: _buildCallButton(
+                          onTap: () => CallWhatsappUtil.openWhatsAppChat(
+                            '+923105931103',
+                          ),
+                          text: 'whatsapp',
+                          icon: Image.asset(
+                            'assets/whatsapp.png',
+                            height: 20,
+                            width: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -1087,19 +1087,22 @@ class _HelpSection extends StatelessWidget {
     );
   }
 
-  Widget _buildCallButton() {
+  Widget _buildCallButton({String? text, Widget? icon, VoidCallback? onTap}) {
     return OutlinedButton.icon(
-      onPressed: CallWhatsappUtil.openCall1313,
-      icon: const Icon(Icons.arrow_forward, size: 14, color: Colors.redAccent),
-      label: const Text(
-        '1313',
-        style: TextStyle(color: Colors.redAccent, fontSize: 12),
+      onPressed: onTap,
+      icon: icon!,
+      label: Text(
+        text ?? '',
+        style: TextStyle(
+          color: text == 'whatsapp' ? Colors.green : Colors.redAccent,
+          fontSize: 12,
+        ),
       ),
       iconAlignment: IconAlignment.end,
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        minimumSize: const Size(70, 28),
-        maximumSize: const Size(70, 28),
+        minimumSize: const Size(double.infinity, 35),
+        maximumSize: const Size(double.infinity, 35),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         side: const BorderSide(color: Colors.redAccent),
       ),
