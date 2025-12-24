@@ -65,6 +65,9 @@ flutter:
     - assets/slider/
     - assets/lottie/
     - assets/data/
+    - assets/icons/
+    - assets/vehicles/
+
 
   #   - images/a_dot_ham.jpeg
   fonts:
