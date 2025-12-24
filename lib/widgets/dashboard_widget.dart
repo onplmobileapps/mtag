@@ -189,7 +189,7 @@ Widget mtagDataWidget(
                                     ),
                                     SizedBox(width: elementSpacing * 0.3),
                                     BalanceWidget(
-                                      balance: ball,
+                                      balance: ball??'',
                                       fontSize: fontSizeBase * 1.3,
                                       iconSize: fontSizeBase * 2,
                                     ),
