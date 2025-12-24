@@ -259,12 +259,12 @@ final List<Map<String, dynamic>> operatorList = [
 
 
 const Map<String, String> vehicleImages = {
-  'F1': 'assets/vehicles/car.png',
-  'F2': 'assets/vehicles/wagon.png',
-  'F3': 'assets/vehicles/coaster.png',
-  'F4': 'assets/vehicles/bus.png',
-  'F5': 'assets/vehicles/truck.png',
-  'F6': 'assets/vehicles/trailer.png',
+  'Car': 'assets/vehicles/car.png',
+  'Wagon': 'assets/vehicles/wagon.png',
+  'Coaster': 'assets/vehicles/coaster.png',
+  'Bus': 'assets/vehicles/bus.png',
+  'Truck': 'assets/vehicles/truck.png',
+  'Trailer': 'assets/vehicles/trailer.png',
 };
  String getVehicleImagePath(String? category) {
   return vehicleImages[category] ?? 'assets/vehicles/car.png';

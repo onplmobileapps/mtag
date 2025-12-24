@@ -61,7 +61,9 @@ class OtherConsts {
     '14.webp',
     '15.webp',
     '13.webp',
-    '12.webp',
+    '16.webp',
+    '17.webp',
+    '18.webp',
   ];
   static const String exception = 'NO DATA FOUND!';
   static List<VehicleModel> vehicleList = [

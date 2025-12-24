@@ -248,7 +248,7 @@ class _OperatorSelectionDialogState extends State<OperatorSelectionDialog> with 
                       ),
                       WidgetSpan(
                         child: GestureDetector(
-                          onTap: () async => await CallWhatsappUtil.openWhatsAppChat('+923105931103'),
+                          onTap: () async => await CallWhatsappUtil.openWhatsAppChat(),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [

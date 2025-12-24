@@ -23,7 +23,7 @@ ThemeData appTheme = ThemeData(
     surface: Colors.white,
     secondary: Colors.grey,
     surfaceContainer: Color(0xff21295E),
-      surfaceContainerLowest: Color(0xffE1E1E1)
+      surfaceContainerLowest: Color(0xffF5F6F9)
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ButtonStyle(

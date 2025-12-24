@@ -66,6 +66,7 @@ flutter:
     - assets/lottie/
     - assets/data/
     - assets/vehicles/
+    - assets/icons/
 
 
   #   - images/a_dot_ham.jpeg

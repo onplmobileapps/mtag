@@ -275,7 +275,7 @@ class OtpVerificationDialog extends StatelessWidget {
                                 child: GestureDetector(
                                   onTap: () async =>
                                       await CallWhatsappUtil.openWhatsAppChat(
-                                          '+923105931103'),
+                                         ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [

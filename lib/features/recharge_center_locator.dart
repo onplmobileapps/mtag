@@ -135,8 +135,8 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
       child: SizedBox(
         height: 130, // MUST match Marker height
         child: Column(
-          mainAxisAlignment: .start,
-          crossAxisAlignment: .start,
+          mainAxisAlignment: .center,
+          crossAxisAlignment: .center,
           mainAxisSize: MainAxisSize.max, // ✅ FIX
           children: [
             // label
@@ -148,7 +148,7 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                 borderRadius: BorderRadius.circular(8),
               ),
               constraints: const BoxConstraints(maxWidth: 120),
-              child: Column(
+              child: Column(mainAxisAlignment: .center,crossAxisAlignment: .center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
@@ -158,7 +158,7 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                     textAlign: TextAlign.center,
                     style: TextTheme.of(
                       context,
-                    ).displaySmall?.copyWith(color: Colors.white, fontSize: 9),
+                    ).displaySmall?.copyWith( fontSize: 9),
                   ),
 
                   _statusChip(isOpen),

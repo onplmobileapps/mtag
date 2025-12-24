@@ -62,7 +62,6 @@ Widget mtagDataWidget(
   bool? showChassisBadge,
   VoidCallback? onTapBack,
   VoidCallback? onTapForward,
-
 }) {
   final controller = Get.find<HomeController>();
 
@@ -76,9 +75,6 @@ Widget mtagDataWidget(
 
       /// Car Image Size
       final carSize = isSmall ? 80.0 : 80.0;
-
-
-
 
       /// Other MTAGs list
       final allCars = controller.dashboradData.value.activeMtags!
@@ -164,10 +160,13 @@ Widget mtagDataWidget(
               child: Row(
                 mainAxisAlignment: .spaceBetween,
                 children: [
-                  InkWell(onTap: onTapBack,
-                    child: CircleAvatar(radius: 16,
-                      backgroundColor: Colors.black.withValues(alpha:0.5),
-                      child: Icon(Icons.arrow_back_ios_rounded,size: 20,)),
+                  InkWell(
+                    onTap: onTapBack,
+                    child: CircleAvatar(
+                      radius: 16,
+                      backgroundColor: Colors.black.withValues(alpha: 0.5),
+                      child: Icon(Icons.arrow_back_ios_rounded, size: 20),
+                    ),
                   ),
                   Transform.scale(
                     scaleY: 2.0,
@@ -179,10 +178,13 @@ Widget mtagDataWidget(
                       fit: BoxFit.fill,
                     ),
                   ),
-                  InkWell(onTap: onTapForward,
-                    child: CircleAvatar(radius: 16,
-                      backgroundColor: Colors.black.withValues(alpha:0.5),
-                      child: Icon(Icons.arrow_forward_ios_rounded,size: 20,)),
+                  InkWell(
+                    onTap: onTapForward,
+                    child: CircleAvatar(
+                      radius: 16,
+                      backgroundColor: Colors.black.withValues(alpha: 0.5),
+                      child: Icon(Icons.arrow_forward_ios_rounded, size: 20),
+                    ),
                   ),
                 ],
               ),
@@ -305,27 +307,42 @@ void showPaymentBottomSheet(
   final ValueNotifier<bool> showPSIDField = ValueNotifier(false);
   final ValueNotifier<int> selectedPaymentOption = ValueNotifier(-1);
   selected1linkOpt.value = -1;
-  Get.bottomSheet(
-  
-    PaymentBottomSheet(
-      mtagId: mtagId,
-      regId: regId,
-      jazzCode: jazzCode,
-      creditCode: creditCode,
-      amountController: amountController,
-      psidController: psidController,
-      showPSIDField: showPSIDField,
-      selectedPaymentOption: selectedPaymentOption,
-      amountList: AmountList.amountList,
-      blackListRecharge: blackListRecharge,
-      recoveryAmount: recoveryAmount,
-      onCopyPSID: () {
-        showPSIDField.value = true;
-        Clipboard.setData(ClipboardData(text: psidController.text));
-      },
-    ),
+  showModalBottomSheet(
+    context: context,
     isScrollControlled: true,
-    backgroundColor: Theme.of(context).bottomSheetTheme.backgroundColor,
+    showDragHandle: true,
+    backgroundColor: ColorScheme.of(context).surface,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(20),
+        topRight: Radius.circular(20),
+      ),
+    ),
+    builder: (context) {
+      return DraggableScrollableSheet(
+        expand: false, // Prevents full screen expansion
+        builder: (context, scrollController) {
+          return PaymentBottomSheet(
+            mtagId: mtagId,
+            regId: regId,
+            jazzCode: jazzCode,
+            creditCode: creditCode,
+            amountController: amountController,
+            psidController: psidController,
+            showPSIDField: showPSIDField,
+            selectedPaymentOption: selectedPaymentOption,
+            amountList: AmountList.amountList,
+            blackListRecharge: blackListRecharge,
+            recoveryAmount: recoveryAmount,
+            onCopyPSID: () {
+              showPSIDField.value = true;
+              Clipboard.setData(ClipboardData(text: psidController.text));
+            },
+            // Pass the scroll controller
+          );
+        },
+      );
+    },
   );
 }
 
@@ -335,34 +352,26 @@ Widget actionBtn(
   required String label,
   required String icon,
 
-
   required double fontSize,
   required VoidCallback onTap,
 }) {
   return Expanded(
-    child: Container(
-      margin: .all(8),
-      padding: .all(18),
-      decoration: BoxDecoration(
-        color: ColorScheme.of(context).surface,
-        borderRadius: .circular(8),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        child: Column(
-          children: [
-            Image.asset(icon,height: 40,width: 40,),
-            SizedBox(height: 10),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: fontSize,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).primaryColorLight,
-              ),
+    child: InkWell(
+      onTap: onTap,
+      child: Column(
+        children: [
+          CircleAvatar(backgroundColor: Get.isDarkMode?Colors.white: ColorScheme.of(context).surfaceContainerLowest,
+            child: Image.asset(icon, height: 30, width: 30)),
+          SizedBox(height: 10),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).primaryColorLight,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     ),
   );

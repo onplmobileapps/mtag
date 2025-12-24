@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import '../../features/recharge_center_locator.dart';
 import '../../utils/utils.dart';
-import '/widgets/elevated_button.dart';
+import '../../widgets/elevated_button.dart';
 import '../../constants/call_helper.dart';
 import '../../features/promotion_page.dart';
 import '../../features/story_view_page.dart';
 import '../../pages/dashboard/model/dashboard_model.dart';
 import '../../pages/mtag/controller/delink_controller.dart';
-import '../../pages/notification/notification_screen.dart';
 import '../../widgets/balance_widget.dart';
 import '../../widgets/bottomsheet/balance_transfer_bs.dart';
 import '../../widgets/dashboard_widget.dart';
@@ -29,7 +29,7 @@ class HomePage extends StatelessWidget {
   final List<Widget> bottomNavigations = [
     const _HomeContent(),
     const PromotionPage(),
-    const NotificationScreen(),
+    RechargeMapScreen(),
     SettingScreen(),
   ];
 
@@ -50,10 +50,11 @@ class HomePage extends StatelessWidget {
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.miniCenterDocked,
             body: bottomNavigations[controller.currentPage.value],
-            floatingActionButton: Image.asset(
-              'assets/whatsapp.png',
-              height: 50,
-              width: 50,
+            floatingActionButton: GestureDetector(
+              onTap: () async {
+                CallWhatsappUtil.openWhatsAppChat();
+              },
+              child: Image.asset('assets/whatsapp.png', height: 50, width: 50),
             ),
             bottomNavigationBar: _buildBottomNavigationBar(context, controller),
           ),
@@ -87,7 +88,7 @@ class HomePage extends StatelessWidget {
     const navigationItems = [
       _NavigationItem(0, 'Home', 'assets/house-blank.svg'),
       _NavigationItem(1, 'Promotions', 'assets/promotion.svg'),
-      _NavigationItem(2, 'Notifications', 'assets/allert.svg'),
+      _NavigationItem(2, 'Recharge Centres', 'assets/location.svg'),
       _NavigationItem(3, 'Profile', 'assets/user.svg'),
     ];
 
@@ -257,7 +258,7 @@ class _HomeContentBodyState extends State<_HomeContentBody> {
           ),
         ),
         _DashboardGridSection(controller: widget.controller),
-        const _SliderSection(),
+        _SliderSection(),
         const _HelpSection(),
       ],
     );
@@ -365,7 +366,7 @@ class _MtagContentState extends State<_MtagContent> {
                 statusBarColor: Colors.black,
               ),
               backgroundColor: Colors.transparent,
-              title: Image.asset('assets/logolight.png', height: 80, width: 80),
+              title: Image.asset(Get.isDarkMode?'assets/darklogo.png': 'assets/logolight.png', height: 80, width: 80),
               centerTitle: true,
             ),
             // Static Header
@@ -376,9 +377,6 @@ class _MtagContentState extends State<_MtagContent> {
                 margin: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.surfaceContainerLowest.withAlpha(102),
                 ),
                 child: Stack(
                   children: [
@@ -437,9 +435,7 @@ class _MtagContentState extends State<_MtagContent> {
       margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Theme.of(
-          context,
-        ).colorScheme.surfaceContainerLowest.withAlpha(30),
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -534,7 +530,7 @@ class _MtagContentState extends State<_MtagContent> {
                 color: Colors.red.shade900,
                 borderRadius: BorderRadius.circular(12),
               ),
-              padding: const EdgeInsets.all(4),
+              padding: const EdgeInsets.all(2),
               child: _MtagDetailRow(
                 icon: 'assets/card.png',
                 label: 'Recovery Amount',
@@ -542,7 +538,25 @@ class _MtagContentState extends State<_MtagContent> {
                 value: "Rs. ${mtag.block_amount}",
               ),
             ),
-          if (mtag.isactive != 8)
+       if(mtag.isactive != 8 &&
+              (mtag.chassis_number?.isEmpty ?? false))   InkWell(
+            onTap: () => showDialog(context: context, builder: (context)=> ChassisNumberDialog(
+              chassissNo: mtag.chassis_number,
+              registration: mtag.registration ?? '',
+              tokenNo: mtag.tokenno ?? '',
+              mobileNumber: _otherConstants.mobile.string,
+              balance: mtag.balance ?? '',
+              cnicNumber: _otherConstants.ownerCNIC.string,
+            )),
+            child: SvgPicture.asset(
+              'assets/chassis.svg',
+              width: 400,
+              height: 40,
+            ),
+          ),
+          if (mtag.isactive != 8 &&
+              mtag.chassis_number != null &&
+              (mtag.chassis_number?.isNotEmpty ?? false))
             Padding(
               padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: _MtagDetailRow.chassis(
@@ -593,7 +607,7 @@ class _MtagContentState extends State<_MtagContent> {
             width: 100,
           ),
         ),
-        const Spacer(),
+        const Spacer(flex: 3,),
         if (mtag.isactive != 8.0)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -649,17 +663,17 @@ class _MtagContentState extends State<_MtagContent> {
       children: [
         _ActionButton(
           label: "Transfer",
-          icon: 'assets/send.png',
+          icon: 'assets/icons/send.png',
           onTap: () => _showBalanceTransferSheet(mtag, allCars),
         ),
         _ActionButton(
           label: "Recharge",
-          icon: 'assets/plus1.png',
+          icon: 'assets/icons/recharge.png',
           onTap: () => _showRechargeBottomSheet(mtag),
         ),
         _ActionButton(
           label: "Delete",
-          icon: 'assets/delete.png',
+          icon: 'assets/icons/delete.png',
           onTap: () => _showDeleteDialog(mtag),
         ),
       ],
@@ -778,6 +792,7 @@ class _MtagDetailRow extends StatelessWidget {
           await showDialog(
             context: context,
             builder: (_) => ChassisNumberDialog(
+              chassissNo: chassisNumber,
               registration: registration,
               tokenNo: tokenNo,
               mobileNumber: mobileNumber,
@@ -814,16 +829,18 @@ class _MtagDetailRow extends StatelessWidget {
               value ?? 'N/A',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 fontSize: 16,
+                color: color,
                 fontWeight: FontWeight.w600,
+                overflow: .ellipsis,
               ),
             ),
           ),
           if (isChassis)
             GestureDetector(
               onTap: onTap,
-              child: const Padding(
-                padding: EdgeInsets.only(right: 10),
-                child: Icon(Icons.edit_square, size: 24, color: Colors.white),
+              child: Padding(
+                padding: EdgeInsets.only(right: 8),
+                child: Icon(Icons.edit_square, size: 22),
               ),
             ),
         ],
@@ -894,9 +911,7 @@ class _DashboardGridItem extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: Theme.of(
-            context,
-          ).colorScheme.surfaceContainerLowest.withAlpha(102),
+          color: Theme.of(context).colorScheme.surfaceContainerLowest,
         ),
         child: Row(
           children: [
@@ -915,7 +930,6 @@ class _DashboardGridItem extends StatelessWidget {
       child: Image.asset(
         item.image ?? '',
         width: MediaQuery.of(context).size.width * 0.1,
-        height: MediaQuery.of(context).size.height * 0.1,
         fit: BoxFit.contain,
       ),
     );
@@ -950,6 +964,8 @@ class _DashboardGridItem extends StatelessWidget {
 class _SliderSection extends StatelessWidget {
   const _SliderSection();
 
+  static final ValueNotifier<int> _currentIndex = ValueNotifier<int>(0);
+
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
@@ -963,16 +979,62 @@ class _SliderSection extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 8),
-            SizedBox(
-              height: 150,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: OtherConsts.sliderImages.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
-                itemBuilder: (context, index) {
-                  return _SliderItem(imageIndex: index);
-                },
-              ),
+            Column(
+              children: [
+                SizedBox(
+                  height: 150,
+                  child: NotificationListener<ScrollNotification>(
+                    onNotification: (notification) {
+                      if (notification is ScrollUpdateNotification) {
+                        const itemWidth = 158;
+                        final index = (notification.metrics.pixels / itemWidth)
+                            .round();
+                        if (index >= 0 &&
+                            index < OtherConsts.sliderImages.length) {
+                          // Only update if index actually changed
+                          if (_currentIndex.value != index) {
+                            _currentIndex.value = index;
+                          }
+                        }
+                      }
+                      return false;
+                    },
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: OtherConsts.sliderImages.length,
+                      separatorBuilder: (_, _) => const SizedBox(width: 8),
+                      itemBuilder: (context, index) {
+                        return _SliderItem(imageIndex: index);
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                ValueListenableBuilder<int>(
+                  valueListenable: _currentIndex,
+                  builder: (context, currentIndex, child) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(OtherConsts.sliderImages.length, (
+                        index,
+                      ) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: currentIndex == index
+                                ? Colors.black
+                                : Colors.grey,
+                            borderRadius: .circular(8),
+                          ),
+                          height: 8,
+                          width: currentIndex == index ? 25 : 8,
+                          margin: const EdgeInsets.symmetric(horizontal: 2),
+                        );
+                      }),
+                    );
+                  },
+                ),
+              ],
             ),
           ],
         ),
@@ -1065,10 +1127,8 @@ class _HelpSection extends StatelessWidget {
                       const SizedBox(width: 20),
                       Expanded(
                         child: _buildCallButton(
-                          onTap: () => CallWhatsappUtil.openWhatsAppChat(
-                            '+923105931103',
-                          ),
-                          text: 'whatsapp',
+                          onTap: () => CallWhatsappUtil.openWhatsAppChat(),
+                          text: 'WhatsApp',
                           icon: Image.asset(
                             'assets/whatsapp.png',
                             height: 20,
@@ -1094,7 +1154,7 @@ class _HelpSection extends StatelessWidget {
       label: Text(
         text ?? '',
         style: TextStyle(
-          color: text == 'whatsapp' ? Colors.green : Colors.redAccent,
+          color: text == 'WhatsApp' ? Colors.green : Colors.redAccent,
           fontSize: 12,
         ),
       ),
