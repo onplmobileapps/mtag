@@ -1,337 +1,295 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../base/app_data.dart';
-import '../../utils/utils.dart';
 import '../api/api_constants.dart';
 import '../api/auth_controller.dart';
 import '../api/user_repo.dart';
+import '../base/app_data.dart';
 import '../constants/other_consts.dart';
 import '../pages/dashboard/model/dashboard_model.dart';
 import '../pages/dashboard/model/mtag_model.dart';
+import '../utils/utils.dart';
 import '../widgets/dialog/cupertino_dialog.dart';
 import '../widgets/dialog/operator_selection_dialog.dart';
 
+
 class HomeController extends GetxController implements GetxService {
-  // --------------------- Observables ---------------------
+  final balances = <String, String>{}.obs;
   final hiddenStates = <String, bool>{}.obs;
+  final UserRepo userRepo;
+
+  HomeController({required this.userRepo});
+
   final RxInt currentPage = 0.obs;
   final RxBool isLoading = false.obs;
-  final RxBool isInitialized = false.obs;
-  final RxBool _backPressedOnce = false.obs;
 
-  // --------------------- Timer ---------------------
-  Timer? _backPressTimer;
+  //new logic for loading
+  var balanceUpdate = false.obs;
+  var transferBalance = false.obs;
+  var chassisNumberUpdate = false.obs;
+ RxInt selectedMtagIndex = 0.obs;
 
-  // --------------------- Dashboard & Models ---------------------
-  final dashboradData = DashBoardModel().obs;
+  
+  
+  void setCurrentIndex(int value) => currentPage.value = value;
+  final _otherConstants = OtherConsts();
   final List<MtagModel> dashBoardModel = [
-    MtagModel(routeName: '/mTag', title: 'M-TAG', image: 'assets/my_tag.svg'),
+    MtagModel(routeName: '/mTag', title: 'M-TAG', image: 'assets/icons/receipt.png'),
     MtagModel(
       routeName: '/tollHostory',
-      title: 'Toll/Recharge History',
-      image: 'assets/tollhistory.svg',
+      title: 'Toll\nHistory',
+      image: 'assets/icons/history.png',
     ),
     MtagModel(
       routeName: '/tollCalculator',
-      title: 'Toll Calculator',
-      image: 'assets/toll_calc.svg',
+      title: 'Toll\nCalculator',
+      image: 'assets/icons/calculator.png',
     ),
     MtagModel(
       routeName: '/recharge',
       title: 'Recharge',
-      image: 'assets/recharge2.svg',
+      image: 'assets/icons/recharge1.png',
     ),
   ];
 
-  // --------------------- Repos & Constants ---------------------
-  final UserRepo userRepo;
-  final OtherConsts _otherConstants = OtherConsts();
+  final dashboradData = DashBoardModel().obs;
 
-  HomeController({required this.userRepo}) {
-    log('HomeController created');
-    _initializeController();
-  }
-
-  // --------------------- Lifecycle ---------------------
-  @override
-  void onInit() {
-    super.onInit();
-    _initializeAsync();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-    Future.delayed(const Duration(milliseconds: 500), () {
-      _handlePostInitActions();
-      _handleAppCountAndReview();
-    });
-  }
-
-  @override
-  void onClose() {
-    _backPressTimer?.cancel();
-    super.onClose();
-  }
-
-  bool get isReady => isInitialized.value && !isLoading.value;
-
-  // --------------------- Initialization ---------------------
-  void _initializeController() {
-    _otherConstants.jazzCode.value = 0;
-    _otherConstants.creditCode.value = 0;
-    log('Controller initialized');
-  }
-
-  Future<void> _initializeAsync() async {
-    if (!isInitialized.value) {
-      await getDashboardData();
-      isInitialized.value = true;
-    }
-  }
-
-  // --------------------- Dashboard Data ---------------------
-  Future<Map<String, dynamic>> getDashboardData() async {
-    if (isLoading.value) return {};
+  Future<Map<String, dynamic>> getDashboardData({
+    String? appVersion,
+    String? deviceID,
+    bool? isLoadingValue,
+  }) async {
     isLoading.value = true;
+    final response = await userRepo.getdashBoardData();
+    isLoading.value = false;
 
-    try {
-      final response = await userRepo.getdashBoardData(isShowLoading: false);
-      if (response.containsKey(APIRESPONSE.SUCCESS)) {
-        _updateDashboardData(response[APIRESPONSE.SUCCESS]);
-      } else {
-        _handleError(response);
-      }
-      return response;
-    } catch (e) {
-      _handleError({'Error': 'Network error: $e'});
-      return {'Error': 'Exception: $e'};
-    } finally {
-      Future.delayed(
-        const Duration(milliseconds: 300),
-        () => isLoading.value = false,
-      );
+    if (response.containsKey(APIRESPONSE.SUCCESS)) {
+      _updateDashboardData(response[APIRESPONSE.SUCCESS]);
+    } else {
+      _handleError(response);
     }
+    return response;
   }
 
-  void _updateDashboardData(Map<String, dynamic> data) {
-    try {
-      final newData = DashBoardModel.fromJson(data);
-      dashboradData.value = newData;
-
-      // Update constants
-      final customer = newData.customerDetail;
-      if (customer != null) {
-        _otherConstants.ownerName.value = customer.fullName ?? '';
-        _otherConstants.ownerCNIC.value = customer.cNIC ?? '';
-        _otherConstants.mobile.value = customer.mobileNumber ?? '';
-        _otherConstants.email.value = customer.email ?? '';
-        _otherConstants.password.value = customer.password ?? '';
-      }
-
-      _otherConstants.jazzCode(newData.jazzCashRecharge);
-      _otherConstants.creditCode(newData.creditCardRecharge);
-
-      // Hidden states for MTags
-      newData.activeMtags?.forEach((mtag) {
-        hiddenStates.putIfAbsent(mtag.tokenno.toString(), () => true);
-      });
-    } catch (e) {
-      log('Error updating dashboard: $e');
-    }
-  }
-
-  Future<void> refreshDashboardData() async => await getDashboardData();
-
-  Future<void> pullRefreshDashboardData() async => await getDashboardData();
-
-  // --------------------- API Calls ---------------------
   Future<Map<String, dynamic>> sendNetworkOperator({
-    String? cnicNumber,
-    String? mobileNum,
-    int? simOperator,
+    String? CnicNumber,
+    String? MobileNum,
+    int? sim_operator,
   }) async {
-    try {
-      final response = await userRepo.updateSimOperator(
-        CnicNumber: cnicNumber,
-        MobileNum: mobileNum,
-        sim_operator: simOperator,
-      );
-      if (response.containsKey(APIRESPONSE.SUCCESS)) {
-        _showSuccessDialog(
-          response[APIRESPONSE.SUCCESS]['Message']?.toString() ?? 'Success',
-        );
-      } else {
-        _handleError(response);
-      }
-      return response;
-    } catch (e) {
-      _handleError({'Error': 'Failed to update network operator'});
-      return {'Error': 'Exception occurred'};
-    }
-  }
+    final response = await userRepo.updateSimOperator(
+      CnicNumber: CnicNumber,
+      MobileNum: MobileNum,
+      sim_operator: sim_operator,
+    ); 
 
-  Future<Map<String, dynamic>> updateChassisCall({
-    String? cnicNumber,
-    String? mobileNumber,
-    String? mtagID,
-    String? chassisNumber,
-  }) async {
-    try {
-      final response = await userRepo.updateChassisNumber(
-        cnicNumber,
-        mobileNumber,
-        mtagID,
-        chassisNumber,
-      );
-      if (response.containsKey(APIRESPONSE.SUCCESS)) {
-        await refreshDashboardData();
-        _showSuccessDialog(
-          response[APIRESPONSE.SUCCESS]['Message']?.toString() ??
-              'Chassis updated',
-        );
-      } else {
-        _handleError(response);
-      }
-      return response;
-    } catch (e) {
-      _handleError({'Error': 'Failed to update chassis number'});
-      return {'Error': 'Exception occurred'};
-    }
-  }
-
-  Future<Map<String, dynamic>> transferBalanceCall({
-    String? cnicNumber,
-    String? mobileNumber,
-    String? fromMtag,
-    String? toMtag,
-    double? amount,
-  }) async {
-    try {
-      final response = await userRepo.transferBalance(
-        cnicNumber,
-        mobileNumber,
-        fromMtag,
-        toMtag,
-        amount,
-      );
-      if (response.containsKey(APIRESPONSE.SUCCESS)) {
-        await refreshDashboardData();
-        _showSuccessDialog(
-          response[APIRESPONSE.SUCCESS]['Message']?.toString() ??
-              'Balance transferred',
-        );
-      } else {
-        _handleError(response);
-      }
-      return response;
-    } catch (e) {
-      _handleError({'Error': 'Failed to transfer balance'});
-      return {'Error': 'Exception occurred'};
-    }
-  }
-
-  // --------------------- Dialogs ---------------------
-  void _showSuccessDialog(String message) {
-    if (Get.context != null && Get.context!.mounted) {
+    if (response.containsKey(APIRESPONSE.SUCCESS)) {
       showCupertinoModalPopup(
         context: Get.context!,
         builder: (_) => CupertinoAlertDialog(
-          content: Text(message),
+          content: Text('${response[APIRESPONSE.SUCCESS]['Message']}'),
           actions: [
-            CupertinoDialogAction(onPressed: Get.back, child: const Text('OK')),
+            CupertinoDialogAction(onPressed: Get.back, child: const Text('Ok')),
           ],
         ),
       );
+    } else {
+      _handleError(response);
     }
+    return response;
+  }
+
+  //update chassis call
+
+  Future<Map<String, dynamic>> updateChassisCall({
+    String? cnicNumber,
+    mobileNumber,
+    mtagID,
+    chassisNumber,
+  }) async {
+    final response = await userRepo.updateChassisNumber(
+      cnicNumber,
+      mobileNumber,
+      mtagID,
+      chassisNumber,
+    );
+
+    if (response.containsKey(APIRESPONSE.SUCCESS)) {
+      await refreshDashboardData();
+      showCupertinoModalPopup(
+        context: Get.context!,
+        builder: (_) => CupertinoAlertDialog(
+          content: Text('${response[APIRESPONSE.SUCCESS]['Message']}'),
+          actions: [
+            CupertinoDialogAction(onPressed: Get.back, child: const Text('Ok')),
+          ],
+        ),
+      );
+    } else {
+      _handleError(response);
+    }
+    return response;
+  }
+
+  //transfer balance call
+  Future<Map<String, dynamic>> transferBalanceCall({
+    String? cnicNumber,
+    mobileNumber,
+    fromMtag,
+    toMtag,
+    amount,
+  }) async {
+    final response = await userRepo.transferBalance(
+      cnicNumber,
+      mobileNumber,
+      fromMtag,
+      toMtag,
+      amount,
+    );
+
+    if (response.containsKey(APIRESPONSE.SUCCESS)) {
+      // await sendCheckBalance([toMtag, fromMtag]);
+      await refreshDashboardData();
+      showCupertinoModalPopup(
+        context: Get.context!,
+        builder: (_) => CupertinoAlertDialog(
+          content: Text('${response[APIRESPONSE.SUCCESS]['Message']}'),
+          actions: [
+            CupertinoDialogAction(onPressed: Get.back, child: const Text('Ok')),
+          ],
+        ),
+      );
+    } else {
+      _handleError(response);
+    }
+    return response;
+  }
+
+  Future<Map<String, dynamic>> sendCheckBalance([List<String>? mtagIds]) async {
+    balanceUpdate.value = true;
+    final response = await userRepo.checkBalance(mtagIds ?? []);
+
+    Map<String, dynamic> actualData;
+    if (response.containsKey("Success")) {
+      actualData = response["Success"];
+    } else if (response.containsKey("Error")) {
+      debugPrint("❌ API failed with error response: $response");
+      balanceUpdate.value = false;
+      _handleError(response);
+      return response;
+    } else {
+      actualData = response;
+    }
+
+    final code = actualData["Code"]?.toString();
+
+    if (code == "00" && actualData["Data"] != null) {
+      final data = actualData["Data"] as List<dynamic>;
+
+      for (final e in data) {
+        final id = e["itokenno"].toString();
+        final amount = (e["amount"] != null) ? e["amount"].toString() : "0.00";
+
+        balances[id] = amount;
+        hiddenStates.putIfAbsent(id, () => true);
+      }
+
+      hiddenStates.refresh();
+
+      debugPrint("✅ Balance check successful. Found ${data.length} accounts");
+    } else {
+      _handleError(response);
+    }
+    balanceUpdate.value = false;
+    return response;
+  }
+
+  void _updateDashboardData(Map<String, dynamic> data) {
+    dashboradData.value = DashBoardModel.fromJson(data);
+    final customer = dashboradData.value.customerDetail;
+    if (customer != null) {
+      _otherConstants.ownerName.value = customer.fullName ?? '';
+      _otherConstants.ownerCNIC.value = customer.cNIC ?? '';
+      _otherConstants.mobile.value = customer.mobileNumber ?? '';
+      _otherConstants.email.value = customer.email ?? '';
+      _otherConstants.password.value = customer.password ?? '';
+    }
+    _otherConstants.jazzCode(dashboradData.value.jazzCashRecharge);
+    _otherConstants.creditCode(dashboradData.value.creditCardRecharge);
   }
 
   void _handleError(Map<String, dynamic> response) {
-    String message =
-        'We couldn\'t complete your request. Please try again or contact support.';
-    if (response.containsKey(APIRESPONSE.ERROR)) {
-      final error = response[APIRESPONSE.ERROR];
-      if (error is Map) {
-        message = error['Message']?.toString() ?? message;
-      } else {
-        message = error?.toString() ?? message;
-      }
-    }
+    final message = response.containsKey(APIRESPONSE.ERROR)
+        ? response[APIRESPONSE.ERROR]['Message']
+        : 'We couldn’t complete your request\n Try again or contact assistance.';
 
-    if (Get.context != null && Get.context!.mounted) {
-      showPopDialog(message, _resetAndNavigate);
-    }
+    showPopDialog(message, _resetAndNavigate);
   }
 
   void _resetAndNavigate() {
     Get.find<AuthController>().clearSharedData();
+    Get.delete<HomeController>(force: true);
     Get.offAllNamed('/pinPage');
   }
 
-  // --------------------- Back Press ---------------------
-  void initializeBackHandler(BuildContext context) {
-    SystemChannels.platform.setMethodCallHandler((call) async {
-      if (call.method == 'SystemNavigator.pop') return await handleBackPress();
-      return null;
-    });
+  Future<void> refreshDashboardData() async {
+    await getDashboardData();
+    _otherConstants.isRefresh(false);
   }
 
-  Future<bool> handleBackPress() async {
-    if (_backPressedOnce.value) {
-      _backPressTimer?.cancel();
-      return true;
-    }
-
-    _backPressedOnce.value = true;
-    Get.snackbar(
-      'Press back again to exit',
-      '',
-      duration: const Duration(seconds: 2),
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.black54,
-      colorText: Colors.white,
-    );
-
-    _backPressTimer = Timer(
-      const Duration(seconds: 2),
-      () => _backPressedOnce.value = false,
-    );
-    return false;
+  Future<void> pullRefreshDashboardData() async {
+    await getDashboardData();
+    _otherConstants.isRefresh(false);
   }
 
-  // --------------------- Utilities ---------------------
-  void setCurrentIndex(int value) => currentPage.value = value;
-
-  void _handlePostInitActions() {
-    final customer = dashboradData.value.customerDetail;
-    if (customer?.mobileNumber?.isNotEmpty == true &&
-        customer?.sim_operator == 0) {
-      if (Get.context != null && Get.context!.mounted) {
-        OperatorSelectionDialog.show(
-          Get.context!,
-          (value) => sendNetworkOperator(
-            cnicNumber: customer?.cNIC,
-            mobileNum: customer?.mobileNumber,
-            simOperator: value,
-          ),
-          mobileNumber: customer?.mobileNumber,
-        );
-      }
-    }
+  void refreshBalance() {
+    // Add implementation here
   }
 
+  @override
+  void onReady() async {
+    super.onReady();
+    WidgetsBinding.instance.addPostFrameCallback((_)async {
+       await _initializeDashboard();
+    await _handleAppCountAndReview();
+    _handlePostInitActions();
+    },);
+   
+  }
+
+  Future<void> _initializeDashboard() async {
+    await getDashboardData();
+  }
+
+  // / Increments app count and triggers review at 5 launches.
   Future<void> _handleAppCountAndReview() async {
-    await AppData.setCount();
+   
+    await AppData.setCount(); // Increment count
     final count = AppData.getAppCount();
     if (count >= 5) {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) => AppReviewUtils.requestAppReview(),
+      AppReviewUtils.requestAppReview();
+      await AppData.setCount(reset: true); // Reset count after review
+    }
+     debugPrint("inapp-review called$count");
+  }
+
+  void _handlePostInitActions() {
+    if (dashboradData.value.customerDetail != null &&
+        dashboradData.value.customerDetail!.mobileNumber != null &&
+        dashboradData.value.customerDetail!.mobileNumber!.isNotEmpty &&
+        dashboradData.value.customerDetail?.sim_operator == 0) {
+      OperatorSelectionDialog.show(
+        Get.context!,
+        (value) {
+          sendNetworkOperator(
+            CnicNumber: dashboradData.value.customerDetail!.cNIC,
+            MobileNum: dashboradData.value.customerDetail!.mobileNumber,
+            sim_operator: value,
+          );
+        },
+        mobileNumber: dashboradData.value.customerDetail!.mobileNumber,
       );
-      await AppData.setCount(reset: true);
     }
   }
 }
