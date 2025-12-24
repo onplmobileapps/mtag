@@ -1005,7 +1005,7 @@ class _SliderSection extends StatelessWidget {
           children: [
             Text(
               'Tap to see what\'s new',
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
             const SizedBox(height: 8),
             Column(

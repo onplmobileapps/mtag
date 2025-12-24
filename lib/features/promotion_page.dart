@@ -14,10 +14,10 @@ class PromotionPage extends StatelessWidget {
   itemCount: OtherConsts.sliderImages.length,
   itemBuilder: (context, index) {
     return GestureDetector(onTap:()=>Get.to(()=>StoryViewPage(stories: ['assets/slider/${OtherConsts.sliderImages[index]}']),),
-      child: Container(
+      child: Container(height: 150,width: double.infinity,
         margin: const EdgeInsets.all(8),
      
-       child: ClipRRect(child: Image.asset('assets/slider/${OtherConsts.sliderImages[index]}'),),
+       child: ClipRRect(child: Image.asset('assets/slider/${OtherConsts.sliderImages[index]}',fit: .contain,),),
         
         
       ),
