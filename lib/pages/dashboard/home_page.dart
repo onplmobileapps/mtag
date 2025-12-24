@@ -872,7 +872,35 @@ class _ActionButton extends StatelessWidget {
     );
   }
 }
+Widget actionBtn(
+  BuildContext context, {
+  required String label,
+  required String icon,
 
+  required double fontSize,
+  required VoidCallback onTap,
+}) {
+  return Expanded(
+    child: InkWell(
+      onTap: onTap,
+      child: Column(
+        children: [
+          CircleAvatar(backgroundColor: Get.isDarkMode?Colors.white: ColorScheme.of(context).surfaceContainerLowest,
+            child: Image.asset(icon, height: 30, width: 30)),
+          SizedBox(height: 10),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).primaryColorLight,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
 class _DashboardGridSection extends StatelessWidget {
   final HomeController controller;
 

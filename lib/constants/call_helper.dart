@@ -15,7 +15,7 @@ class CallWhatsappUtil {
     }
   }
 
-  static Future<void> openWhatsAppChat(String phoneNumber) async {
+  static Future<void> openWhatsAppChat() async {
     final Uri whatsappUrl = Uri.parse("https://wa.me/$phoneNumber");
     try {
       if (await canLaunchUrl(whatsappUrl)) {
