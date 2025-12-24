@@ -89,7 +89,7 @@ class HomePage extends StatelessWidget {
     const navigationItems = [
       _NavigationItem(0, 'Home', 'assets/house-blank.svg'),
       _NavigationItem(1, 'Promotions', 'assets/promotion.svg'),
-      _NavigationItem(2, 'Recharge Centres', 'assets/location.svg'),
+      _NavigationItem(2, 'Recharge Centers', 'assets/location.svg'),
       _NavigationItem(3, 'Profile', 'assets/user.svg'),
     ];
 
