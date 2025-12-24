@@ -25,7 +25,7 @@ class WhatsAppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        CallWhatsappUtil.openWhatsAppChat(phoneNumber);
+        CallWhatsappUtil.openWhatsAppChat();
       },
       child: Container(
         padding: padding,

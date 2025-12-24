@@ -38,7 +38,7 @@ Future showCustomDialog({bool? isError, String? message, BuildContext? context})
                   InkWell(
                     enableFeedback: true,
                     onTap: () {
-                      CallWhatsappUtil.openWhatsAppChat("+923105931103");
+                      CallWhatsappUtil.openWhatsAppChat();
                       Get.back();
                     },
                     child: Container(
