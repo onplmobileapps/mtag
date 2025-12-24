@@ -11,6 +11,7 @@ class ChassisNumberDialog extends StatefulWidget {
   final String tokenNo;
   final String balance;
   final String cnicNumber;
+  final String? chassissNo;
 
   const ChassisNumberDialog({
     super.key,
@@ -18,7 +19,7 @@ class ChassisNumberDialog extends StatefulWidget {
     required this.tokenNo,
     required this.balance,
     required this.cnicNumber,
-    required this.mobileNumber,
+    required this.mobileNumber,this.chassissNo,
   });
 
   @override
@@ -135,7 +136,7 @@ class _ChassisNumberDialogState extends State<ChassisNumberDialog> {
                   /// Text Field
                   TextField(
                     maxLength: 17,
-                    controller: _controller,
+                    controller: _controller..text=widget.chassissNo??'',
                     keyboardType: TextInputType.text,
 
                     onChanged: (_) {
