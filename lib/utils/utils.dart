@@ -280,3 +280,14 @@ final List<Map<String, dynamic>> operatorList = [
     'prefixes': ['0355'],
   },
 ];
+const Map<String, String> vehicleImages = {
+  'Car': 'assets/vehicles/car.png',
+  'Wagon': 'assets/vehicles/wagon.png',
+  'Coaster': 'assets/vehicles/coaster.png',
+  'Bus': 'assets/vehicles/bus.png',
+  'Truck': 'assets/vehicles/truck.png',
+  'Trailer': 'assets/vehicles/trailer.png',
+};
+ String getVehicleImagePath(String? category) {
+  return vehicleImages[category] ?? 'assets/vehicles/car.png';
+}
