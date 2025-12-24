@@ -7,7 +7,9 @@ import 'package:latlong2/latlong.dart';
 
 
 import 'package:url_launcher/url_launcher.dart';
-import '../class/recharge_center.dart';
+
+import 'recharge_centers.dart';
+
 
 
 class RechargeMapScreen extends StatefulWidget {
