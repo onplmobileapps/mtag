@@ -199,15 +199,16 @@ static const Map<int, int> tollMapMurree = {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Text(
+                OtherConsts.mwNameList[index].motorwayAbbrivation!,
+                style: TextStyle(fontSize: isLargeScreen ? 14 : 12, color: Theme.of(context).primaryColor),
+              ),
                Image.asset(
                 'assets/road.png',
                 height: isLargeScreen ? 45 : 50,width: 60,
                
               ),
-              Text(
-                OtherConsts.mwNameList[index].motorwayAbbrivation!,
-                style: TextStyle(fontSize: isLargeScreen ? 14 : 12, color: Theme.of(context).primaryColor),
-              ),
+              
               Text(
                 OtherConsts.mwNameList[index].motorwayName!,
                 style: TextStyle(fontSize: isLargeScreen ? 20 : 18, color: Theme.of(context).primaryColor),

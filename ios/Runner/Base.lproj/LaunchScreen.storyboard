@@ -26,50 +26,51 @@
                     <view key="view" id="Ze5-6b-2t3">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        
+                        <!-- WHITE BACKGROUND -->
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        
                         <subviews>
+                            <!-- Launch Image (NOT AppIcon) -->
                             <imageView
                                 opaque="NO"
                                 clipsSubviews="YES"
                                 contentMode="scaleAspectFit"
                                 image="LaunchImage"
                                 translatesAutoresizingMaskIntoConstraints="NO"
-                                id="YRO-k0-Ey4"/>
+                                id="launchImage"/>
                         </subviews>
-
-                        <color
-                            key="backgroundColor"
-                            systemColor="systemBackgroundColor"/>
 
                         <constraints>
                             <!-- Center image -->
                             <constraint
-                                firstItem="YRO-k0-Ey4"
+                                firstItem="launchImage"
                                 firstAttribute="centerX"
                                 secondItem="Ze5-6b-2t3"
                                 secondAttribute="centerX"
                                 id="centerX"/>
-
+                            
                             <constraint
-                                firstItem="YRO-k0-Ey4"
+                                firstItem="launchImage"
                                 firstAttribute="centerY"
                                 secondItem="Ze5-6b-2t3"
                                 secondAttribute="centerY"
                                 id="centerY"/>
-
-                            <!-- Bigger image: 40% of screen width -->
+                            
+                            <!-- Icon size: 30% of screen width (adjust as needed) -->
                             <constraint
-                                firstItem="YRO-k0-Ey4"
+                                firstItem="launchImage"
                                 firstAttribute="width"
                                 secondItem="Ze5-6b-2t3"
                                 secondAttribute="width"
-                                multiplier="0.4"
+                                multiplier="0.3"
                                 id="width"/>
-
+                            
                             <!-- Keep aspect ratio -->
                             <constraint
-                                firstItem="YRO-k0-Ey4"
+                                firstItem="launchImage"
                                 firstAttribute="height"
-                                secondItem="YRO-k0-Ey4"
+                                secondItem="launchImage"
                                 secondAttribute="width"
                                 multiplier="1"
                                 id="height"/>
@@ -89,11 +90,6 @@
     </scenes>
 
     <resources>
-        <image name="LaunchImage" width="512" height="512"/>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1"
-                colorSpace="custom"
-                customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
+        <!-- No system colors needed -->
     </resources>
 </document>

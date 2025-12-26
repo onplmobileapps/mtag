@@ -356,19 +356,22 @@ class _MtagContentState extends State<_MtagContent> {
       valueListenable: widget.currentPageNotifier,
       builder: (context, currentPageIndex, child) {
         if (widget.activeMtags.isEmpty) {
-        return const SizedBox(height: 100);
-      }
-        final safeIndex = currentPageIndex.clamp(0, widget.activeMtags.length - 1);
-      
-      // Only update if index changed
-      if (safeIndex != currentPageIndex) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          widget.currentPageNotifier.value = safeIndex;
-        });
-      }
-      
-      final currentMtag = widget.activeMtags[safeIndex]; // Use safeIndex
-      final hasblackListMtag = currentMtag.isactive == 8;
+          return const SizedBox(height: 100);
+        }
+        final safeIndex = currentPageIndex.clamp(
+          0,
+          widget.activeMtags.length - 1,
+        );
+
+        // Only update if index changed
+        if (safeIndex != currentPageIndex) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            widget.currentPageNotifier.value = safeIndex;
+          });
+        }
+
+        final currentMtag = widget.activeMtags[safeIndex]; // Use safeIndex
+        final hasblackListMtag = currentMtag.isactive == 8;
 
         return Column(
           children: [
@@ -681,11 +684,12 @@ class _MtagContentState extends State<_MtagContent> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _ActionButton(
-          label: "Transfer",
-          icon: 'assets/icons/send.png',
-          onTap: () => _showBalanceTransferSheet(mtag, allCars),
-        ),
+        if (widget.activeMtags.length > 1)
+          _ActionButton(
+            label: "Transfer",
+            icon: 'assets/icons/send.png',
+            onTap: () => _showBalanceTransferSheet(mtag, allCars),
+          ),
         _ActionButton(
           label: "Recharge",
           icon: 'assets/icons/recharge.png',
@@ -831,10 +835,14 @@ class _MtagDetailRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          SvgPicture.asset(icon, width: 20, height: 18,),
+          SizedBox(
+            width: 28, // Fixed width for icon column
+            child: SvgPicture.asset(icon, height: 18),
+          ),
           const SizedBox(width: 8),
-          Expanded(
-            flex: 2,
+
+          SizedBox(
+            width: 100, // Fixed width for all labels
             child: Text(
               '$label:',
               style: TextStyle(
@@ -843,26 +851,33 @@ class _MtagDetailRow extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(width: 8),
+          // Value - flexible but accounts for edit icon space
           Expanded(
-            flex: 3,
-            child: Text(
-              value ?? 'N/A',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontSize: 16,
-                color: color,
-                fontWeight: FontWeight.w600,
-                overflow: .ellipsis,
-              ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    value ?? 'N/A',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: 16,
+                      color: color,
+                      fontWeight: FontWeight.w600,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+                if (isChassis)
+                  SizedBox(
+                    width: 32, // Fixed space for edit icon
+                    child: GestureDetector(
+                      onTap: onTap,
+                      child: const Icon(Icons.edit_square, size: 22),
+                    ),
+                  ),
+              ],
             ),
           ),
-          if (isChassis)
-            GestureDetector(
-              onTap: onTap,
-              child: Padding(
-                padding: EdgeInsets.only(right: 8),
-                child: Icon(Icons.edit_square, size: 22),
-              ),
-            ),
         ],
       ),
     );

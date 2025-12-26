@@ -5,15 +5,12 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
 
-
 import 'package:url_launcher/url_launcher.dart';
 
 import 'recharge_centers.dart';
 import 'widget/city_dropdown.dart';
 import 'widget/recharge_center_bottom_sheet.dart';
 import 'widget/zoom_controller.dart';
-
-
 
 class RechargeMapScreen extends StatefulWidget {
   const RechargeMapScreen({super.key});
@@ -153,7 +150,9 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                 borderRadius: BorderRadius.circular(8),
               ),
               constraints: const BoxConstraints(maxWidth: 120),
-              child: Column(mainAxisAlignment: .center,crossAxisAlignment: .center,
+              child: Column(
+                mainAxisAlignment: .center,
+                crossAxisAlignment: .center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
@@ -163,7 +162,7 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                     textAlign: TextAlign.center,
                     style: TextTheme.of(
                       context,
-                    ).displaySmall?.copyWith( fontSize: 9),
+                    ).displaySmall?.copyWith(fontSize: 9),
                   ),
 
                   _statusChip(isOpen),
@@ -288,195 +287,199 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          RepaintBoundary(
-            child: ValueListenableBuilder<double>(
-              valueListenable: _zoomNotifier,
-              builder: (context, zoom, child) {
-                return FlutterMap(
-                  mapController: _mapController,
-                  options: MapOptions(
-                    backgroundColor: Theme.of(context).colorScheme.surface,
-                    initialCenter: _pakistanCenter,
-                    initialZoom: _pakistanZoom,
-                    minZoom: 5.0,
-                    maxZoom: 18.0,
-                    interactionOptions: const InteractionOptions(
-                      flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
-                      enableMultiFingerGestureRace: true,
-                    ),
-                    onPositionChanged: (pos, hasGesture) {
-                      if (!hasGesture || _isAnimating) return;
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) => result,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            RepaintBoundary(
+              child: ValueListenableBuilder<double>(
+                valueListenable: _zoomNotifier,
+                builder: (context, zoom, child) {
+                  return FlutterMap(
+                    mapController: _mapController,
+                    options: MapOptions(
+                      backgroundColor: Theme.of(context).colorScheme.surface,
+                      initialCenter: _pakistanCenter,
+                      initialZoom: _pakistanZoom,
+                      minZoom: 5.0,
+                      maxZoom: 18.0,
+                      interactionOptions: const InteractionOptions(
+                        flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                        enableMultiFingerGestureRace: true,
+                      ),
+                      onPositionChanged: (pos, hasGesture) {
+                        if (!hasGesture || _isAnimating) return;
 
-                      _markerRebuildTimer?.cancel();
-                      _markerRebuildTimer = Timer(
-                        const Duration(milliseconds: 50),
-                        () {
-                          if (mounted) {
-                            _centerNotifier.value = pos.center;
-                            _zoomNotifier.value = pos.zoom;
-                          }
-                        },
-                      );
-                    },
-                  ),
-                  children: [
-                    TileLayer(
-                      urlTemplate:
-                          'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
-                      userAgentPackageName: 'com.playdev.mtagapp',
-                      tileProvider: NetworkTileProvider(),
-                      maxNativeZoom: 18,
-                      maxZoom: 18,
-                      keepBuffer: 2,
+                        _markerRebuildTimer?.cancel();
+                        _markerRebuildTimer = Timer(
+                          const Duration(milliseconds: 50),
+                          () {
+                            if (mounted) {
+                              _centerNotifier.value = pos.center;
+                              _zoomNotifier.value = pos.zoom;
+                            }
+                          },
+                        );
+                      },
                     ),
-                    if (_isInitialized)
-                      ValueListenableBuilder<int>(
-                        valueListenable: _markerVersion,
-                        builder: (_, version, _) {
-                          return MarkerClusterLayerWidget(
-                            options: MarkerClusterLayerOptions(
-                              maxClusterRadius: 80,
-                              size: const Size(50, 50),
-                              alignment: Alignment.center,
-                              padding: const EdgeInsets.all(40),
-                              markers: _markers,
-                              polygonOptions: const PolygonOptions(
-                                borderColor: Colors.transparent,
-                                color: Colors.transparent,
-                                borderStrokeWidth: 0,
-                              ),
-                              builder: (context, markers) {
-                                final count = markers.length;
-                                final size = count > 100
-                                    ? 60.0
-                                    : count > 50
-                                    ? 55.0
-                                    : 50.0;
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+                        userAgentPackageName: 'com.playdev.mtagapp',
+                        tileProvider: NetworkTileProvider(),
+                        maxNativeZoom: 18,
+                        maxZoom: 18,
+                        keepBuffer: 2,
+                      ),
+                      if (_isInitialized)
+                        ValueListenableBuilder<int>(
+                          valueListenable: _markerVersion,
+                          builder: (_, version, _) {
+                            return MarkerClusterLayerWidget(
+                              options: MarkerClusterLayerOptions(
+                                maxClusterRadius: 80,
+                                size: const Size(50, 50),
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.all(40),
+                                markers: _markers,
+                                polygonOptions: const PolygonOptions(
+                                  borderColor: Colors.transparent,
+                                  color: Colors.transparent,
+                                  borderStrokeWidth: 0,
+                                ),
+                                builder: (context, markers) {
+                                  final count = markers.length;
+                                  final size = count > 100
+                                      ? 60.0
+                                      : count > 50
+                                      ? 55.0
+                                      : 50.0;
 
-                                return AnimatedContainer(
-                                  duration: const Duration(milliseconds: 200),
-                                  width: size,
-                                  height: size,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        Colors.blue.shade500,
-                                        Colors.blue.shade700,
-                                      ],
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.blue.withValues(
-                                          alpha: 0.4,
-                                        ),
-                                        blurRadius: 12,
-                                        spreadRadius: 2,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 3,
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      count > 999 ? '999+' : '$count',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: count > 99 ? 14 : 16,
-                                        fontWeight: FontWeight.bold,
-                                        shadows: const [
-                                          Shadow(
-                                            color: Colors.black26,
-                                            offset: Offset(0, 1),
-                                            blurRadius: 2,
-                                          ),
+                                  return AnimatedContainer(
+                                    duration: const Duration(milliseconds: 200),
+                                    width: size,
+                                    height: size,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Colors.blue.shade500,
+                                          Colors.blue.shade700,
                                         ],
                                       ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.blue.withValues(
+                                            alpha: 0.4,
+                                          ),
+                                          blurRadius: 12,
+                                          spreadRadius: 2,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 3,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
-                              spiderfyCircleRadius: 80,
-                              spiderfySpiralDistanceMultiplier: 3,
-                              circleSpiralSwitchover: 12,
-                              showPolygon: false,
-                              disableClusteringAtZoom: 16,
-                              zoomToBoundsOnClick: true,
-                              centerMarkerOnClick: true,
-                              rotate: true,
-                            ),
-                          );
-                        },
+                                    child: Center(
+                                      child: Text(
+                                        count > 999 ? '999+' : '$count',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: count > 99 ? 14 : 16,
+                                          fontWeight: FontWeight.bold,
+                                          shadows: const [
+                                            Shadow(
+                                              color: Colors.black26,
+                                              offset: Offset(0, 1),
+                                              blurRadius: 2,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                spiderfyCircleRadius: 80,
+                                spiderfySpiralDistanceMultiplier: 3,
+                                circleSpiralSwitchover: 12,
+                                showPolygon: false,
+                                disableClusteringAtZoom: 16,
+                                zoomToBoundsOnClick: true,
+                                centerMarkerOnClick: true,
+                                rotate: true,
+                              ),
+                            );
+                          },
+                        ),
+                    ],
+                  );
+                },
+              ),
+            ),
+
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 16,
+              left: 16,
+              right: 16,
+              child: SlideTransition(
+                position:
+                    Tween<Offset>(
+                      begin: const Offset(0, -1),
+                      end: Offset.zero,
+                    ).animate(
+                      CurvedAnimation(
+                        parent: _headerController,
+                        curve: Curves.easeOutCubic,
                       ),
-                  ],
-                );
-              },
-            ),
-          ),
-
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 16,
-            left: 16,
-            right: 16,
-            child: SlideTransition(
-              position:
-                  Tween<Offset>(
-                    begin: const Offset(0, -1),
-                    end: Offset.zero,
-                  ).animate(
-                    CurvedAnimation(
-                      parent: _headerController,
-                      curve: Curves.easeOutCubic,
                     ),
-                  ),
-              child: FadeTransition(
-                opacity: _headerController,
-                child: CityDropdown(
-                  cities: RechargeCenter.cities.keys.toList(),
-                  onCitySelected: _onCityChanged,
-                  placeholder: "Select City",
-                ),
-              ),
-            ),
-          ),
-
-          Positioned(
-            right: 16,
-            bottom: 100,
-            child: ScaleTransition(
-              scale: CurvedAnimation(
-                parent: _fabController,
-                curve: Curves.easeOutBack,
-              ),
-              child: ZoomControl(
-                onPlus: () => _animateZoom(1),
-                onMinus: () => _animateZoom(-1),
-              ),
-            ),
-          ),
-
-          if (!_isInitialized)
-            Positioned.fill(
-              child: Container(
-                color: Theme.of(context).colorScheme.surface,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(context).colorScheme.primary,
-                    ),
+                child: FadeTransition(
+                  opacity: _headerController,
+                  child: CityDropdown(
+                    cities: RechargeCenter.cities.keys.toList(),
+                    onCitySelected: _onCityChanged,
+                    placeholder: "Select City",
                   ),
                 ),
               ),
             ),
-        ],
+
+            Positioned(
+              right: 16,
+              bottom: 100,
+              child: ScaleTransition(
+                scale: CurvedAnimation(
+                  parent: _fabController,
+                  curve: Curves.easeOutBack,
+                ),
+                child: ZoomControl(
+                  onPlus: () => _animateZoom(1),
+                  onMinus: () => _animateZoom(-1),
+                ),
+              ),
+            ),
+
+            if (!_isInitialized)
+              Positioned.fill(
+                child: Container(
+                  color: Theme.of(context).colorScheme.surface,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
