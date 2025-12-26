@@ -234,34 +234,37 @@ class _HomeContentBodyState extends State<_HomeContentBody> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
 
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          floating: false,
-          pinned: true,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          expandedHeight: size.height * 0.62,
-          flexibleSpace: LayoutBuilder(
-            builder: (context, constraints) {
-              return ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                  maxHeight: constraints.maxHeight,
-                ),
-                child: _MtagHeaderSection(
-                  controller: widget.controller,
-                  pageController: _pageController,
-                  currentPageNotifier: _currentPageNotifier,
-                ),
-              );
-            },
+    return RefreshIndicator(edgeOffset: 40.0,
+      onRefresh: ()=>widget.controller.pullRefreshDashboardData(),
+      child: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            floating: false,
+            pinned: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            expandedHeight: size.height * 0.62,
+            flexibleSpace: LayoutBuilder(
+              builder: (context, constraints) {
+                return ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight,
+                    maxHeight: constraints.maxHeight,
+                  ),
+                  child: _MtagHeaderSection(
+                    controller: widget.controller,
+                    pageController: _pageController,
+                    currentPageNotifier: _currentPageNotifier,
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-        _DashboardGridSection(controller: widget.controller),
-        _SliderSection(),
-        const _HelpSection(),
-      ],
+          _DashboardGridSection(controller: widget.controller),
+          _SliderSection(),
+          const _HelpSection(),
+        ],
+      ),
     );
   }
 }
