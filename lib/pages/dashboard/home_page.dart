@@ -355,8 +355,20 @@ class _MtagContentState extends State<_MtagContent> {
     return ValueListenableBuilder<int>(
       valueListenable: widget.currentPageNotifier,
       builder: (context, currentPageIndex, child) {
-        final currentMtag = widget.activeMtags[currentPageIndex];
-        final hasblackListMtag = currentMtag.isactive == 8;
+        if (widget.activeMtags.isEmpty) {
+        return const SizedBox(height: 100);
+      }
+        final safeIndex = currentPageIndex.clamp(0, widget.activeMtags.length - 1);
+      
+      // Only update if index changed
+      if (safeIndex != currentPageIndex) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          widget.currentPageNotifier.value = safeIndex;
+        });
+      }
+      
+      final currentMtag = widget.activeMtags[safeIndex]; // Use safeIndex
+      final hasblackListMtag = currentMtag.isactive == 8;
 
         return Column(
           children: [
@@ -367,7 +379,11 @@ class _MtagContentState extends State<_MtagContent> {
                 statusBarColor: Colors.black,
               ),
               backgroundColor: Colors.transparent,
-              title: Image.asset(Get.isDarkMode?'assets/darklogo.png': 'assets/logolight.png', height: 80, width: 80),
+              title: Image.asset(
+                Get.isDarkMode ? 'assets/darklogo.png' : 'assets/logolight.png',
+                height: 80,
+                width: 80,
+              ),
               centerTitle: true,
             ),
             // Static Header
@@ -511,13 +527,13 @@ class _MtagContentState extends State<_MtagContent> {
                 const SizedBox(height: 4),
                 if (mtag.isactive != 8)
                   _MtagDetailRow(
-                    icon: 'assets/folder.png',
+                    icon: 'assets/frame1.svg',
                     label: 'M-TAG',
                     value: mtag.tokenno,
                   ),
                 const SizedBox(height: 4),
                 _MtagDetailRow(
-                  icon: 'assets/delivery.png',
+                  icon: 'assets/Delivery.svg',
                   label: 'Vehicle No',
                   value: mtag.registration,
                 ),
@@ -533,28 +549,31 @@ class _MtagContentState extends State<_MtagContent> {
               ),
               padding: const EdgeInsets.all(2),
               child: _MtagDetailRow(
-                icon: 'assets/card.png',
+                icon: 'assets/cedit-card.svg',
                 label: 'Recovery Amount',
                 color: Colors.white,
                 value: "Rs. ${mtag.block_amount}",
               ),
             ),
-       if(mtag.isactive != 8 &&
-              (mtag.chassis_number?.isEmpty ?? false))   InkWell(
-            onTap: () => showDialog(context: context, builder: (context)=> ChassisNumberDialog(
-              chassissNo: mtag.chassis_number,
-              registration: mtag.registration ?? '',
-              tokenNo: mtag.tokenno ?? '',
-              mobileNumber: _otherConstants.mobile.string,
-              balance: mtag.balance ?? '',
-              cnicNumber: _otherConstants.ownerCNIC.string,
-            )),
-            child: SvgPicture.asset(
-              'assets/chassis.svg',
-              width: 400,
-              height: 40,
+          if (mtag.isactive != 8 && (mtag.chassis_number?.isEmpty ?? false))
+            InkWell(
+              onTap: () => showDialog(
+                context: context,
+                builder: (context) => ChassisNumberDialog(
+                  chassissNo: mtag.chassis_number,
+                  registration: mtag.registration ?? '',
+                  tokenNo: mtag.tokenno ?? '',
+                  mobileNumber: _otherConstants.mobile.string,
+                  balance: mtag.balance ?? '',
+                  cnicNumber: _otherConstants.ownerCNIC.string,
+                ),
+              ),
+              child: SvgPicture.asset(
+                'assets/chassis.svg',
+                width: 400,
+                height: 40,
+              ),
             ),
-          ),
           if (mtag.isactive != 8 &&
               mtag.chassis_number != null &&
               (mtag.chassis_number?.isNotEmpty ?? false))
@@ -608,7 +627,7 @@ class _MtagContentState extends State<_MtagContent> {
             width: 100,
           ),
         ),
-        const Spacer(flex: 3,),
+        const Spacer(flex: 3),
         if (mtag.isactive != 8.0)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -783,7 +802,7 @@ class _MtagDetailRow extends StatelessWidget {
     required String cnicNumber,
   }) {
     return _MtagDetailRow(
-      icon: 'assets/document.png',
+      icon: 'assets/Document.svg',
       label: 'Chassis No',
       value: chassisNumber,
       isChassis: true,
@@ -812,7 +831,7 @@ class _MtagDetailRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Image.asset(icon, width: 25, height: 25),
+          SvgPicture.asset(icon, width: 20, height: 18,),
           const SizedBox(width: 8),
           Expanded(
             flex: 2,
@@ -872,6 +891,7 @@ class _ActionButton extends StatelessWidget {
     );
   }
 }
+
 Widget actionBtn(
   BuildContext context, {
   required String label,
@@ -885,8 +905,12 @@ Widget actionBtn(
       onTap: onTap,
       child: Column(
         children: [
-          CircleAvatar(backgroundColor: Get.isDarkMode?Colors.white: ColorScheme.of(context).surfaceContainerLowest,
-            child: Image.asset(icon, height: 30, width: 30)),
+          CircleAvatar(
+            backgroundColor: Get.isDarkMode
+                ? Colors.white
+                : ColorScheme.of(context).surfaceContainerLowest,
+            child: Image.asset(icon, height: 30, width: 30),
+          ),
           SizedBox(height: 10),
           Text(
             label,
@@ -901,6 +925,7 @@ Widget actionBtn(
     ),
   );
 }
+
 class _DashboardGridSection extends StatelessWidget {
   final HomeController controller;
 
@@ -1045,21 +1070,26 @@ class _SliderSection extends StatelessWidget {
                   builder: (context, currentIndex, child) {
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(OtherConsts.sliderImages.length, (
-                        index,
-                      ) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: currentIndex == index
-                                ? Colors.black
-                                : Colors.grey,
-                            borderRadius: .circular(8),
-                          ),
-                          height: 8,
-                          width: currentIndex == index ? 25 : 8,
-                          margin: const EdgeInsets.symmetric(horizontal: 2),
-                        );
-                      }),
+                      children: List.generate(
+                        OtherConsts.sliderImages.length - 1,
+                        (index) {
+                          bool isActive =
+                              currentIndex == index ||
+                              (index == OtherConsts.sliderImages.length - 2 &&
+                                  currentIndex ==
+                                      OtherConsts.sliderImages.length - 1);
+
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: isActive ? Colors.black : Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            height: 8,
+                            width: isActive ? 25 : 8,
+                            margin: const EdgeInsets.symmetric(horizontal: 2),
+                          );
+                        },
+                      ),
                     );
                   },
                 ),

@@ -66,6 +66,11 @@ class OtherConsts {
     '17.webp',
     '18.webp',
   ];
+  static const List<String> promotionsImages = [
+    '4.png',
+    '7.jpg',
+    
+  ];
   static const String exception = 'NO DATA FOUND!';
   static List<VehicleModel> vehicleList = [
     VehicleModel(image: 'assets/vehicles/car.png', name: 'Car', id: 1),

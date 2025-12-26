@@ -386,10 +386,10 @@ static const Map<int, int> tollMapMurree = {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset(
+                child: Image.asset(
                   OtherConsts.vehicleList[index].image!,
-                  height: isLargeScreen ? 48 : 40,
-                  colorFilter: ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
+                  height: isLargeScreen ? 60 : 70,
+
                 ),
               ),
               Text(

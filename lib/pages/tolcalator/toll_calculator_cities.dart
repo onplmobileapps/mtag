@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import '../../constants/other_consts.dart';
 import '../../widgets/toll_display_widget.dart';
@@ -226,13 +225,10 @@ class CitiesTab extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SvgPicture.asset(
+                  Image.asset(
                     OtherConsts.vehicleList[index].image!,
-                    height: isLargeScreen ? 45 : 35,
-                    colorFilter: ColorFilter.mode(
-                      Theme.of(Get.context!).primaryColor,
-                      BlendMode.srcIn,
-                    ),
+                    height: isLargeScreen ? 50 : 50,
+                  
                   ),
                   Text(
                     OtherConsts.vehicleList[index].name!,
