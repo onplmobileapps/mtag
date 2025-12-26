@@ -1,8 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-
 import '../../constants/other_consts.dart';
 import '../../widgets/toll_display_widget.dart';
 import 'controller/toll_calculator_static_controller.dart';
@@ -201,10 +199,10 @@ static const Map<int, int> tollMapMurree = {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(
-                'assets/line.svg',
-                height: isLargeScreen ? 45 : 35,
-                colorFilter: ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
+               Image.asset(
+                'assets/road.png',
+                height: isLargeScreen ? 45 : 50,width: 60,
+               
               ),
               Text(
                 OtherConsts.mwNameList[index].motorwayAbbrivation!,
