@@ -234,7 +234,7 @@ class _HomeContentBodyState extends State<_HomeContentBody> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
 
-    return RefreshIndicator(edgeOffset: 40.0,
+    return RefreshIndicator(edgeOffset: 100.0,
       onRefresh: ()=>widget.controller.pullRefreshDashboardData(),
       child: CustomScrollView(
         slivers: [
