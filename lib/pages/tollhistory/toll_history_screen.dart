@@ -115,7 +115,7 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
                       _buildChip(controller, 'Travel', 2, '-'),
                       //coming soon
                       const SizedBox(width: 5),
-                      _buildChip(controller, 'CDA-Parking', 3, 'P'),
+                      // _buildChip(controller, 'CDA-Parking', 3, 'P'),   Sir Suleman Asked to remove CDA parking
                     ],
                   ),
                 ),

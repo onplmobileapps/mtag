@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/utils/utils.dart';
 import '../../features/recharge_center_locator.dart';
-
 import '../../widgets/elevated_button.dart';
 import '../../constants/call_helper.dart';
 import '../../features/promotion_page.dart';
@@ -485,7 +484,7 @@ class _MtagContentState extends State<_MtagContent> {
                       Expanded(
                         flex: 2,
                         child: Text(
-                          'M-TAG:',
+                          'M-Tag ID:',
                           style: TextStyle(
                             color: const Color(0xff9E9EAD),
                             fontSize: 14,
@@ -534,7 +533,7 @@ class _MtagContentState extends State<_MtagContent> {
                 if (mtag.isactive != 8)
                   _MtagDetailRow(
                     icon: 'assets/frame1.svg',
-                    label: 'M-TAG',
+                    label: 'M-Tag ID',
                     value: mtag.tokenno,
                   ),
                 const SizedBox(height: 4),
@@ -561,7 +560,7 @@ class _MtagContentState extends State<_MtagContent> {
                 value: "Rs. ${mtag.block_amount}",
               ),
             ),
-          if (mtag.isactive != 8 && (mtag.chassis_number?.isEmpty ?? false))
+        if (mtag.isactive != 8 && (mtag.chassis_number == null || mtag.chassis_number!.trim().isEmpty))
             InkWell(
               onTap: () => showDialog(
                 context: context,

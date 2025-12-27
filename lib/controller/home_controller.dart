@@ -36,7 +36,8 @@ class HomeController extends GetxController implements GetxService {
   void setCurrentIndex(int value) => currentPage.value = value;
   final _otherConstants = OtherConsts();
   final List<MtagModel> dashBoardModel = [
-    MtagModel(routeName: '/mTag', title: 'M-TAG', image: 'assets/icons/receipt.png'),
+    // Sir Suleman asked to change M-TAG to Vehicles(Date 27-12-25)
+    MtagModel(routeName: '/mTag', title: 'Vehicles', image: 'assets/icons/receipt.png'),
     MtagModel(
       routeName: '/tollHostory',
       title: 'Toll\nHistory',

@@ -243,16 +243,13 @@ class MyMtagScreen extends StatelessWidget {
                                     ),
                             ),
                             const SizedBox(height: 20),
-                            SvgPicture.asset(
+                            Image.asset(
                               getVehicleImage(
                                 argument[index].vehicletype ?? '',
                               ),
                               height: 40,
                               width: 50,
-                              colorFilter: ColorFilter.mode(
-                                Theme.of(context).hintColor,
-                                BlendMode.srcIn,
-                              ),
+                              
                             ),
                           ],
                         ),

@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/pages/tollhistory/toll_history_screen.dart';
 import 'package:mtag_flutterapp/widgets/dashboard_widget.dart';
@@ -104,14 +104,11 @@ class MatagDetailScreen extends GetView<TollController> {
                             children: [
                               FittedBox(
                                 fit: BoxFit.scaleDown,
-                                child: SvgPicture.asset(
+                                child: Image.asset(
                                   getVehicleImage(
                                     arguments.first.vehicletype ?? '',
                                   ),
-                                  colorFilter: ColorFilter.mode(
-                                    Theme.of(context).hintColor,
-                                    BlendMode.srcIn,
-                                  ),
+                                 
                                   height: 30,
                                   width: 30,
                                 ),

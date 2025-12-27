@@ -256,7 +256,7 @@ class APISTRUCTURE {
                     horizontal: 20.0,
                     vertical: 10.0,
                   ),
-                  child: const Text('Ok', style: TextStyle(fontSize: 17)),
+                  child: const Text('Ok', style: TextStyle(fontSize: 17,fontFamily: 'PlusJakartaSans')),
                 ),
               ),
             ),

@@ -20,6 +20,32 @@ class SettingScreen extends StatelessWidget {
     return packageInfo.version;
   }
 
+  Widget _buildSettingsListItem(int index, BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          onTap: items[index].onTap,
+          horizontalTitleGap: 8.0,
+          dense: true,
+          leading: items[index].icon,
+          title: Text(
+            items[index].name ?? '',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          trailing: const Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.grey,
+            size: 18,
+          ),
+        ),
+        const Divider(thickness: .9, height: 1.0),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -30,13 +56,11 @@ class SettingScreen extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           automaticallyImplyLeading: false,
-          title: const Text('Settings '),
+          title: const Text('Settings'),
         ),
         body: Container(
           constraints: const BoxConstraints.expand(),
           color: Theme.of(context).primaryColor,
-          height: MediaQuery.sizeOf(context).height,
-          width: MediaQuery.sizeOf(context).width,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             decoration: BoxDecoration(
@@ -50,12 +74,10 @@ class SettingScreen extends StatelessWidget {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-
                   children: [
                     Obx(
                       () => Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
-
                         children: [
                           const SizedBox(height: 5),
                           CircleAvatar(
@@ -92,8 +114,9 @@ class SettingScreen extends StatelessWidget {
                                   fontSize: 20,
                                 ),
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               IconTextInfo(
                                 icon: Icons.contact_mail_outlined,
@@ -132,46 +155,11 @@ class SettingScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 5),
-
                 Expanded(
-                  child: CustomScrollView(
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    key: UniqueKey(),
-                    shrinkWrap: true,
-                    slivers: [
-                      SliverList(
-                        key: UniqueKey(),
-                        delegate: SliverChildBuilderDelegate(
-                          childCount: items.length,
-                          (context, i) => Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ListTile(
-                                contentPadding: .zero,
-                                key: UniqueKey(),
-                                visualDensity:
-                                    VisualDensity.adaptivePlatformDensity,
-                                onTap: items[i].onTap,
-                                horizontalTitleGap: 8.0,
-                                dense: true,
-                                leading: items[i].icon,
-                                title: Text(
-                                  items[i].name ?? '',
-                                 
-                                ),
-                                trailing: Icon(
-                                  Icons.arrow_forward_ios,
-                                  color: Colors.grey,
-                                  size: 18,
-                                ),
-                              ),
-                              const Divider(thickness: 0.1),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: ListView.builder(
+                    itemCount: items.length,
+                    itemBuilder: (context, index) =>
+                        _buildSettingsListItem(index, context),
                   ),
                 ),
                 FutureBuilder<String>(
@@ -231,7 +219,6 @@ final List<SettingsModel> items = [
           child: Wrap(
             children: [
               ListTile(
-                key: UniqueKey(),
                 onTap: () {
                   Get.changeThemeMode(ThemeMode.system);
                   AppData.setThemeMode(null);
@@ -243,7 +230,6 @@ final List<SettingsModel> items = [
               ),
               const Divider(),
               ListTile(
-                key: UniqueKey(),
                 onTap: () {
                   Get.changeThemeMode(ThemeMode.light);
                   Get.changeTheme(appTheme);
@@ -256,7 +242,6 @@ final List<SettingsModel> items = [
               ),
               const Divider(),
               ListTile(
-                key: UniqueKey(),
                 onTap: () {
                   Get.changeThemeMode(ThemeMode.dark);
                   Get.changeTheme(darkTheme);
@@ -305,7 +290,7 @@ final List<SettingsModel> items = [
       showChangePinDialog(Get.context!, onSubmit: (oldPin, newPin) {});
     },
     name: 'Change PIN',
-    icon: Icon(Icons.password_outlined),
+    icon: const Icon(Icons.password_outlined),
     routeName: '',
   ),
   SettingsModel(
@@ -327,17 +312,19 @@ final List<SettingsModel> items = [
   SettingsModel(
     onTap: () {
       final box = Get.context!.findRenderObject() as RenderBox?;
-      String shareLinks =
-          "Get the M-Tag One Network Application now for exciting features\n"
-          "Android: https://bit.ly/3nLrHNX\n"
-          "IOS: https://apple.co/3byIb6c\n"
-          "Huawei: https://bit.ly/3IFgzLf";
-      SharePlus.instance.share(
-        ShareParams(
-          text: shareLinks,
-          sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
-        ),
-      );
+      if (box != null) {
+        String shareLinks =
+            "Get the M-Tag One Network Application now for exciting features\n"
+            "Android: https://bit.ly/3nLrHNX\n"
+            "IOS: https://apple.co/3byIb6c\n"
+            "Huawei: https://bit.ly/3IFgzLf";
+        SharePlus.instance.share(
+          ShareParams(
+            text: shareLinks,
+            sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+          ),
+        );
+      }
     },
     name: 'Share',
     icon: const Icon(Icons.share_outlined),
@@ -346,7 +333,7 @@ final List<SettingsModel> items = [
   SettingsModel(
     onTap: () {
       showCupertinoModalPopup(
-        context: navigator!.context,
+        context: Get.context!,
         builder: (_) => CupertinoAlertDialog(
           content: const Text('Do you want to logout?'),
           actions: [

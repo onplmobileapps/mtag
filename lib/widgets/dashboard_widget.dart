@@ -32,12 +32,12 @@ String getVehCategory(String vehicleType) {
 String getVehicleImage(String vehicleType) {
   // Map containing vehicle types and their corresponding image paths
   Map<String, String> vehicleImages = {
-    'Car': 'assets/f1.svg',
-    'Wagon': 'assets/f2.svg',
-    'Coaster': 'assets/f3.svg',
-    'Bus': 'assets/f4.svg',
-    'Truck': 'assets/f5.svg',
-    'Trailer': 'assets/f6.svg',
+    'Car': 'assets/vehicles/car.png',
+    'Wagon': 'assets/vehicles/wagon.png',
+    'Coaster': 'assets/vehicles/coaster.png',
+    'Bus': 'assets/vehicles/bus.png',
+    'Truck': 'assets/vehicles/truck.png',
+    'Trailer': 'assets/vehicles/trailor.png',
   };
 
   return vehicleImages[vehicleType] ?? '';
