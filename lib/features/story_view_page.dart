@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mtag_flutterapp/constants/other_consts.dart';
 
 class StoryViewPage extends StatefulWidget {
@@ -16,7 +17,7 @@ class _StoryViewPageState extends State<StoryViewPage>
   late AnimationController _progressController;
   int _currentIndex = 0;
   bool _isDisposed = false;
-  bool _isClosing = false; // Track if we're already closing
+  bool _isClosing = false;
 
   @override
   void initState() {
@@ -108,15 +109,15 @@ class _StoryViewPageState extends State<StoryViewPage>
     if (_isClosing || _isDisposed || !mounted) return;
 
     _isClosing = true;
-
-    // Stop all animations
     _progressController.stop();
 
-    // Delay slightly to ensure UI updates complete
     await Future.delayed(const Duration(milliseconds: 50));
 
     if (mounted) {
-      Navigator.of(context).pop();
+      // Go back to home
+      Get.back();
+      // If you want to go to a specific route:
+      // Get.offAllNamed('/home');
     }
   }
 
@@ -131,13 +132,24 @@ class _StoryViewPageState extends State<StoryViewPage>
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Stack(
-        children: [
-          _buildStoryContent(),
-          _buildProgressIndicators(),
-          _buildCloseButton(),
-        ],
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onHorizontalDragStart: (details) {
+        if (details.globalPosition.dx < 20) {
+        }
+      },
+      onHorizontalDragUpdate: (details) {
+        // Block horizontal drag updates
+      },
+      child: Material(
+        color: Colors.transparent,
+        child: Stack(
+          children: [
+            _buildStoryContent(),
+            _buildProgressIndicators(),
+            _buildCloseButton(),
+          ],
+        ),
       ),
     );
   }
@@ -156,7 +168,7 @@ class _StoryViewPageState extends State<StoryViewPage>
             color: Colors.black,
             child: Image.asset(
               "assets/slider/${OtherConsts.sliderImages[widget.storiesIndex[index]]}",
-              fit: BoxFit.fitHeight,
+              fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return const Center(
                   child: Icon(

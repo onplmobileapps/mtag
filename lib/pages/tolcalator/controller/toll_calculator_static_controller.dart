@@ -1,35 +1,19 @@
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:sqflite/sqflite.dart';
-
 import '../../../constants/other_consts.dart';
 import '../../../db/stations_database.dart';
 import '../../../db/toll_database.dart';
 import '../../../widgets/search_stations_dialog.dart';
-
 import '../model/static_mw_model.dart';
 import '../model/stations_model.dart';
-import '../model/vehicle_model.dart';
-
-
 class MotorwayStaticController extends GetxController implements GetxService {
   final RxList<String> stations = <String>[].obs;
   List<StData> fullStationsList = [];
 
   final StationsDatabase stationsDb = StationsDatabase.instance;
   final TollDatabase _tollDatabase = TollDatabase.instance;
-
-  List<VehicleModel> vehicleList = [
-    VehicleModel(image: 'assets/f1.svg', name: 'Car', id: 1),
-    VehicleModel(name: 'Wagon', image: 'assets/f2.svg', id: 2),
-    VehicleModel(name: 'Coaster', image: 'assets/f3.svg', id: 3),
-    VehicleModel(name: 'Bus', image: 'assets/f4.svg', id: 4),
-    VehicleModel(name: 'Truck', image: 'assets/f5.svg', id: 5),
-    VehicleModel(name: 'Trailer', image: 'assets/f6.svg', id: 6),
-  ].obs;
-
   List<StaticMotorwayModel> mwNameList = [
     StaticMotorwayModel(
       motorwayName: "M1",

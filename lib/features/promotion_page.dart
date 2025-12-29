@@ -8,7 +8,9 @@ class PromotionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopScope(canPop: false,
-      onPopInvokedWithResult: (didPop, result) => result,
+      onPopInvokedWithResult: (didPop, result) {
+      if(!didPop)  returnToBottomBar(context);
+      },
       child: Scaffold(appBar: AppBar(title: Text('Promotions'),),
         body: ListView.builder(
         scrollDirection: Axis.vertical,
@@ -38,3 +40,10 @@ class PromotionPage extends StatelessWidget {
     );
   }
 }
+  void returnToBottomBar(BuildContext context) {
+  
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    
+   
+  }
+

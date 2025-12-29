@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/utils/utils.dart';
 import '../../features/recharge_center_locator.dart';
+import '../../widgets/dotted_outline.dart';
 import '../../widgets/elevated_button.dart';
 import '../../constants/call_helper.dart';
 import '../../features/promotion_page.dart';
@@ -564,26 +565,24 @@ class _MtagContentState extends State<_MtagContent> {
           if (mtag.isactive != 8 &&
               (mtag.chassis_number == null ||
                   mtag.chassis_number!.trim().isEmpty))
-            InkWell(
-              onTap: () => showDialog(
-                context: context,
-                builder: (context) => ChassisNumberDialog(
-                  chassissNo:
-                      mtag.chassis_number ??
-                      '', // ← FIX: Provide empty string default
-                  registration: mtag.registration ?? '',
-                  tokenNo: mtag.tokenno ?? '',
-                  mobileNumber: _otherConstants.mobile.string,
-                  balance: mtag.balance ?? '',
-                  cnicNumber: _otherConstants.ownerCNIC.string,
-                ),
-              ),
-              child: SvgPicture.asset(
-                'assets/chassis.svg',
-                width: 400,
-                height: 40,
-              ),
+            ChassisMissingWidget(
+              onAddTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => ChassisNumberDialog(
+                    chassissNo:
+                        mtag.chassis_number ??
+                        '', // ← FIX: Provide empty string default
+                    registration: mtag.registration ?? '',
+                    tokenNo: mtag.tokenno ?? '',
+                    mobileNumber: _otherConstants.mobile.string,
+                    balance: mtag.balance ?? '',
+                    cnicNumber: _otherConstants.ownerCNIC.string,
+                  ),
+                );
+              },
             ),
+
           if (mtag.isactive != 8 &&
               mtag.chassis_number != null &&
               (mtag.chassis_number?.isNotEmpty ?? false))
@@ -1135,10 +1134,16 @@ class _SliderItem extends StatelessWidget {
     final imageUrl = 'assets/thumbnail/$imageName';
 
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => StoryViewPage(storiesIndex: [imageIndex])),
-      ),
+      onTap: () {
+        showDialog(
+          barrierDismissible: false,
+          useRootNavigator: false,
+          context: context,
+          builder: (_) => Dialog.fullscreen(backgroundColor: Colors.transparent,
+            child: StoryViewPage(storiesIndex: [imageIndex]),
+          ),
+        );
+      },
       child: Container(
         height: 150,
         width: 150,
@@ -1247,6 +1252,80 @@ class _HelpSection extends StatelessWidget {
         maximumSize: const Size(double.infinity, 35),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         side: const BorderSide(color: Colors.redAccent),
+      ),
+    );
+  }
+}
+
+class ChassisMissingWidget extends StatelessWidget {
+  final VoidCallback onAddTap;
+  final String message;
+  final String buttonText;
+
+  const ChassisMissingWidget({
+    super.key,
+    required this.onAddTap,
+    this.message = 'Chassis number is missing',
+    this.buttonText = 'Add ',
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return CustomPaint(
+      painter: DottedBorderPainter(color: Colors.red.shade400),
+      child: InkWell(
+        onTap: onAddTap,
+        child: Container(
+          width: double.infinity,
+          padding: .all(6),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              /// Text
+              Expanded(
+                child: Text(
+                  message,
+
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: Colors.red,
+                    fontWeight: .w600,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+
+              /// Add Button
+              Container(
+                margin: .symmetric(horizontal: 4),
+                padding: .symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: .circular(4),
+                ),
+                child: DefaultTextStyle(
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontFamily: 'PlusJakartaSans',
+                  ),
+                  child: Row(
+                    mainAxisAlignment: .spaceAround,
+                    children: [
+                      Text('Add'),
+                      Icon(Icons.add, color: Colors.white, size: 20),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

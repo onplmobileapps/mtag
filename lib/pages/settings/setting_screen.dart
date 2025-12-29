@@ -41,7 +41,7 @@ class SettingScreen extends StatelessWidget {
             size: 18,
           ),
         ),
-        const Divider(thickness: .9, height: 1.0),
+        const Divider(thickness: .5, height: 1.5,color: Colors.grey,),
       ],
     );
   }
