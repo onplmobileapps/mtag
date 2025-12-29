@@ -233,8 +233,9 @@ class _HomeContentBodyState extends State<_HomeContentBody> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
 
-    return RefreshIndicator(edgeOffset: 100.0,
-      onRefresh: ()=>widget.controller.pullRefreshDashboardData(),
+    return RefreshIndicator(
+      edgeOffset: 100.0,
+      onRefresh: () => widget.controller.pullRefreshDashboardData(),
       child: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -560,12 +561,16 @@ class _MtagContentState extends State<_MtagContent> {
                 value: "Rs. ${mtag.block_amount}",
               ),
             ),
-        if (mtag.isactive != 8 && (mtag.chassis_number == null || mtag.chassis_number!.trim().isEmpty))
+          if (mtag.isactive != 8 &&
+              (mtag.chassis_number == null ||
+                  mtag.chassis_number!.trim().isEmpty))
             InkWell(
               onTap: () => showDialog(
                 context: context,
                 builder: (context) => ChassisNumberDialog(
-                  chassissNo: mtag.chassis_number,
+                  chassissNo:
+                      mtag.chassis_number ??
+                      '', // ← FIX: Provide empty string default
                   registration: mtag.registration ?? '',
                   tokenNo: mtag.tokenno ?? '',
                   mobileNumber: _otherConstants.mobile.string,
@@ -1061,7 +1066,7 @@ class _SliderSection extends StatelessWidget {
                         final index = (notification.metrics.pixels / itemWidth)
                             .round();
                         if (index >= 0 &&
-                            index < OtherConsts.sliderImages.length) {
+                            index < OtherConsts.thumbnails.length) {
                           // Only update if index actually changed
                           if (_currentIndex.value != index) {
                             _currentIndex.value = index;
@@ -1072,7 +1077,7 @@ class _SliderSection extends StatelessWidget {
                     },
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
-                      itemCount: OtherConsts.sliderImages.length,
+                      itemCount: OtherConsts.thumbnails.length,
                       separatorBuilder: (_, _) => const SizedBox(width: 8),
                       itemBuilder: (context, index) {
                         return _SliderItem(imageIndex: index);
@@ -1088,13 +1093,13 @@ class _SliderSection extends StatelessWidget {
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
-                        OtherConsts.sliderImages.length - 1,
+                        OtherConsts.thumbnails.length - 1,
                         (index) {
                           bool isActive =
                               currentIndex == index ||
-                              (index == OtherConsts.sliderImages.length - 2 &&
+                              (index == OtherConsts.thumbnails.length - 2 &&
                                   currentIndex ==
-                                      OtherConsts.sliderImages.length - 1);
+                                      OtherConsts.thumbnails.length - 1);
 
                           return Container(
                             decoration: BoxDecoration(
@@ -1126,13 +1131,13 @@ class _SliderItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageName = OtherConsts.sliderImages[imageIndex];
-    final imageUrl = 'assets/slider/$imageName';
+    final imageName = OtherConsts.thumbnails[imageIndex];
+    final imageUrl = 'assets/thumbnail/$imageName';
 
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => StoryViewPage(stories: [imageUrl])),
+        MaterialPageRoute(builder: (_) => StoryViewPage(storiesIndex: [imageIndex])),
       ),
       child: Container(
         height: 150,
@@ -1203,7 +1208,8 @@ class _HelpSection extends StatelessWidget {
                       const SizedBox(width: 20),
                       Expanded(
                         child: _buildCallButton(
-                          onTap: () => CallWhatsappUtil.openWhatsAppChat(),
+                          onTap: () async =>
+                              await CallWhatsappUtil.openWhatsAppChat(),
                           text: 'WhatsApp',
                           icon: Image.asset(
                             'assets/whatsapp.png',

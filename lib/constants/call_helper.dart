@@ -19,7 +19,7 @@ class CallWhatsappUtil {
     final Uri whatsappUrl = Uri.parse("https://wa.me/+923105931103");
     try {
       if (await canLaunchUrl(whatsappUrl)) {
-        await launchUrl(whatsappUrl);
+        await launchUrl(whatsappUrl,mode: LaunchMode.externalApplication);
       } else {
         throw 'Could not launch $whatsappUrl';
       }

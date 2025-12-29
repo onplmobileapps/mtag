@@ -24,7 +24,7 @@ class PromotionPage extends StatelessWidget {
         child: ClipRRect(
       borderRadius: BorderRadius.circular(8), // Add rounded corners if needed
       child: Image.asset(
-        'assets/slider/${OtherConsts.promotionsImages[index]}',
+        'assets/promotions/${OtherConsts.promotionsImages[index]}',
         fit: BoxFit.fill,
         alignment: Alignment.center, // Focus on center
       ),

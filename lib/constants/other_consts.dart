@@ -61,14 +61,27 @@ class OtherConsts {
    static const List<String> sliderImages = [
     '14.webp',
     '15.webp',
-    '13.webp',
-    '16.webp',
-    '17.webp',
     '18.webp',
+    '13.webp',
+    '17.webp',
+    '16.webp',
+  ];
+   static const List<String> thumbnails = [
+    'test1.webp',
+   'test2.webp',
+    'test3.webp',
+   'test4.webp',
+   'test5.webp',
+    'test6.webp',
   ];
   static const List<String> promotionsImages = [
-    '4.png',
-    '7.jpg',
+       '1.webp',
+       '2.webp',
+       '3.webp',
+       '4.webp',
+       '5.webp',
+       '6.webp',
+
     
   ];
   static const String exception = 'NO DATA FOUND!';
