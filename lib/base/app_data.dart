@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 sealed class AppData {
