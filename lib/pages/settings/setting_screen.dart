@@ -48,140 +48,136 @@ class SettingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, _) {},
-      child: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        appBar: AppBar(
-          centerTitle: true,
-          automaticallyImplyLeading: false,
-          title: const Text('Settings'),
-        ),
-        body: Container(
-          constraints: const BoxConstraints.expand(),
-          color: Theme.of(context).primaryColor,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: const BorderRadiusDirectional.only(
-                topEnd: Radius.circular(15),
-                topStart: Radius.circular(15),
-              ),
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        title: const Text('Settings'),
+      ),
+      body: Container(
+        constraints: const BoxConstraints.expand(),
+        color: Theme.of(context).primaryColor,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: const BorderRadiusDirectional.only(
+              topEnd: Radius.circular(15),
+              topStart: Radius.circular(15),
             ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Obx(
-                      () => Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(height: 5),
-                          CircleAvatar(
-                            radius: 40,
-                            backgroundColor: Theme.of(context).primaryColor,
-                            child: Text(
-                              getInitials(
-                                homeController
-                                        .dashboradData
-                                        .value
-                                        .customerDetail
-                                        ?.fullName ??
-                                    "",
-                              ),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Poppins',
-                                fontSize: 40,
-                                fontWeight: FontWeight.w600,
-                              ),
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Obx(
+                    () => Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 5),
+                        CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Theme.of(context).primaryColor,
+                          child: Text(
+                            getInitials(
+                              homeController
+                                      .dashboradData
+                                      .value
+                                      .customerDetail
+                                      ?.fullName ??
+                                  "",
+                            ),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Poppins',
+                              fontSize: 40,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
-                          const SizedBox(height: 5),
-                          Text(
-                            homeController
-                                    .dashboradData
-                                    .value
-                                    .customerDetail
-                                    ?.fullName ??
-                                "",
-                            style: Theme.of(context).textTheme.displayLarge
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 20,
-                                ),
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconTextInfo(
-                                icon: Icons.contact_mail_outlined,
-                                text:
-                                    homeController
-                                        .dashboradData
-                                        .value
-                                        .customerDetail
-                                        ?.cNIC ??
-                                    "",
-                              ),
-                              Container(
-                                height: 15,
-                                width: 1.5,
-                                color: Colors.grey,
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                ),
-                              ),
-                              IconTextInfo(
-                                icon: Icons.call_outlined,
-                                text:
-                                    homeController
-                                        .dashboradData
-                                        .value
-                                        .customerDetail
-                                        ?.mobileNumber ??
-                                    "",
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 5),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 5),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: items.length,
-                    itemBuilder: (context, index) =>
-                        _buildSettingsListItem(index, context),
-                  ),
-                ),
-                FutureBuilder<String>(
-                  future: _getAppVersion(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
-                        child: Text(
-                          'Version ${snapshot.data}',
-                          style: Theme.of(context).textTheme.displaySmall
-                              ?.copyWith(fontWeight: FontWeight.w100),
-                          textAlign: TextAlign.center,
                         ),
-                      );
-                    } else {
-                      return const SizedBox.shrink();
-                    }
-                  },
+                        const SizedBox(height: 5),
+                        Text(
+                          homeController
+                                  .dashboradData
+                                  .value
+                                  .customerDetail
+                                  ?.fullName ??
+                              "",
+                          style: Theme.of(context).textTheme.displayLarge
+                              ?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 20,
+                              ),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconTextInfo(
+                              icon: Icons.contact_mail_outlined,
+                              text:
+                                  homeController
+                                      .dashboradData
+                                      .value
+                                      .customerDetail
+                                      ?.cNIC ??
+                                  "",
+                            ),
+                            Container(
+                              height: 15,
+                              width: 1.5,
+                              color: Colors.grey,
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                              ),
+                            ),
+                            IconTextInfo(
+                              icon: Icons.call_outlined,
+                              text:
+                                  homeController
+                                      .dashboradData
+                                      .value
+                                      .customerDetail
+                                      ?.mobileNumber ??
+                                  "",
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 5),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 5),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) =>
+                      _buildSettingsListItem(index, context),
                 ),
-              ],
-            ),
+              ),
+              FutureBuilder<String>(
+                future: _getAppVersion(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: Text(
+                        'Version ${snapshot.data}',
+                        style: Theme.of(context).textTheme.displaySmall
+                            ?.copyWith(fontWeight: FontWeight.w100),
+                        textAlign: TextAlign.center,
+                      ),
+                    );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                },
+              ),
+            ],
           ),
         ),
       ),

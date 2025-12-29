@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -30,6 +28,8 @@ class HomeController extends GetxController implements GetxService {
   var transferBalance = false.obs;
   var chassisNumberUpdate = false.obs;
  RxInt selectedMtagIndex = 0.obs;
+  final navigationStack = <int>[0].obs;
+  final int homePageIndex = 0;
 
   
   
@@ -293,4 +293,15 @@ class HomeController extends GetxController implements GetxService {
       );
     }
   }
+  void changePage(int index) {
+    currentPage.value = index;
+  }
+
+  void goBackToHome() {
+    currentPage.value = homePageIndex;
+  }
+
+  bool get isNotOnHome => currentPage.value != homePageIndex;
 }
+
+

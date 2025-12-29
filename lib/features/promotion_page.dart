@@ -7,36 +7,31 @@ class PromotionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-      if(!didPop)  returnToBottomBar(context);
-      },
-      child: Scaffold(appBar: AppBar(title: Text('Promotions'),),
-        body: ListView.builder(
-        scrollDirection: Axis.vertical,
-        itemCount: OtherConsts.promotionsImages.length,
-        itemBuilder: (context, index) {
-      return GestureDetector(onTap:(){
-        //Get.to(()=>StoryViewPage(stories: ['assets/slider/${OtherConsts.promotionsImages[index]}']),)
-      },
-        child: Container(
-        height: 150,
-        width: double.infinity,
-        margin: const EdgeInsets.all(8),
-        child: ClipRRect(
-      borderRadius: BorderRadius.circular(8), // Add rounded corners if needed
-      child: Image.asset(
-        'assets/promotions/${OtherConsts.promotionsImages[index]}',
-        fit: BoxFit.fill,
-        alignment: Alignment.center, // Focus on center
+    return Scaffold(appBar: AppBar(title: Text('Promotions'),),
+      body: ListView.builder(
+      scrollDirection: Axis.vertical,
+      itemCount: OtherConsts.promotionsImages.length,
+      itemBuilder: (context, index) {
+    return GestureDetector(onTap:(){
+      //Get.to(()=>StoryViewPage(stories: ['assets/slider/${OtherConsts.promotionsImages[index]}']),)
+    },
+      child: Container(
+      height: 150,
+      width: double.infinity,
+      margin: const EdgeInsets.all(8),
+      child: ClipRRect(
+    borderRadius: BorderRadius.circular(8), // Add rounded corners if needed
+    child: Image.asset(
+      'assets/promotions/${OtherConsts.promotionsImages[index]}',
+      fit: BoxFit.fill,
+      alignment: Alignment.center, // Focus on center
+    ),
       ),
-        ),
-      )
-      );
-        },
-      )
-      
-      ),
+    )
+    );
+      },
+    )
+
     );
   }
 }

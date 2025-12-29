@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/utils/utils.dart';
 import '../../features/recharge_center_locator.dart';
+import '../../widgets/bottom_bar.dart';
 import '../../widgets/dotted_outline.dart';
 import '../../widgets/elevated_button.dart';
 import '../../constants/call_helper.dart';
@@ -25,154 +28,64 @@ import '../settings/setting_screen.dart';
 import 'model/mtag_model.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key});
-
-  final List<Widget> bottomNavigations = [
-    const _HomeContent(),
-    const PromotionPage(),
-    RechargeMapScreen(),
-    SettingScreen(),
-  ];
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetX<HomeController>(
       init: HomeController(userRepo: UserRepo()),
       builder: (controller) {
-        return AnnotatedRegion<SystemUiOverlayStyle>(
-          value: const SystemUiOverlayStyle(
-            statusBarIconBrightness: Brightness.dark,
-            statusBarBrightness: Brightness.light,
-          ),
-          child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.miniCenterDocked,
-            body: bottomNavigations[controller.currentPage.value],
-            floatingActionButton: GestureDetector(
-              onTap: () async {
-                CallWhatsappUtil.openWhatsAppChat();
-              },
-              child: Image.asset('assets/whatsapp.png', height: 50, width: 50),
+        final currentPage = navItems.firstWhere(
+              (item) => item.index == controller.currentPage.value,
+          orElse: () => navItems[0],
+        ).page ?? const SizedBox.shrink();
+
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, _) async {
+            if (!didPop) {
+              if (controller.currentPage.value != controller.homePageIndex) {
+                controller.goBackToHome();
+              } else {
+                SystemNavigator.pop();
+
+                if (Platform.isAndroid) {
+                  exit(0);
+                }
+              }
+            }
+          },
+          child: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: const SystemUiOverlayStyle(
+              statusBarIconBrightness: Brightness.dark,
+              statusBarBrightness: Brightness.light,
             ),
-            bottomNavigationBar: _buildBottomNavigationBar(context, controller),
+            child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.miniCenterDocked,
+              body: currentPage,
+              floatingActionButton: GestureDetector(
+                onTap: () async {
+                  CallWhatsappUtil.openWhatsAppChat();
+                },
+                child: Image.asset('assets/whatsapp.png', height: 50, width: 50),
+              ),
+              bottomNavigationBar:CustomBottomNavBar(
+                controller: controller,
+                items: navItems,
+              ),
           ),
+        ),
         );
+
       },
     );
   }
 
-  Widget _buildBottomNavigationBar(
-    BuildContext context,
-    HomeController controller,
-  ) {
-    return BottomAppBar(
-      height: 50,
-      padding: const EdgeInsets.only(top: 8),
-      shape: const CircularNotchedRectangle(),
-      notchMargin: 6,
-      elevation: 10,
-      color: Colors.grey.withAlpha(25),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: _buildNavigationItems(context, controller),
-      ),
-    );
-  }
-
-  List<Widget> _buildNavigationItems(
-    BuildContext context,
-    HomeController controller,
-  ) {
-    const navigationItems = [
-      _NavigationItem(0, 'Home', 'assets/house-blank.svg'),
-      _NavigationItem(1, 'Promotions', 'assets/promotion.svg'),
-      _NavigationItem(2, 'Recharge Centers', 'assets/location.svg'),
-      _NavigationItem(3, 'Profile', 'assets/user.svg'),
-    ];
-
-    return navigationItems.map((item) {
-      return _NavigationButton(
-        index: item.index,
-        label: item.label,
-        iconPath: item.iconPath,
-        currentPage: controller.currentPage.value,
-        onTap: () => _handleNavigationTap(controller, item.index),
-      );
-    }).toList();
-  }
-
-  void _handleNavigationTap(HomeController controller, int index) {
-    final otherConstants = OtherConsts();
-    if (controller.currentPage.value == 0 &&
-        index == 0 &&
-        otherConstants.isRefresh.value) {
-      controller.pullRefreshDashboardData();
-    }
-    controller.setCurrentIndex(index);
-  }
 }
-
-class _NavigationItem {
-  final int index;
-  final String label;
-  final String iconPath;
-
-  const _NavigationItem(this.index, this.label, this.iconPath);
-}
-
-class _NavigationButton extends StatelessWidget {
-  final int index;
-  final String label;
-  final String iconPath;
-  final int currentPage;
-  final VoidCallback onTap;
-
-  const _NavigationButton({
-    required this.index,
-    required this.label,
-    required this.iconPath,
-    required this.currentPage,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isSelected = index == currentPage;
-    final colorScheme = Theme.of(context).colorScheme;
-    final iconColor = isSelected
-        ? colorScheme.primary
-        : colorScheme.secondary.withAlpha(180);
-
-    return InkWell(
-      onTap: onTap,
-      splashFactory: NoSplash.splashFactory,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            iconPath,
-            height: 22,
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 11,
-              color: iconColor,
-              fontFamily: 'Poppins',
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _HomeContent extends StatelessWidget {
   const _HomeContent();
 
@@ -1330,3 +1243,30 @@ class ChassisMissingWidget extends StatelessWidget {
     );
   }
 }
+final navItems = [
+  BottomNavItem(
+    imagePath: 'assets/house-blank.svg',
+    label: 'Home',
+    index: 0,
+    page: const _HomeContent(),
+  ),
+  BottomNavItem(
+    imagePath: 'assets/promotion.svg',
+    label: 'Promotions',
+    index: 1,
+    page: const PromotionPage(),
+  ),
+  BottomNavItem.spacer(),
+  BottomNavItem(
+    imagePath: 'assets/location.svg',
+    label: 'Recharge Centers',
+    index: 2,
+    page: RechargeMapScreen(),
+  ),
+  BottomNavItem(
+    imagePath: 'assets/user.svg',
+    label: 'Profile',
+    index: 3,
+    page: SettingScreen(),
+  ),
+];
