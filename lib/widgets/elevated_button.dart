@@ -12,7 +12,7 @@ class ElevatedButton1 extends StatelessWidget {
     this.textscaller,
     this.shape,
     this.icon,
-    this.iconRight = false,
+    this.iconRight = false,this.isShowIcon=false,
   });
 
   final Function()? onclick;
@@ -23,6 +23,7 @@ class ElevatedButton1 extends StatelessWidget {
   final Color? foregroundColor;
   final double? textscaller;
   final OutlinedBorder? shape;
+  final bool isShowIcon;
 
   final Widget? icon;
 
@@ -31,7 +32,7 @@ class ElevatedButton1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(iconAlignment: .end,
-      icon: Icon(Icons.arrow_forward),label: Text(text??''),
+      icon:isShowIcon? Icon(Icons.arrow_forward):SizedBox.shrink(),label: Text(text??''),
       style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
         backgroundColor: WidgetStatePropertyAll(backgroundColor),
         foregroundColor: WidgetStatePropertyAll(foregroundColor),

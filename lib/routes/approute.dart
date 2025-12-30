@@ -58,7 +58,7 @@ List<GetPage<dynamic>>? getPages = [
   GetPage(
     name: '/tollCalculator',
     // page: () => const TollCalculatorLocal(),
-    page: () => const TollCalculatorLocalTabs(),
+    page: () => const TollCalculator(),
     popGesture: true,
   ),
   GetPage(

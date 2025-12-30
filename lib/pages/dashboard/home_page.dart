@@ -35,10 +35,14 @@ class HomePage extends StatelessWidget {
     return GetX<HomeController>(
       init: HomeController(userRepo: UserRepo()),
       builder: (controller) {
-        final currentPage = navItems.firstWhere(
-              (item) => item.index == controller.currentPage.value,
-          orElse: () => navItems[0],
-        ).page ?? const SizedBox.shrink();
+        final currentPage =
+            navItems
+                .firstWhere(
+                  (item) => item.index == controller.currentPage.value,
+                  orElse: () => navItems[0],
+                )
+                .page ??
+            const SizedBox.shrink();
 
         return PopScope(
           canPop: false,
@@ -63,7 +67,8 @@ class HomePage extends StatelessWidget {
             child: Scaffold(
               resizeToAvoidBottomInset: false,
               backgroundColor: Theme.of(context).colorScheme.surface,
-              floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+              floatingActionButtonAnimator:
+                  FloatingActionButtonAnimator.scaling,
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.miniCenterDocked,
               body: currentPage,
@@ -71,21 +76,24 @@ class HomePage extends StatelessWidget {
                 onTap: () async {
                   CallWhatsappUtil.openWhatsAppChat();
                 },
-                child: Image.asset('assets/whatsapp.png', height: 50, width: 50),
+                child: Image.asset(
+                  'assets/whatsapp.png',
+                  height: 50,
+                  width: 50,
+                ),
               ),
-              bottomNavigationBar:CustomBottomNavBar(
+              bottomNavigationBar: CustomBottomNavBar(
                 controller: controller,
                 items: navItems,
               ),
+            ),
           ),
-        ),
         );
-
       },
     );
   }
-
 }
+
 class _HomeContent extends StatelessWidget {
   const _HomeContent();
 
@@ -612,11 +620,13 @@ class _MtagContentState extends State<_MtagContent> {
         _ActionButton(
           label: "Recharge",
           icon: 'assets/icons/recharge.png',
+          color: Colors.green,
           onTap: () => _showRechargeBottomSheet(mtag),
         ),
         _ActionButton(
           label: "Delete",
           icon: 'assets/icons/delete.png',
+          color: Colors.red,
           onTap: () => _showDeleteDialog(mtag),
         ),
       ],
@@ -807,11 +817,13 @@ class _ActionButton extends StatelessWidget {
   final String label;
   final String icon;
   final VoidCallback onTap;
+  final Color? color;
 
   const _ActionButton({
     required this.label,
     required this.icon,
     required this.onTap,
+    this.color,
   });
 
   @override
@@ -822,6 +834,7 @@ class _ActionButton extends StatelessWidget {
       icon: icon,
       fontSize: 12,
       onTap: onTap,
+      color: color,
     );
   }
 }
@@ -830,7 +843,7 @@ Widget actionBtn(
   BuildContext context, {
   required String label,
   required String icon,
-
+  Color? color,
   required double fontSize,
   required VoidCallback onTap,
 }) {
@@ -843,7 +856,7 @@ Widget actionBtn(
             backgroundColor: Get.isDarkMode
                 ? Colors.white
                 : ColorScheme.of(context).surfaceContainerLowest,
-            child: Image.asset(icon, height: 30, width: 30),
+            child: Image.asset(icon, height: 30, width: 30, color: color),
           ),
           SizedBox(height: 10),
           Text(
@@ -1052,7 +1065,8 @@ class _SliderItem extends StatelessWidget {
           barrierDismissible: false,
           useRootNavigator: false,
           context: context,
-          builder: (_) => Dialog.fullscreen(backgroundColor: Colors.transparent,
+          builder: (_) => Dialog.fullscreen(
+            backgroundColor: Colors.transparent,
             child: StoryViewPage(storiesIndex: [imageIndex]),
           ),
         );
@@ -1090,7 +1104,13 @@ class _HelpSection extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset('assets/help.png', width: 50, height: 50),
+            Image.asset(
+              'assets/help.png',
+              width: 50,
+              height: 50,
+              errorBuilder: (context, error, stackTrace) =>
+                  Icon(Icons.broken_image),
+            ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -1243,6 +1263,7 @@ class ChassisMissingWidget extends StatelessWidget {
     );
   }
 }
+
 final navItems = [
   BottomNavItem(
     imagePath: 'assets/house-blank.svg',

@@ -11,8 +11,6 @@ import '../pages/dashboard/model/mtag_model.dart';
 import '../utils/utils.dart';
 import '../widgets/dialog/cupertino_dialog.dart';
 import '../widgets/dialog/operator_selection_dialog.dart';
-
-
 class HomeController extends GetxController implements GetxService {
   final balances = <String, String>{}.obs;
   final hiddenStates = <String, bool>{}.obs;
@@ -75,14 +73,14 @@ class HomeController extends GetxController implements GetxService {
   }
 
   Future<Map<String, dynamic>> sendNetworkOperator({
-    String? CnicNumber,
-    String? MobileNum,
-    int? sim_operator,
+    String? cnicNumber,
+    String? mobileNum,
+    int? simOperator,
   }) async {
     final response = await userRepo.updateSimOperator(
-      CnicNumber: CnicNumber,
-      MobileNum: MobileNum,
-      sim_operator: sim_operator,
+      CnicNumber: cnicNumber,
+      MobileNum: mobileNum,
+      sim_operator: simOperator,
     ); 
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
@@ -243,11 +241,6 @@ class HomeController extends GetxController implements GetxService {
     await getDashboardData();
     _otherConstants.isRefresh(false);
   }
-
-  void refreshBalance() {
-    // Add implementation here
-  }
-
   @override
   void onReady() async {
     super.onReady();
@@ -258,12 +251,9 @@ class HomeController extends GetxController implements GetxService {
     },);
    
   }
-
   Future<void> _initializeDashboard() async {
     await getDashboardData();
   }
-
-  // / Increments app count and triggers review at 5 launches.
   Future<void> _handleAppCountAndReview() async {
    
     await AppData.setCount(); // Increment count
@@ -272,7 +262,6 @@ class HomeController extends GetxController implements GetxService {
       AppReviewUtils.requestAppReview();
       await AppData.setCount(reset: true); // Reset count after review
     }
-     debugPrint("inapp-review called$count");
   }
 
   void _handlePostInitActions() {
@@ -284,9 +273,9 @@ class HomeController extends GetxController implements GetxService {
         Get.context!,
         (value) {
           sendNetworkOperator(
-            CnicNumber: dashboradData.value.customerDetail!.cNIC,
-            MobileNum: dashboradData.value.customerDetail!.mobileNumber,
-            sim_operator: value,
+            cnicNumber: dashboradData.value.customerDetail!.cNIC,
+            mobileNum: dashboradData.value.customerDetail!.mobileNumber,
+            simOperator: value,
           );
         },
         mobileNumber: dashboradData.value.customerDetail!.mobileNumber,

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,7 +13,6 @@ import '../model/stations_model.dart';
 class MotorwayStaticController extends GetxController implements GetxService {
   final RxList<String> stations = <String>[].obs;
   List<StData> fullStationsList = [];
-
   final StationsDatabase stationsDb = StationsDatabase.instance;
   final TollDatabase _tollDatabase = TollDatabase.instance;
   List<StaticMotorwayModel> mwNameList = [
@@ -115,7 +116,19 @@ class MotorwayStaticController extends GetxController implements GetxService {
   @override
   void onClose() {
     scrollController.dispose();
+   resetAllValues();
     super.onClose();
+  }
+
+  void resetAllValues() {
+    log('called');
+    selectedMotorway.value = -1;
+    selectedVehicle.value = -1;
+    entryStation.value = '';
+    exitStation.value = '';
+    showTollPlaza.value = false;
+    calculatedTollPlaza.value = '';
+    isCalculatingPlaza.value = false;
   }
 
   void reset() {

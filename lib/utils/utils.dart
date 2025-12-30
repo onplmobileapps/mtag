@@ -164,16 +164,16 @@ String formatDateTime(String inputDateTime, {bool roundMinutes = false}) {
 
 String? validateMtag(String? value) {
   if (value == null) {
-    return 'MTAG value cannot be null';
+    return 'M-TAG value cannot be null';
   }
   if (value.isEmpty) {
-    return 'MTAG value is required';
+    return 'M-TAG value is required';
   }
   if (value.length < 8) {
     return 'MTAG must be at least 8 digits';
   }
   if (value.startsWith('0')) {
-    return 'MTAG cannot start with 0';
+    return 'M-TAG cannot start with 0';
   }
   return null; // Valid input
 }

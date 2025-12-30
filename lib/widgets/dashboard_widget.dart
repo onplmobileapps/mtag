@@ -37,7 +37,7 @@ String getVehicleImage(String vehicleType) {
     'Coaster': 'assets/vehicles/coaster.png',
     'Bus': 'assets/vehicles/bus.png',
     'Truck': 'assets/vehicles/truck.png',
-    'Trailer': 'assets/vehicles/trailor.png',
+    'Trailer': 'assets/vehicles/trailer.png',
   };
 
   return vehicleImages[vehicleType] ?? '';

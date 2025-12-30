@@ -175,6 +175,7 @@ class RechargeSelfController extends GetxController {
     scrollController1.dispose();
     scrollController2.dispose();
     scrollController3.dispose();
+    
   }
 
   void handlePop(bool didPop, dynamic result) {
@@ -240,7 +241,7 @@ Widget _buildMtagSection(
     () => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle(context, 'Select Mtag/Vehicle'),
+        _buildSectionTitle(context, 'Select M-tag/Vehicle'),
         Row(
           children: [
             if (controller.arguments.length > 2)
