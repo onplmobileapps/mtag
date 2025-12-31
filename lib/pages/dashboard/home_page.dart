@@ -770,14 +770,15 @@ class _MtagDetailRow extends StatelessWidget {
           ),
           const SizedBox(width: 8),
 
-          SizedBox(
-            width: 100, // Fixed width for all labels
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
             child: Text(
               '$label:',
-              style: TextStyle(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: color ?? const Color(0xff9E9EAD),
-                fontSize: 14,
               ),
+              maxLines: 1,
             ),
           ),
           const SizedBox(width: 8),

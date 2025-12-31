@@ -1,3 +1,6 @@
+
+
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -142,6 +145,7 @@ class RechargeSelfController extends GetxController {
   void _setupInitialValues() {
     isJazzShown.value = false;
     isCardsVisible.value = false;
+   
     if (arguments.isNotEmpty) {
       selectedMtagIndex.value = arguments.length == 1 ? 0 : -1;
 
@@ -181,6 +185,7 @@ class RechargeSelfController extends GetxController {
   void handlePop(bool didPop, dynamic result) {
     if (!didPop) {
       selected1linkOpt.value = -1;
+      log('pop invoked:$didPop ${selected1linkOpt.value}');
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Get.back();
       });

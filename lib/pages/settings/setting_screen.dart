@@ -41,7 +41,7 @@ class SettingScreen extends StatelessWidget {
             size: 18,
           ),
         ),
-        const Divider(thickness: .5, height: 1.5,color: Colors.grey,),
+        const Divider(thickness: .5, height: 1.5, color: Colors.grey),
       ],
     );
   }
@@ -129,9 +129,7 @@ class SettingScreen extends StatelessWidget {
                               height: 15,
                               width: 1.5,
                               color: Colors.grey,
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                              ),
+                              margin: const EdgeInsets.symmetric(horizontal: 8),
                             ),
                             IconTextInfo(
                               icon: Icons.call_outlined,

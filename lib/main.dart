@@ -87,7 +87,7 @@ class _MTagAppState extends State<MTagApp> {
       builder: (context, child) {
         final MediaQueryData data = MediaQuery.of(context);
         return MediaQuery(
-          data: data.copyWith(textScaler: const TextScaler.linear(1)),
+          data: data.copyWith(textScaler: const TextScaler.linear(1.0)),
           child: ConnectionBanner(child: child ?? const SizedBox()),
         );
       },

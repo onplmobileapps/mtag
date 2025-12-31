@@ -70,7 +70,7 @@ ThemeData appTheme = ThemeData(
     style: ButtonStyle(
       shape: WidgetStatePropertyAll(
         RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(18),
           side: BorderSide(color: primarSwatch),
         ),
       ),
@@ -297,7 +297,7 @@ ThemeData darkTheme = ThemeData(
         TextStyle(fontFamily: fontFamily, fontSize: 12),
       ),
       shape: WidgetStatePropertyAll(
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
       backgroundColor: const WidgetStatePropertyAll( Color(0xFF2C2C2C)),
       foregroundColor: const WidgetStatePropertyAll(Colors.white),

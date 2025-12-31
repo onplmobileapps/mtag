@@ -158,7 +158,7 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
                   ),
                   const SizedBox(height: 10),
                   const Spacer(flex: 6),
-                  ElevatedButton1(
+                  ElevatedButton1(isShowIcon: false,
                     backgroundColor: Theme.of(context).primaryColor,
                     width: MediaQuery.sizeOf(context).width,
                     onclick: () async {

@@ -12,7 +12,9 @@ class ElevatedButton1 extends StatelessWidget {
     this.textscaller,
     this.shape,
     this.icon,
-    this.iconRight = false,this.isShowIcon=false,
+    this.iconRight = false,
+    this.isShowIcon = false,
+    this.iconAlignment = IconAlignment.end,
   });
 
   final Function()? onclick;
@@ -24,6 +26,7 @@ class ElevatedButton1 extends StatelessWidget {
   final double? textscaller;
   final OutlinedBorder? shape;
   final bool isShowIcon;
+  final IconAlignment iconAlignment;
 
   final Widget? icon;
 
@@ -31,22 +34,24 @@ class ElevatedButton1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(iconAlignment: .end,
-      icon:isShowIcon? Icon(Icons.arrow_forward):SizedBox.shrink(),label: Text(text??''),
+    return ElevatedButton.icon(
+      iconAlignment: iconAlignment,
+      icon: isShowIcon ? icon :SizedBox.shrink(),
+      label: Text(text ?? '', style: TextStyle(fontSize: 14)),
       style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
         backgroundColor: WidgetStatePropertyAll(backgroundColor),
         foregroundColor: WidgetStatePropertyAll(foregroundColor),
         fixedSize: WidgetStatePropertyAll(Size(width ?? 300, height ?? 40)),
         minimumSize: WidgetStatePropertyAll(Size(width ?? 300, height ?? 40)),
         maximumSize: WidgetStatePropertyAll(Size(width ?? 300, height ?? 40)),
-         shape: WidgetStatePropertyAll(
-      shape ?? RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24), // Material 3 rounded
-      ),
-    ),
+        shape: WidgetStatePropertyAll(
+          shape ??
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24), // Material 3 rounded
+              ),
+        ),
       ),
       onPressed: onclick,
-     
     );
   }
 }
