@@ -1,6 +1,5 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import '../api/api_constants.dart';
@@ -13,8 +12,6 @@ import '../pages/dashboard/model/mtag_model.dart';
 import '../utils/utils.dart';
 import '../widgets/dialog/cupertino_dialog.dart';
 import '../widgets/dialog/operator_selection_dialog.dart';
-
-
 class HomeController extends GetxController implements GetxService {
   final balances = <String, String>{}.obs;
   final hiddenStates = <String, bool>{}.obs;
@@ -30,13 +27,16 @@ class HomeController extends GetxController implements GetxService {
   var transferBalance = false.obs;
   var chassisNumberUpdate = false.obs;
  RxInt selectedMtagIndex = 0.obs;
+  final navigationStack = <int>[0].obs;
+  final int homePageIndex = 0;
 
   
   
   void setCurrentIndex(int value) => currentPage.value = value;
   final _otherConstants = OtherConsts();
   final List<MtagModel> dashBoardModel = [
-    MtagModel(routeName: '/mTag', title: 'M-TAG', image: 'assets/icons/receipt.png'),
+    // Sir Suleman asked to change M-TAG to Vehicles(Date 27-12-25)
+    MtagModel(routeName: '/mTag', title: 'Vehicles', image: 'assets/icons/receipt.png'),
     MtagModel(
       routeName: '/tollHostory',
       title: 'Toll\nHistory',
@@ -74,14 +74,14 @@ class HomeController extends GetxController implements GetxService {
   }
 
   Future<Map<String, dynamic>> sendNetworkOperator({
-    String? CnicNumber,
-    String? MobileNum,
-    int? sim_operator,
+    String? cnicNumber,
+    String? mobileNum,
+    int? simOperator,
   }) async {
     final response = await userRepo.updateSimOperator(
-      CnicNumber: CnicNumber,
-      MobileNum: MobileNum,
-      sim_operator: sim_operator,
+      CnicNumber: cnicNumber,
+      MobileNum: mobileNum,
+      sim_operator: simOperator,
     ); 
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
@@ -242,11 +242,6 @@ class HomeController extends GetxController implements GetxService {
     await getDashboardData();
     _otherConstants.isRefresh(false);
   }
-
-  void refreshBalance() {
-    // Add implementation here
-  }
-
   @override
   void onReady() async {
     super.onReady();
@@ -257,7 +252,6 @@ class HomeController extends GetxController implements GetxService {
     },);
    
   }
-
   Future<void> _initializeDashboard() async {
     await getDashboardData();
   }
@@ -271,7 +265,6 @@ class HomeController extends GetxController implements GetxService {
       AppReviewUtils.requestAppReview();
       await AppData.setCount(reset: true); // Reset count after review
     }
-     debugPrint("inapp-review called$count");
   }
 
   void _handlePostInitActions() {
@@ -283,13 +276,24 @@ class HomeController extends GetxController implements GetxService {
         Get.context!,
         (value) {
           sendNetworkOperator(
-            CnicNumber: dashboradData.value.customerDetail!.cNIC,
-            MobileNum: dashboradData.value.customerDetail!.mobileNumber,
-            sim_operator: value,
+            cnicNumber: dashboradData.value.customerDetail!.cNIC,
+            mobileNum: dashboradData.value.customerDetail!.mobileNumber,
+            simOperator: value,
           );
         },
         mobileNumber: dashboradData.value.customerDetail!.mobileNumber,
       );
     }
   }
+  void changePage(int index) {
+    currentPage.value = index;
+  }
+
+  void goBackToHome() {
+    currentPage.value = homePageIndex;
+  }
+
+  bool get isNotOnHome => currentPage.value != homePageIndex;
 }
+
+

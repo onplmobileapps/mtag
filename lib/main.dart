@@ -19,7 +19,6 @@ import 'remoteconfig/firebase_remote_config.dart';
 import 'routes/approute.dart';
 import 'theme/app_theme.dart';
 import 'utils/utils.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppData.initialize();
@@ -63,14 +62,13 @@ class _MTagAppState extends State<MTagApp> {
 
   @override
   void initState() {
-
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (Platform.isAndroid) AppUpdate.checkForUpdates();
-      DeviceInfo.getDeviceInfo();
+      if (Platform.isAndroid) await AppUpdate.checkForUpdates();
+   await   DeviceInfo.getDeviceInfo();
       FirebaseRemoteConfigService().fetchRemoteConfig();
-      _messagingService.init(context);
+    if(mounted)  _messagingService.init(context);
 
       // preload DBs
       await TollDatabase.instance.importDataIfNeeded();
@@ -84,12 +82,12 @@ class _MTagAppState extends State<MTagApp> {
       smartManagement: SmartManagement.keepFactory,
       defaultTransition: Transition.native,
       transitionDuration: const Duration(milliseconds: 30),
-      popGesture:Platform.isIOS,
+      popGesture: Platform.isIOS,
       useInheritedMediaQuery: true,
       builder: (context, child) {
         final MediaQueryData data = MediaQuery.of(context);
         return MediaQuery(
-          data: data.copyWith(textScaler: const TextScaler.linear(1)),
+          data: data.copyWith(textScaler: const TextScaler.linear(1.0)),
           child: ConnectionBanner(child: child ?? const SizedBox()),
         );
       },

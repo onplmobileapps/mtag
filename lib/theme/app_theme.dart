@@ -23,7 +23,7 @@ ThemeData appTheme = ThemeData(
     surface: Colors.white,
     secondary: Colors.grey,
     surfaceContainer: Color(0xff21295E),
-      surfaceContainerLowest: Color(0xffF5F6F9)
+      surfaceContainerLowest: Color(0xffE1E1E1)
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ButtonStyle(
@@ -70,7 +70,7 @@ ThemeData appTheme = ThemeData(
     style: ButtonStyle(
       shape: WidgetStatePropertyAll(
         RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(18),
           side: BorderSide(color: primarSwatch),
         ),
       ),
@@ -297,9 +297,9 @@ ThemeData darkTheme = ThemeData(
         TextStyle(fontFamily: fontFamily, fontSize: 12),
       ),
       shape: WidgetStatePropertyAll(
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
-      backgroundColor: const WidgetStatePropertyAll(Color(0xff000000)),
+      backgroundColor: const WidgetStatePropertyAll( Color(0xFF2C2C2C)),
       foregroundColor: const WidgetStatePropertyAll(Colors.white),
     ),
   ),
@@ -342,7 +342,7 @@ ThemeData darkTheme = ThemeData(
       fontSize: 12,
       color: Colors.white,
     ),
-    contentPadding: EdgeInsets.only(left: 8, top: 0, bottom: 0),
+    contentPadding: EdgeInsets.only(left: 8, top: 0, bottom: 10),
   ),
   expansionTileTheme: ExpansionTileThemeData(
     collapsedTextColor: primarSwatchDark,
@@ -469,3 +469,4 @@ MaterialColor primarSwatchDark = const MaterialColor(0xff000000, {
   800: Color(0xff000000),
   900: Color(0xff000000),
 });
+

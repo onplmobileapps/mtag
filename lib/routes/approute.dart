@@ -8,6 +8,7 @@ import '../../pages/dashboard/home_page.dart';
 import '../../pages/notification/notification_screen.dart';
 import '../../pages/privacy/privacy_policy_screen.dart';
 import '../../pages/receipt/receipt_screen.dart';
+import '../features/story_view_page.dart';
 import '../pages/alfawebview/alfla_webview_mastercard.dart';
 import '../pages/login/forget_pin_page.dart';
 import '../pages/recharge/recharge_page.dart';
@@ -57,7 +58,7 @@ List<GetPage<dynamic>>? getPages = [
   GetPage(
     name: '/tollCalculator',
     // page: () => const TollCalculatorLocal(),
-    page: () => const TollCalculatorLocalTabs(),
+    page: () => const TollCalculator(),
     popGesture: true,
   ),
   GetPage(
@@ -98,4 +99,9 @@ List<GetPage<dynamic>>? getPages = [
     page: () => NotificationWithintent(),
     popGesture: true,
   ),
+  GetPage(
+      name: '/story',
+      page: () => StoryViewPage(storiesIndex: []),
+      popGesture: false, // Disable swipe for this route
+    ),
 ];

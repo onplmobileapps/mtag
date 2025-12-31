@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/utils/utils.dart';
 import '../../features/recharge_center_locator.dart';
-import '../../utils/utils.dart';
+import '../../widgets/bottom_bar.dart';
+import '../../widgets/dashboard_widget.dart';
+import '../../widgets/dotted_outline.dart';
 import '../../widgets/elevated_button.dart';
 import '../../constants/call_helper.dart';
 import '../../features/promotion_page.dart';
@@ -12,7 +17,7 @@ import '../../pages/dashboard/model/dashboard_model.dart';
 import '../../pages/mtag/controller/delink_controller.dart';
 import '../../widgets/balance_widget.dart';
 import '../../widgets/bottomsheet/balance_transfer_bs.dart';
-import '../../widgets/dashboard_widget.dart';
+
 import '../../widgets/dialog/chassis_num.dart';
 import '../../widgets/dialog/delink_dialog.dart';
 import '../../api/user_repo.dart';
@@ -24,150 +29,68 @@ import '../settings/setting_screen.dart';
 import 'model/mtag_model.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key});
-
-  final List<Widget> bottomNavigations = [
-    const _HomeContent(),
-    const PromotionPage(),
-    RechargeMapScreen(),
-    SettingScreen(),
-  ];
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetX<HomeController>(
       init: HomeController(userRepo: UserRepo()),
       builder: (controller) {
-        return AnnotatedRegion<SystemUiOverlayStyle>(
-          value: const SystemUiOverlayStyle(
-            statusBarIconBrightness: Brightness.dark,
-            statusBarBrightness: Brightness.light,
-          ),
-          child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.miniCenterDocked,
-            body: bottomNavigations[controller.currentPage.value],
-            floatingActionButton: GestureDetector(
-              onTap: () async {
-                CallWhatsappUtil.openWhatsAppChat();
-              },
-              child: Image.asset('assets/whatsapp.png', height: 50, width: 50),
+        final currentPage =
+            navItems
+                .firstWhere(
+                  (item) => item.index == controller.currentPage.value,
+                  orElse: () => navItems[0],
+                )
+                .page ??
+            const SizedBox.shrink();
+
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, _) async {
+            if (!didPop) {
+              if (controller.currentPage.value != controller.homePageIndex) {
+                controller.goBackToHome();
+              } else {
+                SystemNavigator.pop();
+
+                if (Platform.isAndroid) {
+                  exit(0);
+                }
+              }
+            }
+          },
+          child: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: const SystemUiOverlayStyle(
+              statusBarIconBrightness: Brightness.dark,
+              statusBarBrightness: Brightness.light,
             ),
-            bottomNavigationBar: _buildBottomNavigationBar(context, controller),
+            child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              floatingActionButtonAnimator:
+                  FloatingActionButtonAnimator.scaling,
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.miniCenterDocked,
+              body: currentPage,
+              floatingActionButton: GestureDetector(
+                onTap: () async {
+                  CallWhatsappUtil.openWhatsAppChat();
+                },
+                child: Image.asset(
+                  'assets/whatsapp.png',
+                  height: 50,
+                  width: 50,
+                ),
+              ),
+              bottomNavigationBar: CustomBottomNavBar(
+                controller: controller,
+                items: navItems,
+              ),
+            ),
           ),
         );
       },
-    );
-  }
-
-  Widget _buildBottomNavigationBar(
-    BuildContext context,
-    HomeController controller,
-  ) {
-    return BottomAppBar(
-      height: 50,
-      padding: const EdgeInsets.only(top: 8),
-      shape: const CircularNotchedRectangle(),
-      notchMargin: 6,
-      elevation: 10,
-      color: Colors.grey.withAlpha(25),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: _buildNavigationItems(context, controller),
-      ),
-    );
-  }
-
-  List<Widget> _buildNavigationItems(
-    BuildContext context,
-    HomeController controller,
-  ) {
-    const navigationItems = [
-      _NavigationItem(0, 'Home', 'assets/house-blank.svg'),
-      _NavigationItem(1, 'Promotions', 'assets/promotion.svg'),
-      _NavigationItem(2, 'Recharge Centres', 'assets/location.svg'),
-      _NavigationItem(3, 'Profile', 'assets/user.svg'),
-    ];
-
-    return navigationItems.map((item) {
-      return _NavigationButton(
-        index: item.index,
-        label: item.label,
-        iconPath: item.iconPath,
-        currentPage: controller.currentPage.value,
-        onTap: () => _handleNavigationTap(controller, item.index),
-      );
-    }).toList();
-  }
-
-  void _handleNavigationTap(HomeController controller, int index) {
-    final otherConstants = OtherConsts();
-    if (controller.currentPage.value == 0 &&
-        index == 0 &&
-        otherConstants.isRefresh.value) {
-      controller.pullRefreshDashboardData();
-    }
-    controller.setCurrentIndex(index);
-  }
-}
-
-class _NavigationItem {
-  final int index;
-  final String label;
-  final String iconPath;
-
-  const _NavigationItem(this.index, this.label, this.iconPath);
-}
-
-class _NavigationButton extends StatelessWidget {
-  final int index;
-  final String label;
-  final String iconPath;
-  final int currentPage;
-  final VoidCallback onTap;
-
-  const _NavigationButton({
-    required this.index,
-    required this.label,
-    required this.iconPath,
-    required this.currentPage,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isSelected = index == currentPage;
-    final colorScheme = Theme.of(context).colorScheme;
-    final iconColor = isSelected
-        ? colorScheme.primary
-        : colorScheme.secondary.withAlpha(180);
-
-    return InkWell(
-      onTap: onTap,
-      splashFactory: NoSplash.splashFactory,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            iconPath,
-            height: 22,
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 11,
-              color: iconColor,
-              fontFamily: 'Poppins',
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -233,34 +156,38 @@ class _HomeContentBodyState extends State<_HomeContentBody> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
 
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          floating: false,
-          pinned: true,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          expandedHeight: size.height * 0.62,
-          flexibleSpace: LayoutBuilder(
-            builder: (context, constraints) {
-              return ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                  maxHeight: constraints.maxHeight,
-                ),
-                child: _MtagHeaderSection(
-                  controller: widget.controller,
-                  pageController: _pageController,
-                  currentPageNotifier: _currentPageNotifier,
-                ),
-              );
-            },
+    return RefreshIndicator(
+      edgeOffset: 100.0,
+      onRefresh: () => widget.controller.pullRefreshDashboardData(),
+      child: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            floating: false,
+            pinned: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            expandedHeight: size.height * 0.62,
+            flexibleSpace: LayoutBuilder(
+              builder: (context, constraints) {
+                return ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight,
+                    maxHeight: constraints.maxHeight,
+                  ),
+                  child: _MtagHeaderSection(
+                    controller: widget.controller,
+                    pageController: _pageController,
+                    currentPageNotifier: _currentPageNotifier,
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-        _DashboardGridSection(controller: widget.controller),
-        _SliderSection(),
-        const _HelpSection(),
-      ],
+          _DashboardGridSection(controller: widget.controller),
+          _SliderSection(),
+          const _HelpSection(),
+        ],
+      ),
     );
   }
 }
@@ -354,7 +281,22 @@ class _MtagContentState extends State<_MtagContent> {
     return ValueListenableBuilder<int>(
       valueListenable: widget.currentPageNotifier,
       builder: (context, currentPageIndex, child) {
-        final currentMtag = widget.activeMtags[currentPageIndex];
+        if (widget.activeMtags.isEmpty) {
+          return const SizedBox(height: 100);
+        }
+        final safeIndex = currentPageIndex.clamp(
+          0,
+          widget.activeMtags.length - 1,
+        );
+
+        // Only update if index changed
+        if (safeIndex != currentPageIndex) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            widget.currentPageNotifier.value = safeIndex;
+          });
+        }
+
+        final currentMtag = widget.activeMtags[safeIndex]; // Use safeIndex
         final hasblackListMtag = currentMtag.isactive == 8;
 
         return Column(
@@ -366,7 +308,11 @@ class _MtagContentState extends State<_MtagContent> {
                 statusBarColor: Colors.black,
               ),
               backgroundColor: Colors.transparent,
-              title: Image.asset(Get.isDarkMode?'assets/darklogo.png': 'assets/logolight.png', height: 80, width: 80),
+              title: Image.asset(
+                Get.isDarkMode ? 'assets/darklogo.png' : 'assets/logolight.png',
+                height: 80,
+                width: 80,
+              ),
               centerTitle: true,
             ),
             // Static Header
@@ -462,7 +408,7 @@ class _MtagContentState extends State<_MtagContent> {
                       Expanded(
                         flex: 2,
                         child: Text(
-                          'M-TAG:',
+                          'M-Tag ID:',
                           style: TextStyle(
                             color: const Color(0xff9E9EAD),
                             fontSize: 14,
@@ -510,13 +456,13 @@ class _MtagContentState extends State<_MtagContent> {
                 const SizedBox(height: 4),
                 if (mtag.isactive != 8)
                   _MtagDetailRow(
-                    icon: 'assets/folder.png',
-                    label: 'M-TAG',
+                    icon: 'assets/frame1.svg',
+                    label: 'M-Tag ID',
                     value: mtag.tokenno,
                   ),
                 const SizedBox(height: 4),
                 _MtagDetailRow(
-                  icon: 'assets/delivery.png',
+                  icon: 'assets/Delivery.svg',
                   label: 'Vehicle No',
                   value: mtag.registration,
                 ),
@@ -532,28 +478,33 @@ class _MtagContentState extends State<_MtagContent> {
               ),
               padding: const EdgeInsets.all(2),
               child: _MtagDetailRow(
-                icon: 'assets/card.png',
+                icon: 'assets/cedit-card.svg',
                 label: 'Recovery Amount',
                 color: Colors.white,
                 value: "Rs. ${mtag.block_amount}",
               ),
             ),
-       if(mtag.isactive != 8 &&
-              (mtag.chassis_number?.isEmpty ?? false))   InkWell(
-            onTap: () => showDialog(context: context, builder: (context)=> ChassisNumberDialog(
-              chassissNo: mtag.chassis_number,
-              registration: mtag.registration ?? '',
-              tokenNo: mtag.tokenno ?? '',
-              mobileNumber: _otherConstants.mobile.string,
-              balance: mtag.balance ?? '',
-              cnicNumber: _otherConstants.ownerCNIC.string,
-            )),
-            child: SvgPicture.asset(
-              'assets/chassis.svg',
-              width: 400,
-              height: 40,
+          if (mtag.isactive != 8 &&
+              (mtag.chassis_number == null ||
+                  mtag.chassis_number!.trim().isEmpty))
+            ChassisMissingWidget(
+              onAddTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => ChassisNumberDialog(
+                    chassissNo:
+                        mtag.chassis_number ??
+                        '', // ← FIX: Provide empty string default
+                    registration: mtag.registration ?? '',
+                    tokenNo: mtag.tokenno ?? '',
+                    mobileNumber: _otherConstants.mobile.string,
+                    balance: mtag.balance ?? '',
+                    cnicNumber: _otherConstants.ownerCNIC.string,
+                  ),
+                );
+              },
             ),
-          ),
+
           if (mtag.isactive != 8 &&
               mtag.chassis_number != null &&
               (mtag.chassis_number?.isNotEmpty ?? false))
@@ -607,7 +558,7 @@ class _MtagContentState extends State<_MtagContent> {
             width: 100,
           ),
         ),
-        const Spacer(flex: 3,),
+        const Spacer(flex: 3),
         if (mtag.isactive != 8.0)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -661,19 +612,22 @@ class _MtagContentState extends State<_MtagContent> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _ActionButton(
-          label: "Transfer",
-          icon: 'assets/icons/send.png',
-          onTap: () => _showBalanceTransferSheet(mtag, allCars),
-        ),
+        if (widget.activeMtags.length > 1)
+          _ActionButton(
+            label: "Transfer",
+            icon: 'assets/icons/send.png',
+            onTap: () => _showBalanceTransferSheet(mtag, allCars),
+          ),
         _ActionButton(
           label: "Recharge",
           icon: 'assets/icons/recharge.png',
+          color: Colors.green,
           onTap: () => _showRechargeBottomSheet(mtag),
         ),
         _ActionButton(
           label: "Delete",
           icon: 'assets/icons/delete.png',
+          color: Colors.red,
           onTap: () => _showDeleteDialog(mtag),
         ),
       ],
@@ -782,7 +736,7 @@ class _MtagDetailRow extends StatelessWidget {
     required String cnicNumber,
   }) {
     return _MtagDetailRow(
-      icon: 'assets/document.png',
+      icon: 'assets/Document.svg',
       label: 'Chassis No',
       value: chassisNumber,
       isChassis: true,
@@ -811,38 +765,50 @@ class _MtagDetailRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Image.asset(icon, width: 25, height: 25),
+          SizedBox(
+            width: 28, // Fixed width for icon column
+            child: SvgPicture.asset(icon, height: 18),
+          ),
           const SizedBox(width: 8),
-          Expanded(
-            flex: 2,
+
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
             child: Text(
               '$label:',
-              style: TextStyle(
-                color: color ?? const Color(0xff9E9EAD),
-                fontSize: 14,
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 3,
-            child: Text(
-              value ?? 'N/A',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontSize: 16,
-                color: color,
-                fontWeight: FontWeight.w600,
-                overflow: .ellipsis,
+                color: color ?? const Color(0xff9E9EAD),
               ),
+              maxLines: 1,
             ),
           ),
-          if (isChassis)
-            GestureDetector(
-              onTap: onTap,
-              child: Padding(
-                padding: EdgeInsets.only(right: 8),
-                child: Icon(Icons.edit_square, size: 22),
-              ),
+          const SizedBox(width: 8),
+          // Value - flexible but accounts for edit icon space
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    value ?? 'N/A',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: 16,
+                      color: color,
+                      fontWeight: FontWeight.w600,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+                if (isChassis)
+                  SizedBox(
+                    width: 32, // Fixed space for edit icon
+                    child: GestureDetector(
+                      onTap: onTap,
+                      child: const Icon(Icons.edit_square, size: 22),
+                    ),
+                  ),
+              ],
             ),
+          ),
         ],
       ),
     );
@@ -853,11 +819,13 @@ class _ActionButton extends StatelessWidget {
   final String label;
   final String icon;
   final VoidCallback onTap;
+  final Color? color;
 
   const _ActionButton({
     required this.label,
     required this.icon,
     required this.onTap,
+    this.color,
   });
 
   @override
@@ -868,8 +836,43 @@ class _ActionButton extends StatelessWidget {
       icon: icon,
       fontSize: 12,
       onTap: onTap,
+      color: color,
     );
   }
+}
+
+Widget actionBtn(
+  BuildContext context, {
+  required String label,
+  required String icon,
+  Color? color,
+  required double fontSize,
+  required VoidCallback onTap,
+}) {
+  return Expanded(
+    child: InkWell(
+      onTap: onTap,
+      child: Column(
+        children: [
+          CircleAvatar(
+            backgroundColor: Get.isDarkMode
+                ? Colors.white
+                : ColorScheme.of(context).surfaceContainerLowest,
+            child: Image.asset(icon, height: 30, width: 30, color: color),
+          ),
+          SizedBox(height: 10),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).primaryColorLight,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 class _DashboardGridSection extends StatelessWidget {
@@ -976,7 +979,7 @@ class _SliderSection extends StatelessWidget {
           children: [
             Text(
               'Tap to see what\'s new',
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
             const SizedBox(height: 8),
             Column(
@@ -990,7 +993,7 @@ class _SliderSection extends StatelessWidget {
                         final index = (notification.metrics.pixels / itemWidth)
                             .round();
                         if (index >= 0 &&
-                            index < OtherConsts.sliderImages.length) {
+                            index < OtherConsts.thumbnails.length) {
                           // Only update if index actually changed
                           if (_currentIndex.value != index) {
                             _currentIndex.value = index;
@@ -1001,7 +1004,7 @@ class _SliderSection extends StatelessWidget {
                     },
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
-                      itemCount: OtherConsts.sliderImages.length,
+                      itemCount: OtherConsts.thumbnails.length,
                       separatorBuilder: (_, _) => const SizedBox(width: 8),
                       itemBuilder: (context, index) {
                         return _SliderItem(imageIndex: index);
@@ -1016,21 +1019,26 @@ class _SliderSection extends StatelessWidget {
                   builder: (context, currentIndex, child) {
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(OtherConsts.sliderImages.length, (
-                        index,
-                      ) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: currentIndex == index
-                                ? Colors.black
-                                : Colors.grey,
-                            borderRadius: .circular(8),
-                          ),
-                          height: 8,
-                          width: currentIndex == index ? 25 : 8,
-                          margin: const EdgeInsets.symmetric(horizontal: 2),
-                        );
-                      }),
+                      children: List.generate(
+                        OtherConsts.thumbnails.length - 1,
+                        (index) {
+                          bool isActive =
+                              currentIndex == index ||
+                              (index == OtherConsts.thumbnails.length - 2 &&
+                                  currentIndex ==
+                                      OtherConsts.thumbnails.length - 1);
+
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: isActive ? Colors.black : Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            height: 8,
+                            width: isActive ? 25 : 8,
+                            margin: const EdgeInsets.symmetric(horizontal: 2),
+                          );
+                        },
+                      ),
                     );
                   },
                 ),
@@ -1050,14 +1058,21 @@ class _SliderItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageName = OtherConsts.sliderImages[imageIndex];
-    final imageUrl = 'assets/slider/$imageName';
+    final imageName = OtherConsts.thumbnails[imageIndex];
+    final imageUrl = 'assets/thumbnail/$imageName';
 
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => StoryViewPage(stories: [imageUrl])),
-      ),
+      onTap: () {
+        showDialog(
+          barrierDismissible: false,
+          useRootNavigator: false,
+          context: context,
+          builder: (_) => Dialog.fullscreen(
+            backgroundColor: Colors.transparent,
+            child: StoryViewPage(storiesIndex: [imageIndex]),
+          ),
+        );
+      },
       child: Container(
         height: 150,
         width: 150,
@@ -1091,7 +1106,13 @@ class _HelpSection extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset('assets/help.png', width: 50, height: 50),
+            Image.asset(
+              'assets/help.png',
+              width: 50,
+              height: 50,
+              errorBuilder: (context, error, stackTrace) =>
+                  Icon(Icons.broken_image),
+            ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -1127,7 +1148,8 @@ class _HelpSection extends StatelessWidget {
                       const SizedBox(width: 20),
                       Expanded(
                         child: _buildCallButton(
-                          onTap: () => CallWhatsappUtil.openWhatsAppChat(),
+                          onTap: () async =>
+                              await CallWhatsappUtil.openWhatsAppChat(),
                           text: 'WhatsApp',
                           icon: Image.asset(
                             'assets/whatsapp.png',
@@ -1169,3 +1191,105 @@ class _HelpSection extends StatelessWidget {
     );
   }
 }
+
+class ChassisMissingWidget extends StatelessWidget {
+  final VoidCallback onAddTap;
+  final String message;
+  final String buttonText;
+
+  const ChassisMissingWidget({
+    super.key,
+    required this.onAddTap,
+    this.message = 'Chassis number is missing',
+    this.buttonText = 'Add ',
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return CustomPaint(
+      painter: DottedBorderPainter(color: Colors.red.shade400),
+      child: InkWell(
+        onTap: onAddTap,
+        child: Container(
+          width: double.infinity,
+          padding: .all(6),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              /// Text
+              Expanded(
+                child: Text(
+                  message,
+
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: Colors.red,
+                    fontWeight: .w600,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+
+              /// Add Button
+              Container(
+                margin: .symmetric(horizontal: 4),
+                padding: .symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: .circular(4),
+                ),
+                child: DefaultTextStyle(
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontFamily: 'PlusJakartaSans',
+                  ),
+                  child: Row(
+                    mainAxisAlignment: .spaceAround,
+                    children: [
+                      Text('Add'),
+                      Icon(Icons.add, color: Colors.white, size: 20),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+final navItems = [
+  BottomNavItem(
+    imagePath: 'assets/house-blank.svg',
+    label: 'Home',
+    index: 0,
+    page: const _HomeContent(),
+  ),
+  BottomNavItem(
+    imagePath: 'assets/promotion.svg',
+    label: 'Promotions',
+    index: 1,
+    page: const PromotionPage(),
+  ),
+  BottomNavItem.spacer(),
+  BottomNavItem(
+    imagePath: 'assets/location.svg',
+    label: 'Recharge Centers',
+    index: 2,
+    page: RechargeMapScreen(),
+  ),
+  BottomNavItem(
+    imagePath: 'assets/user.svg',
+    label: 'Profile',
+    index: 3,
+    page: SettingScreen(),
+  ),
+];

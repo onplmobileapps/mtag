@@ -37,16 +37,16 @@ class BuildRechargeSection extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-           
+            SizedBox(height: 20),
             Row(children: [Text('$regId-$mtagId')]),
-              SizedBox(height: 15),
+             SizedBox(height: 20),
             Text(
               blackListRecharge ? "Recovery Amount" : "Recharge Amount",
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: .w900,fontSize: 20),
             ),
           
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 0,vertical: 10),
               child: Form(
                 key: formKey,
                 child: RechargeAmountField(

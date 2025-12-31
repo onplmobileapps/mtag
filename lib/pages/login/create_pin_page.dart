@@ -137,24 +137,23 @@ class _PinEntryPageState extends State<PinEntryPage> {
 
         return Material(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: spacing),
-            child: Column(
-              spacing: 16,
-              mainAxisAlignment: .start,
+            padding: EdgeInsets.symmetric(horizontal: spacing ),
+            child: Column(spacing: 16,
+              mainAxisAlignment:   .start,
               crossAxisAlignment: .start,
               children: [
-                SizedBox(height: 50),
-
+                SizedBox(height: 50,),
+          
                 _buildLogo(size),
-
+             
                 _buildTitle(context),
-
+           
                 _buildSubtitle(context),
-
+             
                 _buildPinField(size),
-
+          
                 _buildOptions(size),
-
+           
                 _buildKeyboard(size),
               ],
             ),
@@ -248,61 +247,59 @@ class _PinEntryPageState extends State<PinEntryPage> {
                 },
                 child: Text(
                   'Forgot Login PIN?',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(fontWeight: .w600),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: .w600),
                 ),
               ),
               _isAuthAvailable
-                  ? GestureDetector(
-                      onTap: () {
+                  ?  GestureDetector( onTap: () {
                         if (AppData.getPinData() == null) {
                           _showBiometricDialog(context);
                         } else {
                           _authenticateAndVerify();
                         }
                       },
-                      child: Container(
-                        margin: .all(16),
-                        padding: EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: Get.isDarkMode
-                              ? Colors.transparent
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
+                    child: Container(margin: .all(16),
+                          padding: EdgeInsets.all(6),
+                          decoration: BoxDecoration(
                             color: Get.isDarkMode
                                 ? Colors.transparent
-                                : Theme.of(context).colorScheme.outline,
-                            width: 1,
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: Get.isDarkMode
+                                  ? Colors.transparent
+                                  : Theme.of(context).colorScheme.outline,
+                              width: 1,
+                            ),
                           ),
-                        ),
-                        child: Platform.isIOS
-                            ? Transform.translate(
-                                offset: Offset(
-                                  size.width * 0.008,
-                                  size.height * 0.002,
-                                ),
-                                child: Image.asset(
-                                  "assets/face3.png",
-                                  height: size.width * 0.09,
-                                  width: size.width * 0.09,
-                                  fit: BoxFit.contain,
+                          child: Platform.isIOS
+                              ? Transform.translate(
+                                  offset: Offset(
+                                    size.width * 0.008,
+                                    size.height * 0.002,
+                                  ),
+                                  child: Image.asset(
+                                    "assets/face3.png",
+                                    height: size.width * 0.09,
+                                    width: size.width * 0.09,
+                                    fit: BoxFit.contain,
+                                    color: Get.isDarkMode
+                                        ? Colors.white
+                                        : Theme.of(context).primaryColor,
+                                  ),
+                                )
+                              : Image.asset(
+                                  "assets/fingerprint.png",
+                                  height: size.width * 0.08,
+                                  width: size.width * 0.08,
                                   color: Get.isDarkMode
                                       ? Colors.white
                                       : Theme.of(context).primaryColor,
                                 ),
-                              )
-                            : Image.asset(
-                                "assets/fingerprint.png",
-                                height: size.width * 0.08,
-                                width: size.width * 0.08,
-                                color: Get.isDarkMode
-                                    ? Colors.white
-                                    : Theme.of(context).primaryColor,
-                              ),
+                      
+                       
                       ),
-                    )
+                  )
                   : Container(width: size.width * 0.09),
               // Placeholder
             ],
@@ -318,8 +315,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
             child: Text(
               'Sign-in with a different account',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                decoration: TextDecoration.underline,
-                fontWeight: .w500,
+                decoration: TextDecoration.underline,fontWeight: .w500
               ),
             ),
           ),
@@ -336,11 +332,9 @@ class _PinEntryPageState extends State<PinEntryPage> {
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount: 12,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 0,
-          mainAxisSpacing: 10,
-          childAspectRatio: Platform.isAndroid ? 1.2 : 1.4,
+        gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,crossAxisSpacing: 0,mainAxisSpacing: 10,
+          childAspectRatio: Platform.isAndroid?1.2: 1.4,
         ),
         itemBuilder: (context, index) {
           if (index == 9) return const SizedBox.shrink();
@@ -366,21 +360,25 @@ class _PinEntryPageState extends State<PinEntryPage> {
   }
 
   /// Reusable key widget for keyboard buttons.
-Widget _buildKey({required Widget child, required VoidCallback onPressed}) {
+ Widget _buildKey({
+  required Widget child,
+  required VoidCallback onPressed,
+}) {
+  final bgColor = Theme.of(context)
+      .colorScheme
+      .surfaceContainerLowest
+      .withValues(alpha: 0.4);
+
   return Material(
-    color: Colors.transparent,
+    color: bgColor, // SAME as container bg
+    shape: const CircleBorder(),
     child: InkWell(
       onTap: onPressed,
-      borderRadius: BorderRadius.circular(50),
-      // Customize the splash color
-      splashColor: Theme.of(context).colorScheme.primary.withValues(alpha:0.3),
-      highlightColor: Theme.of(context).colorScheme.primary.withValues(alpha:0.1),
+      customBorder: const CircleBorder(), // splash radius = circle
+      splashColor: bgColor.withValues(alpha: 0.7),
+      highlightColor: bgColor.withValues(alpha: 0.5),
       child: Container(
         margin: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerLowest.withValues(alpha:0.4),
-          shape: BoxShape.circle,
-        ),
         padding: const EdgeInsets.all(16),
         alignment: Alignment.center,
         child: child,
@@ -405,3 +403,4 @@ Widget _buildKey({required Widget child, required VoidCallback onPressed}) {
     );
   }
 }
+

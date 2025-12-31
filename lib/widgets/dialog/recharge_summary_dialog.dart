@@ -26,7 +26,7 @@ void showRechargeSummaryDialog({
       final dialogWidth = screenSize.width * 0.85;
       final dialogHeight = screenSize.height * 0.6;
 
-      return Dialog.fullscreen(backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
+      return Dialog.fullscreen(backgroundColor: ColorScheme.of(context).surface,
         // No need for shape or elevation; handled by adaptive
         child: Container(margin: EdgeInsets.all(16),
           width: dialogWidth,
@@ -177,55 +177,7 @@ class RechargeSummary extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              //voucher ui
-              // Row(
-              //   children:  [
-              //     Icon(Icons.confirmation_num,color: Colors.redAccent,size: 20,),
-              //     SizedBox(width: 5),
-              //     Text("Apply a voucher",
-              //       style: Theme.of(context).textTheme.displayMedium?.copyWith(
-              //           color: Colors.redAccent, fontWeight: FontWeight.bold),
-              //     ),
-              //   ],
-              // ),
-              // const SizedBox(height: 10),
-              // TextField(
-              //   maxLength: 10,
-              //
-              //   decoration: InputDecoration(
-              //     filled: true,
-              //     fillColor: Colors.grey.shade200,
-              //     hintText: "Enter voucher code",
-              //     border: const OutlineInputBorder(),
-              //     enabledBorder: OutlineInputBorder(
-              //       borderSide: BorderSide(color: Colors.grey.shade400),
-              //       borderRadius: BorderRadius.circular(8),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderSide:  BorderSide(color: Theme.of(context).primaryColor, width: 1),
-              //       borderRadius: BorderRadius.circular(5),
-              //     ),
-              //     suffixIcon: Padding(
-              //       padding: const EdgeInsets.only(right: 0),
-              //       child: SizedBox(
-              //         width: 30,
-              //         child: ElevatedButton(
-              //           onPressed: () {
-              //             // Apply action
-              //           },
-              //           style: ElevatedButton.styleFrom(
-              //             padding: EdgeInsets.zero,
-              //             backgroundColor: Theme.of(context).primaryColor,
-              //           ),
-              //           child: const Text(
-              //             "Apply",
-              //             style: TextStyle(fontSize: 12),
-              //           ),
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              // ),
+             
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

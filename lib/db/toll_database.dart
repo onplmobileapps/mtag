@@ -10,9 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class TollDatabase {
   static final TollDatabase instance = TollDatabase._init();
   static Database? _database;
-
   TollDatabase._init();
-
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDB('veh_toll_cal_7.db');

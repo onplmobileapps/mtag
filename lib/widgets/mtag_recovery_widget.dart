@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mtag_flutterapp/widgets/dashboard_widget.dart';
+
+import 'dashboard_widget.dart';
+
 
 Widget mtagRecoveryWidget(
   BuildContext context, {

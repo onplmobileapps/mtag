@@ -45,11 +45,34 @@ sealed class DeviceInfo {
 }
 
 sealed class AppReviewUtils {
-  static void requestAppReview() async {
-    final InAppReview inAppReview = InAppReview.instance;
-    if (await inAppReview.isAvailable()) {
-      inAppReview.requestReview();
+  static void requestAppReview() {
+    if (Platform.isAndroid) {
+      _android();
+    } else if (Platform.isIOS) {
+      _ios();
     }
+  }
+
+  /// ✅ ANDROID — fire & forget (NO await)
+  static void _android() {
+    final review = InAppReview.instance;
+
+    Future.delayed(const Duration(milliseconds: 300), () {
+      try {
+        review.requestReview();
+       } catch (_) {
+        review.openStoreListing();
+        }
+    });
+  }
+
+  /// ✅ IOS — safe to await
+  static Future<void> _ios() async {
+    final review = InAppReview.instance;
+    if (!await review.isAvailable()) return;
+
+    await Future.delayed(const Duration(milliseconds: 300));
+    await review.requestReview();
   }
 }
 
@@ -141,16 +164,16 @@ String formatDateTime(String inputDateTime, {bool roundMinutes = false}) {
 
 String? validateMtag(String? value) {
   if (value == null) {
-    return 'MTAG value cannot be null';
+    return 'M-TAG value cannot be null';
   }
   if (value.isEmpty) {
-    return 'MTAG value is required';
+    return 'M-TAG value is required';
   }
   if (value.length < 8) {
     return 'MTAG must be at least 8 digits';
   }
   if (value.startsWith('0')) {
-    return 'MTAG cannot start with 0';
+    return 'M-TAG cannot start with 0';
   }
   return null; // Valid input
 }
@@ -166,98 +189,97 @@ String maskString(String value) {
 
   return '';
 }
+
 final List<Map<String, dynamic>> operatorList = [
-    {
-      'text': 'Jazz',
-      'value': 1,
-      'image': 'assets/jazz-logo-1.png',
-      'prefixes': [
-        '0300',
-        '0301',
-        '0302',
-        '0303',
-        '0304',
-        '0306',
-        '0307',
-        '0308',
-        '0309',
-      ],
-    },
-    {
-      'text': 'Telenor',
-      'value': 2,
-      'image': 'assets/telenor.jpg',
-      'prefixes': [
-        '0340',
-        '0341',
-        '0342',
-        '0343',
-        '0344',
-        '0345',
-        '0346',
-        '0347',
-        '0348',
-        '0349',
-      ],
-    },
-    {
-      'text': 'Ufone',
-      'value': 3,
-      'image': 'assets/ufone.png',
-      'prefixes': [
-        '0330',
-        '0331',
-        '0332',
-        '0333',
-        '0334',
-        '0335',
-        '0336',
-        '0337',
-        '0338',
-      ],
-    },
-    {
-      'text': 'Zong',
-      'value': 5,
-      'image': 'assets/zong.png',
-      'prefixes': [
-        '0310',
-        '0311',
-        '0312',
-        '0313',
-        '0314',
-        '0315',
-        '0316',
-        '0317',
-        '0318',
-        '0319',
-      ],
-    },
-    {
-      'text': 'Warid',
-      'value': 4,
-      'image': 'assets/warid.png',
-      'prefixes': [
-        '0320',
-        '0321',
-        '0322',
-        '0323',
-        '0324',
-        '0325',
-        '0327',
-        '0328',
-        '0329',
-      ],
-    },
-    {
-      'text': 'SCO',
-      'value': 6,
-      'image': 'assets/sco.webp',
-      'prefixes': ['0355'],
-    },
-  ];
-
-
+  {
+    'text': 'Jazz',
+    'value': 1,
+    'image': 'assets/jazz-logo-1.png',
+    'prefixes': [
+      '0300',
+      '0301',
+      '0302',
+      '0303',
+      '0304',
+      '0306',
+      '0307',
+      '0308',
+      '0309',
+    ],
+  },
+  {
+    'text': 'Telenor',
+    'value': 2,
+    'image': 'assets/telenor.jpg',
+    'prefixes': [
+      '0340',
+      '0341',
+      '0342',
+      '0343',
+      '0344',
+      '0345',
+      '0346',
+      '0347',
+      '0348',
+      '0349',
+    ],
+  },
+  {
+    'text': 'Ufone',
+    'value': 3,
+    'image': 'assets/ufone.png',
+    'prefixes': [
+      '0330',
+      '0331',
+      '0332',
+      '0333',
+      '0334',
+      '0335',
+      '0336',
+      '0337',
+      '0338',
+    ],
+  },
+  {
+    'text': 'Zong',
+    'value': 5,
+    'image': 'assets/zong.png',
+    'prefixes': [
+      '0310',
+      '0311',
+      '0312',
+      '0313',
+      '0314',
+      '0315',
+      '0316',
+      '0317',
+      '0318',
+      '0319',
+    ],
+  },
+  {
+    'text': 'Warid',
+    'value': 4,
+    'image': 'assets/warid.png',
+    'prefixes': [
+      '0320',
+      '0321',
+      '0322',
+      '0323',
+      '0324',
+      '0325',
+      '0327',
+      '0328',
+      '0329',
+    ],
+  },
+  {
+    'text': 'SCO',
+    'value': 6,
+    'image': 'assets/sco.webp',
+    'prefixes': ['0355'],
+  },
+];
 const Map<String, String> vehicleImages = {
   'Car': 'assets/vehicles/car.png',
   'Wagon': 'assets/vehicles/wagon.png',

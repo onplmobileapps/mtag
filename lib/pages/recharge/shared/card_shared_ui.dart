@@ -242,6 +242,7 @@ class _AddNewCardTile extends StatelessWidget {
             payId: payId == 1 ? '0' : '1',
             amount: amount ?? '0',
           );
+        
           isJazzShown.value = false;
         }
       },

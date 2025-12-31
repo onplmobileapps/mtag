@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../controller/home_controller.dart';
-import '../pages/mtag/controller/delink_controller.dart';
+
+
 import '../pages/recharge/recharge_page.dart';
 import '../utils/utils.dart';
-import 'balance_widget.dart';
-import 'bottomsheet/balance_transfer_bs.dart';
+
+
 import 'bottomsheet/bottom_sheet_widget.dart';
-import 'dialog/chassis_num.dart';
-import 'dialog/delink_dialog.dart';
+
+
 
 String getVehCategory(String vehicleType) {
   Map<String, String> vehicleCategories = {
@@ -31,267 +31,18 @@ String getVehCategory(String vehicleType) {
 String getVehicleImage(String vehicleType) {
   // Map containing vehicle types and their corresponding image paths
   Map<String, String> vehicleImages = {
-    'Car': 'assets/f1.svg',
-    'Wagon': 'assets/f2.svg',
-    'Coaster': 'assets/f3.svg',
-    'Bus': 'assets/f4.svg',
-    'Truck': 'assets/f5.svg',
-    'Trailer': 'assets/f6.svg',
+    'Car': 'assets/vehicles/car.png',
+    'Wagon': 'assets/vehicles/wagon.png',
+    'Coaster': 'assets/vehicles/coaster.png',
+    'Bus': 'assets/vehicles/bus.png',
+    'Truck': 'assets/vehicles/truck.png',
+    'Trailer': 'assets/vehicles/trailer.png',
   };
 
   return vehicleImages[vehicleType] ?? '';
 }
 
-Widget mtagDataWidget(
-  BuildContext context, {
-  String? vehType,
-  String? userName,
-  String? ball,
-  dynamic balanceDashboard,
-  String? mtagId,
-  String? regId,
-  String? creditCode,
-  String? jazzCode,
-  double? blockStatus,
-  double? blockAmount,
-  String? cnic,
-  String? mobileNum,
-  double? isBlock,
-  bool? showTransferButton,
-  String? chassisNumber,
-  bool? showChassisBadge,
-  VoidCallback? onTapBack,
-  VoidCallback? onTapForward,
-}) {
-  final controller = Get.find<HomeController>();
 
-  return LayoutBuilder(
-    builder: (context, constraints) {
-      final maxW = constraints.maxWidth;
-      final isSmall = maxW < 330;
-      final fontLarge = isSmall ? 15.0 : 18.0;
-
-      final fontSmall = isSmall ? 10.0 : 12.0;
-
-      /// Car Image Size
-      final carSize = isSmall ? 80.0 : 80.0;
-
-      /// Other MTAGs list
-      final allCars = controller.dashboradData.value.activeMtags!
-          .where((car) => car.registration != regId)
-          .map(
-            (car) => {
-              "carNumber": car.registration,
-              "balance": double.tryParse(car.balance ?? '0.0') ?? 0.0,
-              "mtagID": car.tokenno,
-            },
-          )
-          .toList();
-
-      return Container(
-        width: MediaQuery.sizeOf(context).width,
-
-        decoration: BoxDecoration(
-          color: Theme.of(context).disabledColor,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          children: [
-            Container(
-              padding: .all(26),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainer,
-                borderRadius: .only(bottomLeft: .circular(28)),
-              ),
-              child: Column(
-                spacing: 10,
-                mainAxisAlignment: .start,
-                crossAxisAlignment: .start,
-
-                children: [
-                  SizedBox(height: 26),
-                  Text(
-                    'M-TAG',
-                    style: TextTheme.of(context).titleLarge?.copyWith(
-                      color: Colors.white,
-                      fontWeight: .w800,
-                      fontSize: 20,
-                    ),
-                  ),
-                  mtadDetailsWidget(
-                    context,
-                    icon: Icons.folder_outlined,
-                    label: 'M-TAG',
-                    value: mtagId,
-                  ),
-                  mtadDetailsWidget(
-                    context,
-                    icon: Icons.delivery_dining,
-                    label: 'Vehicle No',
-                    value: regId,
-                  ),
-                  mtadDetailsWidget(
-                    context,
-                    icon: Icons.description,
-                    label: 'Chassis No',
-                    value: chassisNumber,
-                    ischassis: true,
-                    onTap: () async {
-                      await showDialog(
-                        context: context,
-                        builder: (_) => ChassisNumberDialog(
-                          registration: regId ?? '',
-                          tokenNo: mtagId ?? '',
-                          mobileNumber: mobileNum ?? '',
-                          balance: ball ?? '',
-                          cnicNumber: cnic ?? '',
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-
-            SizedBox(height: MediaQuery.sizeOf(context).height * 0.045),
-
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: .spaceBetween,
-                children: [
-                  InkWell(
-                    onTap: onTapBack,
-                    child: CircleAvatar(
-                      radius: 16,
-                      backgroundColor: Colors.black.withValues(alpha: 0.5),
-                      child: Icon(Icons.arrow_back_ios_rounded, size: 20),
-                    ),
-                  ),
-                  Transform.scale(
-                    scaleY: 2.0,
-                    scaleX: 2.4,
-                    // scale: 3, // enlarge visually but keeps original size in layout
-                    child: Image.asset(
-                      "assets/honda.png",
-                      width: carSize, // keeps parent constraints safe
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                  InkWell(
-                    onTap: onTapForward,
-                    child: CircleAvatar(
-                      radius: 16,
-                      backgroundColor: Colors.black.withValues(alpha: 0.5),
-                      child: Icon(Icons.arrow_forward_ios_rounded, size: 20),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Spacer(flex: 3),
-
-            Row(
-              mainAxisAlignment: .center,
-              children: [
-                Text(
-                  "Balance  ",
-                  style: TextTheme.of(
-                    context,
-                  ).bodyLarge?.copyWith(fontWeight: .w500),
-                ),
-                BalanceWidget(
-                  balance: ball ?? '',
-                  fontSize: fontLarge,
-                  iconSize: fontLarge,
-                ),
-              ],
-            ),
-            Spacer(),
-            // SizedBox(height: 10),
-
-            /// 🔹 Bottom Action Buttons (Transfer / Recharge / Delete)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                if (showTransferButton == false)
-                  actionBtn(
-                    context,
-                    label: "Transfer",
-                    icon: 'assets/send.png',
-
-                    fontSize: fontSmall,
-
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (_) => BalanceTransferSheet(
-                          carRegistration: regId,
-                          balance: balanceDashboard,
-                          cnicNumber: cnic,
-                          mobileNumber: mobileNum,
-                          mtagid: mtagId,
-                          dropDownCars: allCars,
-                        ),
-                      );
-                    },
-                  )
-                else
-                  const SizedBox(width: 0),
-
-                actionBtn(
-                  context,
-                  label: "Recharge",
-                  icon: 'assets/plus1.png',
-
-                  fontSize: fontSmall,
-
-                  onTap: () {
-                    showPaymentBottomSheet(
-                      context,
-                      mtagId: mtagId,
-                      regId: regId,
-                      jazzCode: jazzCode,
-                      creditCode: creditCode,
-                      blackListRecharge: false,
-                    );
-                  },
-                ),
-
-                actionBtn(
-                  context,
-                  label: "Delete",
-                  icon: 'assets/delete.png',
-
-                  fontSize: fontSmall,
-
-                  onTap: () {
-                    Get.dialog(
-                      DeLinkVehicleDialog(
-                        regId: regId ?? '',
-                        onCancel: () => Get.back(),
-                        onConfirm: () {
-                          Get.back();
-                          Get.find<DelinkController>().deLinkVehicle(
-                            mtagID: mtagId ?? '',
-                            rDesc: "0--Vehicle has been sold out.",
-                            rID: "1",
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
 
 void showPaymentBottomSheet(
   BuildContext context, {

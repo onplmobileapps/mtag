@@ -21,180 +21,162 @@ class SettingScreen extends StatelessWidget {
     return packageInfo.version;
   }
 
+  Widget _buildSettingsListItem(int index, BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          onTap: items[index].onTap,
+          horizontalTitleGap: 8.0,
+          dense: true,
+          leading: items[index].icon,
+          title: Text(
+            items[index].name ?? '',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          trailing: const Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.grey,
+            size: 18,
+          ),
+        ),
+        const Divider(thickness: .5, height: 1.5, color: Colors.grey),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, _) {},
-      child: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        appBar: AppBar(
-          centerTitle: true,
-          automaticallyImplyLeading: false,
-          title: const Text('Settings '),
-        ),
-        body: Container(
-          constraints: const BoxConstraints.expand(),
-          color: Theme.of(context).primaryColor,
-          height: MediaQuery.sizeOf(context).height,
-          width: MediaQuery.sizeOf(context).width,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: const BorderRadiusDirectional.only(
-                topEnd: Radius.circular(15),
-                topStart: Radius.circular(15),
-              ),
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        title: const Text('Settings'),
+      ),
+      body: Container(
+        constraints: const BoxConstraints.expand(),
+        color: Theme.of(context).primaryColor,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: const BorderRadiusDirectional.only(
+              topEnd: Radius.circular(15),
+              topStart: Radius.circular(15),
             ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-
-                  children: [
-                    Obx(
-                      () => Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-
-                        children: [
-                          const SizedBox(height: 5),
-                          CircleAvatar(
-                            radius: 40,
-                            backgroundColor: Theme.of(context).primaryColor,
-                            child: Text(
-                              getInitials(
-                                homeController
-                                        .dashboradData
-                                        .value
-                                        .customerDetail
-                                        ?.fullName ??
-                                    "",
-                              ),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Poppins',
-                                fontSize: 40,
-                                fontWeight: FontWeight.w600,
-                              ),
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Obx(
+                    () => Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 5),
+                        CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Theme.of(context).primaryColor,
+                          child: Text(
+                            getInitials(
+                              homeController
+                                      .dashboradData
+                                      .value
+                                      .customerDetail
+                                      ?.fullName ??
+                                  "",
+                            ),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Poppins',
+                              fontSize: 40,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
-                          const SizedBox(height: 5),
-                          Text(
-                            homeController
-                                    .dashboradData
-                                    .value
-                                    .customerDetail
-                                    ?.fullName ??
-                                "",
-                            style: Theme.of(context).textTheme.displayLarge
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 20,
-                                ),
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              IconTextInfo(
-                                icon: Icons.contact_mail_outlined,
-                                text:
-                                    homeController
-                                        .dashboradData
-                                        .value
-                                        .customerDetail
-                                        ?.cNIC ??
-                                    "",
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          homeController
+                                  .dashboradData
+                                  .value
+                                  .customerDetail
+                                  ?.fullName ??
+                              "",
+                          style: Theme.of(context).textTheme.displayLarge
+                              ?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 20,
                               ),
-                              Container(
-                                height: 15,
-                                width: 1.5,
-                                color: Colors.grey,
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                ),
-                              ),
-                              IconTextInfo(
-                                icon: Icons.call_outlined,
-                                text:
-                                    homeController
-                                        .dashboradData
-                                        .value
-                                        .customerDetail
-                                        ?.mobileNumber ??
-                                    "",
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 5),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconTextInfo(
+                              icon: Icons.contact_mail_outlined,
+                              text:
+                                  homeController
+                                      .dashboradData
+                                      .value
+                                      .customerDetail
+                                      ?.cNIC ??
+                                  "",
+                            ),
+                            Container(
+                              height: 15,
+                              width: 1.5,
+                              color: Colors.grey,
+                              margin: const EdgeInsets.symmetric(horizontal: 8),
+                            ),
+                            IconTextInfo(
+                              icon: Icons.call_outlined,
+                              text:
+                                  homeController
+                                      .dashboradData
+                                      .value
+                                      .customerDetail
+                                      ?.mobileNumber ??
+                                  "",
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 5),
+                      ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: 5),
-
-                Expanded(
-                  child: CustomScrollView(
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    key: UniqueKey(),
-                    shrinkWrap: true,
-                    slivers: [
-                      SliverList(
-                        key: UniqueKey(),
-                        delegate: SliverChildBuilderDelegate(
-                          childCount: items.length,
-                          (context, i) => Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ListTile(
-                                contentPadding: .zero,
-                                key: UniqueKey(),
-                                visualDensity:
-                                    VisualDensity.adaptivePlatformDensity,
-                                onTap: items[i].onTap,
-                                horizontalTitleGap: 8.0,
-                                dense: true,
-                                leading: items[i].icon,
-                                title: Text(
-                                  items[i].name ?? '',
-                                 
-                                ),
-                                trailing: Icon(
-                                  Icons.arrow_forward_ios,
-                                  color: Colors.grey,
-                                  size: 18,
-                                ),
-                              ),
-                              const Divider(thickness: 0.1),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
+                ],
+              ),
+              const SizedBox(height: 5),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) =>
+                      _buildSettingsListItem(index, context),
                 ),
-                FutureBuilder<String>(
-                  future: _getAppVersion(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
-                        child: Text(
-                          'Version ${snapshot.data}',
-                          style: Theme.of(context).textTheme.displaySmall
-                              ?.copyWith(fontWeight: FontWeight.w100),
-                          textAlign: TextAlign.center,
-                        ),
-                      );
-                    } else {
-                      return const SizedBox.shrink();
-                    }
-                  },
-                ),
-              ],
-            ),
+              ),
+              FutureBuilder<String>(
+                future: _getAppVersion(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: Text(
+                        'Version ${snapshot.data}',
+                        style: Theme.of(context).textTheme.displaySmall
+                            ?.copyWith(fontWeight: FontWeight.w100),
+                        textAlign: TextAlign.center,
+                      ),
+                    );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                },
+              ),
+            ],
           ),
         ),
       ),
@@ -232,7 +214,6 @@ final List<SettingsModel> items = [
           child: Wrap(
             children: [
               ListTile(
-                key: UniqueKey(),
                 onTap: () {
                   Get.changeThemeMode(ThemeMode.system);
                   AppData.setThemeMode(null);
@@ -244,7 +225,6 @@ final List<SettingsModel> items = [
               ),
               const Divider(),
               ListTile(
-                key: UniqueKey(),
                 onTap: () {
                   Get.changeThemeMode(ThemeMode.light);
                   Get.changeTheme(appTheme);
@@ -257,7 +237,6 @@ final List<SettingsModel> items = [
               ),
               const Divider(),
               ListTile(
-                key: UniqueKey(),
                 onTap: () {
                   Get.changeThemeMode(ThemeMode.dark);
                   Get.changeTheme(darkTheme);
@@ -295,6 +274,14 @@ final List<SettingsModel> items = [
   ),
   SettingsModel(
     onTap: () {
+      Get.toNamed('/notifications');
+    },
+    name: 'Notifications',
+    icon: const Icon(Icons.notifications_on_outlined),
+    routeName: '/notifications',
+  ),
+  SettingsModel(
+    onTap: () {
       Get.toNamed('/feedback');
     },
     name: 'Help & Feedback',
@@ -306,7 +293,7 @@ final List<SettingsModel> items = [
       showChangePinDialog(Get.context!, onSubmit: (oldPin, newPin) {});
     },
     name: 'Change PIN',
-    icon: Icon(Icons.password_outlined),
+    icon: const Icon(Icons.password_outlined),
     routeName: '',
   ),
   SettingsModel(
@@ -328,17 +315,19 @@ final List<SettingsModel> items = [
   SettingsModel(
     onTap: () {
       final box = Get.context!.findRenderObject() as RenderBox?;
-      String shareLinks =
-          "Get the M-Tag One Network Application now for exciting features\n"
-          "Android: https://bit.ly/3nLrHNX\n"
-          "IOS: https://apple.co/3byIb6c\n"
-          "Huawei: https://bit.ly/3IFgzLf";
-      SharePlus.instance.share(
-        ShareParams(
-          text: shareLinks,
-          sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
-        ),
-      );
+      if (box != null) {
+        String shareLinks =
+            "Get the M-Tag One Network Application now for exciting features\n"
+            "Android: https://bit.ly/3nLrHNX\n"
+            "IOS: https://apple.co/3byIb6c\n"
+            "Huawei: https://bit.ly/3IFgzLf";
+        SharePlus.instance.share(
+          ShareParams(
+            text: shareLinks,
+            sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+          ),
+        );
+      }
     },
     name: 'Share',
     icon: const Icon(Icons.share_outlined),
@@ -347,7 +336,7 @@ final List<SettingsModel> items = [
   SettingsModel(
     onTap: () {
       showCupertinoModalPopup(
-        context: navigator!.context,
+        context: Get.context!,
         builder: (_) => CupertinoAlertDialog(
           content: const Text('Do you want to logout?'),
           actions: [

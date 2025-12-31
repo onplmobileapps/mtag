@@ -13,8 +13,6 @@ class ApplicationUrl {
 
   static const String _BASE_URL = 'https://ocotapp.com';
 
-  //temp test
-  // static const String _BASE_URL = 'https://ocottapp.com';
 ////
   static const String _IMAGE_ULR = _BASE_URL;
 

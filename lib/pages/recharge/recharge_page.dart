@@ -1,3 +1,6 @@
+
+
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -142,6 +145,7 @@ class RechargeSelfController extends GetxController {
   void _setupInitialValues() {
     isJazzShown.value = false;
     isCardsVisible.value = false;
+   
     if (arguments.isNotEmpty) {
       selectedMtagIndex.value = arguments.length == 1 ? 0 : -1;
 
@@ -175,11 +179,13 @@ class RechargeSelfController extends GetxController {
     scrollController1.dispose();
     scrollController2.dispose();
     scrollController3.dispose();
+    
   }
 
   void handlePop(bool didPop, dynamic result) {
     if (!didPop) {
       selected1linkOpt.value = -1;
+      log('pop invoked:$didPop ${selected1linkOpt.value}');
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Get.back();
       });
@@ -240,7 +246,7 @@ Widget _buildMtagSection(
     () => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle(context, 'Select Mtag/Vehicle'),
+        _buildSectionTitle(context, 'Select M-tag/Vehicle'),
         Row(
           children: [
             if (controller.arguments.length > 2)
@@ -331,7 +337,6 @@ Widget _buildOtherMtagField(
     hint: "Enter M-Tag Id",
     hintStyle: const TextStyle(color: Colors.grey),
     textInputAction: TextInputAction.done,
-    fillColor: ColorScheme.of(context).surface,
     keyboardType: const TextInputType.numberWithOptions(signed: true),
     maxLength: 8,
     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -350,7 +355,7 @@ Widget _buildAmountSection(
         ? Column(
             crossAxisAlignment: .start,
             mainAxisAlignment: .start,
-            mainAxisSize:.min,
+            mainAxisSize: .min,
             children: [
               Row(
                 mainAxisAlignment: .spaceBetween,

@@ -56,7 +56,7 @@ class UserRepo {
     );
 
     return await apiObject.requestAPI(
-      isShowLoading: isShowLoading,
+      isShowLoading: false,
       isCheckAuthorization: true,
     );
   }

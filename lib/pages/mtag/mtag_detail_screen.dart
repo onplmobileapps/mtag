@@ -1,10 +1,12 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/widgets/dashboard_widget.dart';
-import 'package:mtag_flutterapp/widgets/skelton/list_tile_skelton.dart';
+import '../../pages/tollhistory/toll_history_screen.dart';
+
+
+import '../../widgets/dashboard_widget.dart';
 import '/pages/recharge/controller/recharge_controller.dart';
 import '../../pages/tollhistory/controller/tollcontroller.dart';
 import '../../widgets/elevated_button.dart';
@@ -104,14 +106,11 @@ class MatagDetailScreen extends GetView<TollController> {
                             children: [
                               FittedBox(
                                 fit: BoxFit.scaleDown,
-                                child: SvgPicture.asset(
+                                child: Image.asset(
                                   getVehicleImage(
                                     arguments.first.vehicletype ?? '',
                                   ),
-                                  colorFilter: ColorFilter.mode(
-                                    Theme.of(context).hintColor,
-                                    BlendMode.srcIn,
-                                  ),
+                                 
                                   height: 30,
                                   width: 30,
                                 ),
@@ -167,8 +166,7 @@ class MatagDetailScreen extends GetView<TollController> {
                     ),
                     builder: (_, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        // return const Center(child: Text('Please Wait'));.
-                       return ListSkeleton();
+                        return ListSkeleton();
                       }
 
                       var transactions = controller

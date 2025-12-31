@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/constants/input_formater.dart';
 import 'package:mtag_flutterapp/pages/faqs/controller/delete_account_controller.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
 import 'package:mtag_flutterapp/widgets/elevated_button.dart';
-import 'package:mtag_flutterapp/widgets/textform_widget.dart';
-
 class FaqsScreen extends StatelessWidget {
   FaqsScreen({super.key});
   final _scrollController = ScrollController();
@@ -70,54 +69,56 @@ class FaqsScreen extends StatelessWidget {
                                     backgroundColor: Theme.of(context).primaryColor,
                                     width: MediaQuery.sizeOf(context).width,
                                     onclick: () {
-                                      showCupertinoModalPopup(
-                                        context: context,
-                                        builder: (_) => CupertinoAlertDialog(
-                                          title: Icon(
-                                            Icons.warning_outlined,
-                                            color: Colors.yellow.shade600,
-                                            size: 50,
-                                          ),
-                                          content: Column(
-                                            children: [
-                                              const Text(
-                                                'If you delete your account we temporarily deactivate your account for next 14 days, within this duration if you login again  we activate your account again, otherwise we delete your account permanently after 14 days.',
-                                                textAlign: TextAlign.justify,
-                                              ),
-                                              SizedBox(
-                                                height: 45,
-                                                child: Material(
-                                                  color: Colors.transparent,
-                                                  child: CustomTextField(
-                                                    controller: _reasontextController,
-                                                    contentPadding: const EdgeInsets.only(top: 0, left: 0),
-                                                    hint: 'Why you want to deactivate your account?',
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          actions: [
-                                            CupertinoDialogAction(
-                                              child: const Text(
-                                                'Cancel',
-                                                style: TextStyle(color: Colors.redAccent),
-                                              ),
-                                              onPressed: () => Navigator.of(context).pop(true),
-                                            ),
-                                            CupertinoDialogAction(
-                                              child: const Text(
-                                                'Confirm',
-                                              ),
-                                              onPressed: () async {
-                                                Get.back();
-                                                await delAccController.deleteAccount(
-                                                    comments: _reasontextController.text);
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      );
+                                    showCupertinoModalPopup(
+  context: context,
+  builder: (_) => CupertinoAlertDialog(
+    title: Icon(
+      Icons.warning_outlined,
+      color: Colors.yellow.shade600,
+      size: 50,
+    ),
+    content: Column(
+      children: [
+        const Text(
+          'If you delete your account we temporarily deactivate your account for next 14 days, within this duration if you login again we activate your account again, otherwise we delete your account permanently after 14 days.',
+          textAlign: TextAlign.justify,
+        ),
+        const SizedBox(height: 16),
+        Container(
+          decoration: BoxDecoration(
+            color: CupertinoColors.tertiarySystemBackground,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: CupertinoTextField(placeholderStyle: TextStyle(fontFamily: fontFamily,fontSize: 11,color: Colors.grey.shade300),
+            controller: _reasontextController,
+            placeholder: 'Why you want to deactivate your account?',
+            padding: .only(bottom:12,left:12),
+            maxLines: 1,
+            minLines: 1,
+          ),
+        ),
+      ],
+    ),
+    actions: [
+      CupertinoDialogAction(
+        child: const Text(
+          'Cancel',
+          style: TextStyle(color: Colors.redAccent),
+        ),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+      CupertinoDialogAction(
+        child: const Text('Confirm'),
+        onPressed: () async {
+          Navigator.of(context).pop();
+          await delAccController.deleteAccount(
+            comments: _reasontextController.text,
+          );
+        },
+      ),
+    ],
+  ),
+);
                                     },
                                     text: 'Deactivate Your Account')
                                 : Container(),

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -6,7 +7,6 @@ import '../../pages/editprofile/controller/update_emai_controller.dart';
 import '../../constants/call_helper.dart';
 import '../../widgets/elevated_button.dart';
 import '../../constants/input_formater.dart';
-import '../../widgets/textform_widget.dart';
 
 class FeedBackScreen extends StatefulWidget {
   const FeedBackScreen({super.key});
@@ -72,7 +72,7 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
             SizedBox(width: 1.0),
             Text(
               '1313',
-              style: TextStyle(fontSize: 13, fontFamily: "Poppins"),
+              style: TextStyle(fontSize: 13),
               textAlign: TextAlign.center,
             ),
           ],
@@ -97,32 +97,24 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
             child: Form(
               key: _formKey,
               child: Column(
+                mainAxisAlignment: .start,
+                crossAxisAlignment: .start,
+                spacing: 4,
                 children: [
-                  const SizedBox(height: 10),
-                  CustomTextField(
-                    validator: (value) {
-                      if (value!.isEmpty || value.length < 3) {
-                        return 'Enter valid name';
-                      }
-                      return null;
-                    },
+                  Text("Name", style: TextTheme.of(context).labelMedium),
+                  const SizedBox(height: 4),
+                  CupertinoTextField(
                     readOnly: true,
                     controller: _nameController,
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]')),
                     ],
 
-                    label: 'FULL NAME',
                     keyboardType: TextInputType.name,
                   ),
-                  const SizedBox(height: 10),
-                  CustomTextField(
-                    validator: (p0) {
-                      if (p0!.isEmpty || p0.isCnpj) {
-                        return 'Enter valid CNIC';
-                      }
-                      return null;
-                    },
+                  const SizedBox(height: 4),
+                  Text("CNIC", style: TextTheme.of(context).labelMedium),
+                  CupertinoTextField(
                     readOnly: true,
                     controller: _cnicController,
 
@@ -130,57 +122,47 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
                       CnicMaskTextInputFormatter(),
                       FilteringTextInputFormatter.deny(RegExp(r'[a-zA-Z]')),
                     ],
-                    label: 'CNIC',
+
                     keyboardType: TextInputType.number,
                   ),
-                  const SizedBox(height: 10),
-                  CustomTextField(
-                    validator: (p0) {
-                      if (p0!.isEmpty || !p0.isPhoneNumber) {
-                        return 'Enter valid phone';
-                      }
-                      return null;
-                    },
+                  const SizedBox(height: 4),
+                  Text(
+                    "Mobile Number",
+                    style: TextTheme.of(context).labelMedium,
+                  ),
+                  CupertinoTextField(
                     readOnly: true,
                     maxLength: 11,
                     controller: _phoneController,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    label: 'MOBILE NUMBER',
+
                     keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: 10),
-                  TextFormField(
+                  Text("Remarks", style: TextTheme.of(context).labelMedium),
+                  CupertinoTextFormFieldRow(
+                    autofocus: true,
+                    validator: validateRemarks,
+                    decoration: BoxDecoration(
+                      border: .all(width: 0.3, color: Colors.grey),
+                      borderRadius: .circular(4),
+                    ),
+                    padding: .zero,
                     onEditingComplete: () =>
                         FocusScope.of(context).requestFocus(_remarksFocusNode),
-                    style: const TextStyle(height: 1, fontSize: 12),
-                    maxLines: 4,
+                    smartDashesType: SmartDashesType.enabled,
+                    maxLines: 6,
                     focusNode: _remarksFocusNode,
                     controller: _remarksController,
-                    validator: (p0) {
-                      if (p0!.isEmpty || p0.length.isLowerThan(3)) {
-                        return 'Enter remarks';
-                      }
-                      return null;
-                    },
-
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Theme.of(context).disabledColor,
-                      labelText: 'REMARKS',
-                      border: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                    ),
+                    placeholder: 'Enter details......',
                   ),
                   const SizedBox(height: 10),
                   const Spacer(flex: 6),
-                  ElevatedButton1(
+                  ElevatedButton1(isShowIcon: false,
                     backgroundColor: Theme.of(context).primaryColor,
                     width: MediaQuery.sizeOf(context).width,
                     onclick: () async {
-                      if (_formKey.currentState!.validate()) {
+                      if (_formKey.currentState?.validate() ?? false) {
                         await Get.find<UpdateEmailController>().addFeedBack(
                           cnic: _cnicController.text,
                           mobileNumber: _phoneController.text,
@@ -189,8 +171,9 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
                         );
                         _remarksController.clear();
                       }
+                      return;
                     },
-                    text: 'Submit',
+                    text: 'Submit Feedback',
                   ),
                   const Spacer(flex: 4),
                 ],
@@ -202,3 +185,6 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
     );
   }
 }
+
+String? validateRemarks(String? value) =>
+    value == null || value.trim().isEmpty ? 'Enter details here' : null;

@@ -64,9 +64,12 @@ class CustomTextField extends StatelessWidget {
       autofocus: autoFocus ?? false,
       readOnly: readOnly ?? false,
       textInputAction: textInputAction,
-      onTapOutside: onTapOutside,onFieldSubmitted:onFieldSubmitted ,
+      onTapOutside: onTapOutside,
+      onFieldSubmitted: onFieldSubmitted,
       maxLength: maxLength,
-      style: style ?? const TextStyle(fontSize: 14, fontFamily: 'Poppins', height: 1),
+      style:
+          style ??
+          const TextStyle(fontSize: 14, fontFamily: 'Poppins', height: 1),
       onEditingComplete: onEditingComplete,
       focusNode: focusNode,
       autovalidateMode: autovalidateMode ?? AutovalidateMode.onUserInteraction,
@@ -78,21 +81,15 @@ class CustomTextField extends StatelessWidget {
       enabled: enabled,
       obscureText: obscure,
       decoration: InputDecoration(
-        errorBorder: const UnderlineInputBorder(),
-        focusedErrorBorder: const UnderlineInputBorder(),
         counterText: '',
         hintText: hint,
         hintStyle: hintStyle,
         filled: filled,
         fillColor: fillColor,
         focusColor: const Color(0xffF0F0F0),
-        focusedBorder:
-            UnderlineInputBorder(borderSide: BorderSide(width: 0.3,)),
-        enabledBorder:
-            UnderlineInputBorder(borderSide: BorderSide(width: 0.3, )),
-        border: UnderlineInputBorder(borderSide: BorderSide( width: 0.3)),
-        contentPadding: contentPadding ?? EdgeInsets.zero,
-        label: Text(label ?? ''),    
+
+        contentPadding: contentPadding ?? EdgeInsets.only(left: 16),
+        label: Text(label ?? ''),
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
     );
