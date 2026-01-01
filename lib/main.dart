@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/features/design/tests_design.dart';
 import 'package:mtag_flutterapp/widgets/connectivity_banner.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,8 +14,6 @@ import 'db/stations_database.dart';
 import 'db/toll_database.dart';
 import 'fcm_handeler.dart';
 import 'firebase_options.dart';
-import 'pages/login/auth_page.dart';
-import 'pages/login/create_pin_page.dart';
 import 'remoteconfig/firebase_remote_config.dart';
 import 'routes/approute.dart';
 import 'theme/app_theme.dart';
@@ -149,11 +148,11 @@ class _MTagAppState extends State<MTagApp> {
               showLater: false,
 
               showReleaseNotes: true,
-              child: AppData.getPinData() != null ? PinEntryPage() : AuthPage(),
+              child: AppData.getPinData() != null ? MTagScreen() : MTagScreen(),
             )
           : AppData.getPinData() != null
-          ? const PinEntryPage()
-          : AuthPage(),
+          ? const MTagScreen()
+          : MTagScreen(),
     );
   }
 }

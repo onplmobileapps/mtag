@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -23,7 +24,7 @@ ThemeData appTheme = ThemeData(
     surface: Colors.white,
     secondary: Colors.grey,
     surfaceContainer: Color(0xff21295E),
-      surfaceContainerLowest: Color(0xffE1E1E1)
+    surfaceContainerLowest: Color(0xffE1E1E1),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ButtonStyle(
@@ -139,22 +140,44 @@ ThemeData appTheme = ThemeData(
       color: Colors.black,
     ),
   ),
-  inputDecorationTheme: InputDecorationTheme(
-    hintStyle: TextStyle(
-      color: Color(0xFF1A1C1E),
-      fontSize: 14,
-      fontFamily: fontFamily,
-      height: 0.10,
-      letterSpacing: -0.14,
-    ),
-    filled: true,
-    fillColor: const Color(0xFFF9FAFB),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide.none,
-    ),
-    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+
+inputDecorationTheme: InputDecorationTheme(
+  hintStyle: TextStyle(
+    color: const Color(0x993C3C43),
+    fontSize: 12,
+    fontFamily: fontFamily,
+    height: 1.0,
+    letterSpacing: -0.14,
   ),
+  
+  filled: true,
+  fillColor: const Color(0xFFFFFFFF),
+  isDense: false,
+  isCollapsed: false, // Minimal height but affects label/error placement
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(5),
+    borderSide: const BorderSide(color: Color(0x33000000), width: 0.0),
+  ),
+  enabledBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(5),
+    borderSide: const BorderSide(color: Color(0x33000000), width: 0.0),
+  ),
+  focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(5),
+    borderSide: const BorderSide(color: Color(0x33000000), width: 0.0),
+  ),
+  disabledBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(5),
+    borderSide: const BorderSide(color: Color(0x33000000), width: 0.0),
+  ),
+  contentPadding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+labelStyle: TextStyle(height: 1),
+  errorStyle: const TextStyle(
+    fontSize: 10,
+    height: 1.0,
+  ),
+  floatingLabelBehavior: FloatingLabelBehavior.never,
+),
 
   expansionTileTheme: ExpansionTileThemeData(
     backgroundColor: Colors.white,
@@ -299,7 +322,7 @@ ThemeData darkTheme = ThemeData(
       shape: WidgetStatePropertyAll(
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
-      backgroundColor: const WidgetStatePropertyAll( Color(0xFF2C2C2C)),
+      backgroundColor: const WidgetStatePropertyAll(Color(0xFF2C2C2C)),
       foregroundColor: const WidgetStatePropertyAll(Colors.white),
     ),
   ),
@@ -316,7 +339,8 @@ ThemeData darkTheme = ThemeData(
     titleTextStyle: TextStyle(
       fontFamily: fontFamily,
       fontWeight: FontWeight.w500,
-      color: Colors.white,fontSize: 16
+      color: Colors.white,
+      fontSize: 16,
     ),
     subtitleTextStyle: TextStyle(
       fontFamily: fontFamily,
@@ -329,7 +353,7 @@ ThemeData darkTheme = ThemeData(
     ),
   ),
   inputDecorationTheme: InputDecorationTheme(
-     filled: true,
+    filled: true,
     fillColor: const Color(0xFF2C2C2C),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
@@ -388,9 +412,7 @@ ThemeData darkTheme = ThemeData(
     onPrimary: Colors.white,
     primary: Colors.white,
     secondary: Colors.grey,
-    surfaceContainerLowest: Color(0xFF2C2C2C)
-  
-    
+    surfaceContainerLowest: Color(0xFF2C2C2C),
   ),
   primaryColor: const Color(0xff212121),
   primarySwatch: primarSwatchDark,
@@ -469,4 +491,3 @@ MaterialColor primarSwatchDark = const MaterialColor(0xff000000, {
   800: Color(0xff000000),
   900: Color(0xff000000),
 });
-
