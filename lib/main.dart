@@ -151,7 +151,7 @@ class _MTagAppState extends State<MTagApp> {
               child: AppData.getPinData() != null ? MTagScreen() : MTagScreen(),
             )
           : AppData.getPinData() != null
-          ? const MTagScreen()
+          ?  MTagScreen()
           : MTagScreen(),
     );
   }

@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:mtag_flutterapp/pages/dashboard/home_page.dart';
+import 'package:mtag_flutterapp/widgets/elevated_button.dart';
 
 // ── COLORS ──────────────────────────────────────────────────────────────────────
-const kPrimaryGreen = Color(0xFF4CAF83);
-const kLightGreen = Color(0xFF2FA36B);
-const kDarkGreen = Color(0xFF2C2E65); // used for recharge button
-const kLightBg = Color(0xFFFFFFFF);
-const kCardBg = Colors.white;
-const kMutedText = Color(0xFF8E99A5);
-const kWarning = Color(0xFFFF9800);
 
 // ── SPACING & LAYOUT CONSTANTS ──────────────────────────────────────────────────
 const double kScreenPaddingHorizontal = 16.0;
@@ -35,36 +31,48 @@ class MTagScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarBrightness: .light,
+          statusBarIconBrightness: .dark,
+        ),
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Image.asset("assets/logolight.png", height: 50, width: 50),
+        title: Image.asset("assets/logolight.png", height: 70, width: 70),
+        // toolbarHeight: 0.0,
       ),
-      backgroundColor: kLightBg,
-      body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(
-          kScreenPaddingHorizontal,
-          kScreenPaddingTop,
-          kScreenPaddingHorizontal,
-          kScreenPaddingBottom,
-        ),
-        child: Column(
-          spacing: 8,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(height: 10),
-            const VehicleCard(),
 
-            Transform.translate(
-              offset: const Offset(0, kBalanceOverlapVehicle),
-              child: const BalanceCard(),
-            ),
-
-            Transform.translate(
-              offset: const Offset(0, kActionGridOverlapQuick),
-              child: const ActionGrid(),
-            ),
-          ],
+      body: CustomScrollView(
+        slivers: [
+          
+           SliverAppBar(
+      pinned: true,
+      floating: false,expandedHeight: 430,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      
+      flexibleSpace: FlexibleSpaceBar(
+        collapseMode: CollapseMode.none,
+        background: Material(
+          color: Colors.transparent,
+          child: Column(
+            mainAxisSize: MainAxisSize.min, // important for dynamic height
+            children: const [
+              VehicleCard(), // your responsive vehicle card
+            ],
+          ),
         ),
+      ),
+    ),
+
+          SliverToBoxAdapter(child: ActionGrid()),
+          SliverPadding(
+            sliver: SliderSection(),padding: .symmetric(horizontal:8),),
+            SliverToBoxAdapter(child: SizedBox(height: 10,),),
+          HelpSection(),
+          SliverToBoxAdapter(child: SizedBox(height: 50,),)
+        ],
       ),
     );
   }
@@ -81,123 +89,166 @@ class VehicleCard extends StatelessWidget {
         final w = constraints.maxWidth;
 
         return Container(
-          constraints: constraints,
+          margin: .symmetric(horizontal: 10),
           decoration: BoxDecoration(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            borderRadius: .circular(16),
             gradient: const LinearGradient(
+              begin: .topLeft,
+              end: AlignmentGeometry.centerRight,
               colors: [Color(0xFFE4EDFC), Color(0xFFFCFCFC), Color(0xFFEAEBFD)],
             ),
           ),
-          child: Row(
+          child: Column(
+            mainAxisSize: .min,
             mainAxisAlignment: .start,
             crossAxisAlignment: .start,
             children: [
-              Padding(
-                padding: EdgeInsets.only(left: w * 0.03, bottom: w * 0.15),
-                child: Image.asset('assets/vehicles/car.png', height: w * 0.32),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: .symmetric(horizontal: 10),
-                  child: Column(
-                    mainAxisAlignment: .start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment:
-                            MainAxisAlignment.end, // pushes badge to right
+              Row(
+                mainAxisAlignment: .start,
+                crossAxisAlignment: .start,
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(
+                      top: 16,
+                      left: w * 0.03,
+                      bottom: w * 0.025,
+                    ),
+
+                    child: Image.asset(
+                      'assets/vehicles/car.png',
+                      height: w * 0.32,
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: .symmetric(horizontal: 10),
+                      child: Column(
+                        mainAxisAlignment: .start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: .only(right: 8, top: 8),
-                            child: _ActiveBadge(),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 8),
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Honda Civic 2022',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w900,
-                            fontFamily: 'biotifbold',
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.topLeft,
-                        child: RichText(
-                          text: TextSpan(
+                          Row(
+                            mainAxisAlignment:
+                                MainAxisAlignment.end, // pushes badge to right
                             children: [
-                              TextSpan(
-                                text: 'LEF-3574', // first part
-                                style: TextStyle(
-                                  fontFamily: 'biotifbold',
-                                  color: Colors.black, // grey color
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-
-                              TextSpan(
-                                text: ' • M-TAG ', // rest of text
-                                style: TextStyle(
-                                  fontFamily: 'biotifbold',
-                                  color: Colors.grey, // black color
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                              TextSpan(
-                                text: ' #14639258', // rest of text
-                                style: TextStyle(
-                                  fontFamily: 'biotifbold',
-                                  color: Colors.black87, // black color
-                                  fontWeight: FontWeight.w900,
-                                ),
+                              Padding(
+                                padding: .only(right: 8, top: 8),
+                                child: _ActiveBadge(),
                               ),
                             ],
                           ),
-                        ),
-                      ),
-                      Divider(
-                        color: Colors.grey.shade300,
-                        thickness: 1,
-                        indent: 5,
-                        endIndent: 50,
-                      ),
-                      Row(
-                        mainAxisAlignment: .start,
-                        crossAxisAlignment: .start,
-                        children: [
-                          Icon(
-                            Icons.person_2,
-                            color: Colors.green.shade400,
-                            size: 20,
+                          const SizedBox(height: 8),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.topLeft,
+                            child: RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'LEF-3574', // first part
+                                    style: TextStyle(
+                                      fontFamily: 'biotifbold',
+                                      color: Colors.black, // grey color
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+
+                                  TextSpan(
+                                    text: ' • M-TAG ', // rest of text
+                                    style: TextStyle(
+                                      fontFamily: 'biotifbold',
+                                      color: Colors.grey, // black color
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: ' #14639258', // rest of text
+                                    style: TextStyle(
+                                      fontFamily: 'biotifbold',
+                                      color: Colors.black87, // black color
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                          Text(
-                            'Owner : ',
-                            style: TextStyle(color: Colors.grey),
+                          Divider(
+                            color: Colors.grey.shade300,
+                            thickness: 1.5,
+                            indent: 1,
+                            endIndent: 10,
                           ),
                           FittedBox(
-                            child: Text(
-                              'Ahmed Hassan',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontFamily: 'biotifbold',
-                                fontWeight: .w600,
-                                fontSize: 16,
-                              ),
+                            child: Row(
+                              mainAxisAlignment: .start,
+                              crossAxisAlignment: .start,
+                              children: [
+                                Icon(
+                                  Icons.person_2,
+                                  color: Colors.green.shade400,
+                                  size: 20,
+                                ),
+                                Text(
+                                  'Owner : ',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                                Text(
+                                  'Syed Farooq (Ret)',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontFamily: 'biotifbold',
+                                    fontWeight: .w600,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Divider(
+                            color: Colors.grey.shade300,
+                            thickness: 1.5,
+                            indent: 1,
+                            endIndent: 10,
+                          ),
+
+                          FittedBox(
+                            child: Row(
+                              children: [
+                                RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'Chassis No: ',
+                                        style: TextStyle(
+                                          color: Colors.grey[600],
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: 'biotifbold',
+                                        ),
+                                      ),
+                                      // Number
+                                      TextSpan(
+                                        text: '273732BBBB6666',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w900,
+                                          fontFamily: 'biotifbold',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Icon(Icons.edit_square, size: 18),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
+              const BalanceCard(),
             ],
           ),
         );
@@ -214,12 +265,12 @@ class _ActiveBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.green.withValues(alpha: 0.2),
+        color: Colors.green.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         children: [
-          Icon(Icons.circle, color: Colors.green, size: 16),
+          Icon(Icons.circle, color: Colors.green, size: 12),
           SizedBox(width: 4),
           Text(
             'ACTIVE',
@@ -237,7 +288,6 @@ class _ActiveBadge extends StatelessWidget {
   }
 }
 
-// ── BALANCE CARD ────────────────────────────────────────────────────────────────
 class BalanceCard extends StatelessWidget {
   const BalanceCard({super.key});
 
@@ -249,12 +299,16 @@ class BalanceCard extends StatelessWidget {
         gradient: LinearGradient(
           end: AlignmentGeometry.xy(0, 3),
           colors: const [
-            Color(0xFFF8F6FF),
+            Color(0xFFFFFFFF),
             Color(0xFFFCFCFC),
-            Color(0xFFD9E5FF), // strong corner color
+            Color(0xFFF8F6FF),
+            Color(0xFFD9E5FF),
             Color(0xFFE6EBFF),
             Color(0xFFE6EBFF),
             Color(0xFFE6EBFF),
+            Color(0xFFE6EBFF),
+            Color(0xFFE6EBFF),
+
             // fades out
           ],
         ),
@@ -339,13 +393,13 @@ class BalanceCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 8), // ← was 28 → good balance before button
+        // ← was 28 → good balance before button
           Card(
             elevation: 3,
             borderOnForeground: true,
             shape: RoundedSuperellipseBorder(borderRadius: .circular(50)),
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 4),
               child: _RechargeButton(),
             ),
           ),
@@ -357,57 +411,22 @@ class BalanceCard extends StatelessWidget {
   }
 }
 
-// ── RECHARGE BUTTON ──────────────────────────────────────────────────────────────
 class _RechargeButton extends StatelessWidget {
   const _RechargeButton();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 40,
+    return ElevatedButton1(
       width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(32),
-        gradient: const LinearGradient(colors: [kDarkGreen, Color(0xFF1E214F)]),
-        boxShadow: [
-          BoxShadow(
-            color: kDarkGreen.withValues(alpha: 0.35),
-            blurRadius: 16,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(32),
-          onTap: () {},
-          child: const Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.add_circle_rounded, size: 26, color: Colors.white),
-                SizedBox(width: 12),
-                Text(
-                  'Recharge M-TAG',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16.5,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 2.0,
-                    fontFamily: 'biotifbold',
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      onclick: () {},
+      text: 'Recharge M-TAG',
+      icon: Icon(Icons.add_circle),
+      isShowIcon: true,
+      iconAlignment: .start,
     );
   }
 }
 
-// ── TRANSFER / REMOVE CAPSULE ───────────────────────────────────────────────────
 class _TransferRemoveRow extends StatelessWidget {
   const _TransferRemoveRow();
 
@@ -497,151 +516,68 @@ class _ActionButton extends StatelessWidget {
   }
 }
 
-// ── QUICK INSIGHTS ──────────────────────────────────────────────────────────────
-class QuickInsightsCard extends StatelessWidget {
-  const QuickInsightsCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: .circular(14),
-
-        gradient: LinearGradient(
-          begin: Alignment.centerRight,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFFFCFCFC),
-            Color(0xFFFCFCFC),
-            Color(0xFFF8F6FF),
-            Color(0xFFF8F6FF),
-            Color(0xFFE6EBFF),
-          ],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 24,
-            offset: const Offset(0, 12),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: const [
-              Text(
-                'Quick Insights',
-                style: TextStyle(
-                  fontSize: 17.5,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'biotifbold',
-                ),
-              ),
-              Spacer(),
-              Icon(Icons.chevron_right_rounded, color: kMutedText),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _lastTriptRow(Icons.schedule, 'Islamabad → Lahore'),
-          const SizedBox(height: 14),
-          _lastTollRow(Icons.payments_rounded, 'Rs. 50 '),
-        ],
-      ),
-    );
-  }
-
-  Widget _lastTriptRow(IconData icon, String text) {
-    return Row(
-      children: [
-        Icon(icon, size: 20, color: kMutedText.withValues(alpha: 0.9)),
-        const SizedBox(width: 12),
-        Text('Last Trip :', style: TextStyle(color: Colors.black54)),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 15,
-              height: 1.3,
-              color: Colors.black,
-              fontFamily: 'biotifbold',
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-Widget _lastTollRow(IconData icon, String text) {
-  return Row(
-    children: [
-      Icon(icon, size: 20, color: kMutedText.withValues(alpha: 0.9)),
-      const SizedBox(width: 12),
-      Text('Last Toll : ', style: TextStyle(color: Colors.black54)),
-      const SizedBox(width: 12),
-      Text(
-        text,
-        style: const TextStyle(
-          fontSize: 15,
-          height: 1.3,
-          fontFamily: 'biotifbold',
-          color: Colors.black,
-        ),
-      ),
-      Text('• Yesterday', style: TextStyle(color: Colors.black45)),
-    ],
-  );
-}
-
-// ── ACTION GRID ─────────────────────────────────────────────────────────────────
 class ActionGrid extends StatelessWidget {
   const ActionGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
+    return Material(color: Colors.transparent,
+      child: Container(
+        margin: const EdgeInsets.all(8.0),
+        child: Column(
           children: [
-            Expanded(
-              child: _ActionTile('M-TAG Details', 'assets/icons/receipt.png'),
+            Row(
+              children: [
+                Expanded(
+                  child: _ActionTile(
+                    title: 'M-TAG Details',
+                    imagePath: 'assets/icons/receipt.png',
+                  ),
+                ),
+                SizedBox(width: kActionGridColumnGap),
+                Expanded(
+                  child: _ActionTile(
+                    title: 'Toll History',
+                    imagePath: 'assets/icons/history.png',
+                  ),
+                ),
+              ],
             ),
-            SizedBox(width: kActionGridColumnGap),
-            Expanded(
-              child: _ActionTile('Toll History', 'assets/icons/history.png'),
+            SizedBox(height: kActionGridRowGap),
+            Row(
+              children: [
+                Expanded(
+                  child: _ActionTile(
+                    title: 'Toll Calculator',
+                    imagePath: 'assets/icons/calculator1.png',
+                    isCalculatorWidget: true,
+                  ),
+                ),
+                SizedBox(width: kActionGridColumnGap),
+                Expanded(
+                  child: _ActionTile(
+                    title: 'Recharge',
+                    imagePath: 'assets/icons/card.png',
+                  ),
+                ),
+              ],
             ),
           ],
         ),
-        SizedBox(height: kActionGridRowGap),
-        Row(
-          children: [
-            Expanded(
-              child: _ActionTile(
-                'Toll Calculator',
-                'assets/icons/calculator.png',
-              ),
-            ),
-            SizedBox(width: kActionGridColumnGap),
-            Expanded(
-              child: _ActionTile('Recharge', 'assets/icons/recharge1.png'),
-            ),
-          ],
-        ),
-      ],
+      ),
     );
   }
 }
 
 class _ActionTile extends StatelessWidget {
-  final String title;
-  final String imagePath;
-
-  const _ActionTile(this.title, this.imagePath);
+  final String? title;
+  final String? imagePath;
+  final bool? isCalculatorWidget;
+  const _ActionTile({
+    this.title,
+    this.imagePath,
+    this.isCalculatorWidget = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -650,18 +586,14 @@ class _ActionTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-      gradient: const LinearGradient(
-begin: AlignmentGeometry.xy(-1.1, 0.9),
- end: Alignment(-1.0, 2.0),
-// bottom-left
-  colors: [
-   
-     
-      Color(0xffFFFCFC),
-    Color(0xffD9EDF8),
-       Color(0xffE4EBF5),
-  ],
-),
+        gradient: LinearGradient(
+          begin: AlignmentGeometry.xy(-1.1, 0.9),
+          end: Alignment(-1.0, 2.0),
+          // bottom-left
+          colors: (isCalculatorWidget == false)
+              ? [Color(0xffFFFCFC), Color(0xffD9EDF8), Color(0xffE4EBF5)]
+              : [Color(0xFFFFFEF8), Color(0xFFFFF9E5), Color(0xFFFFF2B8)],
+        ),
 
         boxShadow: [
           BoxShadow(
@@ -689,7 +621,7 @@ begin: AlignmentGeometry.xy(-1.1, 0.9),
 
             alignment: Alignment.center,
             child: Image.asset(
-              imagePath,
+              imagePath ?? '',
               width: 38,
               height: 38,
               fit: BoxFit.contain,
@@ -698,7 +630,7 @@ begin: AlignmentGeometry.xy(-1.1, 0.9),
           const SizedBox(width: 16),
           Expanded(
             child: Text(
-              title,
+              title ?? '',
               style: const TextStyle(
                 fontSize: 15.5,
                 fontWeight: FontWeight.w700,

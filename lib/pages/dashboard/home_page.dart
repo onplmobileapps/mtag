@@ -184,8 +184,8 @@ class _HomeContentBodyState extends State<_HomeContentBody> {
             ),
           ),
           _DashboardGridSection(controller: widget.controller),
-          _SliderSection(),
-          const _HelpSection(),
+          SliderSection(),
+          const HelpSection(),
         ],
       ),
     );
@@ -957,104 +957,100 @@ class _DashboardGridItem extends StatelessWidget {
       );
     }
 
-    // Reset recharge controller states
     rechargeController.isPaymentModdeVisible(false);
     rechargeController.isSummaryVisible(false);
     rechargeController.isRechageVisible(true);
   }
 }
 
-class _SliderSection extends StatelessWidget {
-  const _SliderSection();
+class SliderSection extends StatelessWidget {
+  const SliderSection({super.key});
 
   static final ValueNotifier<int> _currentIndex = ValueNotifier<int>(0);
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Tap to see what\'s new',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            const SizedBox(height: 8),
-            Column(
-              children: [
-                SizedBox(
-                  height: 150,
-                  child: NotificationListener<ScrollNotification>(
-                    onNotification: (notification) {
-                      if (notification is ScrollUpdateNotification) {
-                        const itemWidth = 158;
-                        final index = (notification.metrics.pixels / itemWidth)
-                            .round();
-                        if (index >= 0 &&
-                            index < OtherConsts.thumbnails.length) {
-                          // Only update if index actually changed
-                          if (_currentIndex.value != index) {
-                            _currentIndex.value = index;
-                          }
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Tap to see what\'s new',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: 8),
+          Column(
+            children: [
+              SizedBox(
+                height: 150,
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (notification) {
+                    if (notification is ScrollUpdateNotification) {
+                      const itemWidth = 158;
+                      final index = (notification.metrics.pixels / itemWidth)
+                          .round();
+                      if (index >= 0 &&
+                          index < OtherConsts.thumbnails.length) {
+                        // Only update if index actually changed
+                        if (_currentIndex.value != index) {
+                          _currentIndex.value = index;
                         }
                       }
-                      return false;
+                    }
+                    return false;
+                  },
+                  child: ListView.separated(padding: .zero,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: OtherConsts.thumbnails.length,
+                    separatorBuilder: (_, _) => const SizedBox(width: 8),
+                    itemBuilder: (context, index) {
+                      return SliderItem(imageIndex: index);
                     },
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: OtherConsts.thumbnails.length,
-                      separatorBuilder: (_, _) => const SizedBox(width: 8),
-                      itemBuilder: (context, index) {
-                        return _SliderItem(imageIndex: index);
-                      },
-                    ),
                   ),
                 ),
-                const SizedBox(height: 10),
-
-                ValueListenableBuilder<int>(
-                  valueListenable: _currentIndex,
-                  builder: (context, currentIndex, child) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        OtherConsts.thumbnails.length - 1,
-                        (index) {
-                          bool isActive =
-                              currentIndex == index ||
-                              (index == OtherConsts.thumbnails.length - 2 &&
-                                  currentIndex ==
-                                      OtherConsts.thumbnails.length - 1);
-
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: isActive ? Colors.black : Colors.grey,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            height: 8,
-                            width: isActive ? 25 : 8,
-                            margin: const EdgeInsets.symmetric(horizontal: 2),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
+              ),
+              const SizedBox(height: 10),
+      
+              ValueListenableBuilder<int>(
+                valueListenable: _currentIndex,
+                builder: (context, currentIndex, child) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      OtherConsts.thumbnails.length - 1,
+                      (index) {
+                        bool isActive =
+                            currentIndex == index ||
+                            (index == OtherConsts.thumbnails.length - 2 &&
+                                currentIndex ==
+                                    OtherConsts.thumbnails.length - 1);
+      
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: isActive ? Colors.black : Colors.grey,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          height: 8,
+                          width: isActive ? 25 : 8,
+                          margin: const EdgeInsets.symmetric(horizontal: 2),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
 }
 
-class _SliderItem extends StatelessWidget {
+class SliderItem extends StatelessWidget {
   final int imageIndex;
 
-  const _SliderItem({required this.imageIndex});
+  const SliderItem({super.key, required this.imageIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -1086,15 +1082,15 @@ class _SliderItem extends StatelessWidget {
   }
 }
 
-class _HelpSection extends StatelessWidget {
-  const _HelpSection();
+class HelpSection extends StatelessWidget {
+  const HelpSection({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
         padding: const EdgeInsets.all(12),
-        margin: const EdgeInsets.all(8),
+    margin: .symmetric(horizontal:8),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
           border: Border.all(
