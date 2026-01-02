@@ -33,8 +33,12 @@ class MTagScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(backgroundColor: Colors.transparent,elevation: 0,
-      title:  Image.asset("assets/logolight.png", height: 50, width: 50),),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Image.asset("assets/logolight.png", height: 50, width: 50),
+      ),
       backgroundColor: kLightBg,
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(
@@ -47,17 +51,14 @@ class MTagScreen extends StatelessWidget {
           spacing: 8,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-           
             SizedBox(height: 10),
             const VehicleCard(),
-      
+
             Transform.translate(
               offset: const Offset(0, kBalanceOverlapVehicle),
               child: const BalanceCard(),
             ),
-      
-           
-      
+
             Transform.translate(
               offset: const Offset(0, kActionGridOverlapQuick),
               child: const ActionGrid(),
@@ -75,116 +76,132 @@ class VehicleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: kVehicleCardHeight,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-        gradient: const LinearGradient(
-          colors: [Color(0xFFE4EDFC), Color(0xFFFCFCFC), Color(0xFFEAEBFD)],
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: .start,
-        crossAxisAlignment: .start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 60,left: 10),
-            child: Align(alignment: .center,
-              child: Image.asset(
-                'assets/vehicles/car.png',
-                height: 120,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: .start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 110),
-                  child: _ActiveBadge(),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Honda Civic 2022',
-                  textAlign: .start,
-                  style: TextStyle(
-                    fontFamily: "biotifbold",
-                    fontSize: 17,
-                    color: Colors.black87,
-                    fontWeight: .w900,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  mainAxisAlignment: .start,
-                  crossAxisAlignment: .start,
-                  children: [
-                    Text(
-                      'LEF-3574',
-                      style: TextStyle(
-                        fontFamily: 'biotifbold',
-                        fontWeight: .w900,
-                      ),
-                    ),
-                    Text(
-                      '• M-TAG ',
-                      style: TextStyle(
-                        color: Colors.black54,
-                        fontFamily: 'biotifbold',
-                      ),
-                    ),
-                    Text(
-                      '#14639258',
-                      style: TextStyle(
-                        fontFamily: 'biotifbold',
-                        fontWeight: .w900,
-                      ),
-                    ),
-                  ],
-                ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final w = constraints.maxWidth;
 
-                Container(
-                  margin: .symmetric(vertical: 10),
-                  height: 1,
-                  width: 180,
-                  color: Colors.grey.shade300,
-                ),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.person_4_rounded,
-                      color: Colors.green.shade400,
-                      size: 20,
-                    ),
-                    Text(
-                      'Owner:',
-                      style: TextStyle(
-                        fontFamily: 'biotifbold',
-                        color: Colors.grey,
-                        fontSize: 15,
-                      ),
-                    ),
-                    const Text(
-                      ' Ahmed Hassan',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontFamily: 'biotifbold',
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+        return Container(
+          constraints: constraints,
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            gradient: const LinearGradient(
+              colors: [Color(0xFFE4EDFC), Color(0xFFFCFCFC), Color(0xFFEAEBFD)],
             ),
           ),
-        ],
-      ),
+          child: Row(
+            mainAxisAlignment: .start,
+            crossAxisAlignment: .start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: w * 0.03, bottom: w * 0.15),
+                child: Image.asset('assets/vehicles/car.png', height: w * 0.32),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: .symmetric(horizontal: 10),
+                  child: Column(
+                    mainAxisAlignment: .start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment:
+                            MainAxisAlignment.end, // pushes badge to right
+                        children: [
+                          Padding(
+                            padding: .only(right: 8, top: 8),
+                            child: _ActiveBadge(),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 8),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Honda Civic 2022',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontFamily: 'biotifbold',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.topLeft,
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'LEF-3574', // first part
+                                style: TextStyle(
+                                  fontFamily: 'biotifbold',
+                                  color: Colors.black, // grey color
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+
+                              TextSpan(
+                                text: ' • M-TAG ', // rest of text
+                                style: TextStyle(
+                                  fontFamily: 'biotifbold',
+                                  color: Colors.grey, // black color
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' #14639258', // rest of text
+                                style: TextStyle(
+                                  fontFamily: 'biotifbold',
+                                  color: Colors.black87, // black color
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.grey.shade300,
+                        thickness: 1,
+                        indent: 5,
+                        endIndent: 50,
+                      ),
+                      Row(
+                        mainAxisAlignment: .start,
+                        crossAxisAlignment: .start,
+                        children: [
+                          Icon(
+                            Icons.person_2,
+                            color: Colors.green.shade400,
+                            size: 20,
+                          ),
+                          Text(
+                            'Owner : ',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                          FittedBox(
+                            child: Text(
+                              'Ahmed Hassan',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontFamily: 'biotifbold',
+                                fontWeight: .w600,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -230,20 +247,32 @@ class BalanceCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         gradient: LinearGradient(
-          begin: Alignment.centerRight,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFFFCFCFC),
+          end: AlignmentGeometry.xy(0, 3),
+          colors: const [
             Color(0xFFF8F6FF),
+            Color(0xFFFCFCFC),
+            Color(0xFFD9E5FF), // strong corner color
             Color(0xFFE6EBFF),
-            Color(0xFFD9E5FF),
+            Color(0xFFE6EBFF),
+            Color(0xFFE6EBFF),
+            // fades out
           ],
         ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 24,
-            offset: const Offset(0, 12),
+            blurRadius: 14,
+            offset: const Offset(4, 4),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 14,
+            offset: const Offset(4, 4),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 14,
+            offset: const Offset(2, 2),
           ),
         ],
       ),
@@ -312,6 +341,7 @@ class BalanceCard extends StatelessWidget {
           ),
           SizedBox(height: 8), // ← was 28 → good balance before button
           Card(
+            elevation: 3,
             borderOnForeground: true,
             shape: RoundedSuperellipseBorder(borderRadius: .circular(50)),
             child: Padding(
@@ -334,7 +364,7 @@ class _RechargeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 52,
+      height: 40,
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(32),
@@ -386,7 +416,7 @@ class _TransferRemoveRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: Colors.grey.shade100,
         borderRadius: BorderRadius.circular(50),
       ),
       child: Row(
@@ -404,9 +434,9 @@ class _TransferRemoveRow extends StatelessWidget {
             child: Text(
               '|',
               style: TextStyle(
-                fontSize: 22,
+                fontSize: 16,
                 fontWeight: FontWeight.w100,
-                color: Colors.grey.shade200,
+                color: Colors.grey.shade300,
               ),
             ),
           ),
@@ -439,7 +469,7 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Colors.black87.withValues(alpha: 0.4);
+    final color = Colors.black87.withValues(alpha: 0.5);
 
     return InkWell(
       onTap: onTap,
@@ -455,8 +485,9 @@ class _ActionButton extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: 15,
-                fontWeight: FontWeight.w600,
+
                 color: color,
+                fontFamily: 'biotifbold',
               ),
             ),
           ],
@@ -619,11 +650,19 @@ class _ActionTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFFFCFCFC), Color(0xFFEAEBFD)],
-        ),
+      gradient: const LinearGradient(
+begin: AlignmentGeometry.xy(-1.1, 0.9),
+ end: Alignment(-1.0, 2.0),
+// bottom-left
+  colors: [
+   
+     
+      Color(0xffFFFCFC),
+    Color(0xffD9EDF8),
+       Color(0xffE4EBF5),
+  ],
+),
+
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
