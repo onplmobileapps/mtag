@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/utils/utils.dart';
+import '../../features/design/tests_design.dart';
 import '../../features/recharge_center_locator.dart';
 import '../../widgets/bottom_bar.dart';
 import '../../widgets/dashboard_widget.dart';
@@ -17,13 +18,11 @@ import '../../pages/dashboard/model/dashboard_model.dart';
 import '../../pages/mtag/controller/delink_controller.dart';
 import '../../widgets/balance_widget.dart';
 import '../../widgets/bottomsheet/balance_transfer_bs.dart';
-
 import '../../widgets/dialog/chassis_num.dart';
 import '../../widgets/dialog/delink_dialog.dart';
 import '../../api/user_repo.dart';
 import '../../constants/other_consts.dart';
 import '../../controller/home_controller.dart';
-import '../../widgets/shimmer_dashboard.dart';
 import '../recharge/controller/recharge_controller.dart';
 import '../settings/setting_screen.dart';
 import 'model/mtag_model.dart';
@@ -95,23 +94,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class _HomeContent extends StatelessWidget {
-  const _HomeContent();
 
-  @override
-  Widget build(BuildContext context) {
-    return GetX<HomeController>(
-      builder: (controller) {
-        if (controller.isLoading.value) {
-          final size = MediaQuery.sizeOf(context);
-          return buildShimmerEffect(size.width, size.height);
-        }
-
-        return _HomeContentBody(controller: controller);
-      },
-    );
-  }
-}
 
 class _HomeContentBody extends StatefulWidget {
   final HomeController controller;
@@ -974,11 +957,12 @@ class SliderSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(height: 5),
           Text(
             'Tap to see what\'s new',
             style: Theme.of(context).textTheme.bodyLarge,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 5),
           Column(
             children: [
               SizedBox(
@@ -989,8 +973,7 @@ class SliderSection extends StatelessWidget {
                       const itemWidth = 158;
                       final index = (notification.metrics.pixels / itemWidth)
                           .round();
-                      if (index >= 0 &&
-                          index < OtherConsts.thumbnails.length) {
+                      if (index >= 0 && index < OtherConsts.thumbnails.length) {
                         // Only update if index actually changed
                         if (_currentIndex.value != index) {
                           _currentIndex.value = index;
@@ -999,7 +982,8 @@ class SliderSection extends StatelessWidget {
                     }
                     return false;
                   },
-                  child: ListView.separated(padding: .zero,
+                  child: ListView.separated(
+                    padding: .zero,
                     scrollDirection: Axis.horizontal,
                     itemCount: OtherConsts.thumbnails.length,
                     separatorBuilder: (_, _) => const SizedBox(width: 8),
@@ -1010,32 +994,35 @@ class SliderSection extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-      
+
               ValueListenableBuilder<int>(
                 valueListenable: _currentIndex,
                 builder: (context, currentIndex, child) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      OtherConsts.thumbnails.length - 1,
-                      (index) {
-                        bool isActive =
-                            currentIndex == index ||
-                            (index == OtherConsts.thumbnails.length - 2 &&
-                                currentIndex ==
-                                    OtherConsts.thumbnails.length - 1);
-      
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: isActive ? Colors.black : Colors.grey,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          height: 8,
-                          width: isActive ? 25 : 8,
-                          margin: const EdgeInsets.symmetric(horizontal: 2),
-                        );
-                      },
-                    ),
+                    children: List.generate(OtherConsts.thumbnails.length - 1, (
+                      index,
+                    ) {
+                      bool isActive =
+                          currentIndex == index ||
+                          (index == OtherConsts.thumbnails.length - 2 &&
+                              currentIndex ==
+                                  OtherConsts.thumbnails.length - 1);
+
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: isActive
+                              ? Theme.of(context).colorScheme.onSurface
+                              : Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        margin: const EdgeInsets.all(2),
+                        height: 5,
+                        width: isActive ? 15 : 5,
+                      );
+                    }),
                   );
                 },
               ),
@@ -1070,11 +1057,15 @@ class SliderItem extends StatelessWidget {
         );
       },
       child: Container(
+        margin: .all(1),
         height: 150,
         width: 150,
         decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(color: Colors.grey, blurRadius: 4, blurStyle: .outer),
+          ],
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Theme.of(context).highlightColor),
+
           image: DecorationImage(image: AssetImage(imageUrl), fit: BoxFit.fill),
         ),
       ),
@@ -1090,8 +1081,16 @@ class HelpSection extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Container(
         padding: const EdgeInsets.all(12),
-    margin: .symmetric(horizontal:8),
+        margin: .symmetric(horizontal: 8),
         decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.white,
+              Colors.white,
+              Color(0xFFFCFCFC),
+              Color(0xFFE4EDFC),
+            ],
+          ),
           color: Theme.of(context).colorScheme.surface,
           border: Border.all(
             width: 0.1,
@@ -1267,7 +1266,8 @@ final navItems = [
     imagePath: 'assets/house-blank.svg',
     label: 'Home',
     index: 0,
-    page: const _HomeContent(),
+    page: HomePageContent()
+    // page: const _HomeContent(),
   ),
   BottomNavItem(
     imagePath: 'assets/promotion.svg',

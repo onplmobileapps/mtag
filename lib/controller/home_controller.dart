@@ -40,17 +40,17 @@ class HomeController extends GetxController implements GetxService {
     MtagModel(
       routeName: '/tollHostory',
       title: 'Toll\nHistory',
-      image: 'assets/icons/history.png',
+      image: 'assets/icons/toll.png',
     ),
     MtagModel(
       routeName: '/tollCalculator',
       title: 'Toll\nCalculator',
-      image: 'assets/icons/calculator.png',
+      image: 'assets/icons/calculator1.png',
     ),
     MtagModel(
       routeName: '/recharge',
       title: 'Recharge',
-      image: 'assets/icons/recharge1.png',
+      image: 'assets/icons/card.png',
     ),
   ];
 

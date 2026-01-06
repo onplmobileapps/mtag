@@ -13,7 +13,7 @@ class ElevatedButton1 extends StatelessWidget {
     this.shape,
     this.icon,
     this.isShowIcon = false,
-    this.iconAlignment = IconAlignment.end,
+    this.iconAlignment = IconAlignment.end,this.textStyle,
   });
 
   final VoidCallback? onclick;
@@ -27,6 +27,7 @@ class ElevatedButton1 extends StatelessWidget {
   final bool isShowIcon;
   final IconAlignment iconAlignment;
   final Widget? icon;
+  final TextStyle?textStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,7 @@ class ElevatedButton1 extends StatelessWidget {
         child: Text(
           text ?? '',
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 14),
+          style:textStyle?? const TextStyle(fontSize: 14),
         ),
       );
     }
@@ -63,7 +64,7 @@ class ElevatedButton1 extends StatelessWidget {
       icon: icon!,
       label: Text(
         text ?? '',
-        style: const TextStyle(fontSize: 14),
+        style: textStyle?? const TextStyle(fontSize: 14),
       ),
     );
   }
