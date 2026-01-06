@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/controller/home_controller.dart';
+import 'package:mtag_flutterapp/features/widget/weather_webview_button.dart';
 import 'package:mtag_flutterapp/pages/dashboard/home_page.dart';
 import 'package:mtag_flutterapp/pages/dashboard/model/dashboard_model.dart';
 
@@ -74,6 +75,7 @@ class HomePageContent extends StatelessWidget {
               ),
               backgroundColor: Colors.transparent,
               title: Image.asset('assets/logolight.png', height: 60, width: 70),
+              actions: [WeatherExpandButton()],
             ),
             Expanded(
               child: CustomScrollView(
@@ -562,14 +564,15 @@ class _RechargeButton extends StatelessWidget {
         fontSize: 18,
         fontWeight: .w600,
       ),
-      onclick: () =>_showRechargeBottomSheet(activeMtags, context),
+      onclick: () => _showRechargeBottomSheet(activeMtags, context),
       text: 'Recharge M-TAG',
       icon: Icon(Icons.add_circle),
       isShowIcon: true,
       iconAlignment: .start,
     );
   }
-  void _showRechargeBottomSheet(ActiveMtags mtag,BuildContext context) {
+
+  void _showRechargeBottomSheet(ActiveMtags mtag, BuildContext context) {
     showPaymentBottomSheet(
       context,
       mtagId: mtag.tokenno,
