@@ -1,17 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
-
-
 import '../pages/recharge/recharge_page.dart';
 import '../utils/utils.dart';
-
-
 import 'bottomsheet/bottom_sheet_widget.dart';
-
-
-
 String getVehCategory(String vehicleType) {
   Map<String, String> vehicleCategories = {
     'Car': 'F1',
@@ -61,16 +53,11 @@ void showPaymentBottomSheet(
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    showDragHandle: true,
+ 
     backgroundColor: ColorScheme.of(context).surface,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(20),
-        topRight: Radius.circular(20),
-      ),
-    ),
+   
     builder: (context) {
-      return DraggableScrollableSheet(
+      return DraggableScrollableSheet(shouldCloseOnMinExtent: true,
         expand: false, // Prevents full screen expansion
         builder: (context, scrollController) {
           return PaymentBottomSheet(

@@ -19,7 +19,7 @@ Widget buildPaymentOption(
         builder: (context, remainingTime, child) {
           return Theme(
             data: Theme.of(context).copyWith(
-              visualDensity: const VisualDensity(horizontal: -2, vertical: -2),
+              visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
             ),
             child: RadioGroup<int>(
               groupValue: selectedOption,
@@ -35,25 +35,31 @@ Widget buildPaymentOption(
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 value: value,
                 title: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    
+                  
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        label,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(fontWeight: .w600),
+                      ),
+                    ),
+                     const SizedBox(width: 8),
                     Image.asset(
                       assetPath,
                       height: 30,
                       width: 45,
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      label,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontSize: 12),
-                    ),
                   ],
                 ),
                 controlAffinity: ListTileControlAffinity.leading,
-                dense: true,
+                radioSide: BorderSide(color: Colors.grey),
+                dense: true,radioBackgroundColor: WidgetStatePropertyAll(Colors.white),
                 contentPadding: const EdgeInsets.symmetric(vertical: 0),
                 secondary: remainingTime > Duration.zero
                     ? Padding(

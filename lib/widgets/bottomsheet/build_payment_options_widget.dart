@@ -53,7 +53,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
           children: [
             Text(
               'Recommended Payment Methods',
-              style: TextStyle(color: Colors.redAccent),
+              style: TextTheme.of(context).labelLarge,
             ),
             const SizedBox(height: 5),
             _buildPaymentOption(
@@ -222,7 +222,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                     },
                   )
                 : Container(),
-            SizedBox(height: 10),
+            
           ],
         );
       },
@@ -257,7 +257,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
           assetPath: assetPath,
           timerNotifier: timerNotifier,
         ),
-        Divider(height: 0.5, thickness: 0.3, indent: 10, endIndent: 10),
+        Divider(height: 4, thickness: 0.2, indent: 15, endIndent: 10),
       ],
     );
   }

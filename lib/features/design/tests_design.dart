@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/controller/home_controller.dart';
-import 'package:mtag_flutterapp/features/widget/weather_webview_button.dart';
+
 import 'package:mtag_flutterapp/pages/dashboard/home_page.dart';
 import 'package:mtag_flutterapp/pages/dashboard/model/dashboard_model.dart';
 
@@ -14,6 +14,7 @@ import '../../constants/call_helper.dart';
 import '../../pages/dashboard/model/mtag_model.dart';
 import '../../pages/recharge/controller/recharge_controller.dart';
 import '../../widgets/dashboard_widget.dart';
+import '../widget/weather_webview_button.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -65,67 +66,41 @@ class HomePageContent extends StatelessWidget {
         if (controller.isLoading.value || mtags == null || mtags.isEmpty) {
           return buildShimmerEffect(double.infinity, context.height);
         }
-        return Column(
+        return Stack(
           children: [
-            AppBar(
-              elevation: 0,
-              systemOverlayStyle: SystemUiOverlayStyle(
-                statusBarBrightness: .light,
-                statusBarIconBrightness: .light,
-              ),
-              backgroundColor: Colors.transparent,
-              title: Image.asset('assets/logolight.png', height: 60, width: 70),
-              actions: [WeatherExpandButton()],
-            ),
-            Expanded(
-              child: CustomScrollView(
-                slivers: [
-                  SliverAppBar(
-                    pinned: true,
-                    floating: false,
-                    expandedHeight: 340,
-                    backgroundColor: Colors.transparent, // Set a solid color
-                    elevation: 0,
-                    automaticallyImplyLeading: false,
-                    flexibleSpace: FlexibleSpaceBar(
-                      collapseMode: CollapseMode.none,
-                      background: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Expanded(
-                            child: PageView(
-                              controller: _pageController,
-                              scrollDirection: .horizontal,
-                              onPageChanged: (value) =>
-                                  _currentPage.value = value,
-                              children: [
-                                for (
-                                  int i = 0;
-                                  i <
-                                      controller
-                                          .dashboradData
-                                          .value
-                                          .activeMtags!
-                                          .length;
-                                  i++
-                                )
-                                  VehicleCard(
-                                    mtags: controller
-                                        .dashboradData
-                                        .value
-                                        .activeMtags?[i],
-                                  ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 5),
-                          ValueListenableBuilder(
-                            valueListenable: _currentPage,
-                            builder: (context, value, child) {
-                              return Container(
-                                color: Colors.white, // Solid color
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+            Column(
+              children: [
+                AppBar(
+                  elevation: 0,
+                  systemOverlayStyle: SystemUiOverlayStyle(
+                    statusBarBrightness: .light,
+                    statusBarIconBrightness: .light,
+                  ),
+                  backgroundColor: Colors.transparent,
+                  title: Image.asset('assets/logolight.png', height: 60, width: 70),
+                
+                ),
+                Expanded(
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverAppBar(
+                        pinned: true,
+                        floating: false,
+                        expandedHeight: 340,
+                        backgroundColor: Colors.transparent, // Set a solid color
+                        elevation: 0,
+                        automaticallyImplyLeading: false,
+                        flexibleSpace: FlexibleSpaceBar(
+                          collapseMode: CollapseMode.none,
+                          background: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Expanded(
+                                child: PageView(
+                                  controller: _pageController,
+                                  scrollDirection: .horizontal,
+                                  onPageChanged: (value) =>
+                                      _currentPage.value = value,
                                   children: [
                                     for (
                                       int i = 0;
@@ -137,41 +112,73 @@ class HomePageContent extends StatelessWidget {
                                               .length;
                                       i++
                                     )
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: i == value
-                                              ? Colors.black
-                                              : Colors.black26,
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        margin: EdgeInsets.all(2),
-                                        height: 5,
-                                        width: i == value ? 15 : 10,
+                                      VehicleCard(
+                                        mtags: controller
+                                            .dashboradData
+                                            .value
+                                            .activeMtags?[i],
                                       ),
                                   ],
                                 ),
-                              );
-                            },
+                              ),
+                              SizedBox(height: 5),
+                              ValueListenableBuilder(
+                                valueListenable: _currentPage,
+                                builder: (context, value, child) {
+                                  return Container(
+                                    color: Colors.white, // Solid color
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        for (
+                                          int i = 0;
+                                          i <
+                                              controller
+                                                  .dashboradData
+                                                  .value
+                                                  .activeMtags!
+                                                  .length;
+                                          i++
+                                        )
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: i == value
+                                                  ? Colors.black
+                                                  : Colors.black26,
+                                              borderRadius: BorderRadius.circular(
+                                                8,
+                                              ),
+                                            ),
+                                            margin: EdgeInsets.all(2),
+                                            height: 5,
+                                            width: i == value ? 15 : 10,
+                                          ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                      SliverToBoxAdapter(child: SizedBox(height: 8)),
+                      ActionGrid(controller: controller),
+            
+                      SliverPadding(
+                        sliver: SliderSection(),
+                        padding: .symmetric(horizontal: 8),
+                      ),
+                      SliverToBoxAdapter(child: SizedBox(height: 10)),
+                      HelpSection(),
+                      SliverToBoxAdapter(child: SizedBox(height: 10)),
+                    ],
                   ),
-                  SliverToBoxAdapter(child: SizedBox(height: 8)),
-                  ActionGrid(controller: controller),
-
-                  SliverPadding(
-                    sliver: SliderSection(),
-                    padding: .symmetric(horizontal: 8),
-                  ),
-                  SliverToBoxAdapter(child: SizedBox(height: 10)),
-                  HelpSection(),
-                  SliverToBoxAdapter(child: SizedBox(height: 10)),
-                ],
-              ),
+                ),
+              ],
             ),
+          Positioned(right: 0,top: 340,
+            child: WeatherExpandButton()),
           ],
         );
       },
@@ -232,7 +239,10 @@ class _MtagDataWidget extends StatelessWidget {
             bottom: width * 0.025,
           ),
 
-          child: Image.asset('assets/vehicles/car.png', height: width * 0.32),
+          child: Image.asset(
+            getVehicleImage(mtag?.vehicletype ?? ''),
+            height: width * 0.32,
+          ),
         ),
         Expanded(
           child: Padding(
@@ -242,8 +252,7 @@ class _MtagDataWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.end, // pushes badge to right
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Padding(
                       padding: .only(right: 8, top: 8),

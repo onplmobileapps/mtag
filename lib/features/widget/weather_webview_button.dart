@@ -25,26 +25,27 @@ class _WeatherExpandButtonState extends State<WeatherExpandButton> {
       height: _expanded ? 100 : 50, // height grows when expanded
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(_expanded ? 12 : 50),
+        color: Colors.black.withValues(alpha: 0.1),
+        borderRadius: .only(
+          topLeft: .circular(_expanded ? 10 : 12),
+          bottomLeft: .circular(_expanded ? 10 : 12),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
+            color: Colors.white.withValues(alpha: 0.08),
             blurRadius: 12,
-            offset: const Offset(0, 6),
+            offset: const Offset(0, 1),
           ),
         ],
       ),
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          // ── MAIN CONTENT ──
           Align(
             alignment: Alignment.center,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                /// Weather button hides when expanded
                 AnimatedSize(
                   duration: const Duration(milliseconds: 220),
                   curve: Curves.easeOut,
@@ -53,13 +54,20 @@ class _WeatherExpandButtonState extends State<WeatherExpandButton> {
                       : GestureDetector(
                           onTap: () => setState(() => _expanded = true),
                           child: Row(
-                            children:  [
-                              Image.asset('assets/weather-news.png',height: 15,),
-                            
+                            children: [
+                              Image.asset(
+                                'assets/weather-news.png',
+                                height: 20,
+                              ),
+
                               SizedBox(width: 4),
                               Text(
                                 'Weather',
-                                style: TextTheme.of(context).bodyMedium?.copyWith(color: Colors.black,fontSize: 12)
+                                style: TextTheme.of(context).bodyMedium
+                                    ?.copyWith(
+                                      color: Colors.black,
+                                      fontSize: 11,
+                                    ),
                               ),
                             ],
                           ),
@@ -133,9 +141,6 @@ class _WeatherExpandButtonState extends State<WeatherExpandButton> {
     );
   }
 }
-
-
-
 
 class _WeatherAction extends StatelessWidget {
   final IconData icon;
