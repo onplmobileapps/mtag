@@ -41,10 +41,6 @@ class _InAppWebViewScreenState extends State<InAppWebViewScreen> {
         ? Get.find<WebViewController>()
         : Get.put(WebViewController());
 
-    if (widget.title != null) {
-      controller.title.value = widget.title!;
-    }
-
     if (!widget.showLoader) {
       controller.isLoading.value = false;
     }
@@ -53,15 +49,7 @@ class _InAppWebViewScreenState extends State<InAppWebViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Obx(
-          () => Text(
-            controller.title.value.isEmpty
-                ? (widget.title ?? "...")
-                : controller.title.value,
-          ),
-        ),
-      ),
+      appBar: AppBar(title:  Text(widget.title ?? '')),
       body: Stack(
         children: [
           InAppWebView(

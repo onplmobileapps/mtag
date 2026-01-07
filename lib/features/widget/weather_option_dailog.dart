@@ -50,9 +50,10 @@ Future<void> showWeatherUpdateDialog(BuildContext context) {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-Text(
+                  Text(
                     '(Isb-Lhr Only)',
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 14,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -67,15 +68,21 @@ Text(
                         label: 'Plaza (M2)\nWeather Details ',
                         onTap: () async {
                           Get.back();
-                          openWebView(ApplicationUrl.WEATHER_TIMELINE_VIEW_URL);
+                          openWebView(
+                            ApplicationUrl.WEATHER_TIMELINE_VIEW_URL,
+                            title: 'WeatherWalay',
+                          );
                         },
                       ),
                       _WeatherOption(
-                        icon: 'assets/cloud.png',
+                        icon: 'assets/motorway-sign.png',
                         label: 'Motorway (M2)\nWeather Map',
                         onTap: () async {
                           Get.back();
-                          openWebView(ApplicationUrl.WEATHER_MAP_VIEW_URL);
+                          openWebView(
+                            ApplicationUrl.WEATHER_MAP_VIEW_URL,
+                            title: 'WeatherWalay',
+                          );
                         },
                       ),
                     ],
@@ -131,18 +138,25 @@ class _WeatherOption extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       onTap: onTap,
       child: Container(
-    
-        padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           color: scheme.surfaceContainerHighest,
         ),
         child: Column(
           children: [
-        FittedBox(fit: .scaleDown,
-          child: Image.asset(icon, height: 38,width: 38, )),
+            FittedBox(
+              fit: .scaleDown,
+              child: Image.asset(icon, height: 38, width: 38),
+            ),
             const SizedBox(height: 10),
-            Text(label, style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: .w500,fontSize: 12),textAlign: .center,),
+            Text(
+              label,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: .w500, fontSize: 12),
+              textAlign: .center,
+            ),
           ],
         ),
       ),
