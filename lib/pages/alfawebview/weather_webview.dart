@@ -57,7 +57,7 @@ class _InAppWebViewScreenState extends State<InAppWebViewScreen> {
         title: Obx(
           () => Text(
             controller.title.value.isEmpty
-                ? (widget.title ?? "Loading...")
+                ? (widget.title ?? "...")
                 : controller.title.value,
           ),
         ),

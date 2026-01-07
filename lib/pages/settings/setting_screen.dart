@@ -264,7 +264,7 @@ final List<SettingsModel> items = [
     icon: const Icon(Icons.sms_outlined),
     routeName: '/theme',
   ),
-    SettingsModel(
+  SettingsModel(
     onTap: () {
       Get.toNamed('/notifications');
     },
@@ -272,7 +272,7 @@ final List<SettingsModel> items = [
     icon: const Icon(Icons.notifications_on_outlined),
     routeName: '/notifications',
   ),
- 
+
   SettingsModel(
     onTap: () {
       Get.toNamed('/feedback');

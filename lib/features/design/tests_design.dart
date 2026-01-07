@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/constants/other_consts.dart';
 import 'package:mtag_flutterapp/controller/home_controller.dart';
 
 import 'package:mtag_flutterapp/pages/dashboard/home_page.dart';
@@ -12,9 +13,12 @@ import 'package:mtag_flutterapp/widgets/shimmer_dashboard.dart';
 
 import '../../constants/call_helper.dart';
 import '../../pages/dashboard/model/mtag_model.dart';
+import '../../pages/mtag/controller/delink_controller.dart';
 import '../../pages/recharge/controller/recharge_controller.dart';
+import '../../widgets/bottomsheet/balance_transfer_bs.dart';
 import '../../widgets/dashboard_widget.dart';
-import '../widget/weather_webview_button.dart';
+import '../../widgets/dialog/chassis_num.dart';
+import '../../widgets/dialog/delink_dialog.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -33,6 +37,7 @@ class HomePage extends StatelessWidget {
                 .page ??
             const SizedBox.shrink();
         return Scaffold(
+          backgroundColor: Colors.transparent,
           floatingActionButtonLocation: .miniCenterDocked,
           floatingActionButton: GestureDetector(
             onTap: () async {
@@ -41,6 +46,7 @@ class HomePage extends StatelessWidget {
             child: Image.asset('assets/whatsapp.png', height: 50, width: 50),
           ),
           bottomNavigationBar: CustomBottomNavBar(
+            height: 60,
             controller: controller,
             items: navItems,
           ),
@@ -66,41 +72,72 @@ class HomePageContent extends StatelessWidget {
         if (controller.isLoading.value || mtags == null || mtags.isEmpty) {
           return buildShimmerEffect(double.infinity, context.height);
         }
-        return Stack(
+        return Column(
           children: [
-            Column(
-              children: [
-                AppBar(
-                  elevation: 0,
-                  systemOverlayStyle: SystemUiOverlayStyle(
-                    statusBarBrightness: .light,
-                    statusBarIconBrightness: .light,
-                  ),
-                  backgroundColor: Colors.transparent,
-                  title: Image.asset('assets/logolight.png', height: 60, width: 70),
-                
-                ),
-                Expanded(
-                  child: CustomScrollView(
-                    slivers: [
-                      SliverAppBar(
-                        pinned: true,
-                        floating: false,
-                        expandedHeight: 340,
-                        backgroundColor: Colors.transparent, // Set a solid color
-                        elevation: 0,
-                        automaticallyImplyLeading: false,
-                        flexibleSpace: FlexibleSpaceBar(
-                          collapseMode: CollapseMode.none,
-                          background: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Expanded(
-                                child: PageView(
-                                  controller: _pageController,
-                                  scrollDirection: .horizontal,
-                                  onPageChanged: (value) =>
-                                      _currentPage.value = value,
+            AppBar(
+              clipBehavior: .none,
+              centerTitle: true,
+              elevation: 0,
+              systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarBrightness: .dark,
+                statusBarIconBrightness: .light,
+              ),
+              backgroundColor: Colors.transparent,
+              title: Image.asset('assets/logolight.png', height: 60, width: 70),
+            ),
+            Expanded(
+              child: CustomScrollView(
+                clipBehavior: .antiAlias,
+                slivers: [
+                  SliverAppBar(
+                    clipBehavior: .none,
+                    pinned: true,
+                    floating: false,
+                    expandedHeight: 345,
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    automaticallyImplyLeading: false,
+                    flexibleSpace: FlexibleSpaceBar(
+                      collapseMode: CollapseMode.none,
+                      background: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: PageView(
+                              padEnds: false,
+                              clipBehavior: .none,
+                              controller: _pageController,
+                              scrollDirection: .horizontal,
+                              onPageChanged: (value) =>
+                                  _currentPage.value = value,
+                              children: [
+                                for (
+                                  int i = 0;
+                                  i <
+                                      controller
+                                          .dashboradData
+                                          .value
+                                          .activeMtags!
+                                          .length;
+                                  i++
+                                )
+                                  VehicleCard(
+                                    mtags: controller
+                                        .dashboradData
+                                        .value
+                                        .activeMtags?[i],
+                                  ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          ValueListenableBuilder(
+                            valueListenable: _currentPage,
+                            builder: (context, value, child) {
+                              return Container(
+                                color: Colors.white, // Solid color
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     for (
                                       int i = 0;
@@ -112,73 +149,41 @@ class HomePageContent extends StatelessWidget {
                                               .length;
                                       i++
                                     )
-                                      VehicleCard(
-                                        mtags: controller
-                                            .dashboradData
-                                            .value
-                                            .activeMtags?[i],
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: i == value
+                                              ? Colors.black
+                                              : Colors.black26,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        margin: EdgeInsets.all(2),
+                                        height: 5,
+                                        width: i == value ? 15 : 10,
                                       ),
                                   ],
                                 ),
-                              ),
-                              SizedBox(height: 5),
-                              ValueListenableBuilder(
-                                valueListenable: _currentPage,
-                                builder: (context, value, child) {
-                                  return Container(
-                                    color: Colors.white, // Solid color
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        for (
-                                          int i = 0;
-                                          i <
-                                              controller
-                                                  .dashboradData
-                                                  .value
-                                                  .activeMtags!
-                                                  .length;
-                                          i++
-                                        )
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: i == value
-                                                  ? Colors.black
-                                                  : Colors.black26,
-                                              borderRadius: BorderRadius.circular(
-                                                8,
-                                              ),
-                                            ),
-                                            margin: EdgeInsets.all(2),
-                                            height: 5,
-                                            width: i == value ? 15 : 10,
-                                          ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
+                              );
+                            },
                           ),
-                        ),
+                        ],
                       ),
-                      SliverToBoxAdapter(child: SizedBox(height: 8)),
-                      ActionGrid(controller: controller),
-            
-                      SliverPadding(
-                        sliver: SliderSection(),
-                        padding: .symmetric(horizontal: 8),
-                      ),
-                      SliverToBoxAdapter(child: SizedBox(height: 10)),
-                      HelpSection(),
-                      SliverToBoxAdapter(child: SizedBox(height: 10)),
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                  SliverToBoxAdapter(child: SizedBox(height: 8)),
+                  ActionGrid(controller: controller),
+
+                  SliverPadding(
+                    sliver: SliderSection(),
+                    padding: .symmetric(horizontal: 8),
+                  ),
+                  SliverToBoxAdapter(child: SizedBox(height: 10)),
+                  HelpSection(),
+                  SliverToBoxAdapter(child: SizedBox(height: 10)),
+                ],
+              ),
             ),
-          Positioned(right: 0,top: 340,
-            child: WeatherExpandButton()),
           ],
         );
       },
@@ -197,6 +202,7 @@ class VehicleCard extends StatelessWidget {
         final w = constraints.maxWidth;
 
         return Container(
+          clipBehavior: .none,
           margin: .symmetric(horizontal: 10),
           decoration: BoxDecoration(
             borderRadius: .circular(16),
@@ -207,12 +213,12 @@ class VehicleCard extends StatelessWidget {
             ),
           ),
           child: Column(
-            mainAxisSize: .min,
             mainAxisAlignment: .start,
             crossAxisAlignment: .start,
             children: [
               _MtagDataWidget(width: w, key: key, mtag: mtags),
-              Expanded(child: BalanceCard(mtag: mtags)),
+              Spacer(),
+              BalanceCard(mtag: mtags),
             ],
           ),
         );
@@ -232,22 +238,20 @@ class _MtagDataWidget extends StatelessWidget {
       mainAxisAlignment: .start,
       crossAxisAlignment: .start,
       children: [
-        Container(
-          padding: EdgeInsets.only(
-            top: 16,
-            left: width * 0.03,
-            bottom: width * 0.025,
-          ),
+        FittedBox(
+          child: Container(
+            padding: EdgeInsets.only(top: 16, left: width * 0.03, bottom:0),
 
-          child: Image.asset(
-            getVehicleImage(mtag?.vehicletype ?? ''),
-            height: width * 0.32,
+            child: Image.asset(
+              getVehicleImage(mtag?.vehicletype ?? ''),
+              height: width * 0.32,
+            ),
           ),
         ),
         Expanded(
           child: Padding(
             padding: .symmetric(horizontal: 10),
-            child: Column(
+            child: Column(spacing: 8,
               mainAxisAlignment: .start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -260,7 +264,7 @@ class _MtagDataWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+               
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.topLeft,
@@ -297,7 +301,7 @@ class _MtagDataWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 5),
+             
                 FittedBox(
                   child: Row(
                     children: [
@@ -326,19 +330,27 @@ class _MtagDataWidget extends StatelessWidget {
                       ),
                       SizedBox(width: 10),
                       InkWell(
-                        onTap: () => showModalBottomSheet(
-                          showDragHandle: true,
+                        onTap: () async => await showDialog(
                           context: context,
-                          builder: (_) => Container(),
+                          builder: (_) => ChassisNumberDialog(
+                            chassissNo: mtag?.chassis_number ?? '',
+                            registration: mtag?.registration ?? '',
+                            tokenNo: mtag?.tokenno ?? '',
+                            mobileNumber: mtag?.mobilenum ?? '',
+                            balance: mtag?.balance ?? '',
+                            cnicNumber: OtherConsts().ownerCNIC.value,
+                          ),
                         ),
                         child: Icon(Icons.edit_square, size: 18),
                       ),
                     ],
                   ),
                 ),
+              
                 Divider(
                   color: Colors.grey.shade300,
                   thickness: 1.5,
+                  height: 8,
                   indent: 1,
                   endIndent: 10,
                 ),
@@ -400,14 +412,16 @@ class _ActiveBadge extends StatelessWidget {
             ),
           ),
           SizedBox(width: 4),
-          Text(
-            'ACTIVE',
-            style: TextStyle(
-              color: isActive ? Colors.green.shade900 : Colors.red,
-              fontSize: 12.5,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.4,
-              fontFamily: 'biotifbold',
+          FittedBox(fit: .scaleDown,
+            child: Text(
+              'ACTIVE',
+              style: TextStyle(
+                color: isActive ? Colors.green.shade900 : Colors.red,
+                fontSize: 12.5,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.4,
+                fontFamily: 'biotifbold',
+              ),
             ),
           ),
         ],
@@ -423,6 +437,7 @@ class BalanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      clipBehavior: .none,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         gradient: LinearGradient(
@@ -459,99 +474,103 @@ class BalanceCard extends StatelessWidget {
           ),
         ],
       ),
-      padding: const EdgeInsets.fromLTRB(
-        24,
-        20,
-        24,
-        8,
-      ), // ← slightly reduced bottom padding
+      // ← slightly reduced bottom padding
       child: ValueListenableBuilder(
         valueListenable: balanceVisibleNotifier,
         builder: (context, value, child) {
-          return Column(
-            mainAxisAlignment: .start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: .spaceBetween,
-                children: [
-                  Text(
-                    'Available Balance',
-                    style: TextStyle(
-                      fontFamily: 'biotifbold',
-                      fontSize: 16,
-                      color: Colors.black54.withValues(alpha: 0.7),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      balanceVisibleNotifier.value =
-                          !balanceVisibleNotifier.value;
-                    },
-                    child: CircleAvatar(
-                      radius: 12,
-                      backgroundColor: Colors.grey.withValues(alpha: 0.2),
-                      child: Icon(
-                        value
-                            ? Icons.visibility_rounded
-                            : Icons.visibility_off_rounded,
-                        color: Colors.black54,
-                        size: 17,
+          return Padding(
+            padding: .symmetric(horizontal: 16, vertical: 10),
+            child: Column(
+              mainAxisAlignment: .start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: .spaceBetween,
+                  children: [
+                    FittedBox(
+                      fit: .scaleDown,
+                      child: Text(
+                        'Available Balance',
+                        style: TextStyle(
+                          fontFamily: 'biotifbold',
+                          fontSize: 16,
+                          color: Colors.black54.withValues(alpha: 0.7),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 4), // ← was 6 → tighter
-              Text(
-                value ? 'Rs. ${mtag?.balance ?? ''}' : '****',
-
-                style: TextStyle(
-                  fontFamily: "biotifbold",
-                  fontSize: 38,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w600,
-                  height: 1.0,
-                  letterSpacing: 1.2,
+                    InkWell(
+                      onTap: () {
+                        balanceVisibleNotifier.value =
+                            !balanceVisibleNotifier.value;
+                      },
+                      child: CircleAvatar(
+                        radius: 12,
+                        backgroundColor: Colors.grey.withValues(alpha: 0.2),
+                        child: Icon(
+                          value
+                              ? Icons.visibility_rounded
+                              : Icons.visibility_off_rounded,
+                          color: Colors.black54,
+                          size: 17,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              Row(
-                children: [
-                  Text(
-                    'Low Balance',
-                    style: TextStyle(
-                      color: Colors.black54,
+                SizedBox(height: 4), // ← was 6 → tighter
+                FittedBox(
+                  fit: .scaleDown,
+                  child: Text(
+                    value ? 'Rs. ${mtag?.balance ?? ''}' : '****',
 
-                      fontSize: 15,
-                      fontFamily: 'biotifbold',
+                    style: TextStyle(
+                      fontFamily: "biotifbold",
+                      fontSize: 38,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600,
+                      height: 1.0,
+                      letterSpacing: 1.2,
                     ),
                   ),
-                  SizedBox(width: 6),
-                  Icon(
-                    Icons.warning_rounded,
-                    size: 24,
-                    color: Colors.yellow.shade800,
-                  ),
-                ],
-              ),
-              SizedBox(height: 4),
-
-              // ← was 8 → much tighter
-              Card(
-                elevation: 1,
-                borderOnForeground: true,
-                shape: RoundedSuperellipseBorder(borderRadius: .circular(50)),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 4,
-                    vertical: 2,
-                  ),
-                  child: _RechargeButton(mtag!),
                 ),
-              ),
-              SizedBox(height: 5),
-              _TransferRemoveRow(),
-            ],
+                Row(
+                  children: [
+                    Text(
+                      'Low Balance',
+                      style: TextStyle(
+                        color: Colors.black54,
+
+                        fontSize: 15,
+                        fontFamily: 'biotifbold',
+                      ),
+                    ),
+                    SizedBox(width: 6),
+                    Icon(
+                      Icons.warning_rounded,
+                      size: 24,
+                      color: Colors.yellow.shade800,
+                    ),
+                  ],
+                ),
+                SizedBox(height: 4),
+
+                // ← was 8 → much tighter
+                Card(
+                  elevation: 1,
+                  borderOnForeground: true,
+                  shape: RoundedSuperellipseBorder(borderRadius: .circular(50)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 2,
+                    ),
+                    child: _RechargeButton(mtag!),
+                  ),
+                ),
+                SizedBox(height: 5),
+                _TransferRemoveRow(mtag!),
+              ],
+            ),
           );
         },
       ),
@@ -594,10 +613,21 @@ class _RechargeButton extends StatelessWidget {
 }
 
 class _TransferRemoveRow extends StatelessWidget {
-  const _TransferRemoveRow();
+  final ActiveMtags mtag;
+  const _TransferRemoveRow(this.mtag);
 
   @override
   Widget build(BuildContext context) {
+    final allCars = Get.find<HomeController>().dashboradData.value.activeMtags!
+        .where((car) => car.registration != mtag.registration)
+        .map(
+          (car) => {
+            "carNumber": car.registration,
+            "balance": double.tryParse(car.balance ?? '0.0') ?? 0.0,
+            "mtagID": car.tokenno,
+          },
+        )
+        .toList();
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
       decoration: BoxDecoration(
@@ -612,10 +642,7 @@ class _TransferRemoveRow extends StatelessWidget {
               icon: Icons.swap_horiz_rounded,
               label: 'Transfer',
               onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (_) => Container(),
-                );
+                _showBalanceTransferSheet(context, mtag, allCars);
               }, //
             ),
           ),
@@ -636,14 +663,50 @@ class _TransferRemoveRow extends StatelessWidget {
               label: 'Remove',
               isDestructive: true,
               onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (_) => Container(),
-                );
+                _showDeleteDialog(mtag);
               },
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showBalanceTransferSheet(
+    BuildContext context,
+    ActiveMtags mtag,
+    List<Map<String, dynamic>> allCars,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return BalanceTransferSheet(
+          carRegistration: mtag.registration,
+          balance: mtag.balance,
+          cnicNumber: OtherConsts().ownerCNIC.value,
+          mobileNumber: mtag.mobilenum,
+          mtagid: mtag.tokenno,
+          dropDownCars: allCars,
+        );
+      },
+    );
+  }
+
+  void _showDeleteDialog(ActiveMtags mtag) {
+    Get.dialog(
+      DeLinkVehicleDialog(
+        regId: mtag.registration ?? '',
+        onCancel: Get.back,
+        onConfirm: () {
+          Get.back();
+          Get.find<DelinkController>().deLinkVehicle(
+            mtagID: mtag.tokenno ?? '',
+            rDesc: "0--Vehicle has been sold out.",
+            rID: "1",
+          );
+        },
       ),
     );
   }
@@ -698,23 +761,26 @@ class ActionGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverGrid(
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.5,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        mainAxisExtent: MediaQuery.of(context).size.height * 0.08,
-      ),
-      delegate: SliverChildBuilderDelegate(
-        childCount: controller.dashBoardModel.length,
-        (context, index) {
-          final e = controller.dashBoardModel[index];
-          return _ActionTile(
-            item: e,
-            controller: controller,
-            isCalculatorWidget: e.title == 'Toll\nCalculator' ? true : false,
-          );
-        },
+    return SliverPadding(
+      padding: .symmetric(horizontal: 10),
+      sliver: SliverGrid(
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.5,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+          mainAxisExtent: MediaQuery.of(context).size.height * 0.08,
+        ),
+        delegate: SliverChildBuilderDelegate(
+          childCount: controller.dashBoardModel.length,
+          (context, index) {
+            final e = controller.dashBoardModel[index];
+            return _ActionTile(
+              item: e,
+              controller: controller,
+              isCalculatorWidget: e.title == 'Toll\nCalculator' ? true : false,
+            );
+          },
+        ),
       ),
     );
   }
@@ -735,6 +801,7 @@ class _ActionTile extends StatelessWidget {
     return GestureDetector(
       onTap: () => handleItemTap(context, item, controller),
       child: Container(
+        clipBehavior: .none,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),

@@ -3,8 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/features/design/tests_design.dart';
 import 'package:mtag_flutterapp/pages/login/auth_page.dart';
+import 'package:mtag_flutterapp/pages/login/create_pin_page.dart';
 import 'package:mtag_flutterapp/widgets/connectivity_banner.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -149,10 +149,10 @@ class _MTagAppState extends State<MTagApp> {
               showLater: false,
 
               showReleaseNotes: true,
-              child: AppData.getPinData() != null ? HomePage() : AuthPage(),
+              child: AppData.getPinData() != null ? PinEntryPage() : AuthPage(),
             )
           : AppData.getPinData() != null
-          ?  HomePage()
+          ?  PinEntryPage()
           : AuthPage(),
     );
   }

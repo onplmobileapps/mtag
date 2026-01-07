@@ -12,7 +12,6 @@ import '../../widgets/dashboard_widget.dart';
 import '../../widgets/dotted_outline.dart';
 import '../../widgets/elevated_button.dart';
 import '../../constants/call_helper.dart';
-import '../../features/promotion_page.dart';
 import '../../features/story_view_page.dart';
 import '../../pages/dashboard/model/dashboard_model.dart';
 import '../../pages/mtag/controller/delink_controller.dart';
@@ -621,7 +620,7 @@ class _MtagContentState extends State<_MtagContent> {
     ActiveMtags mtag,
     List<Map<String, dynamic>> allCars,
   ) {
-    showModalBottomSheet(
+    showModalBottomSheet(useSafeArea: true ,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -1270,10 +1269,10 @@ final navItems = [
     // page: const _HomeContent(),
   ),
   BottomNavItem(
-    imagePath: 'assets/promotion.svg',
-    label: 'Promotions',
+    imagePath: 'assets/weather.svg',
+    label: 'Weather Update',
     index: 1,
-    page: const PromotionPage(),
+   page:  HomePageContent(),
   ),
   BottomNavItem.spacer(),
   BottomNavItem(

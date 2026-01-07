@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import '../../features/widget/weather_option_dailog.dart';
 import '../api/api_constants.dart';
 import '../api/auth_controller.dart';
 import '../api/user_repo.dart';
@@ -12,6 +13,7 @@ import '../pages/dashboard/model/mtag_model.dart';
 import '../utils/utils.dart';
 import '../widgets/dialog/cupertino_dialog.dart';
 import '../widgets/dialog/operator_selection_dialog.dart';
+
 class HomeController extends GetxController implements GetxService {
   final balances = <String, String>{}.obs;
   final hiddenStates = <String, bool>{}.obs;
@@ -26,17 +28,19 @@ class HomeController extends GetxController implements GetxService {
   var balanceUpdate = false.obs;
   var transferBalance = false.obs;
   var chassisNumberUpdate = false.obs;
- RxInt selectedMtagIndex = 0.obs;
+  RxInt selectedMtagIndex = 0.obs;
   final navigationStack = <int>[0].obs;
   final int homePageIndex = 0;
 
-  
-  
   void setCurrentIndex(int value) => currentPage.value = value;
   final _otherConstants = OtherConsts();
   final List<MtagModel> dashBoardModel = [
     // Sir Suleman asked to change M-TAG to Vehicles(Date 27-12-25)
-    MtagModel(routeName: '/mTag', title: 'Vehicles', image: 'assets/icons/receipt.png'),
+    MtagModel(
+      routeName: '/mTag',
+      title: 'Vehicles',
+      image: 'assets/icons/receipt.png',
+    ),
     MtagModel(
       routeName: '/tollHostory',
       title: 'Toll\nHistory',
@@ -82,7 +86,7 @@ class HomeController extends GetxController implements GetxService {
       CnicNumber: cnicNumber,
       MobileNum: mobileNum,
       sim_operator: simOperator,
-    ); 
+    );
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       showCupertinoModalPopup(
@@ -242,23 +246,23 @@ class HomeController extends GetxController implements GetxService {
     await getDashboardData();
     _otherConstants.isRefresh(false);
   }
+
   @override
   void onReady() async {
     super.onReady();
-    WidgetsBinding.instance.addPostFrameCallback((_)async {
-       await _initializeDashboard();
-    await _handleAppCountAndReview();
-    _handlePostInitActions();
-    },);
-   
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _initializeDashboard();
+      await _handleAppCountAndReview();
+      _handlePostInitActions();
+    });
   }
+
   Future<void> _initializeDashboard() async {
     await getDashboardData();
   }
 
   // / Increments app count and triggers review at 5 launches.
   Future<void> _handleAppCountAndReview() async {
-   
     await AppData.setCount(); // Increment count
     final count = AppData.getAppCount();
     if (count >= 5) {
@@ -285,8 +289,12 @@ class HomeController extends GetxController implements GetxService {
       );
     }
   }
+
   void changePage(int index) {
     currentPage.value = index;
+    if (currentPage.value == 1) {
+    showWeatherUpdateDialog(Get.context!);
+    }
   }
 
   void goBackToHome() {

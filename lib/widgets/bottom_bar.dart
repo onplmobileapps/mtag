@@ -17,8 +17,8 @@ class CustomBottomNavBar extends StatelessWidget {
     required this.controller,
     required this.items,
     this.height = 55,
-    this.padding = const EdgeInsets.only(top: 8),
-    this.notchMargin = 6,
+    this.padding = const EdgeInsets.only(top: 0,bottom: 0),
+    this.notchMargin = 10,
     this.elevation = 10,
     this.backgroundColor,
   });
@@ -26,16 +26,22 @@ class CustomBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return BottomAppBar(
+    return BottomAppBar(shadowColor: Color(0xFFFCFCFC),
       height: height,
-      padding: padding,
+      padding: padding,clipBehavior: .none,
       shape: const CircularNotchedRectangle(),
-      notchMargin: notchMargin,
+      notchMargin: notchMargin,surfaceTintColor: Colors.white,
       elevation: elevation,
-      color: backgroundColor ?? Colors.grey.withAlpha(25),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: _buildNavigationItems(context),
+   color: Colors.transparent,
+      child: Container(decoration: BoxDecoration(  gradient: const LinearGradient(
+              begin: .topLeft,
+              end: AlignmentGeometry.centerRight,
+              colors: [Color(0xFFE4EDFC), Color(0xFFFCFCFC), Color(0xFFEAEBFD)],
+            ),),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: _buildNavigationItems(context),
+        ),
       ),
     );
   }
@@ -83,6 +89,8 @@ class _BottomNavItemWidget extends StatelessWidget {
           ? (item.selectedColor ?? colorScheme.primary)
           : (item.unselectedColor ?? colorScheme.secondary.withAlpha(180));
 
+      final double iconSize = item.index == 0 ? 20 : 24;
+
       return InkWell(
         onTap: () => controller.changePage(item.index),
         borderRadius: BorderRadius.circular(8),
@@ -91,16 +99,20 @@ class _BottomNavItemWidget extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SvgPicture.asset(
-                item.imagePath,
-                width: item.iconSize,
-                height: item.iconSize,
-                colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: SvgPicture.asset(
+                  item.imagePath,
+                  width: iconSize,
+                  height: iconSize,
+                  fit: BoxFit.contain,
+                  colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+                ),
               ),
-              // SizedBox(height: item.spacing),
+              SizedBox(height: item.spacing),
               Text(
                 item.label,
-                style: TextTheme.of(context).labelSmall?.copyWith(color: textColor),
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(color: textColor),
               ),
             ],
           ),

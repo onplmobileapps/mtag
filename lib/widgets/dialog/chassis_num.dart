@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../../controller/home_controller.dart';
 import '../elevated_button.dart';
 
-class ChassisNumberDialog extends StatefulWidget {
+class ChassisNumberDialog extends StatelessWidget {
   final String registration;
   final String mobileNumber;
   final String tokenNo;
@@ -13,7 +13,7 @@ class ChassisNumberDialog extends StatefulWidget {
   final String cnicNumber;
   final String? chassissNo;
 
-  const ChassisNumberDialog({
+ ChassisNumberDialog({
     super.key,
     required this.registration,
     required this.tokenNo,
@@ -23,13 +23,8 @@ class ChassisNumberDialog extends StatefulWidget {
     this.chassissNo,
   });
 
-  @override
-  State<ChassisNumberDialog> createState() => _ChassisNumberDialogState();
-}
-
-class _ChassisNumberDialogState extends State<ChassisNumberDialog> {
   final TextEditingController _controller = TextEditingController();
-  String? errorText;
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +47,7 @@ class _ChassisNumberDialogState extends State<ChassisNumberDialog> {
                 alignment: AlignmentGeometry.topRight,
                 child: GestureDetector(
                   onTap: Get.back,
-                  child: CircleAvatar(
+                  child: CircleAvatar(radius: 14,
                     backgroundColor: Colors.red,
                     child: Icon(Icons.close, color: Colors.white),
                   ),
@@ -90,7 +85,7 @@ class _ChassisNumberDialogState extends State<ChassisNumberDialog> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.registration,
+                            registration,
                             style: TextTheme.of(
                               context,
                             ).displayMedium?.copyWith(color: Colors.white),
@@ -101,7 +96,7 @@ class _ChassisNumberDialogState extends State<ChassisNumberDialog> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  widget.tokenNo,
+                                tokenNo,
                                   style: TextTheme.of(
                                     context,
                                   ).bodySmall?.copyWith(color: Colors.white),
@@ -109,7 +104,7 @@ class _ChassisNumberDialogState extends State<ChassisNumberDialog> {
                                 ),
                               ),
                               Text(
-                                widget.balance,
+                               balance,
                                 style: TextStyle(
                                   fontSize: isSmallScreen ? 10 : 12,
                                   fontWeight: FontWeight.w600,
@@ -127,19 +122,18 @@ class _ChassisNumberDialogState extends State<ChassisNumberDialog> {
               const SizedBox(height: 12),
 
               /// Text Field
-              CupertinoTextField(
+              CupertinoTextFormFieldRow(
                 maxLines: 1,
                 padding: .all(16),
                 maxLength: 17,
                 placeholder: 'Enter chassis number',
-                controller: _controller..text = widget.chassissNo ?? '',
+                controller: _controller..text = chassissNo ?? '',
                 keyboardType: TextInputType.text,
 
                 onChanged: (_) {
-                  if (errorText != null) {
-                    setState(() => errorText = null);
-                  }
-                },
+                 
+                },validator: (value) => (value == null || value.isEmpty) ? 'Enter a valid chassis number' : null,
+
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9]')),
                   UpperCaseTextFormatter(),
@@ -152,18 +146,13 @@ class _ChassisNumberDialogState extends State<ChassisNumberDialog> {
               ElevatedButton1(
                 onclick: () async {
                   final text = _controller.text.trim();
-                  if (text.isEmpty) {
-                    setState(
-                      () => errorText = "Chassis number must not be empty",
-                    );
-                    return;
-                  }
+                 
 
                   Get.back();
                   await Get.find<HomeController>().updateChassisCall(
-                    cnicNumber: widget.cnicNumber,
-                    mobileNumber: widget.mobileNumber,
-                    mtagID: widget.tokenNo,
+                    cnicNumber: cnicNumber,
+                    mobileNumber: mobileNumber,
+                    mtagID:tokenNo,
                     chassisNumber: text,
                   );
                 },
