@@ -23,7 +23,7 @@ Widget buildPaymentOption(
             ),
             child: RadioGroup<int>(
               groupValue: selectedOption,
-              onChanged: ( newValue) {
+              onChanged: (newValue) {
                 if (remainingTime == Duration.zero) {
                   selectedOptionNotifier.value = newValue!;
                   if (onTap != null) onTap();
@@ -37,38 +37,34 @@ Widget buildPaymentOption(
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    
-                  
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
                         label,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(fontWeight: .w600),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(fontWeight: .w600),
                       ),
                     ),
-                     const SizedBox(width: 8),
-                    Image.asset(
-                      assetPath,
-                      height: 30,
-                      width: 45,
-                    ),
+                    const SizedBox(width: 8),
+                    Image.asset(assetPath, height: 30, width: 45),
                   ],
                 ),
                 controlAffinity: ListTileControlAffinity.leading,
+                fillColor: WidgetStatePropertyAll(
+                  ColorScheme.of(context).primary,
+                ),
+                activeColor: Theme.of(context).primaryColor,
                 radioSide: BorderSide(color: Colors.grey),
-                dense: true,radioBackgroundColor: WidgetStatePropertyAll(Colors.white),
+                dense: true,
+
                 contentPadding: const EdgeInsets.symmetric(vertical: 0),
                 secondary: remainingTime > Duration.zero
                     ? Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: Text(
                           '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
+                          style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(fontSize: 12, color: Colors.red),
                         ),
                       )

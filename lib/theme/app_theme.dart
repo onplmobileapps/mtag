@@ -591,7 +591,9 @@ ThemeData darkTheme = ThemeData(dropdownMenuTheme: DropdownMenuThemeData(
       color: Colors.white,
       fontFamily: fontFamily,
     ),
+    labelSmall: TextStyle(fontFamily: fontFamily)
   ),
+
   tabBarTheme: TabBarThemeData(indicatorColor: Colors.white),
 );
 MaterialColor primarSwatch = const MaterialColor(0xFF2C2E65, {

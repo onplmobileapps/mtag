@@ -134,7 +134,7 @@ class HomePageContent extends StatelessWidget {
                                     mtags: controller
                                         .dashboradData
                                         .value
-                                        .activeMtags?[i],
+                                        .activeMtags![i],
                                   ),
                               ],
                             ),
@@ -203,8 +203,8 @@ class HomePageContent extends StatelessWidget {
 }
 
 class VehicleCard extends StatelessWidget {
-  final ActiveMtags? mtags;
-  const VehicleCard({super.key, this.mtags});
+  final ActiveMtags mtags;
+  const VehicleCard({super.key, required this.mtags});
 
   @override
   Widget build(BuildContext context) {
@@ -236,8 +236,8 @@ class VehicleCard extends StatelessWidget {
 
 class _MtagDataWidget extends StatelessWidget {
   final double width;
-  final ActiveMtags? mtag;
-  const _MtagDataWidget({super.key, this.width = 0, this.mtag});
+  final ActiveMtags mtag;
+  const _MtagDataWidget({super.key, this.width = 0, required this.mtag});
 
   @override
   Widget build(BuildContext context) {
@@ -250,7 +250,7 @@ class _MtagDataWidget extends StatelessWidget {
             padding: EdgeInsets.only(top: 16, left: width * 0.03, bottom: 0),
 
             child: Image.asset(
-              getVehicleImage(mtag?.vehicletype ?? ''),
+              getVehicleImage(mtag.vehicletype ?? ''),
               height: width * 0.32,
             ),
           ),
@@ -268,7 +268,7 @@ class _MtagDataWidget extends StatelessWidget {
                   children: [
                     Padding(
                       padding: .only(right: 8, top: 8),
-                      child: _ActiveBadge(mtag?.isactive),
+                      child: _ActiveBadge(mtag.isactive),
                     ),
                   ],
                 ),
@@ -280,7 +280,7 @@ class _MtagDataWidget extends StatelessWidget {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: mtag?.registration ?? '',
+                          text: mtag.registration ?? '',
                           style: TextTheme.of(
                             context,
                           ).bodyMedium?.copyWith(fontSize: 13),
@@ -295,7 +295,7 @@ class _MtagDataWidget extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: ' #${mtag?.tokenno ?? ''}',
+                          text: ' #${mtag.tokenno ?? ''}',
                           style: TextTheme.of(
                             context,
                           ).bodyMedium?.copyWith(fontSize: 13),
@@ -320,53 +320,54 @@ class _MtagDataWidget extends StatelessWidget {
                               ),
                             ),
                             // Number
-                            mtag?.chassis_number?.isEmpty ?? false
-                                ? TextSpan(
-                                    text: 'Chassis number is missing',
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () async {
-                                        await showDialog(
-                                          context: context,
-                                          builder: (_) => ChassisNumberDialog(
-                                            chassissNo:
-                                                mtag?.chassis_number ?? '',
-                                            registration:
-                                                mtag?.registration ?? '',
-                                            tokenNo: mtag?.tokenno ?? '',
-                                            mobileNumber: mtag?.mobilenum ?? '',
-                                            balance: mtag?.balance ?? '',
-                                            cnicNumber:
-                                                OtherConsts().ownerCNIC.value,
-                                          ),
-                                        );
-                                      },
-                                  )
-                                : TextSpan(
-                                    text: mtag?.chassis_number ?? '',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(fontSize: 13),
-                                  ),
+                            if (mtag.isactive != 8 &&
+                                (mtag.chassis_number == null ||mtag.chassis_number == ''|| 
+                                    mtag.chassis_number!.trim().isEmpty)) ...[
+                              TextSpan(
+                                text: 'Chassis number is missing',
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () async {
+                                    await showDialog(
+                                      context: context,
+                                      builder: (_) => ChassisNumberDialog(
+                                        chassissNo: mtag.chassis_number ?? '',
+                                        registration: mtag.registration ?? '',
+                                        tokenNo: mtag.tokenno ?? '',
+                                        mobileNumber: mtag.mobilenum ?? '',
+                                        balance: mtag.balance ?? '',
+                                        cnicNumber:
+                                            OtherConsts().ownerCNIC.value,
+                                      ),
+                                    );
+                                  },
+                              ),
+                            ],
+                            TextSpan(
+                              text: mtag.chassis_number ?? '',
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.copyWith(fontSize: 13),
+                            ),
                           ],
                         ),
                       ),
-                    if(mtag?.chassis_number?.isNotEmpty??false) ... [ SizedBox(width: 10),
-                 InkWell(
-                        onTap: () async => await showDialog(
-                          context: context,
-                          builder: (_) => ChassisNumberDialog(
-                            chassissNo: mtag?.chassis_number ?? '',
-                            registration: mtag?.registration ?? '',
-                            tokenNo: mtag?.tokenno ?? '',
-                            mobileNumber: mtag?.mobilenum ?? '',
-                            balance: mtag?.balance ?? '',
-                            cnicNumber: OtherConsts().ownerCNIC.value,
+                      if (mtag.chassis_number?.isNotEmpty ?? false) ...[
+                        SizedBox(width: 10),
+                        InkWell(
+                          onTap: () async => await showDialog(
+                            context: context,
+                            builder: (_) => ChassisNumberDialog(
+                              chassissNo: mtag.chassis_number ?? '',
+                              registration: mtag.registration ?? '',
+                              tokenNo: mtag.tokenno ?? '',
+                              mobileNumber: mtag.mobilenum ?? '',
+                              balance: mtag.balance ?? '',
+                              cnicNumber: OtherConsts().ownerCNIC.value,
+                            ),
                           ),
+                          child: Icon(Icons.edit_square, size: 18),
                         ),
-                        child: Icon(Icons.edit_square, size: 18),
-                      ),]
-                     
+                      ],
                     ],
                   ),
                 ),
@@ -390,7 +391,7 @@ class _MtagDataWidget extends StatelessWidget {
                       ),
                       Text('Owner : ', style: TextStyle(color: Colors.grey)),
                       Text(
-                        '${mtag?.ownername}',
+                        '${mtag.ownername}',
                         style: TextTheme.of(context).bodyMedium,
                       ),
                     ],

@@ -37,6 +37,7 @@ class CustomBottomNavBar extends StatelessWidget {
       elevation: elevation,
       color: Colors.transparent,
       child: Container(
+        padding: .symmetric(horizontal: 4),
         decoration: BoxDecoration(
           gradient: Theme.of(context).extension<AppGradients>()!.background,
         ),
@@ -83,7 +84,7 @@ class _BottomNavItemWidget extends StatelessWidget {
           ? (item.selectedColor ?? colorScheme.primary)
           : (item.unselectedColor ?? colorScheme.secondary.withAlpha(180));
 
-      final double iconSize = item.index == 0 ? 20 : 24;
+      final double iconSize = item.index == 0 ? 20 : 26;
 
       return InkWell(
         onTap: () => controller.changePage(item.index),
@@ -108,7 +109,7 @@ class _BottomNavItemWidget extends StatelessWidget {
                 item.label,
                 style: Theme.of(
                   context,
-                ).textTheme.labelSmall?.copyWith(color: textColor),
+                ).textTheme.displaySmall?.copyWith(color: textColor),
               ),
             ],
           ),
