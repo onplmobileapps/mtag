@@ -228,7 +228,7 @@ class VehicleCard extends StatelessWidget {
                 flex: 0,
                 child: _MtagDataWidget(width: w, key: key, mtag: mtags),
               ),
-             Spacer(),
+              Spacer(),
               BalanceCard(mtag: mtags),
             ],
           ),
@@ -506,7 +506,7 @@ class BalanceCard extends StatelessWidget {
                     FittedBox(
                       fit: .scaleDown,
                       child: Text(
-                        'Available Balance',
+                       mtag?.isactive==8.0?'Recovery Amount': 'Available Balance',
                         style: TextTheme.of(context).titleMedium,
                       ),
                     ),
@@ -535,13 +535,13 @@ class BalanceCard extends StatelessWidget {
                 FittedBox(
                   fit: .scaleDown,
                   child: Text(
-                    value ? 'Rs. ${balance ?? ''}' : '****',
+                    value ? 'Rs. ${ balance ?? ''}' : '****',
                     style: TextTheme.of(
                       context,
                     ).headlineLarge?.copyWith(letterSpacing: 1.2),
                   ),
                 ),
-                if (balance != null && balance <= 50.0)
+                if (mtag?.isactive!=8.0&& balance != null && balance <= 50.0)
                   Row(
                     children: [
                       Text(
@@ -568,24 +568,26 @@ class BalanceCard extends StatelessWidget {
                       horizontal: 4,
                       vertical: 2,
                     ),
-                    child: mtag?.isactive!=2.0?ElevatedButton1(width: double.infinity,backgroundColor: Colors.red.shade900,
-                      onclick: ()async{
-                         await showDialog(
-            context: context,
-            builder: (_) => ChassisNumberDialog(
-              chassissNo:mtag?.chassis_number ,
-              registration: mtag?.registration??'',
-              tokenNo: mtag?.tokenno??'',
-              mobileNumber: mtag?.mobilenum??'',
-              balance: mtag?.balance??'',
-              cnicNumber: OtherConsts().ownerCNIC.value,
-            ),
-          );
-                    }, text: 'Pay now'): _RechargeButton(mtag!),
+                    child: mtag?.isactive != 1.0
+                        ? ElevatedButton1(
+                            width: double.infinity,
+                            backgroundColor: Colors.red.shade900,
+                            onclick: () async {
+                              showPaymentBottomSheet(
+                                context,
+                                blackListRecharge: true,
+                                mtagId: mtag?.tokenno,
+                                regId: mtag?.registration,
+                                recoveryAmount: mtag?.block_amount,
+                              );
+                            },
+                            text: 'Pay now',
+                          )
+                        : _RechargeButton(mtag!),
                   ),
                 ),
                 SizedBox(height: 5),
-                _TransferRemoveRow(mtag!),
+              if(mtag?.isactive!=8.0)  _TransferRemoveRow(mtag!),
               ],
             ),
           );

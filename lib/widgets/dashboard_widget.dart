@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../pages/recharge/recharge_page.dart';
 import '../utils/utils.dart';
 import 'bottomsheet/bottom_sheet_widget.dart';
+
 String getVehCategory(String vehicleType) {
   Map<String, String> vehicleCategories = {
     'Car': 'F1',
@@ -34,8 +35,6 @@ String getVehicleImage(String vehicleType) {
   return vehicleImages[vehicleType] ?? '';
 }
 
-
-
 void showPaymentBottomSheet(
   BuildContext context, {
   String? mtagId,
@@ -53,11 +52,14 @@ void showPaymentBottomSheet(
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
- 
+    enableDrag: true,
+    useSafeArea: true,
     backgroundColor: ColorScheme.of(context).surface,
-   
+
     builder: (context) {
-      return DraggableScrollableSheet(shouldCloseOnMinExtent: true,
+      return DraggableScrollableSheet(
+        shouldCloseOnMinExtent: true,
+        initialChildSize: 0.58,
         expand: false, // Prevents full screen expansion
         builder: (context, scrollController) {
           return PaymentBottomSheet(
@@ -98,8 +100,12 @@ Widget actionBtn(
       onTap: onTap,
       child: Column(
         children: [
-          CircleAvatar(backgroundColor: Get.isDarkMode?Colors.white: ColorScheme.of(context).surfaceContainerLowest,
-            child: Image.asset(icon, height: 30, width: 30)),
+          CircleAvatar(
+            backgroundColor: Get.isDarkMode
+                ? Colors.white
+                : ColorScheme.of(context).surfaceContainerLowest,
+            child: Image.asset(icon, height: 30, width: 30),
+          ),
           SizedBox(height: 10),
           Text(
             label,

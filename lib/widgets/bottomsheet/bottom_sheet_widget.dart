@@ -44,14 +44,16 @@ class PaymentBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(borderRadius: .circular(12),
-         gradient: Theme.of(context).extension<AppGradients>()!.background
+      decoration: BoxDecoration(
+        borderRadius: .circular(12),
+        gradient: Theme.of(context).extension<AppGradients>()!.background,
       ),
       padding: .symmetric(horizontal: 16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           buildHandleBar(context),
+          
           BuildPSIDField(
             key: ValueKey('PSID'),
             showPSIDField: showPSIDField,
@@ -83,6 +85,7 @@ class PaymentBottomSheet extends StatelessWidget {
             blackListRecharge: blackListRecharge,
             recoveryAmount: recoveryAmount,
           ),
+          
         ],
       ),
     );
