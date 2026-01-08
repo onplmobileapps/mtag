@@ -568,7 +568,20 @@ class BalanceCard extends StatelessWidget {
                       horizontal: 4,
                       vertical: 2,
                     ),
-                    child: _RechargeButton(mtag!),
+                    child: mtag?.isactive!=2.0?ElevatedButton1(width: double.infinity,backgroundColor: Colors.red.shade900,
+                      onclick: ()async{
+                         await showDialog(
+            context: context,
+            builder: (_) => ChassisNumberDialog(
+              chassissNo:mtag?.chassis_number ,
+              registration: mtag?.registration??'',
+              tokenNo: mtag?.tokenno??'',
+              mobileNumber: mtag?.mobilenum??'',
+              balance: mtag?.balance??'',
+              cnicNumber: OtherConsts().ownerCNIC.value,
+            ),
+          );
+                    }, text: 'Pay now'): _RechargeButton(mtag!),
                   ),
                 ),
                 SizedBox(height: 5),
