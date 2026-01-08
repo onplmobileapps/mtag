@@ -4,6 +4,8 @@ import 'package:mtag_flutterapp/widgets/elevated_button.dart';
 import '../../api/auth_controller.dart';
 import '../../base/app_data.dart';
 
+
+
 void showChangePinDialog(
   BuildContext context, {
   required Function(String oldPin, String newPin) onSubmit,
@@ -11,7 +13,7 @@ void showChangePinDialog(
   showDialog(
     context: context,
     barrierDismissible: false,
-    builder: (context) => ChangePinDialog(onSubmit: onSubmit),
+    builder: (context) =>  ChangePinDialog(onSubmit: onSubmit,),
   );
 }
 
@@ -28,17 +30,22 @@ class ChangePinDialog extends StatelessWidget {
   final _newPinFocusNode = FocusNode();
   final _reenterPinFocusNode = FocusNode();
 
+ 
+
   bool _isPinsMatching() {
     return _newPinController.text == _reenterPinController.text;
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return PopScope(
       canPop: false,
       child: Dialog(
-        backgroundColor: ColorScheme.of(context).surfaceContainerLowest,
-        surfaceTintColor: ColorScheme.of(context).surfaceTint,
+        backgroundColor: colorScheme.surfaceContainerLowest,
+        surfaceTintColor:colorScheme.surfaceTint,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Stack(
           clipBehavior: Clip.none,
@@ -185,6 +192,7 @@ class PinTextField extends StatefulWidget {
     this.floatingLabelNever = false,
   });
 
+
   @override
   State<PinTextField> createState() => _PinTextFieldState();
 }
@@ -236,3 +244,4 @@ class _PinTextFieldState extends State<PinTextField> {
     );
   }
 }
+

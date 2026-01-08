@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
 import '../../widgets/bottomsheet/build_payment_options_widget.dart';
 
 import 'build_header_widet.dart';
@@ -42,58 +43,50 @@ class PaymentBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
-    final navBarHeight = MediaQuery.of(context).viewPadding.bottom;
-
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.only(
-          left: 8.0,
-          right: 8.0,
-          bottom: bottomInset + navBarHeight,
-          top: 8,
-        ),
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              buildHandleBar(context),
-              BuildPSIDField(
-                key: ValueKey('PSID'),
-                showPSIDField: showPSIDField,
-                psidController: psidController,
-                onCopyPSID: onCopyPSID,
-              ),
-              BuildRechargeSection(
-                key: ValueKey('Recharge Key'),
-                amountController: amountController,
-                showPSIDField: showPSIDField,
-                formKey: _formKey,
-                amountList: amountList,
-                regId: regId,
-                mtagId: mtagId,
-                jazzCode: jazzCode,
-                creditCode: creditCode,
-                blackListRecharge: blackListRecharge,
-                recoveryAmount: recoveryAmount,
-              ),
-              BuildPaymentOptionsWidget(
-                key: ValueKey('payment options'),
-                mtagId: mtagId,
-                regId: regId,
-                creditCode: creditCode,
-                jazzCode: jazzCode,
-                psidController: psidController,
-                showPSIDField: showPSIDField,
-                amount: amountController..text,
-                blackListRecharge: blackListRecharge,
-                recoveryAmount: recoveryAmount,
-              ),
-              const SizedBox(height: 20),
-            ],
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: .circular(12),
+        gradient: Theme.of(context).extension<AppGradients>()!.background,
+      ),
+      padding: .symmetric(horizontal: 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          buildHandleBar(context),
+          
+          BuildPSIDField(
+            key: ValueKey('PSID'),
+            showPSIDField: showPSIDField,
+            psidController: psidController,
+            onCopyPSID: onCopyPSID,
           ),
-        ),
+          BuildRechargeSection(
+            key: ValueKey('Recharge Key'),
+            amountController: amountController,
+            showPSIDField: showPSIDField,
+            formKey: _formKey,
+            amountList: amountList,
+            regId: regId,
+            mtagId: mtagId,
+            jazzCode: jazzCode,
+            creditCode: creditCode,
+            blackListRecharge: blackListRecharge,
+            recoveryAmount: recoveryAmount,
+          ),
+          BuildPaymentOptionsWidget(
+            key: ValueKey('payment options'),
+            mtagId: mtagId,
+            regId: regId,
+            creditCode: creditCode,
+            jazzCode: jazzCode,
+            psidController: psidController,
+            showPSIDField: showPSIDField,
+            amount: amountController..text,
+            blackListRecharge: blackListRecharge,
+            recoveryAmount: recoveryAmount,
+          ),
+          
+        ],
       ),
     );
   }

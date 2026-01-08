@@ -1,8 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-final String fontFamily = 'PlusJakartaSans';
+final String fontFamily = 'biotifbold';
 ThemeData appTheme = ThemeData(
+  extensions: [
+    AppShadows(
+      cardShadow: [
+        BoxShadow(color: Colors.grey.shade200, offset: Offset(0, 4)),
+        BoxShadow(color: Colors.grey.shade200, offset: Offset(4, 1)),
+        BoxShadow(color: Colors.grey.shade200, offset: Offset(1, 2)),
+        BoxShadow(color: Colors.grey.shade200, offset: Offset(2, 1)),
+      ],
+    ),
+    const AppGradients(
+      gridWidget: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFFFFFCFC), Color(0xFFD9EDF8), Color(0xFFE4EBF5)],
+      ),
+      // App / Screen background
+      background: LinearGradient(
+        begin: .topLeft,
+        end: AlignmentGeometry.centerRight,
+        colors: [Color(0xFFE4EDFC), Color(0xFFFCFCFC), Color(0xFFEAEBFD)],
+      ),
+
+      // Scroll / list fade
+      verticalFade: LinearGradient(
+        end: AlignmentGeometry.xy(0, 3),
+        colors: [
+          Color(0xFFFFFFFF),
+          Color(0xFFFCFCFC),
+          Color(0xFFF8F6FF),
+          Color(0xFFD9E5FF),
+          Color(0xFFE6EBFF),
+          Color(0xFFE6EBFF),
+          Color(0xFFE6EBFF),
+          Color(0xFFE6EBFF),
+          Color(0xFFE6EBFF),
+        ],
+      ),
+
+      // Card / tile gradient
+      card: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFFFFFFFF), Color(0xFFF4F6FF)],
+      ),
+
+      // Header / AppBar / Hero section
+      header: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [Color(0xFFE6EBFF), Color(0xFFFFFFFF)],
+      ),
+    ),
+  ],
+
   tabBarTheme: TabBarThemeData(
     labelStyle: TextStyle(fontSize: 11, fontFamily: fontFamily),
   ),
@@ -16,14 +70,15 @@ ThemeData appTheme = ThemeData(
   highlightColor: const Color(0xFF2C2E65),
   dividerColor: Colors.black54,
   visualDensity: VisualDensity.adaptivePlatformDensity,
-  colorScheme: const ColorScheme.light(
+  colorScheme: ColorScheme.light(
     primary: Color(0xFF2C2E65),
     onPrimary: Colors.white,
     scrim: Colors.white,
     surface: Colors.white,
     secondary: Colors.grey,
     surfaceContainer: Color(0xff21295E),
-      surfaceContainerLowest: Color(0xffE1E1E1)
+    surfaceContainerLowest: Color(0xffE1E1E1),
+    surfaceContainerLow: Colors.grey.shade100,
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ButtonStyle(
@@ -139,21 +194,40 @@ ThemeData appTheme = ThemeData(
       color: Colors.black,
     ),
   ),
+
   inputDecorationTheme: InputDecorationTheme(
     hintStyle: TextStyle(
-      color: Color(0xFF1A1C1E),
-      fontSize: 14,
+      color: const Color(0x993C3C43),
+      fontSize: 12,
       fontFamily: fontFamily,
-      height: 0.10,
+      height: 1.0,
       letterSpacing: -0.14,
     ),
+
     filled: true,
-    fillColor: const Color(0xFFF9FAFB),
+    fillColor: const Color(0xFFFFFFFF),
+    isDense: false,
+    isCollapsed: false, // Minimal height but affects label/error placement
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide.none,
+      borderRadius: BorderRadius.circular(5),
+      borderSide: const BorderSide(color: Color(0x33000000), width: 0.0),
     ),
-    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(5),
+      borderSide: const BorderSide(color: Color(0x33000000), width: 0.0),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(5),
+      borderSide: const BorderSide(color: Color(0x33000000), width: 0.0),
+    ),
+    disabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(5),
+      borderSide: const BorderSide(color: Color(0x33000000), width: 0.0),
+    ),
+    contentPadding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+    labelStyle: TextStyle(height: 1),
+    errorStyle: const TextStyle(fontSize: 10, height: 1.0),
+    floatingLabelBehavior: FloatingLabelBehavior.never,
   ),
 
   expansionTileTheme: ExpansionTileThemeData(
@@ -186,6 +260,12 @@ ThemeData appTheme = ThemeData(
   primaryColor: primarSwatch,
   primarySwatch: primarSwatch,
   textTheme: TextTheme(
+    headlineLarge: TextStyle(
+      fontSize: 37,
+      color: Colors.black87,
+      fontFamily: fontFamily,
+      fontWeight: .w600,
+    ),
     displayLarge: TextStyle(
       fontSize: 18,
       color: primarSwatch,
@@ -225,8 +305,8 @@ ThemeData appTheme = ThemeData(
       fontFamily: fontFamily,
     ),
     titleMedium: TextStyle(
-      fontSize: 16,
-      color: Colors.black,
+      fontSize: 15,
+      color: Colors.black54.withValues(alpha: 0.7),
       fontFamily: fontFamily,
     ),
     titleSmall: TextStyle(
@@ -260,7 +340,72 @@ ThemeData appTheme = ThemeData(
   ),
 );
 
-ThemeData darkTheme = ThemeData(
+ThemeData darkTheme = ThemeData(dropdownMenuTheme: DropdownMenuThemeData(
+    disabledColor: Colors.grey[850], // dropdown menu background
+   menuStyle: MenuStyle(surfaceTintColor: WidgetStatePropertyAll(Colors.black)),
+    textStyle: TextStyle(
+      color: Colors.black, // text color for items
+      fontSize: 14,
+    ),
+    inputDecorationTheme: InputDecorationTheme(contentPadding: .zero,
+      filled: true,
+      fillColor: Colors.grey[850], // optional
+    ),
+  ),
+  extensions: [
+    AppShadows(
+      cardShadow: [
+        BoxShadow(color: Colors.grey.shade800, offset: Offset(0, 0)),
+        BoxShadow(color: Colors.grey.shade800, offset: Offset(0, 0)),
+        BoxShadow(color: Colors.grey.shade800, offset: Offset(0, 0)),
+        BoxShadow(color: Colors.grey.shade800, offset: Offset(0, 0)),
+      ],
+    ),
+    const AppGradients(
+      gridWidget: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFF2B2F3C), Color(0xFF353944), Color(0xFF404555)],
+      ),
+
+      background: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFF1E2433), Color(0xFF121212), Color(0xFF232A44)],
+      ),
+
+      // Scroll / list fade
+      verticalFade: LinearGradient(
+        end: AlignmentGeometry.xy(0, 3),
+        colors: [
+          Color(0xFF121212),
+          Color(0xFF161616),
+          Color(0xFF1C1F2B),
+          Color(0xFF24314A),
+          Color(0xFF2B3552),
+          Color(0xFF2B3552),
+          Color(0xFF2B3552),
+          Color(0xFF2B3552),
+          Color(0xFF2B3552),
+        ],
+      ),
+
+      // Card / tile gradient
+      card: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFF1A1C28), Color(0xFF242634)],
+      ),
+
+      // Header / AppBar / Hero section
+      header: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [Color(0xFF2B3552), Color(0xFF1E2433)],
+      ),
+    ),
+  ],
+
   bannerTheme: const MaterialBannerThemeData(
     padding: EdgeInsets.zero,
     leadingPadding: EdgeInsets.zero,
@@ -299,7 +444,7 @@ ThemeData darkTheme = ThemeData(
       shape: WidgetStatePropertyAll(
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
-      backgroundColor: const WidgetStatePropertyAll( Color(0xFF2C2C2C)),
+      backgroundColor: const WidgetStatePropertyAll(Color(0xFF2C2C2C)),
       foregroundColor: const WidgetStatePropertyAll(Colors.white),
     ),
   ),
@@ -316,7 +461,8 @@ ThemeData darkTheme = ThemeData(
     titleTextStyle: TextStyle(
       fontFamily: fontFamily,
       fontWeight: FontWeight.w500,
-      color: Colors.white,fontSize: 16
+      color: Colors.white,
+      fontSize: 16,
     ),
     subtitleTextStyle: TextStyle(
       fontFamily: fontFamily,
@@ -329,7 +475,7 @@ ThemeData darkTheme = ThemeData(
     ),
   ),
   inputDecorationTheme: InputDecorationTheme(
-     filled: true,
+    filled: true,
     fillColor: const Color(0xFF2C2C2C),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
@@ -360,7 +506,7 @@ ThemeData darkTheme = ThemeData(
       statusBarIconBrightness: Brightness.light,
     ),
     iconTheme: const IconThemeData(color: Colors.white),
-    backgroundColor: primarSwatch,
+    backgroundColor: Colors.black,
     titleTextStyle: TextStyle(fontFamily: fontFamily, fontSize: 18),
   ),
 
@@ -388,13 +534,16 @@ ThemeData darkTheme = ThemeData(
     onPrimary: Colors.white,
     primary: Colors.white,
     secondary: Colors.grey,
-    surfaceContainerLowest: Color(0xFF2C2C2C)
-  
-    
+    surfaceContainerLowest: Color(0xFF2C2C2C),
   ),
   primaryColor: const Color(0xff212121),
   primarySwatch: primarSwatchDark,
   textTheme: TextTheme(
+    headlineLarge: TextStyle(
+      fontSize: 38,
+      fontFamily: fontFamily,
+      fontWeight: .w600,
+    ),
     displayLarge: TextStyle(
       fontSize: 18,
       color: Colors.white,
@@ -417,13 +566,13 @@ ThemeData darkTheme = ThemeData(
       fontFamily: fontFamily,
     ),
     titleMedium: TextStyle(
-      fontSize: 16,
-      color: Colors.black,
+      fontSize: 15,
+      color: Colors.white,
       fontFamily: fontFamily,
     ),
     titleSmall: TextStyle(
       fontSize: 11,
-      color: Colors.black,
+      color: Colors.white,
       fontFamily: fontFamily,
     ),
     bodyLarge: TextStyle(
@@ -442,7 +591,9 @@ ThemeData darkTheme = ThemeData(
       color: Colors.white,
       fontFamily: fontFamily,
     ),
+    labelSmall: TextStyle(fontFamily: fontFamily)
   ),
+
   tabBarTheme: TabBarThemeData(indicatorColor: Colors.white),
 );
 MaterialColor primarSwatch = const MaterialColor(0xFF2C2E65, {
@@ -470,3 +621,70 @@ MaterialColor primarSwatchDark = const MaterialColor(0xff000000, {
   900: Color(0xff000000),
 });
 
+@immutable
+class AppGradients extends ThemeExtension<AppGradients> {
+  final LinearGradient background;
+  final LinearGradient verticalFade;
+  final LinearGradient card;
+  final LinearGradient header;
+  final LinearGradient gridWidget;
+  const AppGradients({
+    required this.background,
+    required this.verticalFade,
+    required this.card,
+    required this.header,
+    required this.gridWidget,
+  });
+
+  @override
+  AppGradients copyWith({
+    LinearGradient? background,
+    LinearGradient? verticalFade,
+    LinearGradient? card,
+    LinearGradient? header,
+    LinearGradient? gridWidget,
+  }) {
+    return AppGradients(
+      background: background ?? this.background,
+      verticalFade: verticalFade ?? this.verticalFade,
+      card: card ?? this.card,
+      header: header ?? this.header,
+      gridWidget: gridWidget ?? this.gridWidget,
+    );
+  }
+
+  @override
+  AppGradients lerp(ThemeExtension<AppGradients>? other, double t) {
+    if (other is! AppGradients) return this;
+
+    return AppGradients(
+      background: LinearGradient.lerp(background, other.background, t)!,
+      verticalFade: LinearGradient.lerp(verticalFade, other.verticalFade, t)!,
+      card: LinearGradient.lerp(card, other.card, t)!,
+      header: LinearGradient.lerp(header, other.header, t)!,
+      gridWidget: LinearGradient.lerp(gridWidget, other.gridWidget, t)!,
+    );
+  }
+}
+
+class AppShadows extends ThemeExtension<AppShadows> {
+  final List<BoxShadow> cardShadow;
+
+  AppShadows({required this.cardShadow});
+
+  @override
+  AppShadows copyWith({List<BoxShadow>? cardShadow}) {
+    return AppShadows(cardShadow: cardShadow ?? this.cardShadow);
+  }
+
+  @override
+  AppShadows lerp(ThemeExtension<AppShadows>? other, double t) {
+    if (other is! AppShadows) return this;
+    return AppShadows(
+      cardShadow: List.generate(
+        cardShadow.length,
+        (i) => BoxShadow.lerp(cardShadow[i], other.cardShadow[i], t)!,
+      ),
+    );
+  }
+}

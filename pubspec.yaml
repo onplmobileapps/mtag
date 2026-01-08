@@ -89,6 +89,17 @@ flutter:
         - asset: fonts/PlusJakartaSans-VariableFont_wght.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
+    - family: PlusJakartaSans
+      fonts:
+        - asset: fonts/PlusJakartaSans-VariableFont_wght.ttf
+    - family: biotifbold
+      fonts:
+        - asset: fonts/DMSans.ttf
+    - family: biotiflight
+      fonts:
+        - asset: fonts/biotiflight.otf                 
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

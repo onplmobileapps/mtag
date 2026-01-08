@@ -6,7 +6,6 @@ class AuthPageController extends GetxController {
   final phoneController = TextEditingController();
   final cnicController = TextEditingController();
   final authIndex = 0.obs;
-  final formKey = GlobalKey<FormState>();
   final cnicFocusNode = FocusNode();
   final phoneFocusNode = FocusNode();
   final fullNameFocusNode = FocusNode();

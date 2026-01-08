@@ -27,7 +27,6 @@ class _StoryViewPageState extends State<StoryViewPage>
       vsync: this,
       duration: const Duration(seconds: 5),
     )..addStatusListener(_handleProgressStatus);
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_isDisposed && mounted) {
         _startProgress();
@@ -37,7 +36,6 @@ class _StoryViewPageState extends State<StoryViewPage>
 
   void _handleProgressStatus(AnimationStatus status) {
     if (_isDisposed || !mounted) return;
-
     if (status == AnimationStatus.completed) {
       _goToNextStory();
     }
@@ -45,7 +43,6 @@ class _StoryViewPageState extends State<StoryViewPage>
 
   void _startProgress() {
     if (_isDisposed || !mounted) return;
-
     _progressController.reset();
     _progressController.forward();
   }
@@ -64,7 +61,6 @@ class _StoryViewPageState extends State<StoryViewPage>
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
-
     if (mounted) {
       _startProgress();
     }
@@ -79,7 +75,6 @@ class _StoryViewPageState extends State<StoryViewPage>
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
-
     if (mounted) {
       _startProgress();
     }
@@ -87,7 +82,6 @@ class _StoryViewPageState extends State<StoryViewPage>
 
   void _onPageChanged(int index) {
     if (_isDisposed || !mounted) return;
-
     setState(() {
       _currentIndex = index;
     });
@@ -96,7 +90,6 @@ class _StoryViewPageState extends State<StoryViewPage>
 
   void _onTapDown(TapDownDetails details) {
     if (_isDisposed || !mounted || _isClosing) return;
-
     final width = MediaQuery.of(context).size.width;
     if (details.globalPosition.dx > width / 2) {
       _goToNextStory();

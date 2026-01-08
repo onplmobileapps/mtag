@@ -387,7 +387,6 @@ class _PinEntryPageState extends State<PinEntryPage> {
   );
 }
 
-
   /// Shows a dialog when biometric is unavailable or not set up.
   void _showBiometricDialog(BuildContext context) {
     showCupertinoModalPopup(

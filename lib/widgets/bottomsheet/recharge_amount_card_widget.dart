@@ -37,14 +37,14 @@ class BuildRechargeSection extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 20),
-            Row(children: [Text('$regId-$mtagId')]),
-             SizedBox(height: 20),
+           SizedBox(height: 6),
+            Row(children: [Text('$regId-$mtagId',style: TextTheme.of(context).displayLarge?.copyWith(fontWeight: .w700),)]),
+             SizedBox(height: 6),
             Text(
               blackListRecharge ? "Recovery Amount" : "Recharge Amount",
-              style: Theme.of(context).textTheme.displayLarge,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: .w900),
             ),
-            SizedBox(height: 5),
+          
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 0,vertical: 10),
               child: Form(

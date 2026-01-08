@@ -19,11 +19,11 @@ Widget buildPaymentOption(
         builder: (context, remainingTime, child) {
           return Theme(
             data: Theme.of(context).copyWith(
-              visualDensity: const VisualDensity(horizontal: -2, vertical: -2),
+              visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
             ),
             child: RadioGroup<int>(
               groupValue: selectedOption,
-              onChanged: ( newValue) {
+              onChanged: (newValue) {
                 if (remainingTime == Duration.zero) {
                   selectedOptionNotifier.value = newValue!;
                   if (onTap != null) onTap();
@@ -35,34 +35,36 @@ Widget buildPaymentOption(
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 value: value,
                 title: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Image.asset(
-                      assetPath,
-                      height: 30,
-                      width: 45,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        label,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(fontWeight: .w600),
+                      ),
                     ),
                     const SizedBox(width: 8),
-                    Text(
-                      label,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontSize: 12),
-                    ),
+                    Image.asset(assetPath, height: 30, width: 45),
                   ],
                 ),
                 controlAffinity: ListTileControlAffinity.leading,
+                fillColor: WidgetStatePropertyAll(
+                  ColorScheme.of(context).primary,
+                ),
+                activeColor: Theme.of(context).primaryColor,
+                radioSide: BorderSide(color: Colors.grey),
                 dense: true,
+
                 contentPadding: const EdgeInsets.symmetric(vertical: 0),
                 secondary: remainingTime > Duration.zero
                     ? Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: Text(
                           '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
+                          style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(fontSize: 12, color: Colors.red),
                         ),
                       )

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../../base/app_data.dart';
 import '../../controller/home_controller.dart';
 import '../../widgets/dialog/change_pin_dialog.dart';
@@ -271,6 +272,7 @@ final List<SettingsModel> items = [
     icon: const Icon(Icons.notifications_on_outlined),
     routeName: '/notifications',
   ),
+
   SettingsModel(
     onTap: () {
       Get.toNamed('/feedback');

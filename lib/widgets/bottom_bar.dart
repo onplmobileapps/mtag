@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
 import '../controller/home_controller.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
@@ -17,25 +18,33 @@ class CustomBottomNavBar extends StatelessWidget {
     required this.controller,
     required this.items,
     this.height = 55,
-    this.padding = const EdgeInsets.only(top: 8),
-    this.notchMargin = 6,
+    this.padding = const EdgeInsets.only(top: 0, bottom: 0),
+    this.notchMargin = 10,
     this.elevation = 10,
     this.backgroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
-
     return BottomAppBar(
+      shadowColor: Colors.white,
       height: height,
       padding: padding,
+      clipBehavior: .none,
       shape: const CircularNotchedRectangle(),
       notchMargin: notchMargin,
+      surfaceTintColor: Colors.white,
       elevation: elevation,
-      color: backgroundColor ?? Colors.grey.withAlpha(25),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: _buildNavigationItems(context),
+      color: Colors.transparent,
+      child: Container(
+        padding: .symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+          gradient: Theme.of(context).extension<AppGradients>()!.background,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: _buildNavigationItems(context),
+        ),
       ),
     );
   }
@@ -49,12 +58,7 @@ class CustomBottomNavBar extends StatelessWidget {
       if (item.isSpacer) {
         widgets.add(SizedBox(width: item.spacerWidth ?? 50));
       } else {
-        widgets.add(
-          _BottomNavItemWidget(
-            item: item,
-            controller: controller,
-          ),
-        );
+        widgets.add(_BottomNavItemWidget(item: item, controller: controller));
       }
     }
 
@@ -66,10 +70,7 @@ class _BottomNavItemWidget extends StatelessWidget {
   final BottomNavItem item;
   final HomeController controller;
 
-  const _BottomNavItemWidget({
-    required this.item,
-    required this.controller,
-  });
+  const _BottomNavItemWidget({required this.item, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +84,8 @@ class _BottomNavItemWidget extends StatelessWidget {
           ? (item.selectedColor ?? colorScheme.primary)
           : (item.unselectedColor ?? colorScheme.secondary.withAlpha(180));
 
+      final double iconSize = item.index == 0 ? 20 : 26;
+
       return InkWell(
         onTap: () => controller.changePage(item.index),
         borderRadius: BorderRadius.circular(8),
@@ -91,16 +94,22 @@ class _BottomNavItemWidget extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SvgPicture.asset(
-                item.imagePath,
-                width: item.iconSize,
-                height: item.iconSize,
-                colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: SvgPicture.asset(
+                  item.imagePath,
+                  width: iconSize,
+                  height: iconSize,
+                  fit: BoxFit.contain,
+                  colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+                ),
               ),
-              // SizedBox(height: item.spacing),
+              SizedBox(height: item.spacing),
               Text(
                 item.label,
-                style: TextTheme.of(context).labelSmall?.copyWith(color: textColor),
+                style: Theme.of(
+                  context,
+                ).textTheme.displaySmall?.copyWith(color: textColor),
               ),
             ],
           ),
@@ -124,7 +133,6 @@ class BottomNavItem {
   final bool isSpacer;
   final double? spacerWidth;
   final Widget? page;
-
 
   BottomNavItem({
     required this.imagePath,

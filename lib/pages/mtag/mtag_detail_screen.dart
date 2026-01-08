@@ -3,8 +3,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/pages/tollhistory/toll_history_screen.dart';
-import 'package:mtag_flutterapp/widgets/dashboard_widget.dart';
+import '../../pages/tollhistory/toll_history_screen.dart';
+
+
+import '../../widgets/dashboard_widget.dart';
 import '/pages/recharge/controller/recharge_controller.dart';
 import '../../pages/tollhistory/controller/tollcontroller.dart';
 import '../../widgets/elevated_button.dart';
