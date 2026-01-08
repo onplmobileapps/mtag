@@ -80,7 +80,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                   isBlocked: blackListRecharge ? true : false,
                   isInvoice: true,
                 );
-
+        
                 if (context.mounted && (data.containsKey('PSID'))) {
                   final fee =
                       double.tryParse(data['charges'].toString()) ?? 0.0;
@@ -88,7 +88,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                   final effectiveAmount = blackListRecharge
                       ? (recoveryAmount ?? 0.0)
                       : enteredAmount;
-
+        
                   showBreakdownDialog(
                     psid: data['PSID'],
                     context: context,
@@ -100,7 +100,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                     inVoicetimerNotifier: inVoicetimerNotifier,
                     blackListRecharge: blackListRecharge,
                   );
-
+        
                   inVoicetimerNotifier.value = Duration(minutes: 10);
                   startTimer(inVoicetimerNotifier);
                   return;
@@ -141,7 +141,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                             isBlocked: blackListRecharge ? true : false,
                             isInvoice: false,
                           );
-
+        
                       if (context.mounted &&
                           data.containsKey(APIRESPONSE.SUCCESS)) {
                         showTopUpDialog(
@@ -150,7 +150,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                           amount: blackListRecharge
                               ? recoveryAmount
                               : double.parse(amount.text),
-
+        
                           inVoicetimerNotifier: topUptimerNotifier,
                           blackListRecharge: blackListRecharge,
                         );
@@ -187,11 +187,11 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                           ),
                         ],
                       );
-
+        
                       if (onChanged != null) {
                         onChanged!(1); // Call only if onChanged is not null
                       }
-
+        
                       selected1linkOpt.value = 2;
                     },
                   )
@@ -217,12 +217,12 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                       if (onChanged != null) {
                         onChanged!(0);
                       }
-
+        
                       selected1linkOpt.value = 3;
                     },
                   )
                 : Container(),
-       
+            
           ],
         );
       },

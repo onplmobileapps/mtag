@@ -58,8 +58,8 @@ void showPaymentBottomSheet(
 
     builder: (context) {
       return DraggableScrollableSheet(
-        shouldCloseOnMinExtent: true,
-        initialChildSize: 0.58,
+     
+        initialChildSize: 0.65,
         expand: false, // Prevents full screen expansion
         builder: (context, scrollController) {
           return PaymentBottomSheet(

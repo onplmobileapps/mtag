@@ -137,24 +137,25 @@ class _PinEntryPageState extends State<PinEntryPage> {
 
         return Material(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: spacing ),
-            child: Column(spacing: 16,
-              mainAxisAlignment:   .start,
+            padding: EdgeInsets.symmetric(horizontal: spacing),
+            child: Column(
+              spacing: 16,
+              mainAxisAlignment: .start,
               crossAxisAlignment: .start,
               children: [
-                SizedBox(height: 50,),
-          
+                SizedBox(height: 60),
+
                 _buildLogo(size),
-             
-                _buildTitle(context),
-           
+
+              
+
                 _buildSubtitle(context),
-             
+   
                 _buildPinField(size),
-          
+
                 _buildOptions(size),
-           
-                _buildKeyboard(size),
+
+                _buildKeyboard(),
               ],
             ),
           ),
@@ -173,19 +174,8 @@ class _PinEntryPageState extends State<PinEntryPage> {
     );
   }
 
-  /// Builds the welcome title.
-  Widget _buildTitle(BuildContext context) {
-    return Center(
-      child: Text(
-        'Welcome to One Network',
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-          fontWeight: FontWeight.w600,
-          fontSize: MediaQuery.of(context).size.height * 0.026,
-        ),
-      ),
-    );
-  }
+
+// Hasseeb asked to remove title 
 
   /// Builds the subtitle based on page context.
   Widget _buildSubtitle(BuildContext context) {
@@ -247,61 +237,62 @@ class _PinEntryPageState extends State<PinEntryPage> {
                 },
                 child: Text(
                   'Forgot Login PIN?',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: .w600),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: .w600),
                 ),
               ),
               _isAuthAvailable
-                  ?  GestureDetector( onTap: () {
+                  ? GestureDetector(
+                      onTap: () {
                         if (AppData.getPinData() == null) {
                           _showBiometricDialog(context);
                         } else {
                           _authenticateAndVerify();
                         }
                       },
-                    child: Container(margin: .all(16),
-                          padding: EdgeInsets.all(6),
-                          decoration: BoxDecoration(
+                      child: Container(
+                        margin: .all(16),
+                        padding: EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Get.isDarkMode
+                              ? Colors.transparent
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
                             color: Get.isDarkMode
                                 ? Colors.transparent
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: Get.isDarkMode
-                                  ? Colors.transparent
-                                  : Theme.of(context).colorScheme.outline,
-                              width: 1,
-                            ),
+                                : Theme.of(context).colorScheme.outline,
+                            width: 1,
                           ),
-                          child: Platform.isIOS
-                              ? Transform.translate(
-                                  offset: Offset(
-                                    size.width * 0.008,
-                                    size.height * 0.002,
-                                  ),
-                                  child: Image.asset(
-                                    "assets/face3.png",
-                                    height: size.width * 0.09,
-                                    width: size.width * 0.09,
-                                    fit: BoxFit.contain,
-                                    color: Get.isDarkMode
-                                        ? Colors.white
-                                        : Theme.of(context).primaryColor,
-                                  ),
-                                )
-                              : Image.asset(
-                                  "assets/fingerprint.png",
-                                  height: size.width * 0.08,
-                                  width: size.width * 0.08,
+                        ),
+                        child: Platform.isIOS
+                            ? Transform.translate(
+                                offset: Offset(
+                                  size.width * 0.008,
+                                  size.height * 0.002,
+                                ),
+                                child: Image.asset(
+                                  "assets/face3.png",
+                                  height: size.width * 0.09,
+                                  width: size.width * 0.09,
+                                  fit: BoxFit.contain,
                                   color: Get.isDarkMode
                                       ? Colors.white
                                       : Theme.of(context).primaryColor,
                                 ),
-                      
-                       
+                              )
+                            : Image.asset(
+                                "assets/fingerprint.png",
+                                height: size.width * 0.08,
+                                width: size.width * 0.08,
+                                color: Get.isDarkMode
+                                    ? Colors.white
+                                    : Theme.of(context).primaryColor,
+                              ),
                       ),
-                  )
+                    )
                   : Container(width: size.width * 0.09),
-              // Placeholder
             ],
           ),
         ),
@@ -315,7 +306,8 @@ class _PinEntryPageState extends State<PinEntryPage> {
             child: Text(
               'Sign-in with a different account',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                decoration: TextDecoration.underline,fontWeight: .w500
+                decoration: TextDecoration.underline,
+                fontWeight: .w500,
               ),
             ),
           ),
@@ -325,67 +317,83 @@ class _PinEntryPageState extends State<PinEntryPage> {
   }
 
   /// Builds the numeric keyboard.
-  Widget _buildKeyboard(Size size) {
-    return Expanded(
-      child: GridView.builder(
-        padding: EdgeInsets.zero,
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: 12,
-        gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,crossAxisSpacing: 0,mainAxisSpacing: 10,
-          childAspectRatio: Platform.isAndroid?1.2: 1.4,
-        ),
-        itemBuilder: (context, index) {
-          if (index == 9) return const SizedBox.shrink();
-          if (index == 11) {
+  Widget _buildKeyboard() {
+  return Expanded(
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        final maxHeight = constraints.maxHeight;
+        final maxWidth = constraints.maxWidth;
+        
+        // Calculate key size based on available space
+        final double keyWidth = maxWidth / 3 - 5; // Account for spacing
+        final double keyHeight = keyWidth * (Platform.isAndroid ? 1.0 : 1.4);
+        
+        // Adjust if total height exceeds available space
+        final totalGridHeight = (keyHeight * 4) + (28 * 3); // 4 rows, 3 spacings
+        
+        final double aspectRatio = totalGridHeight > maxHeight 
+            ? keyWidth / (keyHeight * (maxHeight / totalGridHeight))
+            : keyWidth / keyHeight;
+        
+        return GridView.builder(
+          padding: EdgeInsets.zero,
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: 12,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 6,
+            childAspectRatio: aspectRatio,
+          ),
+          itemBuilder: (context, index) {
+            if (index == 9) return const SizedBox.shrink();
+            if (index == 11) {
+              return _buildKey(
+                child: Icon(Icons.backspace_outlined, size: keyWidth * 0.3),
+                onPressed: _onBackspaceTap,
+              );
+            }
+            final number = index == 10 ? 0 : index + 1;
             return _buildKey(
-              child: Icon(Icons.backspace_outlined, size: size.width * 0.05),
-              onPressed: _onBackspaceTap,
+              child: Text(
+                '$number',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontSize: 30, // Relative to key size
+                ),
+              ),
+              onPressed: () => _onNumberTap(number),
             );
-          }
-          final number = index == 10 ? 0 : index + 1;
-          return _buildKey(
-            child: Text(
-              '$number',
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(fontSize: size.height * 0.03),
-            ),
-            onPressed: () => _onNumberTap(number),
-          );
-        },
-      ),
-    );
-  }
-
-  /// Reusable key widget for keyboard buttons.
- Widget _buildKey({
-  required Widget child,
-  required VoidCallback onPressed,
-}) {
-  final bgColor = Theme.of(context)
-      .colorScheme
-      .surfaceContainerLowest
-      .withValues(alpha: 0.4);
-
-  return Material(
-    color: bgColor, // SAME as container bg
-    shape: const CircleBorder(),
-    child: InkWell(
-      onTap: onPressed,
-      customBorder: const CircleBorder(), // splash radius = circle
-      splashColor: bgColor.withValues(alpha: 0.7),
-      highlightColor: bgColor.withValues(alpha: 0.5),
-      child: Container(
-        margin: const EdgeInsets.all(4),
-        padding: const EdgeInsets.all(16),
-        alignment: Alignment.center,
-        child: child,
-      ),
+          },
+        );
+      },
     ),
   );
 }
+
+  /// Reusable key widget for keyboard buttons.
+  Widget _buildKey({required Widget child, required VoidCallback onPressed}) {
+    final bgColor = Theme.of(
+      context,
+    ).colorScheme.surfaceContainerLowest.withValues(alpha: 0.4);
+
+    return Material(
+      color: bgColor, // SAME as container bg
+      shape: const CircleBorder(),
+      child: InkWell(
+        onTap: onPressed,
+        customBorder: const CircleBorder(), // splash radius = circle
+        splashColor: bgColor.withValues(alpha: 0.7),
+        highlightColor: bgColor.withValues(alpha: 0.5),
+        child: Container(
+          margin: const EdgeInsets.all(4),
+          padding: const EdgeInsets.all(16),
+          alignment: Alignment.center,
+          child: child,
+        ),
+      ),
+    );
+  }
 
   /// Shows a dialog when biometric is unavailable or not set up.
   void _showBiometricDialog(BuildContext context) {
@@ -403,4 +411,3 @@ class _PinEntryPageState extends State<PinEntryPage> {
     );
   }
 }
-

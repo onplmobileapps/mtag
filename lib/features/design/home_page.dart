@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,6 +67,23 @@ class HomePageContent extends StatelessWidget {
   HomePageContent({super.key});
   @override
   Widget build(BuildContext context) {
+    log('height:${MediaQuery.sizeOf(context).height}');
+
+    double getExpandedHeight(BuildContext context) {
+      final screenHeight =
+          MediaQuery.of(context).size.height -
+          MediaQuery.of(context).padding.top -
+          MediaQuery.of(context).padding.bottom;
+
+      if (screenHeight <= 740) {
+        return screenHeight * 0.55; // small devices → more height
+      } else if (screenHeight <= 800) {
+        return screenHeight * 0.45; // normal devices
+      } else {
+        return screenHeight * 0.42; // large devices → less height
+      }
+    }
+
     return GetX<HomeController>(
       builder: (controller) {
         final mtags = controller.dashboradData.value.activeMtags;
@@ -103,7 +122,7 @@ class HomePageContent extends StatelessWidget {
                     clipBehavior: .none,
                     pinned: true,
                     floating: false,
-                    expandedHeight: MediaQuery.of(context).size.height * 0.42,
+                    expandedHeight: getExpandedHeight(context),
                     backgroundColor: Colors.transparent,
                     elevation: 0,
                     automaticallyImplyLeading: false,
@@ -224,10 +243,7 @@ class VehicleCard extends StatelessWidget {
             mainAxisAlignment: .start,
             crossAxisAlignment: .start,
             children: [
-              Expanded(
-                flex: 0,
-                child: _MtagDataWidget(width: w, key: key, mtag: mtags),
-              ),
+              _MtagDataWidget(width: w, key: key, mtag: mtags),
               Spacer(),
               BalanceCard(mtag: mtags),
             ],
@@ -506,7 +522,9 @@ class BalanceCard extends StatelessWidget {
                     FittedBox(
                       fit: .scaleDown,
                       child: Text(
-                       mtag?.isactive==8.0?'Recovery Amount': 'Available Balance',
+                        mtag?.isactive == 8.0
+                            ? 'Recovery Amount'
+                            : 'Available Balance',
                         style: TextTheme.of(context).titleMedium,
                       ),
                     ),
@@ -535,13 +553,13 @@ class BalanceCard extends StatelessWidget {
                 FittedBox(
                   fit: .scaleDown,
                   child: Text(
-                    value ? 'Rs. ${ balance ?? ''}' : '****',
+                    value ? 'Rs. ${balance ?? ''}' : '****',
                     style: TextTheme.of(
                       context,
                     ).headlineLarge?.copyWith(letterSpacing: 1.2),
                   ),
                 ),
-                if (mtag?.isactive!=8.0&& balance != null && balance <= 50.0)
+                if (mtag?.isactive != 8.0 && balance != null && balance <= 50.0)
                   Row(
                     children: [
                       Text(
@@ -587,7 +605,7 @@ class BalanceCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 5),
-              if(mtag?.isactive!=8.0)  _TransferRemoveRow(mtag!),
+                if (mtag?.isactive != 8.0) _TransferRemoveRow(mtag!),
               ],
             ),
           );
@@ -782,7 +800,7 @@ class ActionGrid extends StatelessWidget {
           maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.5,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
-          mainAxisExtent: MediaQuery.of(context).size.height * 0.08,
+          mainAxisExtent: MediaQuery.of(context).size.height * 0.09,
         ),
         delegate: SliverChildBuilderDelegate(
           childCount: controller.dashBoardModel.length,

@@ -453,7 +453,7 @@ class AuthPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  FooterWidget(),
+                  SafeArea(child: FooterWidget()),
                 ],
               ),
             ),
