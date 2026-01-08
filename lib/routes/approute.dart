@@ -4,7 +4,7 @@ import 'package:mtag_flutterapp/pages/login/create_pin_page.dart';
 import 'package:mtag_flutterapp/pages/notification/notification_withintent.dart';
 import '../../constants/other_consts.dart';
 import '../../maintenance/maintenance_screen.dart';
-import '../../pages/dashboard/home_page.dart';
+import '../features/design/home_page.dart';
 import '../../pages/notification/notification_screen.dart';
 import '../../pages/privacy/privacy_policy_screen.dart';
 import '../../pages/receipt/receipt_screen.dart';
@@ -101,14 +101,14 @@ List<GetPage<dynamic>>? getPages = [
     popGesture: true,
   ),
   GetPage(
-      name: '/story',
-      page: () => StoryViewPage(storiesIndex: []),
-      popGesture: false, // Disable swipe for this route
-    ),
-    GetPage(
-      name: '/rechargeLocator',
-      page: () => RechargeMapScreen(),
-      popGesture: false, // Disable swipe for this route
-    ),
+    name: '/story',
+    page: () => StoryViewPage(storiesIndex: []),
+    popGesture: false, // Disable swipe for this route
+  ),
+  GetPage(
+    name: '/rechargeLocator',
+    page: () => RechargeMapScreen(),
+    popGesture: false, // Disable swipe for this route
+  ),
 ];
 //RechargeMapScreen

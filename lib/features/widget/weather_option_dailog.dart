@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/api/application_url.dart';
 import 'package:mtag_flutterapp/controller/home_controller.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
 
 import '../../pages/alfawebview/weather_webview.dart';
 
@@ -23,15 +24,7 @@ Future<void> showWeatherUpdateDialog(BuildContext context) {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 28),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                gradient: const LinearGradient(
-                  begin: .topLeft,
-                  end: AlignmentGeometry.centerRight,
-                  colors: [
-                    Color(0xFFE4EDFC),
-                    Color(0xFFFCFCFC),
-                    Color(0xFFEAEBFD),
-                  ],
-                ),
+                gradient: Theme.of(context).extension<AppGradients>()!.background,
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.12),

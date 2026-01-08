@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
 import '../controller/home_controller.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
@@ -17,7 +18,7 @@ class CustomBottomNavBar extends StatelessWidget {
     required this.controller,
     required this.items,
     this.height = 55,
-    this.padding = const EdgeInsets.only(top: 0,bottom: 0),
+    this.padding = const EdgeInsets.only(top: 0, bottom: 0),
     this.notchMargin = 10,
     this.elevation = 10,
     this.backgroundColor,
@@ -25,19 +26,20 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return BottomAppBar(shadowColor: Color(0xFFFCFCFC),
+    return BottomAppBar(
+      shadowColor: Colors.white,
       height: height,
-      padding: padding,clipBehavior: .none,
+      padding: padding,
+      clipBehavior: .none,
       shape: const CircularNotchedRectangle(),
-      notchMargin: notchMargin,surfaceTintColor: Colors.white,
+      notchMargin: notchMargin,
+      surfaceTintColor: Colors.white,
       elevation: elevation,
-   color: Colors.transparent,
-      child: Container(decoration: BoxDecoration(  gradient: const LinearGradient(
-              begin: .topLeft,
-              end: AlignmentGeometry.centerRight,
-              colors: [Color(0xFFE4EDFC), Color(0xFFFCFCFC), Color(0xFFEAEBFD)],
-            ),),
+      color: Colors.transparent,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: Theme.of(context).extension<AppGradients>()!.background,
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: _buildNavigationItems(context),
@@ -55,12 +57,7 @@ class CustomBottomNavBar extends StatelessWidget {
       if (item.isSpacer) {
         widgets.add(SizedBox(width: item.spacerWidth ?? 50));
       } else {
-        widgets.add(
-          _BottomNavItemWidget(
-            item: item,
-            controller: controller,
-          ),
-        );
+        widgets.add(_BottomNavItemWidget(item: item, controller: controller));
       }
     }
 
@@ -72,10 +69,7 @@ class _BottomNavItemWidget extends StatelessWidget {
   final BottomNavItem item;
   final HomeController controller;
 
-  const _BottomNavItemWidget({
-    required this.item,
-    required this.controller,
-  });
+  const _BottomNavItemWidget({required this.item, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +106,9 @@ class _BottomNavItemWidget extends StatelessWidget {
               SizedBox(height: item.spacing),
               Text(
                 item.label,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(color: textColor),
+                style: Theme.of(
+                  context,
+                ).textTheme.labelSmall?.copyWith(color: textColor),
               ),
             ],
           ),
@@ -136,7 +132,6 @@ class BottomNavItem {
   final bool isSpacer;
   final double? spacerWidth;
   final Widget? page;
-
 
   BottomNavItem({
     required this.imagePath,

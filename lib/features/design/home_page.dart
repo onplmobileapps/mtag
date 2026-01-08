@@ -1,16 +1,15 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/constants/other_consts.dart';
-import 'package:mtag_flutterapp/controller/home_controller.dart';
-
-import 'package:mtag_flutterapp/pages/dashboard/home_page.dart';
-import 'package:mtag_flutterapp/pages/dashboard/model/dashboard_model.dart';
-
-import 'package:mtag_flutterapp/widgets/bottom_bar.dart';
-import 'package:mtag_flutterapp/widgets/elevated_button.dart';
-import 'package:mtag_flutterapp/widgets/shimmer_dashboard.dart';
-
+import '../../constants/other_consts.dart';
+import '../../controller/home_controller.dart';
+import '../../pages/dashboard/nav_item.dart';
+import '../../pages/dashboard/model/dashboard_model.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/bottom_bar.dart';
+import '../../widgets/elevated_button.dart';
+import '../../widgets/shimmer_dashboard.dart';
 import '../../constants/call_helper.dart';
 import '../../pages/dashboard/model/mtag_model.dart';
 import '../../pages/mtag/controller/delink_controller.dart';
@@ -19,6 +18,8 @@ import '../../widgets/bottomsheet/balance_transfer_bs.dart';
 import '../../widgets/dashboard_widget.dart';
 import '../../widgets/dialog/chassis_num.dart';
 import '../../widgets/dialog/delink_dialog.dart';
+import '../widget/help_section.dart';
+import '../widget/slider_section.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -37,7 +38,6 @@ class HomePage extends StatelessWidget {
                 .page ??
             const SizedBox.shrink();
         return Scaffold(
-          backgroundColor: Colors.transparent,
           floatingActionButtonLocation: .miniCenterDocked,
           floatingActionButton: GestureDetector(
             onTap: () async {
@@ -78,12 +78,21 @@ class HomePageContent extends StatelessWidget {
               clipBehavior: .none,
               centerTitle: true,
               elevation: 0,
-              systemOverlayStyle: SystemUiOverlayStyle(
-                statusBarBrightness: .dark,
-                statusBarIconBrightness: .light,
-              ),
+              systemOverlayStyle: Get.isDarkMode
+                  ? SystemUiOverlayStyle(
+                      statusBarBrightness: .dark,
+                      statusBarIconBrightness: .light,
+                    )
+                  : SystemUiOverlayStyle(
+                      statusBarBrightness: .light,
+                      statusBarIconBrightness: .dark,
+                    ),
               backgroundColor: Colors.transparent,
-              title: Image.asset('assets/logolight.png', height: 60, width: 70),
+              title: Image.asset(
+                Get.isDarkMode ? 'assets/darklogo.png' : 'assets/logolight.png',
+                height: 60,
+                width: 70,
+              ),
             ),
             Expanded(
               child: CustomScrollView(
@@ -135,7 +144,7 @@ class HomePageContent extends StatelessWidget {
                             valueListenable: _currentPage,
                             builder: (context, value, child) {
                               return Container(
-                                color: Colors.white, // Solid color
+                                color: Colors.transparent, // Solid color
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -152,8 +161,10 @@ class HomePageContent extends StatelessWidget {
                                       Container(
                                         decoration: BoxDecoration(
                                           color: i == value
-                                              ? Colors.black
-                                              : Colors.black26,
+                                              ? ColorScheme.of(context).primary
+                                              : ColorScheme.of(
+                                                  context,
+                                                ).surfaceContainerLowest,
                                           borderRadius: BorderRadius.circular(
                                             8,
                                           ),
@@ -206,11 +217,7 @@ class VehicleCard extends StatelessWidget {
           margin: .symmetric(horizontal: 10),
           decoration: BoxDecoration(
             borderRadius: .circular(16),
-            gradient: const LinearGradient(
-              begin: .topLeft,
-              end: AlignmentGeometry.centerRight,
-              colors: [Color(0xFFE4EDFC), Color(0xFFFCFCFC), Color(0xFFEAEBFD)],
-            ),
+            gradient: Theme.of(context).extension<AppGradients>()!.background,
           ),
           child: Column(
             mainAxisAlignment: .start,
@@ -240,7 +247,7 @@ class _MtagDataWidget extends StatelessWidget {
       children: [
         FittedBox(
           child: Container(
-            padding: EdgeInsets.only(top: 16, left: width * 0.03, bottom:0),
+            padding: EdgeInsets.only(top: 16, left: width * 0.03, bottom: 0),
 
             child: Image.asset(
               getVehicleImage(mtag?.vehicletype ?? ''),
@@ -251,7 +258,8 @@ class _MtagDataWidget extends StatelessWidget {
         Expanded(
           child: Padding(
             padding: .symmetric(horizontal: 10),
-            child: Column(spacing: 8,
+            child: Column(
+              spacing: 8,
               mainAxisAlignment: .start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -260,11 +268,11 @@ class _MtagDataWidget extends StatelessWidget {
                   children: [
                     Padding(
                       padding: .only(right: 8, top: 8),
-                      child: _ActiveBadge(mtag?.isactive == 1.0 ? true : false),
+                      child: _ActiveBadge(mtag?.isactive),
                     ),
                   ],
                 ),
-               
+
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.topLeft,
@@ -273,12 +281,9 @@ class _MtagDataWidget extends StatelessWidget {
                       children: [
                         TextSpan(
                           text: mtag?.registration ?? '',
-                          // text: 'LEF-3574', // first part
-                          style: TextStyle(
-                            fontFamily: 'biotifbold',
-                            color: Colors.black, // grey color
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: TextTheme.of(
+                            context,
+                          ).bodyMedium?.copyWith(fontSize: 13),
                         ),
 
                         TextSpan(
@@ -290,18 +295,16 @@ class _MtagDataWidget extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: ' #${mtag?.tokenno ?? ''}', // rest of text
-                          style: TextStyle(
-                            fontFamily: 'biotifbold',
-                            color: Colors.black87, // black color
-                            fontWeight: FontWeight.w900,
-                          ),
+                          text: ' #${mtag?.tokenno ?? ''}',
+                          style: TextTheme.of(
+                            context,
+                          ).bodyMedium?.copyWith(fontSize: 13),
                         ),
                       ],
                     ),
                   ),
                 ),
-             
+
                 FittedBox(
                   child: Row(
                     children: [
@@ -317,19 +320,39 @@ class _MtagDataWidget extends StatelessWidget {
                               ),
                             ),
                             // Number
-                            TextSpan(
-                              text: mtag?.chassis_number ?? '',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w900,
-                                fontFamily: 'biotifbold',
-                              ),
-                            ),
+                            mtag?.chassis_number?.isEmpty ?? false
+                                ? TextSpan(
+                                    text: 'Chassis number is missing',
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () async {
+                                        await showDialog(
+                                          context: context,
+                                          builder: (_) => ChassisNumberDialog(
+                                            chassissNo:
+                                                mtag?.chassis_number ?? '',
+                                            registration:
+                                                mtag?.registration ?? '',
+                                            tokenNo: mtag?.tokenno ?? '',
+                                            mobileNumber: mtag?.mobilenum ?? '',
+                                            balance: mtag?.balance ?? '',
+                                            cnicNumber:
+                                                OtherConsts().ownerCNIC.value,
+                                          ),
+                                        );
+                                      },
+                                  )
+                                : TextSpan(
+                                    text: mtag?.chassis_number ?? '',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(fontSize: 13),
+                                  ),
                           ],
                         ),
                       ),
-                      SizedBox(width: 10),
-                      InkWell(
+                    if(mtag?.chassis_number?.isNotEmpty??false) ... [ SizedBox(width: 10),
+                 InkWell(
                         onTap: () async => await showDialog(
                           context: context,
                           builder: (_) => ChassisNumberDialog(
@@ -342,11 +365,12 @@ class _MtagDataWidget extends StatelessWidget {
                           ),
                         ),
                         child: Icon(Icons.edit_square, size: 18),
-                      ),
+                      ),]
+                     
                     ],
                   ),
                 ),
-              
+
                 Divider(
                   color: Colors.grey.shade300,
                   thickness: 1.5,
@@ -367,12 +391,7 @@ class _MtagDataWidget extends StatelessWidget {
                       Text('Owner : ', style: TextStyle(color: Colors.grey)),
                       Text(
                         '${mtag?.ownername}',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'biotifbold',
-                          fontWeight: .w600,
-                          fontSize: 16,
-                        ),
+                        style: TextTheme.of(context).bodyMedium,
                       ),
                     ],
                   ),
@@ -387,7 +406,7 @@ class _MtagDataWidget extends StatelessWidget {
 }
 
 class _ActiveBadge extends StatelessWidget {
-  final bool isActive;
+  final double isActive;
   const _ActiveBadge(this.isActive);
 
   @override
@@ -406,17 +425,22 @@ class _ActiveBadge extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: isActive ? Colors.green : Colors.red,
+                color: isActive == 1.0 ? Colors.green : Colors.red,
                 width: 2.5,
               ),
             ),
           ),
           SizedBox(width: 4),
-          FittedBox(fit: .scaleDown,
+          FittedBox(
+            fit: .scaleDown,
             child: Text(
               'ACTIVE',
               style: TextStyle(
-                color: isActive ? Colors.green.shade900 : Colors.red,
+                color: isActive == 1.0
+                    ? Colors.green.shade900
+                    : isActive == 1.5
+                    ? Colors.red
+                    : Colors.black,
                 fontSize: 12.5,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 0.4,
@@ -431,31 +455,18 @@ class _ActiveBadge extends StatelessWidget {
 }
 
 class BalanceCard extends StatelessWidget {
-  BalanceCard({super.key, this.mtag});
+  BalanceCard({super.key, this.mtag, this.balance});
   final ActiveMtags? mtag;
+  final double? balance;
   final ValueNotifier<bool> balanceVisibleNotifier = ValueNotifier(true);
   @override
   Widget build(BuildContext context) {
+    final balance = double.tryParse('${mtag?.balance}');
     return Container(
       clipBehavior: .none,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        gradient: LinearGradient(
-          end: AlignmentGeometry.xy(0, 3),
-          colors: const [
-            Color(0xFFFFFFFF),
-            Color(0xFFFCFCFC),
-            Color(0xFFF8F6FF),
-            Color(0xFFD9E5FF),
-            Color(0xFFE6EBFF),
-            Color(0xFFE6EBFF),
-            Color(0xFFE6EBFF),
-            Color(0xFFE6EBFF),
-            Color(0xFFE6EBFF),
-
-            // fades out
-          ],
-        ),
+        gradient: Theme.of(context).extension<AppGradients>()!.verticalFade,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
@@ -474,7 +485,6 @@ class BalanceCard extends StatelessWidget {
           ),
         ],
       ),
-      // ← slightly reduced bottom padding
       child: ValueListenableBuilder(
         valueListenable: balanceVisibleNotifier,
         builder: (context, value, child) {
@@ -491,11 +501,7 @@ class BalanceCard extends StatelessWidget {
                       fit: .scaleDown,
                       child: Text(
                         'Available Balance',
-                        style: TextStyle(
-                          fontFamily: 'biotifbold',
-                          fontSize: 16,
-                          color: Colors.black54.withValues(alpha: 0.7),
-                        ),
+                        style: TextTheme.of(context).titleMedium,
                       ),
                     ),
                     InkWell(
@@ -505,7 +511,9 @@ class BalanceCard extends StatelessWidget {
                       },
                       child: CircleAvatar(
                         radius: 12,
-                        backgroundColor: Colors.grey.withValues(alpha: 0.2),
+                        backgroundColor: ColorScheme.of(
+                          context,
+                        ).surfaceContainerLowest.withValues(alpha: 0.5),
                         child: Icon(
                           value
                               ? Icons.visibility_rounded
@@ -521,37 +529,27 @@ class BalanceCard extends StatelessWidget {
                 FittedBox(
                   fit: .scaleDown,
                   child: Text(
-                    value ? 'Rs. ${mtag?.balance ?? ''}' : '****',
-
-                    style: TextStyle(
-                      fontFamily: "biotifbold",
-                      fontSize: 38,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                      height: 1.0,
-                      letterSpacing: 1.2,
-                    ),
+                    value ? 'Rs. ${balance ?? ''}' : '****',
+                    style: TextTheme.of(
+                      context,
+                    ).headlineLarge?.copyWith(letterSpacing: 1.2),
                   ),
                 ),
-                Row(
-                  children: [
-                    Text(
-                      'Low Balance',
-                      style: TextStyle(
-                        color: Colors.black54,
-
-                        fontSize: 15,
-                        fontFamily: 'biotifbold',
+                if (balance != null && balance <= 50.0)
+                  Row(
+                    children: [
+                      Text(
+                        'Low Balance',
+                        style: TextTheme.of(context).titleMedium,
                       ),
-                    ),
-                    SizedBox(width: 6),
-                    Icon(
-                      Icons.warning_rounded,
-                      size: 24,
-                      color: Colors.yellow.shade800,
-                    ),
-                  ],
-                ),
+                      SizedBox(width: 6),
+                      Icon(
+                        Icons.warning_rounded,
+                        size: 24,
+                        color: Colors.yellow.shade800,
+                      ),
+                    ],
+                  ),
                 SizedBox(height: 4),
 
                 // ← was 8 → much tighter
@@ -629,9 +627,11 @@ class _TransferRemoveRow extends StatelessWidget {
         )
         .toList();
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
+      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: ColorScheme.of(
+          context,
+        ).surfaceContainerLow.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(50),
       ),
       child: Row(
@@ -727,8 +727,6 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Colors.black87.withValues(alpha: 0.5);
-
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(50),
@@ -737,16 +735,11 @@ class _ActionButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 20, color: color),
+            Icon(icon, size: 20),
             const SizedBox(width: 8),
             Text(
               label,
-              style: TextStyle(
-                fontSize: 15,
-
-                color: color,
-                fontFamily: 'biotifbold',
-              ),
+              style: TextTheme.of(context).bodyMedium?.copyWith(fontSize: 13),
             ),
           ],
         ),
@@ -798,6 +791,9 @@ class _ActionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final gradientColor = Theme.of(
+      context,
+    ).extension<AppGradients>()!.gridWidget.colors;
     return GestureDetector(
       onTap: () => handleItemTap(context, item, controller),
       child: Container(
@@ -809,9 +805,9 @@ class _ActionTile extends StatelessWidget {
             begin: AlignmentGeometry.xy(-1.1, 0.9),
             end: Alignment(-1.0, 2.0),
 
-            colors: (isCalculatorWidget == false)
-                ? [Color(0xffFFFCFC), Color(0xffD9EDF8), Color(0xffE4EBF5)]
-                : [Color(0xFFFFFEF8), Color(0xFFFFF9E5), Color(0xFFFFF2B8)],
+            colors: isCalculatorWidget == true && !Get.isDarkMode
+                ? [Color(0xFFFFFEF8), Color(0xFFFFF9E5), Color(0xFFFFF2B8)]
+                : gradientColor,
           ),
 
           boxShadow: [
@@ -850,11 +846,7 @@ class _ActionTile extends StatelessWidget {
             Expanded(
               child: Text(
                 item.title ?? '',
-                style: const TextStyle(
-                  fontSize: 15.5,
-                  fontWeight: FontWeight.w700,
-                  height: 1.25,
-                ),
+                style: TextTheme.of(context).displayMedium,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),

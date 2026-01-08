@@ -235,18 +235,18 @@ final List<SettingsModel> items = [
                 leading: const Icon(Icons.light_mode_outlined),
                 title: const Text('Light Mode'),
               ),
-              // const Divider(),
-              // ListTile(
-              //   onTap: () {
-              //     Get.changeThemeMode(ThemeMode.dark);
-              //     Get.changeTheme(darkTheme);
-              //     AppData.setThemeMode(true);
-              //     Get.back();
-              //   },
-              //   dense: true,
-              //   leading: const Icon(Icons.dark_mode_outlined),
-              //   title: const Text('Dark Mode'),
-              // ),
+              const Divider(),
+              ListTile(
+                onTap: () {
+                  Get.changeThemeMode(ThemeMode.dark);
+                  Get.changeTheme(darkTheme);
+                  AppData.setThemeMode(true);
+                  Get.back();
+                },
+                dense: true,
+                leading: const Icon(Icons.dark_mode_outlined),
+                title: const Text('Dark Mode'),
+              ),
             ],
           ),
         ),

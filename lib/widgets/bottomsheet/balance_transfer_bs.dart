@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
 import 'package:mtag_flutterapp/widgets/bottomsheet/build_header_widet.dart';
 import 'package:mtag_flutterapp/widgets/elevated_button.dart';
 import '../../controller/home_controller.dart';
@@ -37,11 +38,7 @@ class BalanceTransferSheet extends StatelessWidget {
       padding: .all(16),
       decoration: BoxDecoration(
         borderRadius: .circular(12),
-        gradient: const LinearGradient(
-          begin: .topLeft,
-          end: AlignmentGeometry.centerRight,
-          colors: [Color(0xFFE4EDFC), Color(0xFFFCFCFC), Color(0xFFEAEBFD)],
-        ),
+        gradient: Theme.of(context).extension<AppGradients>()!.background,
       ),
       child: Column(
         spacing: 10,
@@ -92,15 +89,18 @@ class BalanceTransferSheet extends StatelessWidget {
                   ),
                   SizedBox(width: 10),
                   Expanded(
-                    child: OutlinedButton(onPressed: () {
-                      Get.back();
-                    }, child: Text('Cancel')),
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: Text('Cancel'),
+                    ),
                   ),
                 ],
               );
-            }
+            },
           ),
-          SizedBox(height: 20,)
+          SizedBox(height: 20),
         ],
       ),
     );
@@ -144,10 +144,7 @@ class BalanceTransferSheet extends StatelessWidget {
         ),
         child: Text(
           "No other vehicles available",
-          style: TextStyle(
-            color: Theme.of(context).hintColor,
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextTheme.of(context).displayMedium,
         ),
       );
     }
@@ -165,22 +162,30 @@ class BalanceTransferSheet extends StatelessWidget {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: selectedCar.value,
-          icon: const Icon(Icons.keyboard_arrow_down),
+          icon: Icon(
+            Icons.keyboard_arrow_down,
+            color: Theme.of(context).iconTheme.color, // dynamic icon color
+          ),
           isExpanded: true,
-          dropdownColor: Theme.of(context).disabledColor,
-          style: TextTheme.of(context).bodySmall,
-          menuMaxHeight: 300,
+          elevation: 0,
+          // dynamic background
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            // ensures correct text color
+          ),
           items: dropDownCars.map((car) {
             return DropdownMenuItem<String>(
               value: car["carNumber"],
-              child: Row(
+              child: Row(mainAxisAlignment: .spaceBetween,
                 children: [
-                  Expanded(
+                  Container(padding: .all(4),
+                    clipBehavior: .none,decoration: BoxDecoration(color: ColorScheme.of(context).surface,borderRadius: .circular(4)),
                     child: Text(
                       car["carNumber"] ?? "",
-                      style: TextStyle(fontSize: 11),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleSmall?.copyWith(),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -192,15 +197,13 @@ class BalanceTransferSheet extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Theme.of(
                         context,
-                      ).primaryColorLight.withValues(alpha: 0.1),
+                      ).colorScheme.surface, // dynamic background
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       "Rs.${car["balance"] ?? "0"}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 10,
-                        color: Theme.of(context).primaryColorLight,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
                       ),
                     ),
                   ),
@@ -224,14 +227,9 @@ class BalanceTransferSheet extends StatelessWidget {
   Widget builBalanceWidget(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xffF5F6F9),
+        color: ColorScheme.of(context).surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(color: Colors.grey.shade200, offset: Offset(0, 4)),
-          BoxShadow(color: Colors.grey.shade200, offset: Offset(4, 1)),
-          BoxShadow(color: Colors.grey.shade200, offset: Offset(1, 2)),
-          BoxShadow(color: Colors.grey.shade200, offset: Offset(2, 1)),
-        ],
+        boxShadow: Theme.of(context).extension<AppShadows>()!.cardShadow,
       ),
       padding: EdgeInsets.all(8),
       child: Row(
@@ -274,14 +272,12 @@ class BalanceTransferSheet extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColorLight,
+              color: ColorScheme.of(context).surface,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
               "Rs.$balance",
-              style: TextTheme.of(
-                context,
-              ).displayMedium?.copyWith(color: Colors.white),
+              style: TextTheme.of(context).displayMedium,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),

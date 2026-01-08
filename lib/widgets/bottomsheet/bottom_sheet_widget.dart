@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
 import '../../widgets/bottomsheet/build_payment_options_widget.dart';
 
 import 'build_header_widet.dart';
@@ -44,11 +45,7 @@ class PaymentBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(borderRadius: .circular(12),
-         gradient: const LinearGradient(
-            begin: .topLeft,
-            end: AlignmentGeometry.centerRight,
-            colors: [Color(0xFFE4EDFC), Color(0xFFFCFCFC), Color(0xFFEAEBFD)],
-          ),
+         gradient: Theme.of(context).extension<AppGradients>()!.background
       ),
       padding: .symmetric(horizontal: 16),
       child: Column(
