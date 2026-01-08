@@ -95,6 +95,7 @@ class HomePageContent extends StatelessWidget {
               ),
             ),
             Expanded(
+              flex: 1,
               child: CustomScrollView(
                 clipBehavior: .antiAlias,
                 slivers: [
@@ -102,7 +103,7 @@ class HomePageContent extends StatelessWidget {
                     clipBehavior: .none,
                     pinned: true,
                     floating: false,
-                    expandedHeight: 345,
+                    expandedHeight: MediaQuery.of(context).size.height * 0.42,
                     backgroundColor: Colors.transparent,
                     elevation: 0,
                     automaticallyImplyLeading: false,
@@ -223,8 +224,11 @@ class VehicleCard extends StatelessWidget {
             mainAxisAlignment: .start,
             crossAxisAlignment: .start,
             children: [
-              _MtagDataWidget(width: w, key: key, mtag: mtags),
-              Spacer(),
+              Expanded(
+                flex: 0,
+                child: _MtagDataWidget(width: w, key: key, mtag: mtags),
+              ),
+             Spacer(),
               BalanceCard(mtag: mtags),
             ],
           ),
@@ -321,7 +325,8 @@ class _MtagDataWidget extends StatelessWidget {
                             ),
                             // Number
                             if (mtag.isactive != 8 &&
-                                (mtag.chassis_number == null ||mtag.chassis_number == ''|| 
+                                (mtag.chassis_number == null ||
+                                    mtag.chassis_number == '' ||
                                     mtag.chassis_number!.trim().isEmpty)) ...[
                               TextSpan(
                                 text: 'Chassis number is missing',
