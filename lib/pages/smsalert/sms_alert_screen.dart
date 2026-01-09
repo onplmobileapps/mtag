@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:mtag_flutterapp/controller/home_controller.dart';
-import 'package:mtag_flutterapp/widgets/dialog/dialog_sms_sub_unsub.dart';
-import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
-
+import '../../widgets/dialog/dialog_sms_sub_unsub.dart';
+import '../../widgets/gradient_appbar.dart';
+import '../../controller/home_controller.dart';
 import '../dashboard/model/dashboard_model.dart';
-
 class SMSAlertScreen extends StatefulWidget {
   const SMSAlertScreen({super.key});
   @override

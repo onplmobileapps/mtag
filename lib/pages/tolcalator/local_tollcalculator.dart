@@ -92,6 +92,7 @@ class TollPlazaTab extends StatelessWidget {
       context,
       child: Column(
         children: [
+                  const SizedBox(height: 8),
           Text(
             'Select Motorway',
             style: Theme.of(context).textTheme.labelLarge,
@@ -294,12 +295,7 @@ class TollPlazaTab extends StatelessWidget {
                 Expanded(
                   child: Text(
                     station.isEmpty ? hint : station,
-                    style: TextStyle(
-                      color: station.isEmpty
-                          ? Colors.grey[600]
-                          : Theme.of(context).primaryColor,
-                      fontSize: 16,
-                    ),
+                   style: TextTheme.of(context).labelMedium,
                   ),
                 ),
                 Icon(
@@ -325,6 +321,7 @@ class TollPlazaTab extends StatelessWidget {
       context,
       child: Column(
         children: [
+                  const SizedBox(height: 8),
           Text(
             'Select Vehicle Type',
             style: Theme.of(context).textTheme.labelLarge,
@@ -359,7 +356,7 @@ class TollPlazaTab extends StatelessWidget {
     final vehicle = OtherConsts.vehicleList[index];
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: isLargeScreen ? 8 : 6),
+      padding: EdgeInsets.symmetric(horizontal: isLargeScreen ? 8 : 6,),
       child: Obx(() {
         final isSelected = controller.selectedVehicle.value == index;
         return InkWell(
@@ -489,17 +486,15 @@ class TollPlazaTab extends StatelessWidget {
           opacity: fadeAnimation,
           child: _section(
             context,
-            child: SafeArea(
-              child: TollDisplay(
-                padding: padding,
-                isCalculating:
-                    controller.isCalculatingPlaza.value && !isSpecialMotorway,
-                entry: isSpecialMotorway ? null : controller.entryStation.value,
-                exit: isSpecialMotorway ? null : controller.exitStation.value,
-                vehicleName: vehicle.name,
-                toll: toll,
-                route: route,
-              ),
+            child: TollDisplay(
+              padding: padding,
+              isCalculating:
+                  controller.isCalculatingPlaza.value && !isSpecialMotorway,
+              entry: isSpecialMotorway ? null : controller.entryStation.value,
+              exit: isSpecialMotorway ? null : controller.exitStation.value,
+              vehicleName: vehicle.name,
+              toll: toll,
+              route: route,
             ),
           ),
         ),

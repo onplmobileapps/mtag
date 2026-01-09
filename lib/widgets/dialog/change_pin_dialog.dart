@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
 import 'package:mtag_flutterapp/widgets/elevated_button.dart';
 import '../../api/auth_controller.dart';
 import '../../base/app_data.dart';
@@ -50,7 +51,8 @@ class ChangePinDialog extends StatelessWidget {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            Padding(
+            Container(decoration: BoxDecoration(borderRadius: .circular(8),
+              gradient:Theme.of(context).extension<AppGradients>()!.background),
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,

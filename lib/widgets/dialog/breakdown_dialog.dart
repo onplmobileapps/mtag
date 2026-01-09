@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
 
 import '../build_bullet_widget.dart';
 
@@ -21,14 +22,20 @@ void showBreakdownDialog({
         onPopInvokedWithResult: (didPop, result) {},
         canPop: false,
         child: Dialog(
-          surfaceTintColor:ColorScheme.of(context).surfaceTint,
+          surfaceTintColor: ColorScheme.of(context).surfaceTint,
           backgroundColor: ColorScheme.of(context).surface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
           child: Stack(
             children: [
-              Padding(
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: .circular(8),
+                  gradient: Theme.of(
+                    context,
+                  ).extension<AppGradients>()!.background,
+                ),
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -215,7 +222,12 @@ void showTopUpDialog({
           ),
           child: Stack(
             children: [
-              Padding(
+              Container(
+                decoration: BoxDecoration(borderRadius: .circular(8),
+                  gradient: Theme.of(
+                    context,
+                  ).extension<AppGradients>()!.background,
+                ),
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

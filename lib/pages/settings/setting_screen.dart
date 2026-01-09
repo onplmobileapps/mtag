@@ -20,7 +20,6 @@ class SettingScreen extends StatelessWidget {
     final packageInfo = await PackageInfo.fromPlatform();
     return packageInfo.version;
   }
-
   Widget _buildSettingsListItem(int index, BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -51,16 +50,19 @@ class SettingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: GradientAppBar(title: Text('Settings')),
-
+      appBar: GradientAppBar(title:Text('Settings'), ),
+      
       body: Container(
         constraints: const BoxConstraints.expand(),
         color: Theme.of(context).primaryColor,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           decoration: BoxDecoration(
-            gradient: Theme.of(context).extension<AppGradients>()!.background,
-            borderRadius: const BorderRadiusDirectional.only(),
+            color: ColorScheme.of(context).surface,
+          //  gradient: Theme.of(context).extension<AppGradients>()!.background,
+            borderRadius: const BorderRadiusDirectional.only(
+            
+            ),
           ),
           child: Column(
             children: [
@@ -72,15 +74,9 @@ class SettingScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const SizedBox(height: 5),
-                        Container(
-                          padding: .all(16),
-                          decoration: BoxDecoration(
-                            shape: .circle,
-                            gradient: Theme.of(
-                              context,
-                            ).extension<AppGradients>()!.verticalFade,
-                          ),
-
+                        Container(padding: .all(8),
+                          decoration: BoxDecoration(shape: .circle,gradient: Theme.of(context).extension<AppGradients>()!.verticalFade),
+                         
                           child: Text(
                             getInitials(
                               homeController
@@ -90,7 +86,8 @@ class SettingScreen extends StatelessWidget {
                                       ?.fullName ??
                                   "",
                             ),
-                            style: TextTheme.of(context).headlineLarge,
+                            style:
+                            TextTheme.of(context).headlineLarge
                           ),
                         ),
                         const SizedBox(height: 5),
@@ -202,13 +199,8 @@ final List<SettingsModel> items = [
             topRight: Radius.circular(10),
           ),
         ),
-
-        Container(
-          decoration: BoxDecoration(
-            gradient: Theme.of(
-              Get.context!,
-            ).extension<AppGradients>()!.background,
-          ),
+        
+        Container(decoration: BoxDecoration(gradient: Theme.of(Get.context!).extension<AppGradients>()!.background),
           child: SafeArea(
             child: Wrap(
               children: [

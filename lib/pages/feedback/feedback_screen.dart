@@ -86,13 +86,7 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
         height: MediaQuery.sizeOf(context).height,
         width: MediaQuery.sizeOf(context).width,
         child: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            // borderRadius: const BorderRadius.only(
-            //   topLeft: Radius.circular(12),
-            //   topRight: Radius.circular(12),
-            // ),
-          ),
+          decoration: BoxDecoration(color: ColorScheme.of(context).surface),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Form(
@@ -159,7 +153,8 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
                   ),
                   const SizedBox(height: 10),
                   const Spacer(flex: 6),
-                  ElevatedButton1(isShowIcon: false,
+                  ElevatedButton1(
+                    isShowIcon: false,
                     backgroundColor: Theme.of(context).primaryColor,
                     width: MediaQuery.sizeOf(context).width,
                     onclick: () async {

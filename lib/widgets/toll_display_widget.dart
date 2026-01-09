@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
 
 class TollDisplay extends StatelessWidget {
   final double padding;
@@ -25,8 +26,9 @@ class TollDisplay extends StatelessWidget {
     return Column(
       children: [
         Container(
-          decoration: const BoxDecoration(
-            color: Color(0xff20285F), // Dark blue to match the image
+          decoration: BoxDecoration(
+            gradient: Theme.of(context).extension<AppGradients>()!.background,
+            // Dark blue to match the image
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(8),
               topRight: Radius.circular(8),
@@ -40,10 +42,7 @@ class TollDisplay extends StatelessWidget {
               children: [
                 Text(
                   'Toll Details',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 const SizedBox(height: 6),
                 _buildDetailRow(
@@ -56,8 +55,7 @@ class TollDisplay extends StatelessWidget {
                   vehicleName ?? 'Unknown',
                   context,
                 ),
-               
-              ],  
+              ],
             ),
           ),
         ),
@@ -69,11 +67,30 @@ class TollDisplay extends StatelessWidget {
               bottomRight: Radius.circular(8),
             ),
           ),
-          child: _buildDetailRow(
-            'Total Toll',
-            toll != null ? 'Rs. $toll PKR' : '',
-            context,
-            isTotal: true,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              spacing: 10,
+              mainAxisAlignment: .spaceBetween,
+              children: [
+                Text(
+                  'Total Toll',
+                  style: TextTheme.of(context).titleMedium?.copyWith(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: .w600,
+                  ),
+                ),
+                Text(
+                  toll != null ? 'Rs. $toll PKR' : '',
+                  style: TextTheme.of(context).bodyMedium?.copyWith(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: .w600,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -86,47 +103,12 @@ class TollDisplay extends StatelessWidget {
     BuildContext context, {
     bool isTotal = false,
   }) {
-    TextStyle labelStyle = TextStyle(
-      color: isTotal ? Colors.white : Colors.white,
-      fontWeight: isTotal ? FontWeight.normal : FontWeight.normal,
-      fontSize: 14,
-    );
-
-    TextStyle valueStyle = TextStyle(
-      color: isTotal ? Colors.white : Colors.white,
-      fontSize: isTotal ? 18 : 14,
-      fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-    );
-
-    if (label == 'Route' && !isTotal) {
-      valueStyle = const TextStyle(
-        color: Colors.white,
- 
-        fontSize: 14,
-      );
-    }
-
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: isTotal ? 8 : 4,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: isTotal ? 8 : 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            '$label:',
-            style: labelStyle,
-          ),
-          Text(
-            value,
-            style: valueStyle,
-          ),
-        ],
+        children: [Text('$label:'), Text(value)],
       ),
     );
   }
 }
-
-  
-

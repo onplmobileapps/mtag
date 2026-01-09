@@ -88,7 +88,7 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
     return Container(margin: .all(4),
       height: MediaQuery.sizeOf(context).height,
       width: double.infinity,
-      color: Theme.of(context).scaffoldBackgroundColor,
+
       child: Container(
         height: MediaQuery.sizeOf(context).height,
         width: double.infinity,
