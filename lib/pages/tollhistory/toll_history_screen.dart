@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/api/user_repo.dart';
 import 'package:mtag_flutterapp/theme/app_theme.dart';
+import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
 import 'package:shimmer/shimmer.dart';
 
 
@@ -63,7 +64,7 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Toll History')),
+      appBar: GradientAppBar(title: const Text('Toll History')),
       body: Column(
         children: [
           _buildStickyMessage(context),

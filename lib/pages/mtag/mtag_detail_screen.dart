@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
+import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
 import '../../pages/tollhistory/toll_history_screen.dart';
 
 
@@ -21,17 +23,14 @@ class MatagDetailScreen extends GetView<TollController> {
       : [ActiveMtags()];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Vehicle Details'), centerTitle: true),
+    return Scaffold(appBar: GradientAppBar(title: const Text('Vehicle Details')),
+      // appBar: AppBar(title: const Text('Vehicle Details'), centerTitle: true),
       body: Container(
         constraints: const BoxConstraints.expand(),
         decoration: BoxDecoration(color: Theme.of(context).primaryColor),
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(12),
-              topRight: Radius.circular(12),
-            ),
+           
             color: Theme.of(context).scaffoldBackgroundColor,
           ),
           child: Padding(
@@ -43,7 +42,7 @@ class MatagDetailScreen extends GetView<TollController> {
                 Container(
                   padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).disabledColor,
+                   gradient: Theme.of(context).extension<AppGradients>()!.background,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(

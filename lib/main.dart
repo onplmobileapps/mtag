@@ -31,7 +31,7 @@ void main() async {
 
   //uncomment when go to production
   // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
- setupErrorHandling();
+//  setupErrorHandling();
   final sharedPreferences = await SharedPreferences.getInstance();
 
   SystemChrome.setSystemUIOverlayStyle(

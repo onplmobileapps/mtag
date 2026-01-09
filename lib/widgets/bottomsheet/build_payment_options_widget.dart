@@ -53,7 +53,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
           children: [
             Text(
               'Recommended Payment Methods',
-              style: TextTheme.of(context).labelLarge,
+              style: TextTheme.of(context).labelLarge?.copyWith(fontWeight: .w600),
             ),
             const SizedBox(height: 5),
             _buildPaymentOption(

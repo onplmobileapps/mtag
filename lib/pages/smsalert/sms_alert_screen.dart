@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import 'package:mtag_flutterapp/controller/home_controller.dart';
 import 'package:mtag_flutterapp/widgets/dialog/dialog_sms_sub_unsub.dart';
+import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
 
 import '../dashboard/model/dashboard_model.dart';
 
@@ -61,7 +62,7 @@ class _SMSAlertScreenState extends State<SMSAlertScreen> with TickerProviderStat
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
+      appBar: GradientAppBar(
         title: const Text('SMS Subscription'),
       ),
       body: Container(
@@ -71,10 +72,10 @@ class _SMSAlertScreenState extends State<SMSAlertScreen> with TickerProviderStat
         child: Container(
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: const BorderRadiusDirectional.only(
-              topEnd: Radius.circular(15),
-              topStart: Radius.circular(15),
-            ),
+            // borderRadius: const BorderRadiusDirectional.only(
+            //   topEnd: Radius.circular(15),
+            //   topStart: Radius.circular(15),
+            // ),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,

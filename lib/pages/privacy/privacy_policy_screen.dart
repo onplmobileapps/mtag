@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
 
 import '../../widgets/privacy_widget.dart';
 
@@ -8,7 +9,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Privacy Policy")),
+      appBar: GradientAppBar(title: const Text("Privacy Policy")),
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -16,10 +17,10 @@ class PrivacyPolicyScreen extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: const BorderRadiusDirectional.only(
-              topEnd: Radius.circular(15),
-              topStart: Radius.circular(15),
-            ),
+            // borderRadius: const BorderRadiusDirectional.only(
+            //   topEnd: Radius.circular(15),
+            //   topStart: Radius.circular(15),
+            // ),
           ),
           child: const Padding(
             padding: EdgeInsets.all(16.0),

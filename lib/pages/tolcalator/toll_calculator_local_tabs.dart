@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
 import 'local_tollcalculator.dart';
 
 class TollCalculator extends StatelessWidget {
@@ -19,7 +20,7 @@ class TollCalculator extends StatelessWidget {
 
     // test
     return Scaffold(
-      appBar: AppBar(title: const Text(TollCalculator.title)),
+      appBar: GradientAppBar(title: const Text(TollCalculator.title)),
       body: Column(
         children: [
           Expanded(

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../base/app_data.dart';
 import '../../controller/home_controller.dart';
 import '../../widgets/dialog/change_pin_dialog.dart';
@@ -9,6 +8,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../../api/auth_controller.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/gradient_appbar.dart';
 
 class SettingScreen extends StatelessWidget {
   SettingScreen({super.key});
@@ -51,22 +51,16 @@ class SettingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        title: const Text('Settings'),
-      ),
+      appBar: GradientAppBar(title: Text('Settings')),
+
       body: Container(
         constraints: const BoxConstraints.expand(),
         color: Theme.of(context).primaryColor,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: const BorderRadiusDirectional.only(
-              topEnd: Radius.circular(15),
-              topStart: Radius.circular(15),
-            ),
+            gradient: Theme.of(context).extension<AppGradients>()!.background,
+            borderRadius: const BorderRadiusDirectional.only(),
           ),
           child: Column(
             children: [
@@ -78,9 +72,15 @@ class SettingScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const SizedBox(height: 5),
-                        CircleAvatar(
-                          radius: 40,
-                          backgroundColor: Theme.of(context).primaryColor,
+                        Container(
+                          padding: .all(16),
+                          decoration: BoxDecoration(
+                            shape: .circle,
+                            gradient: Theme.of(
+                              context,
+                            ).extension<AppGradients>()!.verticalFade,
+                          ),
+
                           child: Text(
                             getInitials(
                               homeController
@@ -90,12 +90,7 @@ class SettingScreen extends StatelessWidget {
                                       ?.fullName ??
                                   "",
                             ),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Poppins',
-                              fontSize: 40,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: TextTheme.of(context).headlineLarge,
                           ),
                         ),
                         const SizedBox(height: 5),
@@ -207,47 +202,52 @@ final List<SettingsModel> items = [
             topRight: Radius.circular(10),
           ),
         ),
-        backgroundColor: Theme.of(
-          Get.context!,
-        ).bottomSheetTheme.backgroundColor,
-        SafeArea(
-          child: Wrap(
-            children: [
-              ListTile(
-                onTap: () {
-                  Get.changeThemeMode(ThemeMode.system);
-                  AppData.setThemeMode(null);
-                  Get.back();
-                },
-                dense: true,
-                leading: const Icon(Icons.phone_android_outlined),
-                title: const Text('System Default'),
-              ),
-              const Divider(),
-              ListTile(
-                onTap: () {
-                  Get.changeThemeMode(ThemeMode.light);
-                  Get.changeTheme(appTheme);
-                  AppData.setThemeMode(false);
-                  Get.back();
-                },
-                dense: true,
-                leading: const Icon(Icons.light_mode_outlined),
-                title: const Text('Light Mode'),
-              ),
-              const Divider(),
-              ListTile(
-                onTap: () {
-                  Get.changeThemeMode(ThemeMode.dark);
-                  Get.changeTheme(darkTheme);
-                  AppData.setThemeMode(true);
-                  Get.back();
-                },
-                dense: true,
-                leading: const Icon(Icons.dark_mode_outlined),
-                title: const Text('Dark Mode'),
-              ),
-            ],
+
+        Container(
+          decoration: BoxDecoration(
+            gradient: Theme.of(
+              Get.context!,
+            ).extension<AppGradients>()!.background,
+          ),
+          child: SafeArea(
+            child: Wrap(
+              children: [
+                ListTile(
+                  onTap: () {
+                    Get.changeThemeMode(ThemeMode.system);
+                    AppData.setThemeMode(null);
+                    Get.back();
+                  },
+                  dense: true,
+                  leading: const Icon(Icons.phone_android_outlined),
+                  title: const Text('System Default'),
+                ),
+                const Divider(),
+                ListTile(
+                  onTap: () {
+                    Get.changeThemeMode(ThemeMode.light);
+                    Get.changeTheme(appTheme);
+                    AppData.setThemeMode(false);
+                    Get.back();
+                  },
+                  dense: true,
+                  leading: const Icon(Icons.light_mode_outlined),
+                  title: const Text('Light Mode'),
+                ),
+                const Divider(),
+                ListTile(
+                  onTap: () {
+                    Get.changeThemeMode(ThemeMode.dark);
+                    Get.changeTheme(darkTheme);
+                    AppData.setThemeMode(true);
+                    Get.back();
+                  },
+                  dense: true,
+                  leading: const Icon(Icons.dark_mode_outlined),
+                  title: const Text('Dark Mode'),
+                ),
+              ],
+            ),
           ),
         ),
       );

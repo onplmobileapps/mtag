@@ -33,7 +33,7 @@ class SubUnsubDialog extends StatelessWidget {
         padding: const EdgeInsets.all(20.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
-          color: Theme.of(context).dialogTheme.backgroundColor,
+         gradient: Theme.of(context).extension<AppGradients>()!.background
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
 
 //weather code complete
 class WebViewController extends GetxController {
@@ -49,7 +50,7 @@ class _InAppWebViewScreenState extends State<InAppWebViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title:  Text(widget.title ?? '')),
+      appBar: GradientAppBar(title:  Text(widget.title ?? '')),
       body: Stack(
         children: [
           InAppWebView(

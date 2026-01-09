@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
 
 import '../../pages/recharge/model/owner_summary_model.dart';
 import '../../widgets/elevated_button.dart';
-
-
-
-// Replace with your actual paths
-
-
 void showRechargeSummaryDialog({
   required BuildContext context,
   required void Function()? onPressed,
@@ -23,12 +18,13 @@ void showRechargeSummaryDialog({
     builder: (BuildContext context) {
       // Responsive sizing
       final screenSize = MediaQuery.of(context).size;
-      final dialogWidth = screenSize.width * 0.85;
-      final dialogHeight = screenSize.height * 0.6;
+      final dialogWidth = screenSize.width ;
+      final dialogHeight = screenSize.height * 0.8;
 
-      return Dialog.fullscreen(backgroundColor: ColorScheme.of(context).surface,
+      return Dialog(backgroundColor: ColorScheme.of(context).surface,
         // No need for shape or elevation; handled by adaptive
-        child: Container(margin: EdgeInsets.all(16),
+        child: Container(
+          decoration: BoxDecoration(gradient: Theme.of(context).extension<AppGradients>()!.background,borderRadius: .circular(8)),
           width: dialogWidth,
           height: dialogHeight,
           padding: const EdgeInsets.all(8.0), // Minimal padding, adaptive adds more if needed
@@ -50,7 +46,7 @@ void showRechargeSummaryDialog({
                 ],
               ),
               // Scrollable content
-              Expanded(flex: 1,
+              Expanded(flex: 0,
                 child: SingleChildScrollView(
                   child: Container(
                     padding: const EdgeInsets.all(10.0),

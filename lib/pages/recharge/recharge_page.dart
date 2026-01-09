@@ -1,9 +1,9 @@
-
-
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
+import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
 import '../../controller/home_controller.dart';
 import '../../pages/recharge/shared/card_shared_ui.dart';
 import '../../remoteconfig/firebase_remote_config.dart';
@@ -36,7 +36,8 @@ class RechargeSelfPage extends StatelessWidget {
         onPopInvokedWithResult: controller.handlePop,
         child: Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar: AppBar(title: const Text('Recharge M-Tag')),
+          appBar: GradientAppBar(title: Text('Recharge M-Tag')),
+          // appBar: AppBar(title: const Text('Recharge M-Tag')),
           body: _buildBody(context, controller),
         ),
       ),
@@ -50,7 +51,7 @@ class RechargeSelfPage extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          // borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -138,7 +139,7 @@ class RechargeSelfController extends GetxController {
   void _setupInitialValues() {
     isJazzShown.value = false;
     isCardsVisible.value = false;
-   
+
     if (arguments.isNotEmpty) {
       selectedMtagIndex.value = arguments.length == 1 ? 0 : -1;
 
@@ -172,7 +173,6 @@ class RechargeSelfController extends GetxController {
     scrollController1.dispose();
     scrollController2.dispose();
     scrollController3.dispose();
-    
   }
 
   void handlePop(bool didPop, dynamic result) {
@@ -236,40 +236,49 @@ Widget _buildMtagSection(
   RechargeSelfController controller,
 ) {
   return Obx(
-    () => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildSectionTitle(context, 'Select M-tag/Vehicle'),
-        Row(
-          children: [
-            if (controller.arguments.length > 2)
-              _buildScrollButton(
-                Icons.keyboard_arrow_left,
-                controller.scrollLeft,
-              ),
-            Expanded(child: _buildMtagList(context, controller)),
-            if (controller.arguments.length > 2)
-              _buildScrollButton(
-                Icons.keyboard_arrow_right_outlined,
-                controller.scrollRight,
-              ),
-          ],
-        ),
-        if (controller.isOtherMtagFieldVisible.value)
-          _buildOtherMtagField(context, controller),
-      ],
+    () => Container(
+      margin: .symmetric(vertical: 8),
+      padding: .symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        gradient: Theme.of(context).extension<AppGradients>()!.background,
+        borderRadius: .circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionTitle(context, 'Select M-tag/Vehicle'),
+          Row(
+            children: [
+              if (controller.arguments.length > 2)
+                _buildScrollButton(
+                  Icons.keyboard_arrow_left,
+                  controller.scrollLeft,
+                ),
+              Expanded(child: _buildMtagList(context, controller)),
+              if (controller.arguments.length > 2)
+                _buildScrollButton(
+                  Icons.keyboard_arrow_right_outlined,
+                  controller.scrollRight,
+                ),
+            ],
+          ),
+          if (controller.isOtherMtagFieldVisible.value)
+            _buildOtherMtagField(context, controller),
+          SizedBox(height: 10),
+        ],
+      ),
     ),
   );
 }
 
 Widget _buildSectionTitle(BuildContext context, String title) {
   return Padding(
-    padding: const EdgeInsets.only(top: 10),
+    padding: const EdgeInsets.only(top: 10, bottom: 10),
     child: Text(
       title,
       style: Theme.of(
         context,
-      ).textTheme.labelLarge?.copyWith(color: Colors.redAccent),
+      ).textTheme.labelLarge?.copyWith(fontWeight: .w600),
     ),
   );
 }
@@ -344,44 +353,51 @@ Widget _buildAmountSection(
 ) {
   return Obx(
     () => !controller.showPsidField.value
-        ? Column(
-            crossAxisAlignment: .start,
-            mainAxisAlignment: .start,
-            mainAxisSize: .min,
-            children: [
-              Row(
-                mainAxisAlignment: .spaceBetween,
-                crossAxisAlignment: .center,
-                children: [
-                  _buildSectionTitle(context, 'Enter Amount'),
-                  Text(
-                    'Min: Rs. ${controller.homeController.dashboradData.value.rechargeMinAmount} '
-                    'Max: Rs. ${controller.homeController.dashboradData.value.rechargeMaxAmount}',
-                    style: const TextStyle(fontSize: 7, color: Colors.black),
-                  ),
-                ],
-              ),
-              CustomTextField(
-                controller: controller.amountController,
-                keyboardType: const TextInputType.numberWithOptions(
-                  signed: true,
+        ? Container(
+            padding: .symmetric(horizontal: 8, vertical: 8),
+            decoration: BoxDecoration(
+              gradient: Theme.of(context).extension<AppGradients>()!.background,
+              borderRadius: .circular(8),
+            ),
+            child: Column(
+              crossAxisAlignment: .start,
+              mainAxisAlignment: .start,
+              mainAxisSize: .min,
+              children: [
+                Row(
+                  mainAxisAlignment: .spaceBetween,
+                  crossAxisAlignment: .center,
+                  children: [
+                    _buildSectionTitle(context, 'Enter Amount'),
+                    Text(
+                      'Min: Rs. ${controller.homeController.dashboradData.value.rechargeMinAmount} '
+                      'Max: Rs. ${controller.homeController.dashboradData.value.rechargeMaxAmount}',
+                      style: const TextStyle(fontSize: 7, color: Colors.black),
+                    ),
+                  ],
                 ),
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: validateAmount,
-                maxLength: 8,
-                hint: '50',
-                hintStyle: const TextStyle(color: Colors.grey),
-              ),
-              const SizedBox(height: 5),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: AmountChipSelector(
-                  amounts: AmountList.amountList,
+                CustomTextField(
                   controller: controller.amountController,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    signed: true,
+                  ),
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: validateAmount,
+                  maxLength: 8,
+                  hint: '50',
+                  hintStyle: const TextStyle(color: Colors.grey),
                 ),
-              ),
-            ],
+                const SizedBox(height: 5),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: AmountChipSelector(
+                    amounts: AmountList.amountList,
+                    controller: controller.amountController,
+                  ),
+                ),
+              ],
+            ),
           )
         : const SizedBox.shrink(),
   );
@@ -392,16 +408,24 @@ Widget _buildPaymentSection(
   RechargeSelfController controller,
 ) {
   return Obx(
-    () => BuildPaymentOptionsWidget(
-      onChanged: (paymentMethod) =>
-          controller.handlePaymentSelection(paymentMethod),
-      amount: controller.amountController,
-      showPSIDField: showPSIDField,
-      psidController: TextEditingController(),
-      creditCode: '',
-      jazzCode: '',
-      mtagId: controller.selectedMtag.value,
-      blackListRecharge: false,
+    () => Container(
+      margin: .symmetric(vertical: 8),
+      padding: .symmetric(vertical: 8, horizontal: 8),
+      decoration: BoxDecoration(
+        gradient: Theme.of(context).extension<AppGradients>()!.background,
+        borderRadius: .circular(8),
+      ),
+      child: BuildPaymentOptionsWidget(
+        onChanged: (paymentMethod) =>
+            controller.handlePaymentSelection(paymentMethod),
+        amount: controller.amountController,
+        showPSIDField: showPSIDField,
+        psidController: TextEditingController(),
+        creditCode: '',
+        jazzCode: '',
+        mtagId: controller.selectedMtag.value,
+        blackListRecharge: false,
+      ),
     ),
   );
 }

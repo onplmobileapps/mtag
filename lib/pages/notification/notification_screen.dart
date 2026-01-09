@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
 import '../../pages/notification/controller/notificationcontroller.dart';
 import '../../widgets/notification_card_widget.dart';
 
@@ -18,8 +19,8 @@ class NotificationScreen extends GetView<NotificationController> {
       },
       child: Scaffold(
    
-        appBar: AppBar(
-          elevation: 0,centerTitle: true,
+        appBar: GradientAppBar(
+       
           title: const Text("Notifications"),
           actions: [
             Obx(
@@ -72,10 +73,10 @@ class NotificationScreen extends GetView<NotificationController> {
          
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
-              ),
+              // borderRadius: const BorderRadius.only(
+              //   topLeft: Radius.circular(12),
+              //   topRight: Radius.circular(12),
+              // ),
             ),
             child: const Padding(
               padding: EdgeInsets.symmetric(horizontal: 4, vertical: 5),

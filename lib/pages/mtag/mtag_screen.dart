@@ -4,6 +4,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
+import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
 
 import '../../widgets/dashboard_widget.dart';
 import '../../widgets/dialog/cupertino_dialog.dart';
@@ -25,7 +27,7 @@ class MyMtagScreen extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(elevation: 0, title: const Text("My M-Tag")),
+      appBar: GradientAppBar( title: const Text("My M-Tag")),
       body: Container(
         constraints: const BoxConstraints.expand(),
         height: size.height,
@@ -34,13 +36,13 @@ class MyMtagScreen extends StatelessWidget {
         child: Container(
           height: size.height,
           width: size.width,
-          margin: const EdgeInsets.only(top: 10),
+          // margin: const EdgeInsets.only(top: 10),
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(12),
-              topRight: Radius.circular(12),
-            ),
+            // borderRadius: const BorderRadius.only(
+            //   topLeft: Radius.circular(12),
+            //   topRight: Radius.circular(12),
+            // ),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -66,7 +68,7 @@ class MyMtagScreen extends StatelessWidget {
                     margin: const EdgeInsets.only(bottom: 8),
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).disabledColor,
+                    gradient: Theme.of(context).extension<AppGradients>()!.background,
                       borderRadius: BorderRadius.circular(12),
                       border: argument[index].isactive == 8
                           ? Border.all(color: Colors.redAccent, width: 1)

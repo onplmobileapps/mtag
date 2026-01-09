@@ -21,34 +21,19 @@ Widget buildShimmerEffect(double screenWidth, double screenHeight) {
                 color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(8),
               ),
-              height: screenHeight * 0.25,
+              height: screenHeight / 2,
             ),
           ),
         ),
         SliverToBoxAdapter(child: SizedBox(height: 10,),),
-         SliverToBoxAdapter(
-          child: Shimmer.fromColors(
-            baseColor: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade100,
-            highlightColor: isDarkMode
-                ? Colors.grey.shade600
-                : Colors.grey.shade100,
-            child: Container(
-              margin: EdgeInsets.only(left: 16, right: 16, bottom: 4),
-              height: screenHeight * 0.38,
-              decoration: BoxDecoration(
-                color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-          ),
-        ),
+        
         SliverPadding(
           padding: const EdgeInsets.all(8.0),
           sliver: SliverGrid(
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: screenWidth * 0.5,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+             crossAxisCount: 2,
               mainAxisSpacing: 2,
-              crossAxisSpacing: 2,
+              crossAxisSpacing: 10,
               mainAxisExtent: screenHeight * 0.17,
             ),
             delegate: SliverChildBuilderDelegate((context, index) {
@@ -66,7 +51,7 @@ Widget buildShimmerEffect(double screenWidth, double screenHeight) {
                         : Colors.grey.shade300,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  margin: const EdgeInsets.all(8.0),
+                  margin: const EdgeInsets.all(2.0),
                 ),
               );
             }, childCount: 4),

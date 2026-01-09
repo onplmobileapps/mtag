@@ -5,6 +5,7 @@ import 'package:mtag_flutterapp/constants/input_formater.dart';
 import 'package:mtag_flutterapp/pages/faqs/controller/delete_account_controller.dart';
 import 'package:mtag_flutterapp/theme/app_theme.dart';
 import 'package:mtag_flutterapp/widgets/elevated_button.dart';
+import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
 class FaqsScreen extends StatelessWidget {
   FaqsScreen({super.key});
   final _scrollController = ScrollController();
@@ -13,7 +14,7 @@ class FaqsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('FAQ\'s')),
+      appBar: GradientAppBar(title: const Text('FAQ\'s')),
       body: Container(
         decoration: BoxDecoration(color: Theme.of(context).primaryColor),
         child: Container(
@@ -21,10 +22,10 @@ class FaqsScreen extends StatelessWidget {
           width: MediaQuery.sizeOf(context).width,
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(12),
-              topRight: Radius.circular(12),
-            ),
+            // borderRadius: const BorderRadius.only(
+            //   topLeft: Radius.circular(12),
+            //   topRight: Radius.circular(12),
+            // ),
           ),
           child: Column(
             children: [

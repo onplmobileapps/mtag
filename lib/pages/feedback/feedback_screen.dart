@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
 import '../../controller/home_controller.dart';
 import '../../pages/editprofile/controller/update_emai_controller.dart';
 import '../../constants/call_helper.dart';
@@ -79,7 +80,7 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
         ),
       ),
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: const Text('Add Feedback')),
+      appBar: GradientAppBar(title: const Text('Add Feedback')),
       body: Container(
         color: Theme.of(context).primaryColor,
         height: MediaQuery.sizeOf(context).height,
@@ -87,10 +88,10 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
         child: Container(
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(12),
-              topRight: Radius.circular(12),
-            ),
+            // borderRadius: const BorderRadius.only(
+            //   topLeft: Radius.circular(12),
+            //   topRight: Radius.circular(12),
+            // ),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

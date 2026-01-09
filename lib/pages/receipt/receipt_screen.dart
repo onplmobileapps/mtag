@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
 import '../../pages/receipt/controller/receipt_generate_controller.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -22,7 +23,7 @@ class ReceiptScreen extends StatelessWidget {
       () {
         var data = _receiptController.receiptModel.value.data;
         return Scaffold(resizeToAvoidBottomInset: false,
-          appBar: AppBar(
+          appBar: GradientAppBar(
             title: const Text("Recharge/Travel Receipt"),
             actions: [
               IconButton(
@@ -293,10 +294,10 @@ class ReceiptScreen extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: const BorderRadiusDirectional.only(
-                    topEnd: Radius.circular(15),
-                    topStart: Radius.circular(15),
-                  ),
+                  // borderRadius: const BorderRadiusDirectional.only(
+                  //   topEnd: Radius.circular(15),
+                  //   topStart: Radius.circular(15),
+                  // ),
                 ),
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),

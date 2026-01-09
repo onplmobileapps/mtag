@@ -267,10 +267,10 @@ ThemeData appTheme = ThemeData(
     scrolledUnderElevation: 0.0,
     systemOverlayStyle: SystemUiOverlayStyle(
       statusBarColor: primarSwatch,
-      statusBarBrightness: Brightness.dark,
-      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.light,
+      statusBarIconBrightness: Brightness.dark,
     ),
-    iconTheme: const IconThemeData(color: Colors.white),
+    iconTheme: const IconThemeData(color: Colors.black),
     backgroundColor: const Color(0xFF2C2E65),
     titleTextStyle: TextStyle(fontFamily: fontFamily, fontSize: 18),
   ),
@@ -278,7 +278,7 @@ ThemeData appTheme = ThemeData(
   primarySwatch: primarSwatch,
   textTheme: TextTheme(
     headlineLarge: TextStyle(
-      fontSize: 37,
+      fontSize: 38,
       color: Colors.black87,
       fontFamily: fontFamily,
       fontWeight: .w600,

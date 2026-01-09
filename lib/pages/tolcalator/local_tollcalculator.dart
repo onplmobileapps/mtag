@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
 import '../../constants/other_consts.dart';
 import '../../widgets/toll_display_widget.dart';
 import 'controller/toll_calculator_static_controller.dart';
@@ -524,7 +525,7 @@ class TollPlazaTab extends StatelessWidget {
   Widget _section(BuildContext context, {Widget? child}) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).disabledColor,
+      gradient: Theme.of(context).extension<AppGradients>()!.background,
         borderRadius: BorderRadius.circular(12),
       ),
       child: child,

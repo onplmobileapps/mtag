@@ -21,6 +21,7 @@ import '../../widgets/dialog/chassis_num.dart';
 import '../../widgets/dialog/delink_dialog.dart';
 import '../widget/help_section.dart';
 import '../widget/slider_section.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -109,15 +110,18 @@ class HomePageContent extends StatelessWidget {
                 Get.isDarkMode ? 'assets/darklogo.png' : 'assets/logolight.png',
                 height: 60,
                 width: 70,
-              ),
-            ),
+              ),),
+            // ),
             Expanded(
               flex: 1,
               child: CustomScrollView(
+                shrinkWrap: true,
                 clipBehavior: .antiAlias,
                 slivers: [
                   SliverAppBar(
-                    forceMaterialTransparency:false,
+                    toolbarHeight: -60,
+                    foregroundColor: Colors.transparent,
+                    forceMaterialTransparency: false,
                     clipBehavior: .none,
                     pinned: true,
                     floating: false,
@@ -848,8 +852,6 @@ class _ActionTile extends StatelessWidget {
                 ? [Color(0xFFFFFEF8), Color(0xFFFFF9E5), Color(0xFFFFF2B8)]
                 : gradientColor,
           ),
-
-         
         ),
         child: FittedBox(
           child: Row(
@@ -857,7 +859,7 @@ class _ActionTile extends StatelessWidget {
               Container(
                 width: 44,
                 height: 44,
-          
+
                 alignment: Alignment.center,
                 child: Image.asset(
                   item.image ?? '',
@@ -900,3 +902,4 @@ class _ActionTile extends StatelessWidget {
     rechargeController.isRechageVisible(true);
   }
 }
+

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
 import '../../api/auth_controller.dart';
 import '../../controller/home_controller.dart';
 import 'package:video_player/video_player.dart';
@@ -167,9 +168,9 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-          titleTextStyle: Theme.of(context).appBarTheme.titleTextStyle,
+        appBar: GradientAppBar(
+          // backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+          // titleTextStyle: Theme.of(context).appBarTheme.titleTextStyle,
           title: const Text('Recharge M-TAG'),
         ),
         body: isNoInternet
