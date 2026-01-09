@@ -11,6 +11,23 @@ ThemeData appTheme = ThemeData(
         BoxShadow(color: Colors.grey.shade200, offset: Offset(1, 2)),
         BoxShadow(color: Colors.grey.shade200, offset: Offset(2, 1)),
       ],
+      gridShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.04),
+          blurRadius: 12,
+          offset: const Offset(1, 2),
+        ),
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.04),
+          blurRadius: 10,
+          offset: const Offset(4, 1),
+        ),
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.04),
+          blurRadius: 8,
+          offset: const Offset(2, 2),
+        ),
+      ],
     ),
     const AppGradients(
       gridWidget: LinearGradient(
@@ -340,14 +357,18 @@ ThemeData appTheme = ThemeData(
   ),
 );
 
-ThemeData darkTheme = ThemeData(dropdownMenuTheme: DropdownMenuThemeData(
+ThemeData darkTheme = ThemeData(
+  dropdownMenuTheme: DropdownMenuThemeData(
     disabledColor: Colors.grey[850], // dropdown menu background
-   menuStyle: MenuStyle(surfaceTintColor: WidgetStatePropertyAll(Colors.black)),
+    menuStyle: MenuStyle(
+      surfaceTintColor: WidgetStatePropertyAll(Colors.black),
+    ),
     textStyle: TextStyle(
       color: Colors.black, // text color for items
       fontSize: 14,
     ),
-    inputDecorationTheme: InputDecorationTheme(contentPadding: .zero,
+    inputDecorationTheme: InputDecorationTheme(
+      contentPadding: .zero,
       filled: true,
       fillColor: Colors.grey[850], // optional
     ),
@@ -359,6 +380,23 @@ ThemeData darkTheme = ThemeData(dropdownMenuTheme: DropdownMenuThemeData(
         BoxShadow(color: Colors.grey.shade800, offset: Offset(0, 0)),
         BoxShadow(color: Colors.grey.shade800, offset: Offset(0, 0)),
         BoxShadow(color: Colors.grey.shade800, offset: Offset(0, 0)),
+      ],
+      gridShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.04),
+          blurRadius: 12,
+          offset: const Offset(1, 2),
+        ),
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.04),
+          blurRadius: 10,
+          offset: const Offset(4, 1),
+        ),
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.04),
+          blurRadius: 8,
+          offset: const Offset(2, 2),
+        ),
       ],
     ),
     const AppGradients(
@@ -591,7 +629,7 @@ ThemeData darkTheme = ThemeData(dropdownMenuTheme: DropdownMenuThemeData(
       color: Colors.white,
       fontFamily: fontFamily,
     ),
-    labelSmall: TextStyle(fontFamily: fontFamily)
+    labelSmall: TextStyle(fontFamily: fontFamily),
   ),
 
   tabBarTheme: TabBarThemeData(indicatorColor: Colors.white),
@@ -667,14 +705,21 @@ class AppGradients extends ThemeExtension<AppGradients> {
   }
 }
 
+// boxShadow:
 class AppShadows extends ThemeExtension<AppShadows> {
   final List<BoxShadow> cardShadow;
-
-  AppShadows({required this.cardShadow});
+  final List<BoxShadow> gridShadow;
+  AppShadows({required this.cardShadow, required this.gridShadow});
 
   @override
-  AppShadows copyWith({List<BoxShadow>? cardShadow}) {
-    return AppShadows(cardShadow: cardShadow ?? this.cardShadow);
+  AppShadows copyWith({
+    List<BoxShadow>? cardShadow,
+    List<BoxShadow>? gridShadow,
+  }) {
+    return AppShadows(
+      cardShadow: cardShadow ?? this.cardShadow,
+      gridShadow: gridShadow ?? this.gridShadow,
+    );
   }
 
   @override
@@ -682,6 +727,11 @@ class AppShadows extends ThemeExtension<AppShadows> {
     if (other is! AppShadows) return this;
     return AppShadows(
       cardShadow: List.generate(
+        cardShadow.length,
+        (i) => BoxShadow.lerp(cardShadow[i], other.cardShadow[i], t)!,
+      ),
+
+      gridShadow: List.generate(
         cardShadow.length,
         (i) => BoxShadow.lerp(cardShadow[i], other.cardShadow[i], t)!,
       ),

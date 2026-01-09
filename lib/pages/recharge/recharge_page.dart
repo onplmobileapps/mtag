@@ -95,21 +95,14 @@ class RechargeSelfController extends GetxController {
     required this.homeController,
   });
 
-  // Scroll Controllers
   final scrollController = ScrollController(),
       scrollController1 = ScrollController(),
       scrollController2 = ScrollController(),
       scrollController3 = ScrollController();
-
-  // Form
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-  // Text Controllers
   final amountController = TextEditingController(),
       jazzCashController = TextEditingController(),
       otherMtagController = TextEditingController();
-
-  // State
   final RxList<ActiveMtags> arguments =
       (Get.arguments is List<ActiveMtags>
               ? Get.arguments as List<ActiveMtags>
@@ -349,7 +342,6 @@ Widget _buildAmountSection(
   BuildContext context,
   RechargeSelfController controller,
 ) {
-  //test
   return Obx(
     () => !controller.showPsidField.value
         ? Column(

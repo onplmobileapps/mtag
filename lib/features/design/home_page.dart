@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,7 +21,6 @@ import '../../widgets/dialog/chassis_num.dart';
 import '../../widgets/dialog/delink_dialog.dart';
 import '../widget/help_section.dart';
 import '../widget/slider_section.dart';
-
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -119,9 +117,11 @@ class HomePageContent extends StatelessWidget {
                 clipBehavior: .antiAlias,
                 slivers: [
                   SliverAppBar(
+                    forceMaterialTransparency:false,
                     clipBehavior: .none,
                     pinned: true,
                     floating: false,
+                    forceElevated: false,
                     expandedHeight: getExpandedHeight(context),
                     backgroundColor: Colors.transparent,
                     elevation: 0,
@@ -849,48 +849,34 @@ class _ActionTile extends StatelessWidget {
                 : gradientColor,
           ),
 
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
-              blurRadius: 12,
-              offset: const Offset(1, 2),
-            ),
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
-              blurRadius: 10,
-              offset: const Offset(4, 1),
-            ),
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
-              blurRadius: 8,
-              offset: const Offset(2, 2),
-            ),
-          ],
+         
         ),
-        child: Row(
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-
-              alignment: Alignment.center,
-              child: Image.asset(
-                item.image ?? '',
-                width: 38,
-                height: 38,
-                fit: BoxFit.contain,
+        child: FittedBox(
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+          
+                alignment: Alignment.center,
+                child: Image.asset(
+                  item.image ?? '',
+                  width: 38,
+                  height: 38,
+                  fit: BoxFit.contain,
+                ),
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                item.title ?? '',
-                style: TextTheme.of(context).displayMedium,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+              const SizedBox(width: 16),
+              FittedBox(
+                child: Text(
+                  item.title ?? '',
+                  style: TextTheme.of(context).displayMedium,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -909,7 +895,6 @@ class _ActionTile extends StatelessWidget {
         arguments: controller.dashboradData.value.activeMtags,
       );
     }
-
     rechargeController.isPaymentModdeVisible(false);
     rechargeController.isSummaryVisible(false);
     rechargeController.isRechageVisible(true);

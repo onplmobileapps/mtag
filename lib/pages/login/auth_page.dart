@@ -353,7 +353,7 @@ class AuthPage extends StatelessWidget {
                                       const SizedBox(width: 40),
                                       Expanded(
                                         child: ElevatedButton1(
-                                          text: 'Sign In',
+                                          text: 'Login',
                                           onclick: () async {
                                             if (formKey.currentState
                                                     ?.validate() ??

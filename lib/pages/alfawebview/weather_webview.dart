@@ -83,7 +83,7 @@ class _InAppWebViewScreenState extends State<InAppWebViewScreen> {
           if (widget.showLoader)
             Obx(
               () => controller.isLoading.value
-                  ? const Center(child: CircularProgressIndicator())
+                  ? LinearProgressIndicator(value: 100,)
                   : const SizedBox.shrink(),
             ),
         ],

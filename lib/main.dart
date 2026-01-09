@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -19,6 +20,7 @@ import 'remoteconfig/firebase_remote_config.dart';
 import 'routes/approute.dart';
 import 'theme/app_theme.dart';
 import 'utils/utils.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppData.initialize();
@@ -28,7 +30,8 @@ void main() async {
   );
 
   //uncomment when go to production
-  //  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+ setupErrorHandling();
   final sharedPreferences = await SharedPreferences.getInstance();
 
   SystemChrome.setSystemUIOverlayStyle(
@@ -42,7 +45,7 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
- 
+
   HttpOverrides.global = MyHttpOverrides();
 
   runApp(MTagApp(sharedPreferences: sharedPreferences));
@@ -66,9 +69,9 @@ class _MTagAppState extends State<MTagApp> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (Platform.isAndroid) await AppUpdate.checkForUpdates();
-   await   DeviceInfo.getDeviceInfo();
+      await DeviceInfo.getDeviceInfo();
       FirebaseRemoteConfigService().fetchRemoteConfig();
-    if(mounted)  _messagingService.init(context);
+      if (mounted) _messagingService.init(context);
 
       // preload DBs
       await TollDatabase.instance.importDataIfNeeded();
@@ -152,7 +155,7 @@ class _MTagAppState extends State<MTagApp> {
               child: AppData.getPinData() != null ? PinEntryPage() : AuthPage(),
             )
           : AppData.getPinData() != null
-          ?  PinEntryPage()
+          ? PinEntryPage()
           : AuthPage(),
     );
   }
@@ -187,4 +190,34 @@ class CustomUpgraderMessages extends UpgraderMessages {
 
   @override
   String get buttonTitleLater => 'Remind Me Later';
+}
+
+void setupErrorHandling() {
+  FlutterError.onError = (FlutterErrorDetails details) {
+
+    if (_isUrlLauncherError(details.exception)) {
+      debugPrint('URL Launcher error ignored: ${details.exception}');
+      return;
+    }
+    FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+  };
+}
+
+bool _isUrlLauncherError(dynamic exception) {
+  final errorString = exception.toString();
+
+  // Common URL launcher/map errors to ignore
+  final ignoredPatterns = [
+    'Could not launch',
+    'No application found',
+    'No Activity found',
+    'No installed applications',
+    'url_launcher',
+    'No directions apps',
+    'Maps app not available',
+    'No map application',
+    'ERR_UNKNOWN_URL_SCHEME',
+  ];
+
+  return ignoredPatterns.any((pattern) => errorString.contains(pattern));
 }

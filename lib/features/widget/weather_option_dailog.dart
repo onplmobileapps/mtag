@@ -53,32 +53,35 @@ Future<void> showWeatherUpdateDialog(BuildContext context) {
                   const SizedBox(height: 20),
 
                   /// Options
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _WeatherOption(
-                        icon: 'assets/gate.png',
-                        label: 'Plaza (M2)\nWeather Details ',
-                        onTap: () async {
-                          Get.back();
-                          openWebView(
-                            ApplicationUrl.WEATHER_TIMELINE_VIEW_URL,
-                            title: 'WeatherWalay',
-                          );
-                        },
-                      ),
-                      _WeatherOption(
-                        icon: 'assets/motorway-sign.png',
-                        label: 'Motorway (M2)\nWeather Map',
-                        onTap: () async {
-                          Get.back();
-                          openWebView(
-                            ApplicationUrl.WEATHER_MAP_VIEW_URL,
-                            title: 'WeatherWalay',
-                          );
-                        },
-                      ),
-                    ],
+                  FittedBox(fit: .scaleDown,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _WeatherOption(
+                          icon: 'assets/gate.png',
+                          label: 'Plaza (M2)\nWeather Details ',
+                          onTap: () async {
+                            Get.back();
+                            openWebView(
+                              ApplicationUrl.WEATHER_TIMELINE_VIEW_URL,
+                              title: 'WeatherWalay',
+                            );
+                          },
+                        ),
+                        SizedBox(width: 20,),
+                        _WeatherOption(
+                          icon: 'assets/motorway-sign.png',
+                          label: 'Motorway (M2)\nWeather Map',
+                          onTap: () async {
+                            Get.back();
+                            openWebView(
+                              ApplicationUrl.WEATHER_MAP_VIEW_URL,
+                              title: 'WeatherWalay',
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -130,8 +133,8 @@ class _WeatherOption extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(16),
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+      child: Container(margin: .all(8),
+        padding:  EdgeInsets.symmetric(horizontal: 10,vertical: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           color: scheme.surfaceContainerHighest,

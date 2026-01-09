@@ -68,68 +68,70 @@ class MatagDetailScreen extends GetView<TollController> {
                           ),
                         ],
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          DefaultTextStyle(
-                            style: Theme.of(context).textTheme.displaySmall!,
-                            child: Column(
+                      FittedBox(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            DefaultTextStyle(
+                              style: Theme.of(context).textTheme.displaySmall!,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    'M-TAG ${arguments.isNotEmpty ? arguments.first.tokenno ?? '' : ''}',
+                                  ),
+                                  const SizedBox(height: 5),
+                                  SizedBox(
+                                    width: 200,
+                                    child: Text(
+                                      'Owner: ${arguments.isNotEmpty ? arguments.first.ownername ?? '' : ''}',
+                        
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    'Registration # ${arguments.isNotEmpty ? arguments.first.registration ?? '' : ''}',
+                                  ),
+                                  const SizedBox(height: 5),
+                                ],
+                              ),
+                            ),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text(
-                                  'M-TAG ${arguments.isNotEmpty ? arguments.first.tokenno ?? '' : ''}',
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Image.asset(
+                                    getVehicleImage(
+                                      arguments.first.vehicletype ?? '',
+                                    ),
+                                   
+                                    height: 30,
+                                    width: 30,
+                                  ),
                                 ),
                                 const SizedBox(height: 5),
-                                SizedBox(
-                                  width: 200,
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
                                   child: Text(
-                                    'Owner: ${arguments.isNotEmpty ? arguments.first.ownername ?? '' : ''}',
-
+                                    'Vehicle: ${arguments.isNotEmpty ? arguments.first.vehicletype ?? '' : ''}',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.displaySmall,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  'Registration # ${arguments.isNotEmpty ? arguments.first.registration ?? '' : ''}',
-                                ),
-                                const SizedBox(height: 5),
                               ],
                             ),
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Image.asset(
-                                  getVehicleImage(
-                                    arguments.first.vehicletype ?? '',
-                                  ),
-                                 
-                                  height: 30,
-                                  width: 30,
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Text(
-                                  'Vehicle: ${arguments.isNotEmpty ? arguments.first.vehicletype ?? '' : ''}',
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.displaySmall,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),

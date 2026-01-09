@@ -15,9 +15,20 @@ class TollPlazaTab extends StatelessWidget {
   });
 
   static const Map<int, int> _tollMapMurree = {
-    1:200,2:200,3:200,4:350,5:400,6: 800,
+    1: 200,
+    2: 200,
+    3: 200,
+    4: 350,
+    5: 400,
+    6: 800,
   };
-  static const Map<int, int> _tollMapEasternBypass = {1: 70,2: 150,3:150,4: 250,5: 300,6: 550,
+  static const Map<int, int> _tollMapEasternBypass = {
+    1: 70,
+    2: 150,
+    3: 150,
+    4: 250,
+    5: 300,
+    6: 550,
   };
   @override
   Widget build(BuildContext context) {
@@ -139,29 +150,31 @@ class TollPlazaTab extends StatelessWidget {
                     ]
                   : null,
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  motorway.motorwayAbbrivation!,
-                  style: TextStyle(
-                    fontSize: isLargeScreen ? 14 : 12,
-                    color: Theme.of(context).primaryColor,
+            child: FittedBox(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    motorway.motorwayAbbrivation!,
+                    style: TextStyle(
+                      fontSize: isLargeScreen ? 14 : 12,
+                      color: Theme.of(context).primaryColor,
+                    ),
                   ),
-                ),
-                Image.asset(
-                  'assets/road.png',
-                  height: isLargeScreen ? 45 : 50,
-                  width: 60,
-                ),
-                Text(
-                  motorway.motorwayName!,
-                  style: TextStyle(
-                    fontSize: isLargeScreen ? 20 : 18,
-                    color: Theme.of(context).primaryColor,
+                  Image.asset(
+                    'assets/road.png',
+                    height: isLargeScreen ? 45 : 50,
+                    width: 60,
                   ),
-                ),
-              ],
+                  Text(
+                    motorway.motorwayName!,
+                    style: TextStyle(
+                      fontSize: isLargeScreen ? 20 : 18,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -177,8 +190,14 @@ class TollPlazaTab extends StatelessWidget {
     controller.exitStation.value = '';
 
     final motorway = OtherConsts.mwNameList[index];
+
     if (motorway.motorwayID != 200 && motorway.motorwayID != 300) {
+      controller.entryStation.value = '';
+    controller.exitStation.value = '';
       controller.fetchStations(motorway.motorwayID ?? 0);
+    }else{
+      controller.entryStation.value = '';
+    controller.exitStation.value = '';
     }
   }
 
@@ -187,6 +206,16 @@ class TollPlazaTab extends StatelessWidget {
     double padding,
     BuildContext context,
   ) {
+    final selectedMotorwayIndex = controller.selectedMotorway.value;
+
+  if (selectedMotorwayIndex != -1) {
+    final motorway = OtherConsts.mwNameList[selectedMotorwayIndex];
+
+    if (motorway.motorwayID == 200 || motorway.motorwayID == 300) {
+      return const SizedBox.shrink();
+    
+  }
+  }
     return _section(
       context,
       child: Padding(
@@ -436,7 +465,9 @@ class TollPlazaTab extends StatelessWidget {
     if (!controller.showTollPlaza.value) return const SizedBox.shrink();
     final selectedMotorwayIndex = controller.selectedMotorway.value;
     final selectedVehicleIndex = controller.selectedVehicle.value;
-    if (selectedMotorwayIndex == -1 || selectedVehicleIndex == -1)return const SizedBox.shrink();
+    if (selectedMotorwayIndex == -1 || selectedVehicleIndex == -1) {
+      return const SizedBox.shrink();
+    }
     final motorway = OtherConsts.mwNameList[selectedMotorwayIndex];
     final vehicle = OtherConsts.vehicleList[selectedVehicleIndex];
     final isSpecialMotorway =

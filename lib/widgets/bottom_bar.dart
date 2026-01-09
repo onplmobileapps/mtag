@@ -41,9 +41,11 @@ class CustomBottomNavBar extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: Theme.of(context).extension<AppGradients>()!.background,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: _buildNavigationItems(context),
+        child: FittedBox(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: _buildNavigationItems(context),
+          ),
         ),
       ),
     );
@@ -91,27 +93,28 @@ class _BottomNavItemWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: SvgPicture.asset(
+          child: FittedBox(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SvgPicture.asset(
                   item.imagePath,
                   width: iconSize,
                   height: iconSize,
                   fit: BoxFit.contain,
                   colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
                 ),
-              ),
-              SizedBox(height: item.spacing),
-              Text(
-                item.label,
-                style: Theme.of(
-                  context,
-                ).textTheme.displaySmall?.copyWith(color: textColor),
-              ),
-            ],
+                SizedBox(height: item.spacing),
+                FittedBox(
+                  child: Text(
+                    item.label,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.displaySmall?.copyWith(color: textColor),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -150,7 +153,7 @@ class BottomNavItem {
     this.page,
   });
 
-  factory BottomNavItem.spacer({double width = 50}) {
+  factory BottomNavItem.spacer({double width = 40}) {
     return BottomNavItem(
       imagePath: '',
       label: '',

@@ -51,11 +51,12 @@ Widget _buildFooterItem(
   final String? label,
   final VoidCallback? onPressed,
 }) {
+  final size=MediaQuery.sizeOf(context);
   return GestureDetector(
     onTap: onPressed,
-    child: Container(
-      width: 80,
-      height: 80,
+    child: Container(margin: .all(2),
+      width:size.width/4.8,
+      height: size.height/9.5,
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: const Color(0xffF5F6F9),

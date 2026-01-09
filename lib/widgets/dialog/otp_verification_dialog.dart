@@ -68,23 +68,25 @@ class OtpVerificationDialog extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'OTP has been sent to',
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Color(0xff6C7278)),
-                            ),
-                            Text(
-                              ' $mobileNumber',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displayMedium
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                            ),
-                          ],
+                        FittedBox(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'OTP has been sent to',
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Color(0xff6C7278)),
+                              ),
+                              Text(
+                                ' $mobileNumber',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displayMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                              ),
+                            ],
+                          ),
                         ),
                         SizedBox(height: 10,),
                          RichText(
