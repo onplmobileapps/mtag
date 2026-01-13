@@ -48,127 +48,134 @@ class SettingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: GradientAppBar(title:Text('Settings'), ),
-      
-      body: Container(
-        constraints: const BoxConstraints.expand(),
-        color: Theme.of(context).primaryColor,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          decoration: BoxDecoration(
-            color: ColorScheme.of(context).surface,
-          //  gradient: Theme.of(context).extension<AppGradients>()!.background,
-            borderRadius: const BorderRadiusDirectional.only(
-            
+    return PopScope(
+      canPop: false,
+
+      onPopInvokedWithResult: (bool didPop, Object? result) {
+
+      },
+      child: Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        appBar: GradientAppBar(title:Text('Settings'), ),
+
+        body: Container(
+          constraints: const BoxConstraints.expand(),
+          color: Theme.of(context).primaryColor,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            decoration: BoxDecoration(
+              color: ColorScheme.of(context).surface,
+            //  gradient: Theme.of(context).extension<AppGradients>()!.background,
+              borderRadius: const BorderRadiusDirectional.only(
+
+              ),
             ),
-          ),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Obx(
-                    () => Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const SizedBox(height: 5),
-                        Container(padding: .all(8),
-                          decoration: BoxDecoration(shape: .circle,gradient: Theme.of(context).extension<AppGradients>()!.verticalFade),
-                         
-                          child: Text(
-                            getInitials(
-                              homeController
-                                      .dashboradData
-                                      .value
-                                      .customerDetail
-                                      ?.fullName ??
-                                  "",
-                            ),
-                            style:
-                            TextTheme.of(context).headlineLarge
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          homeController
-                                  .dashboradData
-                                  .value
-                                  .customerDetail
-                                  ?.fullName ??
-                              "",
-                          style: Theme.of(context).textTheme.displayLarge
-                              ?.copyWith(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 20,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Obx(
+                      () => Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 5),
+                          Container(padding: .all(8),
+                            decoration: BoxDecoration(shape: .circle,gradient: Theme.of(context).extension<AppGradients>()!.verticalFade),
+
+                            child: Text(
+                              getInitials(
+                                homeController
+                                        .dashboradData
+                                        .value
+                                        .customerDetail
+                                        ?.fullName ??
+                                    "",
                               ),
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconTextInfo(
-                              icon: Icons.contact_mail_outlined,
-                              text:
-                                  homeController
-                                      .dashboradData
-                                      .value
-                                      .customerDetail
-                                      ?.cNIC ??
-                                  "",
+                              style:
+                              TextTheme.of(context).headlineLarge
                             ),
-                            Container(
-                              height: 15,
-                              width: 1.5,
-                              color: Colors.grey,
-                              margin: const EdgeInsets.symmetric(horizontal: 8),
-                            ),
-                            IconTextInfo(
-                              icon: Icons.call_outlined,
-                              text:
-                                  homeController
-                                      .dashboradData
-                                      .value
-                                      .customerDetail
-                                      ?.mobileNumber ??
-                                  "",
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 5),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 5),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: items.length,
-                  itemBuilder: (context, index) =>
-                      _buildSettingsListItem(index, context),
-                ),
-              ),
-              FutureBuilder<String>(
-                future: _getAppVersion(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: Text(
-                        'Version ${snapshot.data}',
-                        style: Theme.of(context).textTheme.displaySmall
-                            ?.copyWith(fontWeight: FontWeight.w100),
-                        textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            homeController
+                                    .dashboradData
+                                    .value
+                                    .customerDetail
+                                    ?.fullName ??
+                                "",
+                            style: Theme.of(context).textTheme.displayLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 20,
+                                ),
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconTextInfo(
+                                icon: Icons.contact_mail_outlined,
+                                text:
+                                    homeController
+                                        .dashboradData
+                                        .value
+                                        .customerDetail
+                                        ?.cNIC ??
+                                    "",
+                              ),
+                              Container(
+                                height: 15,
+                                width: 1.5,
+                                color: Colors.grey,
+                                margin: const EdgeInsets.symmetric(horizontal: 8),
+                              ),
+                              IconTextInfo(
+                                icon: Icons.call_outlined,
+                                text:
+                                    homeController
+                                        .dashboradData
+                                        .value
+                                        .customerDetail
+                                        ?.mobileNumber ??
+                                    "",
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 5),
+                        ],
                       ),
-                    );
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                },
-              ),
-            ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: items.length,
+                    itemBuilder: (context, index) =>
+                        _buildSettingsListItem(index, context),
+                  ),
+                ),
+                FutureBuilder<String>(
+                  future: _getAppVersion(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: Text(
+                          'Version ${snapshot.data}',
+                          style: Theme.of(context).textTheme.displaySmall
+                              ?.copyWith(fontWeight: FontWeight.w100),
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -8,8 +8,8 @@ import '../../controller/home_controller.dart';
 import '../../pages/dashboard/nav_item.dart';
 import '../../pages/dashboard/model/dashboard_model.dart';
 import '../../theme/app_theme.dart';
-import '../../widgets/bottom_bar.dart';
 import '../../widgets/elevated_button.dart';
+import '../../widgets/new_bottom_bar.dart';
 import '../../widgets/shimmer_dashboard.dart';
 import '../../constants/call_helper.dart';
 import '../../pages/dashboard/model/mtag_model.dart';
@@ -27,37 +27,36 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetX(
+    return GetX<HomeController>(
       init: Get.find<HomeController>(),
       builder: (controller) {
         final currentPage =
             navItems
                 .firstWhere(
                   (item) => item.index == controller.currentPage.value,
-                  orElse: () => navItems[0],
-                )
+              orElse: () => navItems[0],
+            )
                 .page ??
-            const SizedBox.shrink();
-        return Scaffold(
-          floatingActionButtonLocation: .miniCenterDocked,
-          floatingActionButton: GestureDetector(
-            onTap: () async {
-              CallWhatsappUtil.openWhatsAppChat();
-            },
-            child: Image.asset('assets/whatsapp.png', height: 50, width: 50),
-          ),
-          bottomNavigationBar: CustomBottomNavBar(
-            height: 60,
-            controller: controller,
-            items: navItems,
-          ),
+                const SizedBox.shrink();
 
+        return Scaffold(
           body: currentPage,
+
+          bottomNavigationBar: SafeArea(
+            child: NewBottomBar(
+              controller: controller,
+              items:navItems ,
+              onCenterTap: () {
+                CallWhatsappUtil.openWhatsAppChat();
+              },
+            ),
+          ),
         );
       },
     );
   }
 }
+
 
 class HomePageContent extends StatelessWidget {
   final PageController _pageController = PageController();
@@ -119,7 +118,7 @@ class HomePageContent extends StatelessWidget {
                 clipBehavior: .antiAlias,
                 slivers: [
                   SliverAppBar(
-                    toolbarHeight: -60,
+                    toolbarHeight: 60,
                     foregroundColor: Colors.transparent,
                     forceMaterialTransparency: false,
                     clipBehavior: .none,
@@ -670,7 +669,7 @@ class _TransferRemoveRow extends StatelessWidget {
         )
         .toList();
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
       decoration: BoxDecoration(
         color: ColorScheme.of(
           context,
@@ -683,14 +682,14 @@ class _TransferRemoveRow extends StatelessWidget {
           Expanded(
             child: _ActionButton(
               icon: Icons.swap_horiz_rounded,
-              label: 'Transfer',
+              label: 'Balance Transfer',
               onTap: () {
                 _showBalanceTransferSheet(context, mtag, allCars);
               }, //
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Text(
               '|',
               style: TextStyle(
@@ -774,7 +773,7 @@ class _ActionButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(50),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

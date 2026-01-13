@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:mtag_flutterapp/widgets/footer_widget.dart';
 
 import '../../api/auth_controller.dart';
 import '../../base/app_data.dart';
@@ -147,15 +148,17 @@ class _PinEntryPageState extends State<PinEntryPage> {
 
                 _buildLogo(size),
 
-              
+
 
                 _buildSubtitle(context),
-   
+
                 _buildPinField(size),
 
                 _buildOptions(size),
-
+                SizedBox(height: 15),
                 _buildKeyboard(),
+                FooterWidget(),
+
               ],
             ),
           ),
@@ -323,18 +326,18 @@ class _PinEntryPageState extends State<PinEntryPage> {
       builder: (context, constraints) {
         final maxHeight = constraints.maxHeight;
         final maxWidth = constraints.maxWidth;
-        
+
         // Calculate key size based on available space
         final double keyWidth = maxWidth / 3 - 5; // Account for spacing
         final double keyHeight = keyWidth * (Platform.isAndroid ? 1.0 : 1.4);
-        
+
         // Adjust if total height exceeds available space
         final totalGridHeight = (keyHeight * 4) + (28 * 3); // 4 rows, 3 spacings
-        
-        final double aspectRatio = totalGridHeight > maxHeight 
+
+        final double aspectRatio = totalGridHeight > maxHeight
             ? keyWidth / (keyHeight * (maxHeight / totalGridHeight))
             : keyWidth / keyHeight;
-        
+
         return GridView.builder(
           padding: EdgeInsets.zero,
           physics: const NeverScrollableScrollPhysics(),
@@ -350,7 +353,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
             if (index == 9) return const SizedBox.shrink();
             if (index == 11) {
               return _buildKey(
-                child: Icon(Icons.backspace_outlined, size: keyWidth * 0.3),
+                child: Icon(Icons.backspace_outlined, size: keyWidth * 0.25),
                 onPressed: _onBackspaceTap,
               );
             }
@@ -358,9 +361,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
             return _buildKey(
               child: Text(
                 '$number',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontSize: 30, // Relative to key size
-                ),
+                style: Theme.of(context).textTheme.headlineMedium
               ),
               onPressed: () => _onNumberTap(number),
             );
@@ -386,8 +387,8 @@ class _PinEntryPageState extends State<PinEntryPage> {
         splashColor: bgColor.withValues(alpha: 0.7),
         highlightColor: bgColor.withValues(alpha: 0.5),
         child: Container(
-          margin: const EdgeInsets.all(4),
-          padding: const EdgeInsets.all(16),
+          margin: const EdgeInsets.all(0),
+          padding: const EdgeInsets.all(0),
           alignment: Alignment.center,
           child: child,
         ),
