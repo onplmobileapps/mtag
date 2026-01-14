@@ -119,7 +119,7 @@ class HomePageContent extends StatelessWidget {
                 clipBehavior: .antiAlias,
                 slivers: [
                   SliverAppBar(
-                    toolbarHeight: -60,
+                    toolbarHeight:60,
                     foregroundColor: Colors.transparent,
                     forceMaterialTransparency: false,
                     clipBehavior: .none,

@@ -1,4 +1,4 @@
-#version=16
+#version=18
 id,motorway_name,motorway_id,station_name,station_id,station_km,total_lane,seq_id,img_server,entry_lane,lat_lng,is_sta_active
 97,M5,5,Start_M5,48,0.00,4,60,192.168.144.105,0,"31.90561816851169, 73.32182262744006",false
 2,M1,4,Fateh Jang,4010,10.00,4,4010,192.168.120.105,4,"33.60770274726503, 72.86092491598039",true
