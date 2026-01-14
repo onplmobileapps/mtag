@@ -34,10 +34,10 @@ class HomePage extends StatelessWidget {
             navItems
                 .firstWhere(
                   (item) => item.index == controller.currentPage.value,
-              orElse: () => navItems[0],
-            )
+                  orElse: () => navItems[0],
+                )
                 .page ??
-                const SizedBox.shrink();
+            const SizedBox.shrink();
 
         return Scaffold(
           body: currentPage,
@@ -45,7 +45,7 @@ class HomePage extends StatelessWidget {
           bottomNavigationBar: SafeArea(
             child: NewBottomBar(
               controller: controller,
-              items:navItems ,
+              items: navItems,
               onCenterTap: () {
                 CallWhatsappUtil.openWhatsAppChat();
               },
@@ -57,12 +57,12 @@ class HomePage extends StatelessWidget {
   }
 }
 
-
 class HomePageContent extends StatelessWidget {
   final PageController _pageController = PageController();
   final ValueNotifier<int> _currentPage = ValueNotifier<int>(0);
 
   HomePageContent({super.key});
+
   @override
   Widget build(BuildContext context) {
     log('height:${MediaQuery.sizeOf(context).height}');
@@ -109,7 +109,8 @@ class HomePageContent extends StatelessWidget {
                 Get.isDarkMode ? 'assets/darklogo.png' : 'assets/logolight.png',
                 height: 60,
                 width: 70,
-              ),),
+              ),
+            ),
             // ),
             Expanded(
               flex: 1,
@@ -227,6 +228,7 @@ class HomePageContent extends StatelessWidget {
 
 class VehicleCard extends StatelessWidget {
   final ActiveMtags mtags;
+
   const VehicleCard({super.key, required this.mtags});
 
   @override
@@ -260,6 +262,7 @@ class VehicleCard extends StatelessWidget {
 class _MtagDataWidget extends StatelessWidget {
   final double width;
   final ActiveMtags mtag;
+
   const _MtagDataWidget({super.key, this.width = 0, required this.mtag});
 
   @override
@@ -432,6 +435,7 @@ class _MtagDataWidget extends StatelessWidget {
 
 class _ActiveBadge extends StatelessWidget {
   final double isActive;
+
   const _ActiveBadge(this.isActive);
 
   @override
@@ -481,9 +485,11 @@ class _ActiveBadge extends StatelessWidget {
 
 class BalanceCard extends StatelessWidget {
   BalanceCard({super.key, this.mtag, this.balance});
+
   final ActiveMtags? mtag;
   final double? balance;
   final ValueNotifier<bool> balanceVisibleNotifier = ValueNotifier(true);
+
   @override
   Widget build(BuildContext context) {
     final balance = double.tryParse('${mtag?.balance}');
@@ -620,6 +626,7 @@ class BalanceCard extends StatelessWidget {
 
 class _RechargeButton extends StatelessWidget {
   final ActiveMtags activeMtags;
+
   const _RechargeButton(this.activeMtags);
 
   @override
@@ -654,6 +661,7 @@ class _RechargeButton extends StatelessWidget {
 
 class _TransferRemoveRow extends StatelessWidget {
   final ActiveMtags mtag;
+
   const _TransferRemoveRow(this.mtag);
 
   @override
@@ -681,8 +689,10 @@ class _TransferRemoveRow extends StatelessWidget {
         children: [
           Expanded(
             child: _ActionButton(
-              icon: Icons.swap_horiz_rounded,
+              // icon: Icons.swap_horiz_rounded,
+              imagePath: "assets/transfer_balance.png",
               label: 'Balance Transfer',
+              isDestructive: false,
               onTap: () {
                 _showBalanceTransferSheet(context, mtag, allCars);
               }, //
@@ -701,9 +711,9 @@ class _TransferRemoveRow extends StatelessWidget {
           ),
           Expanded(
             child: _ActionButton(
-              icon: Icons.delete,
+              icon: Icons.delete_outlined,
               label: 'Remove',
-              isDestructive: true,
+              isDestructive: false,
               onTap: () {
                 _showDeleteDialog(mtag);
               },
@@ -755,13 +765,15 @@ class _TransferRemoveRow extends StatelessWidget {
 }
 
 class _ActionButton extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
+  final String? imagePath;
   final String label;
   final VoidCallback? onTap;
   final bool isDestructive;
 
   const _ActionButton({
-    required this.icon,
+    this.icon,
+    this.imagePath,
     required this.label,
     this.onTap,
     this.isDestructive = false,
@@ -769,6 +781,28 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textStyle = TextTheme.of(context).bodyMedium?.copyWith(
+      fontSize: 13,
+      color: isDestructive ? Colors.red : null,
+    );
+
+    Widget? leadingWidget;
+    if (imagePath != null && imagePath!.isNotEmpty) {
+      leadingWidget = Image.asset(
+        imagePath!,
+        width: 25,
+        height: 25,
+        fit: BoxFit.contain,
+        color: Get.isDarkMode ? Colors.white : null,
+      );
+    } else if (icon != null) {
+      leadingWidget = Icon(
+        icon,
+        size: 20,
+        color: isDestructive ? Colors.red : null,
+      );
+    }
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(50),
@@ -777,12 +811,11 @@ class _ActionButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 20),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: TextTheme.of(context).bodyMedium?.copyWith(fontSize: 13),
-            ),
+            if (leadingWidget != null) ...[
+              leadingWidget,
+              const SizedBox(width: 8),
+            ],
+            Text(label, style: textStyle),
           ],
         ),
       ),
@@ -792,6 +825,7 @@ class _ActionButton extends StatelessWidget {
 
 class ActionGrid extends StatelessWidget {
   const ActionGrid({super.key, required this.controller});
+
   final HomeController controller;
 
   @override
@@ -825,6 +859,7 @@ class _ActionTile extends StatelessWidget {
   final MtagModel item;
   final bool? isCalculatorWidget;
   final HomeController controller;
+
   const _ActionTile({
     required this.item,
     this.isCalculatorWidget = false,
@@ -901,4 +936,3 @@ class _ActionTile extends StatelessWidget {
     rechargeController.isRechageVisible(true);
   }
 }
-

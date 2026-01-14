@@ -31,7 +31,7 @@ void main() async {
 
   //uncomment when go to production
   // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-//  setupErrorHandling();
+  //  setupErrorHandling();
   final sharedPreferences = await SharedPreferences.getInstance();
 
   SystemChrome.setSystemUIOverlayStyle(
@@ -194,7 +194,6 @@ class CustomUpgraderMessages extends UpgraderMessages {
 
 void setupErrorHandling() {
   FlutterError.onError = (FlutterErrorDetails details) {
-
     if (_isUrlLauncherError(details.exception)) {
       debugPrint('URL Launcher error ignored: ${details.exception}');
       return;

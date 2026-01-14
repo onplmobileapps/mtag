@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-
-
 import '../theme/app_theme.dart';
 
 class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget title;
- final List<Widget>? actions;
+  final List<Widget>? actions;
+  final bool showBackButton;
+  final VoidCallback? onBackPressed;
 
   const GradientAppBar({
     super.key,
-    required this.title,this.actions,
-
+    required this.title,
+    this.actions,
+    this.showBackButton = false,
+    this.onBackPressed,
   });
 
   @override
@@ -18,15 +20,26 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(backgroundColor: Colors.transparent,centerTitle: true,
-      elevation: 0,actions: actions,
-      title: title,titleTextStyle: TextTheme.of(context).titleLarge,
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      centerTitle: false,
+      title: title,
+      actions: actions,
+      titleTextStyle: Theme.of(context).textTheme.titleLarge,
+
+      leading: showBackButton
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: onBackPressed,
+            )
+          : null,
+
       flexibleSpace: Container(
         decoration: BoxDecoration(
           gradient: Theme.of(context).extension<AppGradients>()!.background,
         ),
       ),
-     
     );
   }
 }

@@ -24,8 +24,8 @@ final navItems = [
     page: RechargeMapScreen(),
   ),
   BottomNavItem(
-    imagePath: 'assets/user.svg',
-    label: 'Profile',
+    imagePath: 'assets/setting.svg',
+    label: 'Settings',
     index: 3,
     page: SettingScreen(),
   ),

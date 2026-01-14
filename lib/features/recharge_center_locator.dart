@@ -1,11 +1,15 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../api/auth_controller.dart';
+import '../controller/home_controller.dart';
 import 'recharge_centers.dart';
 import 'widget/city_dropdown.dart';
 import 'widget/recharge_center_bottom_sheet.dart';
@@ -69,14 +73,11 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
 
     _buildMarkersAsync();
 
-    _updateTimer = Timer.periodic(
-      const Duration(minutes: 5),
-          (_) {
-        if (mounted && !_isDisposed) {
-          _buildMarkersAsync();
-        }
-      },
-    );
+    _updateTimer = Timer.periodic(const Duration(minutes: 5), (_) {
+      if (mounted && !_isDisposed) {
+        _buildMarkersAsync();
+      }
+    });
   }
 
   @override
@@ -151,10 +152,10 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
   }
 
   Widget _buildMarkerWidget(
-      RechargeCenter center,
-      bool isOpen,
-      String cacheKey,
-      ) {
+    RechargeCenter center,
+    bool isOpen,
+    String cacheKey,
+  ) {
     try {
       return GestureDetector(
         onTap: () {
@@ -171,7 +172,10 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
             mainAxisSize: MainAxisSize.max,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 1),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 1,
+                ),
                 margin: const EdgeInsets.only(bottom: 1),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
@@ -188,10 +192,9 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .displaySmall
-                          ?.copyWith(fontSize: 9),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.displaySmall?.copyWith(fontSize: 9),
                     ),
                     _statusChip(isOpen),
                   ],
@@ -308,9 +311,11 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
 
         try {
           final t = curve.value;
-          final lat = startCenter.latitude +
+          final lat =
+              startCenter.latitude +
               (target.latitude - startCenter.latitude) * t;
-          final lng = startCenter.longitude +
+          final lng =
+              startCenter.longitude +
               (target.longitude - startCenter.longitude) * t;
           final zoom = startZoom + (targetZoom - startZoom) * t;
 
@@ -350,10 +355,7 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
       final currentZoom = _mapController.camera.zoom;
       final targetZoom = (currentZoom + delta).clamp(5.0, 18.0);
 
-      final anim = Tween<double>(
-        begin: currentZoom,
-        end: targetZoom,
-      ).animate(
+      final anim = Tween<double>(begin: currentZoom, end: targetZoom).animate(
         CurvedAnimation(parent: controller, curve: Curves.easeOutCubic),
       );
 
@@ -377,13 +379,28 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
     }
   }
 
+  void _handleBack() {
+    final authController = Get.find<AuthController>();
+    final isLoggedIn = authController.isLogedIn() ?? false;
+
+    if (isLoggedIn) {
+      if (Get.isRegistered<HomeController>()) {
+        Get.find<HomeController>().currentPage.value = 0;
+      }
+    } else {
+      Get.back();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PopScope(
         canPop: false,
         onPopInvokedWithResult: (bool didPop, Object? result) {
-
+          if (!didPop) {
+            _handleBack();
+          }
         },
         child: Stack(
           children: [
@@ -404,7 +421,10 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                         enableMultiFingerGestureRace: true,
                       ),
                       onPositionChanged: (pos, hasGesture) {
-                        if (!hasGesture || _isAnimating || _isDisposed || !mounted) {
+                        if (!hasGesture ||
+                            _isAnimating ||
+                            _isDisposed ||
+                            !mounted) {
                           return;
                         }
 
@@ -412,13 +432,13 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                           _markerRebuildTimer?.cancel();
                           _markerRebuildTimer = Timer(
                             const Duration(milliseconds: 50),
-                                () {
+                            () {
                               if (mounted && !_isDisposed) {
                                 final center = pos.center;
                                 final posZoom = pos.zoom;
                                 _centerNotifier.value = center;
                                 _zoomNotifier.value = posZoom;
-                                                            }
+                              }
                             },
                           );
                         } catch (e) {
@@ -428,7 +448,8 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                     ),
                     children: [
                       TileLayer(
-                        urlTemplate: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+                        urlTemplate:
+                            'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
                         subdomains: const ['a', 'b', 'c', 'd'],
                         userAgentPackageName: 'com.playdev.mtagapp',
                         maxNativeZoom: 18,
@@ -466,8 +487,9 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                                           : 50.0;
 
                                       return AnimatedContainer(
-                                        duration:
-                                        const Duration(milliseconds: 200),
+                                        duration: const Duration(
+                                          milliseconds: 200,
+                                        ),
                                         width: size,
                                         height: size,
                                         decoration: BoxDecoration(
@@ -559,21 +581,46 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
               left: 16,
               right: 16,
               child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(0, -1),
-                  end: Offset.zero,
-                ).animate(
-                  CurvedAnimation(
-                    parent: _headerController,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ),
+                position:
+                    Tween<Offset>(
+                      begin: const Offset(0, -1),
+                      end: Offset.zero,
+                    ).animate(
+                      CurvedAnimation(
+                        parent: _headerController,
+                        curve: Curves.easeOutCubic,
+                      ),
+                    ),
                 child: FadeTransition(
                   opacity: _headerController,
-                  child: CityDropdown(
-                    cities: RechargeCenter.cities.keys.toList(),
-                    onCitySelected: _onCityChanged,
-                    placeholder: "Select City",
+                  child: Row(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: _handleBack,
+                        ),
+                      ),
+                      Expanded(
+                        child: CityDropdown(
+                          cities: RechargeCenter.cities.keys.toList(),
+                          onCitySelected: _onCityChanged,
+                          placeholder: "Select City",
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -603,20 +650,16 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                   color: Theme.of(context).colorScheme.surface.withAlpha(230),
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .outline
-                        .withAlpha(50),
+                    color: Theme.of(context).colorScheme.outline.withAlpha(50),
                   ),
                 ),
                 child: Text(
                   '© OpenStreetMap © CARTO',
                   style: TextStyle(
                     fontSize: 9,
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withAlpha(155),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withAlpha(155),
                   ),
                 ),
               ),

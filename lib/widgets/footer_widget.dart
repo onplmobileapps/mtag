@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import '../api/auth_controller.dart';
 import '../constants/call_helper.dart';
 import '../features/recharge_center_locator.dart';
 import '../pages/faqs/faqs_screen.dart';
-
 
 class FooterWidget extends StatelessWidget {
   const FooterWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return SafeArea(
       top: false,
       child: LayoutBuilder(
@@ -36,11 +41,13 @@ class FooterWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   _FooterItem(
-                    image: 'assets/whatsapp.png',
+                    image: 'assets/whatsapp_1.png',
                     label: 'WhatsApp',
                     semantics: 'Open WhatsApp support',
                     width: itemWidth,
                     screenWidth: screenWidth,
+                    isDark: isDark,
+                    isMultiColor: true,
                     onTap: () async {
                       await CallWhatsappUtil.openWhatsAppChat();
                     },
@@ -52,6 +59,7 @@ class FooterWidget extends StatelessWidget {
                     semantics: 'Call helpline 1313',
                     width: itemWidth,
                     screenWidth: screenWidth,
+                    isDark: isDark,
                     onTap: () async {
                       await CallWhatsappUtil.openCall1313();
                     },
@@ -63,12 +71,16 @@ class FooterWidget extends StatelessWidget {
                     semantics: 'Find recharge locations',
                     width: itemWidth,
                     screenWidth: screenWidth,
+                    isDark: isDark,
                     onTap: () {
                       Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => RechargeMapScreen(),
-                        ),
+                        MaterialPageRoute(builder: (_) => RechargeMapScreen()),
                       );
+                      try {
+                        Get.find<AuthController>().clearSharedData();
+                      } catch (e) {
+                        debugPrint("⚠️ Could not find AuthController: $e");
+                      }
                     },
                   ),
                   SizedBox(width: itemSpacing),
@@ -78,12 +90,11 @@ class FooterWidget extends StatelessWidget {
                     semantics: 'Open frequently asked questions',
                     width: itemWidth,
                     screenWidth: screenWidth,
+                    isDark: isDark,
                     onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => FaqsScreen(),
-                        ),
-                      );
+                      Navigator.of(
+                        context,
+                      ).push(MaterialPageRoute(builder: (_) => FaqsScreen()));
                     },
                   ),
                 ],
@@ -102,6 +113,8 @@ class _FooterItem extends StatefulWidget {
   final String semantics;
   final double width;
   final double screenWidth;
+  final bool isDark;
+  final bool isMultiColor;
   final VoidCallback onTap;
 
   const _FooterItem({
@@ -110,6 +123,8 @@ class _FooterItem extends StatefulWidget {
     required this.semantics,
     required this.width,
     required this.screenWidth,
+    required this.isDark,
+    this.isMultiColor = false,
     required this.onTap,
   });
 
@@ -125,7 +140,6 @@ class _FooterItemState extends State<_FooterItem>
   void initState() {
     super.initState();
 
-    // Initialize animation controller
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 120),
@@ -153,26 +167,22 @@ class _FooterItemState extends State<_FooterItem>
     _controller.forward();
   }
 
-  // Get responsive values based on screen width
   double get _iconSize {
     if (widget.screenWidth < 340) return 20.0;
     if (widget.screenWidth < 375) return 22.0;
-    if (widget.screenWidth < 414) return 24.0;
     return 24.0;
   }
 
   double get _fontSize {
     if (widget.screenWidth < 340) return 9.5;
     if (widget.screenWidth < 375) return 10.5;
-    if (widget.screenWidth < 414) return 11.5;
-    return 12.0;
+    return 11.5;
   }
 
   double get _textHeight {
     if (widget.screenWidth < 340) return 28.0;
     if (widget.screenWidth < 375) return 30.0;
-    if (widget.screenWidth < 414) return 32.0;
-    return 34.0;
+    return 32.0;
   }
 
   double get _verticalPadding {
@@ -203,13 +213,28 @@ class _FooterItemState extends State<_FooterItem>
             onTapCancel: _handleTapCancel,
             onTap: widget.onTap,
             borderRadius: BorderRadius.circular(12),
-            splashColor: Colors.black.withValues(alpha: 0.05),
-            highlightColor: Colors.black.withValues(alpha: 0.03),
+            splashColor: widget.isDark
+                ? Colors.white.withValues(alpha: 0.05)
+                : Colors.black.withValues(alpha: 0.05),
+            highlightColor: widget.isDark
+                ? Colors.white.withValues(alpha: 0.03)
+                : Colors.black.withValues(alpha: 0.03),
             child: Ink(
               width: widget.width,
               decoration: BoxDecoration(
-                color: const Color(0xFFF5F6F9),
+                color: widget.isDark
+                    ? const Color(0xFF1A1C28)
+                    : const Color(0xFFF5F6F9),
                 borderRadius: BorderRadius.circular(12),
+                boxShadow: widget.isDark
+                    ? null
+                    : [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.03),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
               ),
               child: Padding(
                 padding: EdgeInsets.symmetric(
@@ -220,7 +245,6 @@ class _FooterItemState extends State<_FooterItem>
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    // Icon with optimized rendering
                     SizedBox(
                       height: _iconSize,
                       width: _iconSize,
@@ -229,12 +253,20 @@ class _FooterItemState extends State<_FooterItem>
                         fit: BoxFit.contain,
                         filterQuality: FilterQuality.medium,
                         isAntiAlias: true,
-                        cacheWidth: (_iconSize * MediaQuery.of(context).devicePixelRatio).round(),
+                        // Apply white tint in dark mode, unless it's a multi-color icon like WhatsApp
+                        color: (widget.isDark && !widget.isMultiColor)
+                            ? Colors.white
+                            : null,
+                        colorBlendMode: (widget.isDark && !widget.isMultiColor)
+                            ? BlendMode.srcIn
+                            : null,
+                        cacheWidth:
+                            (_iconSize *
+                                    MediaQuery.of(context).devicePixelRatio)
+                                .round(),
                       ),
                     ),
                     SizedBox(height: _spacing),
-
-                    // Text with fixed height for alignment
                     SizedBox(
                       height: _textHeight,
                       child: Align(
@@ -246,9 +278,11 @@ class _FooterItemState extends State<_FooterItem>
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: _fontSize,
-                            height: 1.3,
+                            height: 1.2,
                             fontWeight: FontWeight.w500,
-                            color: const Color(0xFF1A1A1A),
+                            color: widget.isDark
+                                ? Colors.white
+                                : const Color(0xFF1A1A1A),
                             letterSpacing: -0.1,
                           ),
                         ),

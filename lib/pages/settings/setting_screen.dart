@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/widgets/dialog/operator_selection_dialog.dart';
 import '../../base/app_data.dart';
 import '../../controller/home_controller.dart';
 import '../../widgets/dialog/change_pin_dialog.dart';
@@ -13,14 +14,205 @@ import '../../widgets/gradient_appbar.dart';
 class SettingScreen extends StatelessWidget {
   SettingScreen({super.key});
 
-  final navigatorKey = GlobalKey<NavigatorState>();
   final homeController = Get.find<HomeController>();
 
   Future<String> _getAppVersion() async {
     final packageInfo = await PackageInfo.fromPlatform();
     return packageInfo.version;
   }
-  Widget _buildSettingsListItem(int index, BuildContext context) {
+
+  void _handleBackNavigation() {
+    final authController = Get.find<AuthController>();
+    if (authController.isLogedIn() == true) {
+      if (Get.isRegistered<HomeController>()) {
+        Get.find<HomeController>().currentPage.value = 0;
+      } else {
+        Get.offAllNamed('/dashboard');
+      }
+    } else {
+      Get.back();
+    }
+  }
+
+  List<SettingsModel> _buildSettingsList() {
+    final customer = homeController.dashboradData.value.customerDetail;
+    final cnic = customer?.cNIC ?? '';
+    final mobile = customer?.mobileNumber ?? '';
+
+    return [
+      SettingsModel(
+        onTap: () {
+          Get.bottomSheet(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                gradient: Theme.of(
+                  Get.context!,
+                ).extension<AppGradients>()!.background,
+              ),
+              child: SafeArea(
+                child: Wrap(
+                  children: [
+                    ListTile(
+                      onTap: () {
+                        Get.changeThemeMode(ThemeMode.system);
+                        AppData.setThemeMode(null);
+                        Get.back();
+                      },
+                      dense: true,
+                      leading: const Icon(Icons.phone_android_outlined),
+                      title: const Text('System Default'),
+                    ),
+                    const Divider(),
+                    ListTile(
+                      onTap: () {
+                        Get.changeThemeMode(ThemeMode.light);
+                        Get.changeTheme(appTheme);
+                        AppData.setThemeMode(false);
+                        Get.back();
+                      },
+                      dense: true,
+                      leading: const Icon(Icons.light_mode_outlined),
+                      title: const Text('Light Mode'),
+                    ),
+                    const Divider(),
+                    ListTile(
+                      onTap: () {
+                        Get.changeThemeMode(ThemeMode.dark);
+                        Get.changeTheme(darkTheme);
+                        AppData.setThemeMode(true);
+                        Get.back();
+                      },
+                      dense: true,
+                      leading: const Icon(Icons.dark_mode_outlined),
+                      title: const Text('Dark Mode'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+        name: 'Dark/Light Mode',
+        icon: const Icon(Icons.light_mode_outlined),
+        routeName: '/theme',
+      ),
+      SettingsModel(
+        onTap: () {
+          Get.toNamed('/smsAlert');
+        },
+        name: 'Travel SMS Alert',
+        icon: const Icon(Icons.sms_outlined),
+        routeName: '/theme',
+      ),
+      SettingsModel(
+        onTap: () {
+          Get.toNamed('/notifications');
+        },
+        name: 'Notifications',
+        icon: const Icon(Icons.notifications_on_outlined),
+        routeName: '/notifications',
+      ),
+      SettingsModel(
+        onTap: () {
+          showChangePinDialog(Get.context!, onSubmit: (oldPin, newPin) {});
+        },
+        name: 'Change PIN',
+        icon: const Icon(Icons.password_outlined),
+        routeName: '',
+      ),
+      SettingsModel(
+        onTap: () {
+          OperatorSelectionDialog.show(Get.context!, (value) {
+            homeController.sendNetworkOperator(
+              cnicNumber: cnic,
+              mobileNum: mobile,
+              simOperator: value,
+            );
+          }, mobileNumber: mobile);
+        },
+        name: 'Change SIM Operator',
+        icon: const Icon(Icons.sim_card_outlined),
+        routeName: '',
+      ),
+      SettingsModel(
+        onTap: () {
+          Get.toNamed('/faqs');
+        },
+        name: 'FAQ\'s',
+        icon: const Icon(Icons.quiz_outlined),
+        routeName: '/theme',
+      ),
+      SettingsModel(
+        onTap: () {
+          Get.toNamed('/privacyPolicy');
+        },
+        name: 'Privacy Policy',
+        icon: const Icon(Icons.privacy_tip_outlined),
+        routeName: '/theme',
+      ),
+      SettingsModel(
+        onTap: () {
+          final box = Get.context!.findRenderObject() as RenderBox?;
+          if (box != null) {
+            String shareLinks =
+                "Get the M-Tag One Network Application now for exciting features\n"
+                "Android: https://bit.ly/3nLrHNX\n"
+                "IOS: https://apple.co/3byIb6c\n"
+                "Huawei: https://bit.ly/3IFgzLf";
+            SharePlus.instance.share(
+              ShareParams(
+                text: shareLinks,
+                sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+              ),
+            );
+          }
+        },
+        name: 'Share',
+        icon: const Icon(Icons.share_outlined),
+        routeName: '/theme',
+      ),
+      SettingsModel(
+        onTap: () {
+          showCupertinoModalPopup(
+            context: Get.context!,
+            builder: (_) => CupertinoAlertDialog(
+              content: const Text('Do you want to logout?'),
+              actions: [
+                CupertinoDialogAction(
+                  child: const Text('Confirm'),
+                  onPressed: () {
+                    Get.delete<HomeController>(force: true);
+                    Get.find<AuthController>().clearSharedData()
+                        ? Get.offNamedUntil('/pinPage', (v) => false)
+                        : Get.back();
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: const Text('Cancel'),
+                  onPressed: () => Get.back(),
+                ),
+              ],
+            ),
+          );
+        },
+        name: 'Logout',
+        icon: const Icon(Icons.login),
+        routeName: '/theme',
+      ),
+    ];
+  }
+
+  Widget _buildSettingsListItem(
+    int index,
+    BuildContext context,
+    List<SettingsModel> items,
+  ) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -48,27 +240,32 @@ class SettingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final items = _buildSettingsList();
+
+    final gradients = Theme.of(context).extension<AppGradients>();
+
     return PopScope(
       canPop: false,
-
       onPopInvokedWithResult: (bool didPop, Object? result) {
-
+        if (didPop) return;
+        _handleBackNavigation();
       },
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        appBar: GradientAppBar(title:Text('Settings'), ),
+
+        appBar: GradientAppBar(
+          title: const Text("Settings"),
+          showBackButton: true,
+          onBackPressed: _handleBackNavigation,
+        ),
 
         body: Container(
           constraints: const BoxConstraints.expand(),
-          color: Theme.of(context).primaryColor,
+          decoration: BoxDecoration(gradient: gradients?.background),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             decoration: BoxDecoration(
-              color: ColorScheme.of(context).surface,
-            //  gradient: Theme.of(context).extension<AppGradients>()!.background,
-              borderRadius: const BorderRadiusDirectional.only(
-
-              ),
+              color: ColorScheme.of(context).surface.withValues(alpha: 0.8),
             ),
             child: Column(
               children: [
@@ -80,9 +277,14 @@ class SettingScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           const SizedBox(height: 5),
-                          Container(padding: .all(8),
-                            decoration: BoxDecoration(shape: .circle,gradient: Theme.of(context).extension<AppGradients>()!.verticalFade),
-
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: Theme.of(
+                                context,
+                              ).extension<AppGradients>()!.verticalFade,
+                            ),
                             child: Text(
                               getInitials(
                                 homeController
@@ -92,8 +294,7 @@ class SettingScreen extends StatelessWidget {
                                         ?.fullName ??
                                     "",
                               ),
-                              style:
-                              TextTheme.of(context).headlineLarge
+                              style: TextTheme.of(context).headlineLarge,
                             ),
                           ),
                           const SizedBox(height: 5),
@@ -128,7 +329,9 @@ class SettingScreen extends StatelessWidget {
                                 height: 15,
                                 width: 1.5,
                                 color: Colors.grey,
-                                margin: const EdgeInsets.symmetric(horizontal: 8),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
                               ),
                               IconTextInfo(
                                 icon: Icons.call_outlined,
@@ -153,7 +356,7 @@ class SettingScreen extends StatelessWidget {
                   child: ListView.builder(
                     itemCount: items.length,
                     itemBuilder: (context, index) =>
-                        _buildSettingsListItem(index, context),
+                        _buildSettingsListItem(index, context, items),
                   ),
                 ),
                 FutureBuilder<String>(
@@ -195,165 +398,6 @@ class SettingsModel {
     required this.onTap,
   });
 }
-
-final List<SettingsModel> items = [
-  SettingsModel(
-    onTap: () {
-      Get.bottomSheet(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(10),
-          ),
-        ),
-        
-        Container(decoration: BoxDecoration(gradient: Theme.of(Get.context!).extension<AppGradients>()!.background),
-          child: SafeArea(
-            child: Wrap(
-              children: [
-                ListTile(
-                  onTap: () {
-                    Get.changeThemeMode(ThemeMode.system);
-                    AppData.setThemeMode(null);
-                    Get.back();
-                  },
-                  dense: true,
-                  leading: const Icon(Icons.phone_android_outlined),
-                  title: const Text('System Default'),
-                ),
-                const Divider(),
-                ListTile(
-                  onTap: () {
-                    Get.changeThemeMode(ThemeMode.light);
-                    Get.changeTheme(appTheme);
-                    AppData.setThemeMode(false);
-                    Get.back();
-                  },
-                  dense: true,
-                  leading: const Icon(Icons.light_mode_outlined),
-                  title: const Text('Light Mode'),
-                ),
-                const Divider(),
-                ListTile(
-                  onTap: () {
-                    Get.changeThemeMode(ThemeMode.dark);
-                    Get.changeTheme(darkTheme);
-                    AppData.setThemeMode(true);
-                    Get.back();
-                  },
-                  dense: true,
-                  leading: const Icon(Icons.dark_mode_outlined),
-                  title: const Text('Dark Mode'),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    },
-    name: 'Dark/Light Mode',
-    icon: const Icon(Icons.light_mode_outlined),
-    routeName: '/theme',
-  ),
-  SettingsModel(
-    onTap: () {
-      Get.toNamed('/smsAlert');
-    },
-    name: 'Travel SMS Alert',
-    icon: const Icon(Icons.sms_outlined),
-    routeName: '/theme',
-  ),
-  SettingsModel(
-    onTap: () {
-      Get.toNamed('/notifications');
-    },
-    name: 'Notifications',
-    icon: const Icon(Icons.notifications_on_outlined),
-    routeName: '/notifications',
-  ),
-
-  SettingsModel(
-    onTap: () {
-      Get.toNamed('/feedback');
-    },
-    name: 'Help & Feedback',
-    icon: const Icon(Icons.help_outline),
-    routeName: '/theme',
-  ),
-  SettingsModel(
-    onTap: () {
-      showChangePinDialog(Get.context!, onSubmit: (oldPin, newPin) {});
-    },
-    name: 'Change PIN',
-    icon: const Icon(Icons.password_outlined),
-    routeName: '',
-  ),
-  SettingsModel(
-    onTap: () {
-      Get.toNamed('/faqs');
-    },
-    name: 'FAQ\'s',
-    icon: const Icon(Icons.quiz_outlined),
-    routeName: '/theme',
-  ),
-  SettingsModel(
-    onTap: () {
-      Get.toNamed('/privacyPolicy');
-    },
-    name: 'Privacy Policy',
-    icon: const Icon(Icons.privacy_tip_outlined),
-    routeName: '/theme',
-  ),
-  SettingsModel(
-    onTap: () {
-      final box = Get.context!.findRenderObject() as RenderBox?;
-      if (box != null) {
-        String shareLinks =
-            "Get the M-Tag One Network Application now for exciting features\n"
-            "Android: https://bit.ly/3nLrHNX\n"
-            "IOS: https://apple.co/3byIb6c\n"
-            "Huawei: https://bit.ly/3IFgzLf";
-        SharePlus.instance.share(
-          ShareParams(
-            text: shareLinks,
-            sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
-          ),
-        );
-      }
-    },
-    name: 'Share',
-    icon: const Icon(Icons.share_outlined),
-    routeName: '/theme',
-  ),
-  SettingsModel(
-    onTap: () {
-      showCupertinoModalPopup(
-        context: Get.context!,
-        builder: (_) => CupertinoAlertDialog(
-          content: const Text('Do you want to logout?'),
-          actions: [
-            CupertinoDialogAction(
-              child: const Text('Confirm'),
-              onPressed: () {
-                Get.delete<HomeController>(force: true);
-                Get.find<AuthController>().clearSharedData()
-                    ? Get.offNamedUntil('/pinPage', (v) => false)
-                    : Get.back();
-              },
-            ),
-            CupertinoDialogAction(
-              child: const Text('Cancel'),
-              onPressed: () => Get.back(),
-            ),
-          ],
-        ),
-      );
-    },
-    name: 'Logout',
-    icon: const Icon(Icons.login),
-    routeName: '/theme',
-  ),
-];
 
 String getInitials(String fullName) {
   if (fullName.trim().isNotEmpty) {
