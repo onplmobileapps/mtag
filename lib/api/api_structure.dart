@@ -3,7 +3,6 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart' as apiClient;
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import '../../base/connectivity_check.dart';
 import '../../api/api_constants.dart';
@@ -51,11 +50,13 @@ class APISTRUCTURE {
           if (authToken != null) {
             options.headers["Authorization"] = "Bearer $authToken";
           }
+
           // Add Content-Type if provided
           if (options.extra['contentType'] != null) {
             options.headers["Content-Type"] = options.extra['contentType'];
           }
-          // Check connectivity before proceeding
+
+          // Check connectivity
           final connectivityResult = await ConnectionCheck.isConnected();
           if (!connectivityResult.containsKey(APIRESPONSE.SUCCESS)) {
             handler.reject(
@@ -70,6 +71,7 @@ class APISTRUCTURE {
             );
             return;
           }
+
           handler.next(options);
         },
         onResponse: (response, handler) {
@@ -136,10 +138,10 @@ class APISTRUCTURE {
           throw Exception('Unsupported request method');
       }
 
-      log("message$body");
-      log('$apiUrl response:[${response.statusCode}]----> $response');
-      if (isShowLoading) ApiLoader.hide();
+      log("Request Body: $body");
+      log("$apiUrl response:[${response.statusCode}] ---> $response");
 
+      if (isShowLoading) ApiLoader.hide();
       return _handleResponse(response);
     } catch (e) {
       if (isShowLoading) ApiLoader.hide();
@@ -150,120 +152,100 @@ class APISTRUCTURE {
   }
 
   Map<String, dynamic> _handleResponse(apiClient.Response<dynamic> response) {
-    if (response.statusCode == 200) {
-      return {APIRESPONSE.SUCCESS: response.data};
-    } else if (response.statusCode == 504 ||
-        response.statusCode == 404 ||
-        response.statusCode == 500 ||
-        response.statusCode == 522 ||
-        response.statusCode == 429) {
+    final int statusCode = response.statusCode ?? 0;
+
+    if (statusCode == 200) {
+      return {APIRESPONSE.SUCCESS: response.data, 'statusCode': statusCode};
+    } else if ([500, 502, 504, 522, 429].contains(statusCode)) {
       return {
         APIRESPONSE.ERROR: {
           'Message':
-              'We couldn’t complete your request\n Try again or contact assistance.',
+              'We couldn’t complete your request\nTry again or contact assistance.',
         },
+        'statusCode': statusCode,
       };
-    } else if (response.statusCode == 502) {
+    } else if ([400, 404, 409, 450].contains(statusCode) ||
+        response.statusMessage == 'CONFLICT') {
       return {
-        APIRESPONSE.ERROR: {
-          'Message': 'Cannot process right now\nTry again later.',
-        },
+        APIRESPONSE.ERROR: response.data ?? {'Message': 'Unknown error'},
+        'statusCode': statusCode,
       };
-    } else if (response.statusMessage == 'CONFLICT' ||
-        response.statusCode == 400 ||
-        response.statusCode == 404 ||
-        response.statusCode == 450 ||
-        response.statusCode == 409) {
-      log('controll here${response.statusCode}');
-      return {APIRESPONSE.ERROR: response.data};
     } else {
-      log('controll here${response.statusCode}');
       return {
         APIRESPONSE.ERROR: {
-          "Message":
-              "We couldn’t complete your request\n Try again or contact assistance.\nTry again later.",
+          'Message': 'We couldn’t complete your request\nTry again later.',
         },
+        'statusCode': statusCode,
       };
     }
   }
 
   static Map<String, dynamic> _handleException(dynamic e) {
+    String errorMessage = "Unknown error";
+
     if (e is apiClient.DioException) {
       switch (e.type) {
         case apiClient.DioExceptionType.connectionTimeout:
-          _showDialog('Connection timeout');
-          return {APIRESPONSE.EXCEPTION: "Connection timeout"};
+          errorMessage = 'Connection timeout';
+          break;
         case apiClient.DioExceptionType.sendTimeout:
-          _showDialog('Sent timeout');
-          return {APIRESPONSE.EXCEPTION: "Sent timeout"};
+          errorMessage = 'Send timeout';
+          break;
         case apiClient.DioExceptionType.receiveTimeout:
-          _showDialog('Receive timeout');
-          return {APIRESPONSE.EXCEPTION: "Receive timeout"};
+          errorMessage = 'Receive timeout';
+          break;
         case apiClient.DioExceptionType.connectionError:
-          _showDialog('Server error');
-          return {APIRESPONSE.EXCEPTION: "Server error"};
+          errorMessage = 'Server error';
+          break;
         case apiClient.DioExceptionType.badCertificate:
-          _showDialog('Server Certificate Error');
-          return {APIRESPONSE.EXCEPTION: "Server Certificate Error"};
+          errorMessage = 'Server Certificate Error';
+          break;
         case apiClient.DioExceptionType.badResponse:
-          _showDialog('Bad Request');
-          return {APIRESPONSE.EXCEPTION: "Bad Request"};
+          errorMessage = 'Bad Request';
+          break;
         case apiClient.DioExceptionType.unknown:
-          _showDialog('Server Unknown Error');
-          return {APIRESPONSE.EXCEPTION: "Server Unknown Error"};
+          errorMessage = 'Server Unknown Error';
+          break;
         case apiClient.DioExceptionType.cancel:
-          _showDialog('Request cancelled');
-          return {APIRESPONSE.EXCEPTION: "Cancel"};
+          errorMessage = 'Request cancelled';
+          break;
       }
     } else if (e is SocketException) {
-      _showDialog('Internet Connection Error');
-      return {APIRESPONSE.EXCEPTION: APIEXCEPTION.SOCKET};
+      errorMessage = 'Internet Connection Error';
     } else if (e is HttpException) {
-      _showDialog('Internet Connection Error');
-      return {APIRESPONSE.EXCEPTION: APIEXCEPTION.HTTP};
+      errorMessage = 'Internet Connection Error';
     } else if (e is FormatException) {
-      _showDialog('Server Bad response');
-      return {APIRESPONSE.EXCEPTION: APIEXCEPTION.FORMAT};
-    } else {
-      _showDialog(
-        e.toString().contains("SocketException")
-            ? "Internet Connection Error"
-            : "Unknown error occurred",
-      );
-      return {
-        APIRESPONSE.EXCEPTION: e.toString().contains("SocketException")
-            ? "Internet Connection Error"
-            : APIEXCEPTION.UNKNOWN,
-      };
+      errorMessage = 'Server Bad response';
     }
-  }
 
-  static void _showDialog(String message) {
-    showCupertinoModalPopup(
-      barrierDismissible: false,
-      useRootNavigator: false,
-      context: Get.context!,
-      builder: (context) => PopScope(
-        canPop: false,
-        child: CupertinoAlertDialog(
-          actions: [
-            GestureDetector(
-              onTap: () => Get.close(1),
-              child: CupertinoDialogAction(
-                onPressed: () => Get.close(1),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20.0,
-                    vertical: 10.0,
-                  ),
-                  child: const Text('Ok', style: TextStyle(fontSize: 17,fontFamily: 'PlusJakartaSans')),
-                ),
-              ),
-            ),
-          ],
-          content: Center(child: Text(message)),
-        ),
-      ),
+    return {APIRESPONSE.EXCEPTION: errorMessage, 'statusCode': 0};
+  }
+}
+
+Future<Map<String, dynamic>> safeRequest({
+  required APISTRUCTURE api,
+  bool showLoader = true,
+}) async {
+  try {
+    // Show loader if requested
+    if (showLoader) ApiLoader.show();
+
+    final response = await api.requestAPI(
+      isShowLoading: false, // prevent double hiding
+      isCheckAuthorization: true,
     );
+
+    // Hide loader automatically if error
+    if ((response['statusCode'] ?? 0) != 200 && showLoader) {
+      ApiLoader.hide();
+    }
+
+    return response;
+  } catch (e) {
+    if (showLoader) ApiLoader.hide();
+    // Convert unexpected exceptions to standard response
+    return {APIRESPONSE.EXCEPTION: e.toString(), 'statusCode': 0};
+  } finally {
+    if (showLoader) ApiLoader.hide();
   }
 }

@@ -314,7 +314,7 @@ class AuthRepo {
     String? pin,
   }) async {
     var release = await DeviceInfo.getDeviceInfo();
-    APISTRUCTURE apiObject = APISTRUCTURE(
+    final api = APISTRUCTURE(
       apiUrl: ApplicationUrl.VERIFY_PIN_URL,
       apiRequestMethod: APIREQUESTMETHOD.POST,
       isWantSuccessMessage: true,
@@ -327,9 +327,6 @@ class AuthRepo {
         "fcmToken": fcm,
       },
     );
-    return await apiObject.requestAPI(
-      isShowLoading: true,
-      isCheckAuthorization: true,
-    );
+    return await safeRequest(api: api, showLoader: true);
   }
 }
