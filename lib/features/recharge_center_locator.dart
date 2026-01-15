@@ -455,9 +455,8 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                         maxNativeZoom: 18,
                         maxZoom: 18,
                         keepBuffer: 2,
-                        errorTileCallback: (tile, error, stackTrace) {
-                          debugPrint('Tile load error: $error');
-                        },
+
+                        errorTileCallback: (_, _, _) {},
                       ),
 
                       if (_isInitialized && _markers.isNotEmpty)

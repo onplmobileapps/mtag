@@ -666,16 +666,27 @@ class _TransferRemoveRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final allCars = Get.find<HomeController>().dashboradData.value.activeMtags!
-        .where((car) => car.registration != mtag.registration)
+    final homeController = Get.find<HomeController>();
+
+    final activeMtags =
+        homeController.dashboradData.value.activeMtags ?? const [];
+
+    final bool hasMultipleCars = activeMtags.length > 1;
+
+    final List<Map<String, dynamic>> allCars = activeMtags
+        .where(
+          (car) =>
+              car.registration != null && car.registration != mtag.registration,
+        )
         .map(
           (car) => {
-            "carNumber": car.registration,
-            "balance": double.tryParse(car.balance ?? '0.0') ?? 0.0,
-            "mtagID": car.tokenno,
+            "carNumber": car.registration ?? '',
+            "balance": double.tryParse(car.balance ?? '') ?? 0.0,
+            "mtagID": car.tokenno ?? '',
           },
         )
         .toList();
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
       decoration: BoxDecoration(
@@ -685,38 +696,38 @@ class _TransferRemoveRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(50),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Expanded(
-            child: _ActionButton(
-              // icon: Icons.swap_horiz_rounded,
-              imagePath: "assets/transfer_balance.png",
-              label: 'Balance Transfer',
-              isDestructive: false,
-              onTap: () {
-                _showBalanceTransferSheet(context, mtag, allCars);
-              }, //
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Text(
-              '|',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w100,
-                color: Colors.grey.shade300,
+          if (hasMultipleCars) ...[
+            Expanded(
+              child: _ActionButton(
+                imagePath: "assets/transfer_balance.png",
+                label: 'Balance Transfer',
+                isDestructive: false,
+                onTap: () {
+                  if (allCars.isEmpty) return;
+                  _showBalanceTransferSheet(context, mtag, allCars);
+                },
               ),
             ),
-          ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: Text(
+                '|',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w100,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+          ],
+
           Expanded(
             child: _ActionButton(
               icon: Icons.delete_outlined,
               label: 'Remove',
               isDestructive: false,
-              onTap: () {
-                _showDeleteDialog(mtag);
-              },
+              onTap: () => _showDeleteDialog(mtag),
             ),
           ),
         ],
@@ -729,17 +740,19 @@ class _TransferRemoveRow extends StatelessWidget {
     ActiveMtags mtag,
     List<Map<String, dynamic>> allCars,
   ) {
+    if (!context.mounted) return;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) {
         return BalanceTransferSheet(
-          carRegistration: mtag.registration,
-          balance: mtag.balance,
+          carRegistration: mtag.registration ?? '',
+          balance: mtag.balance ?? '0',
           cnicNumber: OtherConsts().ownerCNIC.value,
-          mobileNumber: mtag.mobilenum,
-          mtagid: mtag.tokenno,
+          mobileNumber: mtag.mobilenum ?? '',
+          mtagid: mtag.tokenno ?? '',
           dropDownCars: allCars,
         );
       },
@@ -747,13 +760,20 @@ class _TransferRemoveRow extends StatelessWidget {
   }
 
   void _showDeleteDialog(ActiveMtags mtag) {
+    if (mtag.tokenno == null || mtag.tokenno!.isEmpty) return;
+
     Get.dialog(
       DeLinkVehicleDialog(
         regId: mtag.registration ?? '',
-        onCancel: Get.back,
+        onCancel: () {
+          if (Get.isDialogOpen ?? false) Get.back();
+        },
         onConfirm: () {
-          Get.back();
-          Get.find<DelinkController>().deLinkVehicle(
+          if (Get.isDialogOpen ?? false) Get.back();
+
+          final controller = Get.find<DelinkController>();
+
+          controller.deLinkVehicle(
             mtagID: mtag.tokenno ?? '',
             rDesc: "0--Vehicle has been sold out.",
             rID: "1",
