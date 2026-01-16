@@ -801,8 +801,8 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = TextTheme.of(context).bodyMedium?.copyWith(
-      fontSize: 13,
+    final textStyle = TextTheme.of(context).displayMedium?.copyWith(
+      fontSize: 9.4,fontWeight: FontWeight.bold,
       color: isDestructive ? Colors.red : null,
     );
 

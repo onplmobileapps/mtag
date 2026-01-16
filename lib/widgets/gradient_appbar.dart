@@ -30,7 +30,7 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
 
       leading: showBackButton
           ? IconButton(
-              icon: const Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back_ios),
               onPressed: onBackPressed,
             )
           : null,

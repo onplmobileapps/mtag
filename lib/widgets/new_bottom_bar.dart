@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import '../controller/home_controller.dart';
 
-// ----------------------------- Bottom Nav Item -----------------------------
 class BottomNavItem {
   final String imagePath;
   final String label;
@@ -46,7 +45,6 @@ class BottomNavItem {
   }
 }
 
-// ----------------------------- Merged Bottom Bar -----------------------------
 class NewBottomBar extends StatelessWidget {
   final HomeController controller;
   final List<BottomNavItem> items;
@@ -69,7 +67,6 @@ class NewBottomBar extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    // Theme-aware colors
     final backgroundColor = theme.colorScheme.surface;
     final outlineColor = isDark
         ? theme.colorScheme.outlineVariant
@@ -82,16 +79,14 @@ class NewBottomBar extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // Responsive calculations
-    final barHeight = (screenHeight * 0.09).clamp(65.0, 85.0);
+    final barHeight = (screenHeight * 0.10).clamp(65.0, 85.0);
     final fabSize = barHeight * 0.75;
-    final fabIconSize = fabSize * 0.55;
-    final itemIconSize = barHeight * 0.28;
+    final fabIconSize = fabSize * 0.70;
+    final itemIconSize = barHeight * 0.35;
     final curveRadius = barHeight * 0.25;
     final fabCurveRadius = fabSize * 0.65;
-    final curveDepth = barHeight * 0.55;
+    final curveDepth = barHeight * 0.60;
 
-    // Safe item width calculation
     final nonSpacerItems = items.where((i) => !i.isSpacer).length;
     final horizontalPadding = 12.0;
     final availableWidth = screenWidth - (horizontalPadding * 2);
@@ -104,7 +99,6 @@ class NewBottomBar extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          // Background with outline - Smooth & Production Ready
           RepaintBoundary(
             child: CustomPaint(
               size: Size(screenWidth, barHeight),
@@ -118,59 +112,66 @@ class NewBottomBar extends StatelessWidget {
             ),
           ),
 
-          // Navigation items
           Positioned.fill(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
               child: Obx(() {
+                final navItems = items.where((item) => !item.isSpacer).toList();
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: _buildNavItems(
-                    items,
+                    navItems,
                     itemWidth,
-                    fabSize,
                     itemIconSize,
                     primaryColor,
                     unselectedColor,
                     barHeight,
+                    fabSize,
+                    screenWidth,
+                    horizontalPadding,
                   ),
                 );
               }),
             ),
           ),
 
-          // Center FAB - WhatsApp Button
           Positioned(
             left: (screenWidth - fabSize) / 2,
-            top: -fabSize * 0.50,
-            child: GestureDetector(
-              onTap: onCenterTap,
-              behavior: HitTestBehavior.opaque, // Prevent misstouch
-              child: Container(
-                height: fabSize,
-                width: fabSize,
-                decoration: BoxDecoration(
-                  color: backgroundColor,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: outlineColor, width: 1.5),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.15),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: Image.asset(
-                    'assets/whatsapp_1.png',
-                    height: fabIconSize,
-                    width: fabIconSize,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) => Icon(
-                      Icons.chat_bubble_outline,
-                      size: fabIconSize,
-                      color: outlineColor,
+            top: -fabSize * 0.48,
+            child: Container(
+              width: fabSize,
+              height: fabSize,
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                shape: BoxShape.circle,
+                border: Border.all(color: outlineColor, width: 1.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.15),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                shape: const CircleBorder(),
+                child: InkWell(
+                  onTap: onCenterTap,
+                  borderRadius: BorderRadius.circular(fabSize / 2),
+                  splashColor: outlineColor.withValues(alpha: 0.2),
+                  highlightColor: outlineColor.withValues(alpha: 0.1),
+                  child: Center(
+                    child: Image.asset(
+                      'assets/whatsapp_1.png',
+                      height: fabIconSize,
+                      width: fabIconSize,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) => Icon(
+                        Icons.chat_bubble_outline,
+                        size: fabIconSize,
+                        color: outlineColor,
+                      ),
                     ),
                   ),
                 ),
@@ -183,38 +184,43 @@ class NewBottomBar extends StatelessWidget {
   }
 
   List<Widget> _buildNavItems(
-    List<BottomNavItem> items,
-    double itemWidth,
-    double fabSize,
-    double itemIconSize,
-    Color primaryColor,
-    Color defaultUnselected,
-    double barHeight,
-  ) {
-    List<Widget> navWidgets = [];
+      List<BottomNavItem> items,
+      double itemWidth,
+      double itemIconSize,
+      Color primaryColor,
+      Color defaultUnselected,
+      double barHeight,
+      double fabSize,
+      double screenWidth,
+      double horizontalPadding,
+      ) {
+    final List<Widget> navWidgets = [];
+    final int itemCount = items.length;
 
-    for (var item in items) {
-      if (item.isSpacer) {
+    for (int i = 0; i < itemCount; i++) {
+      final item = items[i];
+      final isSelected = controller.currentPage.value == item.index;
+      final color = isSelected
+          ? (item.selectedColor ?? primaryColor)
+          : (item.unselectedColor ?? defaultUnselected);
+
+      navWidgets.add(
+        _NavItem(
+          item: item,
+          isSelected: isSelected,
+          color: color,
+          itemWidth: itemWidth,
+          itemIconSize: itemIconSize,
+          barHeight: barHeight,
+          onTap: () => controller.changePage(item.index),
+        ),
+      );
+
+      if (i == itemCount ~/ 2 - 1) {
         navWidgets.add(SizedBox(width: fabSize));
-      } else {
-        final isSelected = controller.currentPage.value == item.index;
-        final color = isSelected
-            ? (item.selectedColor ?? primaryColor)
-            : (item.unselectedColor ?? defaultUnselected);
-
-        navWidgets.add(
-          _NavItem(
-            item: item,
-            isSelected: isSelected,
-            color: color,
-            itemWidth: itemWidth,
-            itemIconSize: itemIconSize,
-            barHeight: barHeight,
-            onTap: () => controller.changePage(item.index),
-          ),
-        );
       }
     }
+
     return navWidgets;
   }
 }
@@ -249,31 +255,39 @@ class _NavItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Extra padding to ensure icon and text group is well-spaced
-            SizedBox(height: barHeight * 0.1),
-            SvgPicture.asset(
-              item.imagePath,
-              height: itemIconSize,
-              width: itemIconSize,
-              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-              fit: BoxFit.contain,
+            Container(
+              height: barHeight * 0.5,
+              padding: EdgeInsets.only(
+                top: barHeight * 0.1,
+                bottom: barHeight * 0.05,
+              ),
+              child: SvgPicture.asset(
+                item.imagePath,
+                height: itemIconSize,
+                width: itemIconSize,
+                colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                fit: BoxFit.contain,
+              ),
             ),
-            const SizedBox(height: 4),
-            Expanded(
-              child: Text(
-                item.label,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.visible,
-                style: TextStyle(
-                  fontSize: 9,
-                  color: color,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                  height: 1.0, // Tighter line height for better alignment
+
+            SizedBox(
+              height: barHeight * 0.35,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 4.0),
+                child: Text(
+                  item.label,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 9,
+                    color: color,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                    height: 1,
+                  ),
                 ),
               ),
             ),
-            SizedBox(height: barHeight * 0.05),
           ],
         ),
       ),
@@ -311,10 +325,8 @@ class _BottomBarOutlinePainter extends CustomPainter {
 
     final path = _createPath(size);
 
-    // Draw fill
     canvas.drawPath(path, fillPaint);
 
-    // Draw top outline only to prevent bleeding at bottom
     final outlinePath = _createOutlinePath(size);
     canvas.drawPath(outlinePath, outlinePaint);
   }
@@ -367,7 +379,6 @@ class _BottomBarOutlinePainter extends CustomPainter {
     final double centerX = size.width / 2;
     final double cornerRadius = curveRadius;
 
-    // Start from top-left side
     path.moveTo(0, cornerRadius);
     path.quadraticBezierTo(0, 0, cornerRadius, 0);
 
@@ -406,5 +417,5 @@ class _BottomBarOutlinePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _BottomBarOutlinePainter oldDelegate) =>
       oldDelegate.backgroundColor != backgroundColor ||
-      oldDelegate.outlineColor != outlineColor;
+          oldDelegate.outlineColor != outlineColor;
 }
