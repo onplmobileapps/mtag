@@ -231,7 +231,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
                     color: pin.length > index
                         ? Theme.of(context).primaryColor
                         : Colors.grey.shade400,
-                    width: 1.0,
+                    width: 0.5,
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:share_plus/share_plus.dart';
-
 import '../../api/auth_controller.dart';
 import '../../base/app_data.dart';
 import '../../controller/home_controller.dart';
@@ -38,10 +37,14 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   void _shareApp() {
-    Share.share(
-      "Get the M-Tag One Network Application now\n"
-      "Android: https://bit.ly/3nLrHNX\n"
-      "iOS: https://apple.co/3byIb6c",
+    final box = context.findRenderObject() as RenderBox?;
+    SharePlus.instance.share(
+      ShareParams(
+        text: '''Get the M-Tag One Network Application now\n
+      Android: https://bit.ly/3nLrHNX\n
+      iOS: https://apple.co/3byIb6c",''',
+        sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+      ),
     );
   }
 
@@ -81,7 +84,7 @@ class _SettingScreenState extends State<SettingScreen> {
       curve: Curves.easeInOut,
       child: PopScope(
         canPop: false,
-        onPopInvokedWithResult: (_, __) => _handleBackNavigation(),
+        onPopInvokedWithResult: (_, _) => _handleBackNavigation(),
         child: Scaffold(
           appBar: GradientAppBar(
             title: const Text('Settings'),
@@ -130,22 +133,24 @@ class _SettingScreenState extends State<SettingScreen> {
                             title: 'Change PIN',
                             onTap: () => showChangePinDialog(
                               context,
-                              onSubmit: (_, __) {},
+                              onSubmit: (_, _) {},
                             ),
                           ),
                           _SettingsTile(
                             icon: Icons.sim_card_outlined,
                             title: 'Change SIM Operator',
                             onTap: () {
-                              OperatorSelectionDialog.show(Get.context!, (
-                                value,
-                              ) {
-                                homeController.sendNetworkOperator(
-                                  cnicNumber: customer?.cNIC,
-                                  mobileNum: customer?.mobileNumber,
-                                  simOperator: value,
-                                );
-                              }, mobileNumber: customer?.mobileNumber);
+                              OperatorSelectionDialog.show(
+                                Get.context!,
+                                (value) {
+                                  homeController.sendNetworkOperator(
+                                    cnicNumber: customer?.cNIC ?? '',
+                                    mobileNum: customer?.mobileNumber ?? '',
+                                    simOperator: value,
+                                  );
+                                },
+                                mobileNumber: customer?.mobileNumber ?? '',
+                              );
                             },
                           ),
                         ],
@@ -231,27 +236,27 @@ class _ProfileCard extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 60,
-            height: 60,
+            width: 35,
+            height: 35,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
                 color: Colors.white.withValues(alpha: 0.5),
-                width: 2.5,
+                width: 1.5,
               ),
             ),
             child: CircleAvatar(
-              radius: 30,
+              radius: 20,
               backgroundColor: Colors.white.withValues(alpha: 0.1),
               child: Text(
                 getInitials(customer?.fullName ?? ''),
                 style: Theme.of(
                   context,
-                ).textTheme.headlineSmall?.copyWith(color: Colors.white),
+                ).textTheme.bodyLarge?.copyWith(color: Colors.white),
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -261,7 +266,7 @@ class _ProfileCard extends StatelessWidget {
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w800,
-                    fontSize: 18,
+                    fontSize: 16,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -529,6 +534,7 @@ class IconTextInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme.displayMedium?.copyWith(
+      fontSize: 12.0,
       fontWeight: FontWeight.w600,
       color: Colors.white,
     );
@@ -536,7 +542,7 @@ class IconTextInfo extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 18, color: Colors.white),
+        Icon(icon, size: 12.0, color: Colors.white),
         const SizedBox(width: 5),
         Flexible(
           child: Text(text, style: textStyle, overflow: TextOverflow.ellipsis),

@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import '../controller/home_controller.dart';
 
+
 class BottomNavItem {
   final String imagePath;
   final String label;
@@ -81,7 +82,7 @@ class NewBottomBar extends StatelessWidget {
 
     final barHeight = (screenHeight * 0.10).clamp(65.0, 85.0);
     final fabSize = barHeight * 0.75;
-    final fabIconSize = fabSize * 0.70;
+
     final itemIconSize = barHeight * 0.35;
     final curveRadius = barHeight * 0.25;
     final fabCurveRadius = fabSize * 0.65;
@@ -93,107 +94,56 @@ class NewBottomBar extends StatelessWidget {
     final itemWidth =
         (availableWidth - fabSize) / (nonSpacerItems > 0 ? nonSpacerItems : 1);
 
-    return SizedBox(
+    return Container(
+     
+      clipBehavior: Clip.none,
       height: barHeight,
       width: screenWidth,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          RepaintBoundary(
-            child: CustomPaint(
-              size: Size(screenWidth, barHeight),
-              painter: _BottomBarOutlinePainter(
-                fabRadius: fabCurveRadius,
-                curveDepth: curveDepth,
-                curveRadius: curveRadius,
-                backgroundColor: backgroundColor,
-                outlineColor: outlineColor,
-              ),
-            ),
+      child: RepaintBoundary(
+        child: CustomPaint(
+          size: Size(screenWidth, barHeight),
+          painter: _BottomBarOutlinePainter(
+            fabRadius: fabCurveRadius,
+            curveDepth: curveDepth,
+            curveRadius: curveRadius,
+            backgroundColor: backgroundColor,
+            outlineColor: outlineColor,
           ),
-
-          Positioned.fill(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-              child: Obx(() {
-                final navItems = items.where((item) => !item.isSpacer).toList();
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: _buildNavItems(
-                    navItems,
-                    itemWidth,
-                    itemIconSize,
-                    primaryColor,
-                    unselectedColor,
-                    barHeight,
-                    fabSize,
-                    screenWidth,
-                    horizontalPadding,
-                  ),
-                );
-              }),
-            ),
-          ),
-
-          Positioned(
-            left: (screenWidth - fabSize) / 2,
-            top: -fabSize * 0.48,
-            child: Container(
-              width: fabSize,
-              height: fabSize,
-              decoration: BoxDecoration(
-                color: backgroundColor,
-                shape: BoxShape.circle,
-                border: Border.all(color: outlineColor, width: 1.5),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.15),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Material(
-                color: Colors.transparent,
-                shape: const CircleBorder(),
-                child: InkWell(
-                  onTap: onCenterTap,
-                  borderRadius: BorderRadius.circular(fabSize / 2),
-                  splashColor: outlineColor.withValues(alpha: 0.2),
-                  highlightColor: outlineColor.withValues(alpha: 0.1),
-                  child: Center(
-                    child: Image.asset(
-                      'assets/whatsapp_1.png',
-                      height: fabIconSize,
-                      width: fabIconSize,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) => Icon(
-                        Icons.chat_bubble_outline,
-                        size: fabIconSize,
-                        color: outlineColor,
-                      ),
-                    ),
-                  ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+            child: Obx(() {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: _buildNavItems(
+                  items,
+                  itemWidth,
+                  itemIconSize,
+                  primaryColor,
+                  unselectedColor,
+                  barHeight,
+                  fabSize,
+                  screenWidth,
+                  horizontalPadding,
                 ),
-              ),
-            ),
+              );
+            }),
           ),
-        ],
+        ),
       ),
     );
   }
 
   List<Widget> _buildNavItems(
-      List<BottomNavItem> items,
-      double itemWidth,
-      double itemIconSize,
-      Color primaryColor,
-      Color defaultUnselected,
-      double barHeight,
-      double fabSize,
-      double screenWidth,
-      double horizontalPadding,
-      ) {
+    List<BottomNavItem> items,
+    double itemWidth,
+    double itemIconSize,
+    Color primaryColor,
+    Color defaultUnselected,
+    double barHeight,
+    double fabSize,
+    double screenWidth,
+    double horizontalPadding,
+  ) {
     final List<Widget> navWidgets = [];
     final int itemCount = items.length;
 
@@ -217,7 +167,48 @@ class NewBottomBar extends StatelessWidget {
       );
 
       if (i == itemCount ~/ 2 - 1) {
-        navWidgets.add(SizedBox(width: fabSize));
+        navWidgets.add(
+          SizedBox(
+            width: fabSize,
+            child: OverflowBox(
+              alignment: Alignment.topCenter,
+              maxHeight: double.infinity,
+              child: Transform.translate(
+                offset: Offset(0, -fabSize * 0.48),
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: onCenterTap,
+                  child: Container(
+                    width: fabSize,
+                    height: fabSize,
+                    decoration: BoxDecoration(
+                      color: ColorScheme.of(Get.context!).surface,
+                      shape: BoxShape.circle,
+                      border: Border.all(width: 1.5),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.15),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Image.asset(
+                        'assets/whatsapp_1.png',
+                        height: 50,
+                        width: 50,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Icon(Icons.chat_bubble_outline),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
       }
     }
 
@@ -417,5 +408,5 @@ class _BottomBarOutlinePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _BottomBarOutlinePainter oldDelegate) =>
       oldDelegate.backgroundColor != backgroundColor ||
-          oldDelegate.outlineColor != outlineColor;
+      oldDelegate.outlineColor != outlineColor;
 }

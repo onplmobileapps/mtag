@@ -16,7 +16,7 @@ final navItems = [
     index: 1,
     page: HomePageContent(),
   ),
-  BottomNavItem.spacer(),
+
   BottomNavItem(
     imagePath: 'assets/location.svg',
     label: 'Recharge Centers',
