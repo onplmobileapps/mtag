@@ -145,18 +145,12 @@ class _PinEntryPageState extends State<PinEntryPage> {
     final size = MediaQuery.of(context).size;
     final isDarkMode = Get.isDarkMode;
 
-    return Scaffold(
-      body: SafeArea(
-        child: _buildContent(size, isDarkMode),
-      ),
-    );
+    return Scaffold(body: SafeArea(child: _buildContent(size, isDarkMode)));
   }
 
   Widget _buildContent(Size size, bool isDarkMode) {
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        minHeight: size.height,
-      ),
+      constraints: BoxConstraints(minHeight: size.height),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
@@ -169,7 +163,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
             SizedBox(height: size.height * 0.02),
             _buildPinField(size),
             SizedBox(height: size.height * 0.02),
-            _buildOptions(context,size),
+            _buildOptions(context, size),
             SizedBox(height: size.height * 0.01),
             _buildDifferentAccountOption(context),
             SizedBox(height: size.height * 0.02),
@@ -182,7 +176,6 @@ class _PinEntryPageState extends State<PinEntryPage> {
             const Spacer(),
             const FooterWidget(),
             const SizedBox(height: 12),
-
           ],
         ),
       ),
@@ -231,14 +224,14 @@ class _PinEntryPageState extends State<PinEntryPage> {
                     color: pin.length > index
                         ? Theme.of(context).primaryColor
                         : Colors.grey.shade400,
-                    width: 1.5,
+                    width: 1,
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Center(
                   child: Text(
                     pin.length > index ? pin[index] : '',
-                    style: Theme.of(context).textTheme.headlineSmall
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ),
               );
@@ -249,7 +242,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
     );
   }
 
-  Widget _buildOptions(BuildContext context,Size size) {
+  Widget _buildOptions(BuildContext context, Size size) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Row(
@@ -279,24 +272,22 @@ class _PinEntryPageState extends State<PinEntryPage> {
               },
               child: Platform.isIOS
                   ? Image.asset(
-                "assets/face3.png",
-                height: size.width * 0.099,
-                width: size.width * 0.099,
+                      "assets/face3.png",
+                      height: size.width * 0.099,
+                      width: size.width * 0.099,
 
-                color: Get.isDarkMode
-                    ? Colors.white
-                    : Theme.of(context).primaryColor,
-
-              )
+                      color: Get.isDarkMode
+                          ? Colors.white
+                          : Theme.of(context).primaryColor,
+                    )
                   : Image.asset(
-                "assets/fingerprint.png",
-                height: 24,
-                width: 24,
-                color: Get.isDarkMode
-                    ? Colors.white
-                    : Theme.of(context).primaryColor,
-
-              ),
+                      "assets/fingerprint.png",
+                      height: 24,
+                      width: 24,
+                      color: Get.isDarkMode
+                          ? Colors.white
+                          : Theme.of(context).primaryColor,
+                    ),
             ),
         ],
       ),
@@ -400,10 +391,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
           onTap: () => _onNumberTap(int.parse(number)),
           borderRadius: BorderRadius.circular(keySize / 2),
           child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: bgColor,
-            ),
+            decoration: BoxDecoration(shape: BoxShape.circle, color: bgColor),
             alignment: Alignment.center,
             child: Text(
               number,
@@ -437,10 +425,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
             _pin.value = '';
           },
           child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: bgColor,
-            ),
+            decoration: BoxDecoration(shape: BoxShape.circle, color: bgColor),
             alignment: Alignment.center,
             child: Icon(
               Icons.backspace_outlined,
@@ -460,7 +445,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
         title: const Text('Biometric Login'),
         content: const Text(
           'Sign in with your CNIC and Mobile Number to enable biometric login. '
-              'Next time, simply tap the Biometric icon to sign in.',
+          'Next time, simply tap the Biometric icon to sign in.',
           textAlign: TextAlign.justify,
         ),
         actions: [
