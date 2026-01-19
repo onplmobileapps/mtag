@@ -802,7 +802,8 @@ class _ActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle = TextTheme.of(context).displayMedium?.copyWith(
-      fontSize: 9.4,fontWeight: FontWeight.bold,
+      fontSize: 9.4,
+      fontWeight: FontWeight.bold,
       color: isDestructive ? Colors.red : null,
     );
 
@@ -827,7 +828,7 @@ class _ActionButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(50),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+        padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 6),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
