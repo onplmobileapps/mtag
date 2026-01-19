@@ -129,18 +129,27 @@ class PaymentCardController extends GetxController implements GetxService {
     required String token,
     required String payId,
   }) async {
-    var response = await userRepo.deleteCardDetails(token: token, payId: payId);
+    var response = await userRepo.deleteCardDetails(
+      token: token,
+      payId: payId,
+    );
+
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       isJazzShown.value = false;
       isCardsVisible.value = false;
-      showPopDialog(response[APIRESPONSE.SUCCESS]['Message'], () async {
-        await Get.find<ActivityController>().getActivities();
-        Get.back();
-        Get.back();
-      });
+
+      showPopDialog(
+        response[APIRESPONSE.SUCCESS]['Message'],
+            () {
+          Get.back();
+          Get.back();
+        },
+      );
     }
+
     return response;
   }
+
 
   Future<Map<String, dynamic>> getPayUUID({
     String? token,

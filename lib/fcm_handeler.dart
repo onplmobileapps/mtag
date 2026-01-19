@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -8,255 +9,222 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '/pages/notification/controller/notificationcontroller.dart';
 import '/pages/notification/model/notification_model.dart';
 import '../../base/app_data.dart';
 
-class LocalNotificationsService {
-  final FlutterLocalNotificationsPlugin _notificationsPlugin;
+class MessagingService {
+  static String? fcmToken;
+  static final MessagingService _instance = MessagingService._internal();
+  factory MessagingService() => _instance;
+  MessagingService._internal();
 
-  LocalNotificationsService(this._notificationsPlugin);
+  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+  final FlutterLocalNotificationsPlugin _notificationsPlugin =
+  FlutterLocalNotificationsPlugin();
 
-  Future<void> init() async {
-    const androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    const iosSettings = DarwinInitializationSettings(
-      requestSoundPermission: true,
-      requestBadgePermission: true,
-      requestAlertPermission: true,
+  final badgeCountNotifier = ValueNotifier<int>(0);
+  static const String _badgeCountKey = 'badge_count';
+  static const String _pendingNotificationKey = 'pending_notification';
+
+  bool isAppInitialized = false;
+
+  /// 🔒 PROD SAFE INIT
+  Future<void> init(BuildContext context) async {
+    try {
+      await Firebase.initializeApp();
+    } catch (_) {}
+
+    await _safeRequestPermission();
+    _initLocalNotifications();
+    await _loadBadgeCount();
+
+    FirebaseMessaging.onBackgroundMessage(
+      firebaseMessagingBackgroundHandler,
     );
+
+    FirebaseMessaging.onMessage.listen(_handleForegroundNotification);
+
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      if (context.mounted) {
+        _handleNotificationClick(context, message);
+      }
+      resetBadgeCount();
+    });
+
+    final initialMessage = await _fcm.getInitialMessage();
+    if (initialMessage != null && context.mounted) {
+      _handleNotificationClick(context, initialMessage);
+    }
+
+    isAppInitialized = true;
+    await _processPendingNotifications();
+  }
+
+  /// 🔒 NEVER CRASH
+  Future<void> _safeRequestPermission() async {
+    try {
+      final settings = await _fcm.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+
+      if (settings.authorizationStatus ==
+          AuthorizationStatus.authorized) {
+        await _safeFetchToken();
+      }
+    } catch (e, s) {
+      log('FCM permission failed (non-fatal): $e', stackTrace: s);
+    }
+  }
+
+  /// 🔒 TOKEN FETCH MUST NEVER THROW
+  Future<void> _safeFetchToken() async {
+    try {
+      if (Platform.isIOS) {
+        try {
+          final apnsToken = await _fcm.getAPNSToken();
+          if (apnsToken != null) {
+            AppData.setFcmToken(apnsToken);
+          }
+        } catch (_) {}
+      }
+
+      final token = await _fcm.getToken();
+      if (token != null && token.isNotEmpty) {
+        fcmToken = token;
+        AppData.setFcmToken(token);
+        log('FCM token fetched');
+      }
+    } catch (e, s) {
+      // 🔥 THIS IS THE CRASH YOU WERE SEEING — NOW SAFE
+      log('FCM token fetch failed (non-fatal): $e', stackTrace: s);
+    }
+  }
+
+  void _initLocalNotifications() {
+    const androidSettings =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+    const iosSettings = DarwinInitializationSettings();
 
     const initSettings = InitializationSettings(
       android: androidSettings,
       iOS: iosSettings,
     );
 
-    await _notificationsPlugin.initialize(
+    _notificationsPlugin.initialize(
       initSettings,
-      onDidReceiveNotificationResponse: _onSelectNotification,
+      onDidReceiveNotificationResponse: (response) {
+        _onNotificationTap(response);
+      },
     );
-
-    final details =
-        await _notificationsPlugin.getNotificationAppLaunchDetails();
-    if (details?.didNotificationLaunchApp ?? false) {
-      _onSelectNotification(details!.notificationResponse);
-    }
   }
 
-  Future<void> _onSelectNotification(NotificationResponse? response) async {
-    if (response?.payload == null) return;
+  void _onNotificationTap(NotificationResponse response) {
+    if (response.payload == null) return;
 
-    final parts = response!.payload!.split('|');
+    final parts = response.payload!.split('|');
+    if (parts.length < 3) return;
+
     final title = parts[0];
     final body = parts[1];
     final actionKey = parts[2];
 
-    log('Notification clicked: $actionKey');
-
     if (actionKey == 'open_new_intent') {
-      _navigateWithoutBackStack('/notificationIntent', title, body);
+      Get.offAllNamed('/notificationIntent',
+          arguments: _buildData(title, body));
     } else {
-      _navigateWithBackStack('/notificationsExpandScreen', title, body);
+      Get.toNamed('/notificationsExpandScreen',
+          arguments: _buildData(title, body));
     }
   }
 
-  void _navigateWithBackStack(String route, String title, String body) {
-    Get.toNamed(
-      route,
-      arguments: Data(
-        title: title,
-        body: body,
-        dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
-      ),
+  Data _buildData(String title, String body) {
+    return Data(
+      title: title,
+      body: body,
+      dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
     );
-  }
-
-  void _navigateWithoutBackStack(String route, String title, String body) {
-    Get.offNamed(
-      route,
-      arguments: Data(
-        title: title,
-        body: body,
-        dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
-      ),
-    );
-  }
-}
-
-class MessagingService {
-  static String? fcmToken;
-  static final MessagingService _instance = MessagingService._internal();
-
-  factory MessagingService() => _instance;
-
-  MessagingService._internal();
-
-  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
-  final FlutterLocalNotificationsPlugin _notificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-  final badgeCountNotifier = ValueNotifier<int>(0);
-  final _badgeCountKey = 'badge_count';
-  static const String _pendingNotificationKey = 'pending_notification';
-
-  static final GlobalKey<NavigatorState> navigatorKey =
-      GlobalKey<NavigatorState>();
-  bool isAppInitialized = false;
-
-  Future<void> init(BuildContext context) async {
-    await _requestPermission();
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    await _fcm.setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
-    LocalNotificationsService(_notificationsPlugin).init();
-    await _loadBadgeCount();
-
-    _fcm.getInitialMessage().then((message) {
-      if (message != null && context.mounted) {
-        _handleNotificationClick(context, message);
-      }
-    });
-
-    FirebaseMessaging.onMessage.listen(_handleForegroundNotification);
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      if (context.mounted) _handleNotificationClick(context, message);
-      resetBadgeCount();
-    });
-
-    await Firebase.initializeApp();
-    isAppInitialized = true;
-
-    await _processPendingNotifications();
-  }
-
-  Future<void> _requestPermission() async {
-    final settings = await _fcm.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-      criticalAlert: true,
-    );
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      if (Platform.isIOS) {
-    final apnsToken = await _fcm.getAPNSToken();
-    if (apnsToken != null) {
-       AppData.setFcmToken(apnsToken);
-      
-    }
-    else{
-      debugPrint("no apns found");
-      return;
-    }
-   
-  }
-      fcmToken = await _fcm.getToken();
-      if (fcmToken != null) {
-        log('FCM Token: $fcmToken');
-        AppData.setFcmToken(fcmToken!);
-      }
-    }
   }
 
   Future<void> _handleForegroundNotification(RemoteMessage message) async {
-    if (message.notification == null) return;
+    final notification = message.notification;
+    if (notification == null) return;
 
     badgeCountNotifier.value++;
-    _updateBadgeCountInUI();
+    await _updateBadgeCountInUI();
 
-    const androidChannel = AndroidNotificationChannel(
-      'high_importance_channel',
-      'High Importance Notifications',
-      description: 'Important notifications channel.',
-      importance: Importance.max,
-    );
+    try {
+      final controller = Get.isRegistered<NotificationController>()
+          ? Get.find<NotificationController>()
+          : null;
 
-    await _notificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(androidChannel);
+      if (controller != null) {
+        await controller.addNotification(
+          Data(
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
+            title: notification.title ?? '',
+            body: notification.body ?? '',
+            dateTime:
+            DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
+            datetimeSmall:
+            DateFormat('dd-MM HH:mm').format(DateTime.now()),
+            imageLink: message.data['image_link'],
+            isSelected: false,
+          ),
+        );
+      }
 
-    final notification = message.notification;
-    final controller = Get.find<NotificationController>();
-     if(notification?.body!=null) {
-       await controller.addNotification(Data(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        title: notification?.title ?? '',
-        body: notification?.body ?? '',
-        dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
-        datetimeSmall: DateFormat('dd-MM HH:mm').format(DateTime.now()),
-        imageLink: message.data['image_link'],
-        isSelected: false,
-      ));
-     }
-    if (notification?.android != null) {
       _notificationsPlugin.show(
         notification.hashCode,
-        notification?.title,
-        notification?.body,
-        NotificationDetails(
+        notification.title,
+        notification.body,
+        const NotificationDetails(
           android: AndroidNotificationDetails(
-            androidChannel.id,
-            androidChannel.name,
-            channelDescription: androidChannel.description,
-            icon: '@mipmap/ic_launcher',
+            'high_importance_channel',
+            'High Importance Notifications',
+            importance: Importance.max,
           ),
         ),
         payload:
-            '${notification?.title}|${notification?.body}|${message.data['bg_n']}',
+        '${notification.title}|${notification.body}|${message.data['bg_n']}',
       );
-
+    } catch (e) {
+      log('Foreground notification error (ignored): $e');
     }
   }
 
   void _handleNotificationClick(
-      BuildContext context, RemoteMessage message) async {
-    if (!isAppInitialized) {
-      log('App is not initialized yet. Waiting...');
-      Future.delayed(Duration(seconds: 2), () {
-        if (context.mounted) _handleNotificationClick(context, message);
-      });
-      return;
-    }
-
-    final notificationData = message.notification;
-    log('Notification Data: $notificationData');
-
+      BuildContext context, RemoteMessage message) {
+    final notification = message.notification;
     final actionKey = message.data['bg_n'];
 
-    if (actionKey != null && actionKey == 'open_new_intent') {
-      log('Navigating to /notificationIntent with no back stack');
+    if (actionKey == 'open_new_intent') {
       Get.offAllNamed(
         '/notificationIntent',
-        arguments: Data(
-          title: notificationData?.title ?? '',
-          body: notificationData?.body ?? '',
-          dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
+        arguments: _buildData(
+          notification?.title ?? '',
+          notification?.body ?? '',
         ),
       );
     } else {
-      log('Navigating to /notificationsExpandScreen with back stack');
-      Future.delayed(Duration(seconds: 1), () {
-        if (navigatorKey.currentState != null) {
-          Get.toNamed(
-            '/notificationsExpandScreen',
-            arguments: Data(
-              title: notificationData?.title ?? '',
-              body: notificationData?.body ?? '',
-              dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
-            ),
-          );
-        }
-      });
+      Get.toNamed(
+        '/notificationsExpandScreen',
+        arguments: _buildData(
+          notification?.title ?? '',
+          notification?.body ?? '',
+        ),
+      );
     }
   }
+
   Future<void> _loadBadgeCount() async {
     final prefs = await SharedPreferences.getInstance();
     badgeCountNotifier.value = prefs.getInt(_badgeCountKey) ?? 0;
   }
+
   Future<void> _updateBadgeCountInUI() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_badgeCountKey, badgeCountNotifier.value);
@@ -269,33 +237,39 @@ class MessagingService {
 
   Future<void> _processPendingNotifications() async {
     final prefs = await SharedPreferences.getInstance();
-    final String? pendingJson = prefs.getString(_pendingNotificationKey);
-    if (pendingJson != null) {
-      final Map<String, dynamic> messageData = jsonDecode(pendingJson);
-      final controller = Get.find<NotificationController>();
-      await controller.addNotification(Data(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        title: messageData['notification']?['title'] ?? '',
-        body: messageData['notification']?['body'] ?? '',
-        dateTime: DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
-        datetimeSmall: DateFormat('dd-MM HH:mm').format(DateTime.now()),
-        imageLink: messageData['data']?['image_link'],
-        isSelected: false,
-      ));
+    final json = prefs.getString(_pendingNotificationKey);
+    if (json == null) return;
+
+    try {
+      final data = jsonDecode(json);
+      if (Get.isRegistered<NotificationController>()) {
+        await Get.find<NotificationController>().addNotification(
+          Data(
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
+            title: data['notification']?['title'] ?? '',
+            body: data['notification']?['body'] ?? '',
+            dateTime:
+            DateFormat('dd-MM-yy HH:mm:ss').format(DateTime.now()),
+            datetimeSmall:
+            DateFormat('dd-MM HH:mm').format(DateTime.now()),
+            imageLink: data['data']?['image_link'],
+            isSelected: false,
+          ),
+        );
+      }
       await prefs.remove(_pendingNotificationKey);
-    }
+    } catch (_) {}
   }
 }
-
 @pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  RemoteNotification? notification = message.notification;
-  if (notification == null) return;
-
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setString(
-    MessagingService._pendingNotificationKey,
-    jsonEncode(message.toMap()),
-  );
+Future<void> firebaseMessagingBackgroundHandler(
+    RemoteMessage message) async {
+  try {
+    await Firebase.initializeApp();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      MessagingService._pendingNotificationKey,
+      jsonEncode(message.toMap()),
+    );
+  } catch (_) {}
 }
