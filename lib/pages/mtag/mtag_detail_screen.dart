@@ -24,7 +24,7 @@ class MatagDetailScreen extends GetView<TollController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(appBar: GradientAppBar(title: const Text('Vehicle Details')),
-      // appBar: AppBar(title: const Text('Vehicle Details'), centerTitle: true),
+
       body: Container(
         constraints: const BoxConstraints.expand(),
         decoration: BoxDecoration(color: Theme.of(context).primaryColor),
@@ -101,8 +101,8 @@ class MatagDetailScreen extends GetView<TollController> {
                             ),
                             Column(
                               mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 FittedBox(
                                   fit: BoxFit.scaleDown,

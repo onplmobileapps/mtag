@@ -82,16 +82,6 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
             actions: [
               CupertinoDialogAction(
                 onPressed: () async {
-                  // final HomeController homeController = Get.find();
-
-                  // final mtagIds =
-                  //     homeController.dashboradData.value.activeMtags
-                  //         ?.map((e) => e.tokenno)
-                  //         .whereType<String>()
-                  //         .toList() ??
-                  //     [];
-                  // await homeController.sendCheckBalance(mtagIds);
-
                   await Get.find<HomeController>().pullRefreshDashboardData();
                   await Get.offAllNamed('/dashboard');
                 },
@@ -227,6 +217,7 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
                       //     [];
                       // await homeController.sendCheckBalance(mtagIds);
                     },
+
                     onPageCommitVisible: (controller, url) {
                       if (mounted) handlePageFinished(url.toString());
                     },

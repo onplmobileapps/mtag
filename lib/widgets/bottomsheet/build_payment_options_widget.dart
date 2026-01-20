@@ -116,6 +116,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                 }
               },
             ),
+             Divider(height: 4, thickness: 0.2, indent: 15, endIndent: 10),
             blackListRecharge == false
                 ? _buildPaymentOption(
                     context: context,
@@ -169,6 +170,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                     },
                   )
                 : Container(),
+                 Divider(height: 4, thickness: 0.2, indent: 15, endIndent: 10),
             _otherConstants.jazzCode.value == 1 && blackListRecharge == false
                 ? _buildPaymentOption(
                     context: context,
@@ -196,6 +198,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                     },
                   )
                 : Container(),
+                 Divider(height: 4, thickness: 0.2, indent: 15, endIndent: 10),
             _otherConstants.creditCode.value == 1 && blackListRecharge == false
                 ? _buildPaymentOption(
                     context: context,
@@ -257,7 +260,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
           assetPath: assetPath,
           timerNotifier: timerNotifier,
         ),
-        Divider(height: 4, thickness: 0.2, indent: 15, endIndent: 10),
+       
       ],
     );
   }

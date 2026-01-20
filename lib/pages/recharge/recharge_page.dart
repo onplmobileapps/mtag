@@ -78,7 +78,7 @@ class RechargeSelfPage extends StatelessWidget {
             _buildMtagSection(context, controller),
             _buildAmountSection(context, controller),
             _buildPaymentSection(context, controller),
-            _buildCardSection(context, controller),
+            SafeArea(child: _buildCardSection(context, controller)),
           ],
         ),
       ),

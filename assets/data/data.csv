@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-#version=18
-=======
 #version=19
->>>>>>> 77e596a43b12f03cc2cdcb271aa7db9f1df350e9
 e_sta_id,x_sta_id,v_cat,t_toll_r
 4025,10015,1,310
 4020,10015,1,370

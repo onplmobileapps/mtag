@@ -47,7 +47,17 @@ Widget buildPaymentOption(
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Image.asset(assetPath, height: 30, width: 45),
+                    remainingTime > Duration.zero
+                        ? Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Text(
+                              '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(fontSize: 12, color: Colors.red),
+                            ),
+                          )
+                        : Container(),
+                    // Image.asset(assetPath, height: 30, width: 45),
                   ],
                 ),
                 controlAffinity: ListTileControlAffinity.leading,
@@ -59,16 +69,7 @@ Widget buildPaymentOption(
                 dense: true,
 
                 contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                secondary: remainingTime > Duration.zero
-                    ? Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: Text(
-                          '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(fontSize: 12, color: Colors.red),
-                        ),
-                      )
-                    : null,
+                secondary: Image.asset(assetPath, height: 30, width: 45),
               ),
             ),
           );

@@ -35,88 +35,109 @@ class ChassisNumberDialog extends StatelessWidget {
     return PopScope(
       canPop: true,
       child: Dialog(
-        shape: RoundedRectangleBorder(borderRadius: .circular(12)),
-        backgroundColor: ColorScheme.of(context).surfaceContainerLowest,
-
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: .circular(8),
-            gradient:Theme.of(context).extension<AppGradients>()!.background
+            borderRadius: BorderRadius.circular(12),
+            gradient: Theme.of(context).extension<AppGradients>()!.background,
           ),
-          child: Padding(
-            padding: .all(16),
-
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Align(
-                  alignment: AlignmentGeometry.topRight,
-                  child: GestureDetector(
-                    onTap: Get.back,
-                    child: CircleAvatar(
-                      radius: 14,
-                      backgroundColor: Colors.red,
-                      child: Icon(Icons.close, color: Colors.white),
+                // Close button
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: Get.back,
+                      child: CircleAvatar(
+                        radius: 14,
+                        backgroundColor: Colors.red,
+                        child: Icon(Icons.close, size: 16, color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+
+                // Title
+                Center(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      "Enter Chassis Number",
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
-                Text(
-                  "Enter Chassis Number",
-                  style: TextTheme.of(
-                    context,
-                  ).titleMedium?.copyWith(fontWeight: .w600),
-                ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 16),
 
+                // Vehicle info card
                 Container(
                   padding: EdgeInsets.all(containerPadding),
                   decoration: BoxDecoration(
                     color: ColorScheme.of(context).surfaceContainerLow,
-                    boxShadow: Theme.of(context).extension<AppShadows>()!.cardShadow,
+                    boxShadow: Theme.of(
+                      context,
+                    ).extension<AppShadows>()!.cardShadow,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
                     children: [
+                      // Icon
                       Container(
-                        padding: .all(12),
+                        padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: ColorScheme.of(context).surface,
                           borderRadius: BorderRadius.circular(8),
-                          boxShadow: [],
                         ),
                         child: Image.asset(
                           'assets/delivery.png',
                           color: Theme.of(context).primaryColor,
                           height: 35,
+                          width: 35,
                         ),
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
+
+                      // Vehicle details
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // Registration number
                             Text(
                               registration,
-                              style: TextTheme.of(
-                                context,
-                              ).displayMedium?.copyWith(),
+                              style: Theme.of(context).textTheme.displayMedium,
+                              maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            SizedBox(height: 4),
+                            const SizedBox(height: 4),
+
+                            // Token and balance row
                             Row(
                               children: [
                                 Expanded(
                                   child: Text(
                                     tokenNo,
-                                    style: TextTheme.of(
+                                    style: Theme.of(
                                       context,
-                                    ).bodySmall?.copyWith(),
+                                    ).textTheme.bodySmall,
+                                    maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
+                                const SizedBox(width: 8),
                                 Text(
                                   balance,
-                                  style: TextTheme.of(context).bodySmall,
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                  maxLines: 1,
                                 ),
                               ],
                             ),
@@ -126,32 +147,34 @@ class ChassisNumberDialog extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
 
-                /// Text Field
+                // Chassis input field
                 Form(
                   key: _formKey,
-                  child: Column(mainAxisSize: .min,
-                    mainAxisAlignment: .start,
-                    crossAxisAlignment: .start,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CupertinoTextFormFieldRow(
-                        padding: .symmetric(horizontal: 10, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 12,
+                        ),
                         decoration: BoxDecoration(
                           color: ColorScheme.of(context).surfaceContainerLow,
-                          borderRadius: .circular(8),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         maxLines: 1,
-
                         maxLength: 17,
                         placeholder: 'Enter chassis number',
+                        placeholderStyle: Theme.of(context).textTheme.bodyMedium
+                            ?.copyWith(color: Theme.of(context).hintColor),
                         controller: _controller..text = chassissNo ?? '',
                         keyboardType: TextInputType.text,
-
                         validator: (value) => (value == null || value.isEmpty)
                             ? 'Enter a valid chassis number'
                             : null,
-
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
                             RegExp(r'[A-Za-z0-9]'),
@@ -159,29 +182,33 @@ class ChassisNumberDialog extends StatelessWidget {
                           UpperCaseTextFormatter(),
                         ],
                         textCapitalization: TextCapitalization.characters,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 20),
 
-                /// Submit Button
-                ElevatedButton1(
-                  onclick: () async {
-                    final text = _controller.text.trim();
-
-                    Get.back();
-                    await Get.find<HomeController>().updateChassisCall(
-                      cnicNumber: cnicNumber,
-                      mobileNumber: mobileNumber,
-                      mtagID: tokenNo,
-                      chassisNumber: text,
-                    );
-                  },
-                  text: "Submit",
-                  backgroundColor: Theme.of(context).primaryColorDark,
+                // Submit button
+                Center(
+                  child: ElevatedButton1(
+                    onclick: () async {
+                      final text = _controller.text.trim();
+                      if (_formKey.currentState?.validate() ?? false) {
+                        Get.back();
+                        await Get.find<HomeController>().updateChassisCall(
+                          cnicNumber: cnicNumber,
+                          mobileNumber: mobileNumber,
+                          mtagID: tokenNo,
+                          chassisNumber: text,
+                        );
+                      }
+                    },
+                    text: "Submit",
+                    backgroundColor: Theme.of(context).primaryColorDark,
+                  ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 8),
               ],
             ),
           ),

@@ -31,7 +31,7 @@ void main() async {
     name: 'mtagFlutter',
   );
 
-  setupErrorHandling();
+  // setupErrorHandling();
 
   final sharedPreferences = await SharedPreferences.getInstance();
 

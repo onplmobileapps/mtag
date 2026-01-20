@@ -23,7 +23,7 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      centerTitle: false,
+      centerTitle: true,
       title: title,
       actions: actions,
       titleTextStyle: Theme.of(context).textTheme.titleLarge,

@@ -145,18 +145,12 @@ class _PinEntryPageState extends State<PinEntryPage> {
     final size = MediaQuery.of(context).size;
     final isDarkMode = Get.isDarkMode;
 
-    return Scaffold(
-      body: SafeArea(
-        child: _buildContent(size, isDarkMode),
-      ),
-    );
+    return Material(child: SafeArea(child: _buildContent(size, isDarkMode)));
   }
 
   Widget _buildContent(Size size, bool isDarkMode) {
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        minHeight: size.height,
-      ),
+      constraints: BoxConstraints(minHeight: size.height),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
@@ -169,20 +163,15 @@ class _PinEntryPageState extends State<PinEntryPage> {
             SizedBox(height: size.height * 0.02),
             _buildPinField(size),
             SizedBox(height: size.height * 0.02),
-            _buildOptions(context,size),
+            _buildOptions(context, size),
             SizedBox(height: size.height * 0.01),
             _buildDifferentAccountOption(context),
             SizedBox(height: size.height * 0.02),
 
-            // Keypad Section - Separate Component
             _buildKeypad(size),
 
-            // Footer at bottom
-            // SizedBox(height: size.height * 0.03),
             const Spacer(),
             const FooterWidget(),
-            const SizedBox(height: 12),
-
           ],
         ),
       ),
@@ -191,11 +180,18 @@ class _PinEntryPageState extends State<PinEntryPage> {
 
   Widget _buildLogo(Size size, bool isDarkMode) {
     return Center(
-      child: Image.asset(
-        isDarkMode ? 'assets/darklogo.png' : 'assets/logolight.png',
-        height: size.height * 0.07,
-        width: size.height * 0.15,
-        fit: BoxFit.contain,
+      child: Container(
+        constraints: BoxConstraints(
+          maxHeight: size.height * 0.06, // Increased max height slightly
+          maxWidth: size.width * 0.5, // Max width constraint
+        ),
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: Image.asset(
+            isDarkMode ? 'assets/darklogo.png' : 'assets/logolight.png',
+            fit: BoxFit.contain,
+          ),
+        ),
       ),
     );
   }
@@ -219,37 +215,45 @@ class _PinEntryPageState extends State<PinEntryPage> {
       child: ValueListenableBuilder<String>(
         valueListenable: _pin,
         builder: (context, pin, _) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(4, (index) {
-              return Container(
-                width: size.width * 0.14,
-                height: size.width * 0.14,
-                margin: EdgeInsets.symmetric(horizontal: size.width * 0.02),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: pin.length > index
-                        ? Theme.of(context).primaryColor
-                        : Colors.grey.shade400,
-                    width: 0.5,
+          return FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(4, (index) {
+                return Container(
+                  constraints: BoxConstraints(
+                    maxWidth: 50, // Maximum size on large screens
+                    maxHeight: 50,
                   ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Center(
-                  child: Text(
-                    pin.length > index ? pin[index] : '',
-                    style: Theme.of(context).textTheme.headlineSmall
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: pin.length > index
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey.shade400,
+                      width: 1.0,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                ),
-              );
-            }),
+                  child: Center(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        pin.length > index ? pin[index] : '',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
           );
         },
       ),
     );
   }
 
-  Widget _buildOptions(BuildContext context,Size size) {
+  Widget _buildOptions(BuildContext context, Size size) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Row(
@@ -279,24 +283,22 @@ class _PinEntryPageState extends State<PinEntryPage> {
               },
               child: Platform.isIOS
                   ? Image.asset(
-                "assets/face3.png",
-                height: size.width * 0.099,
-                width: size.width * 0.099,
+                      "assets/face3.png",
+                      height: size.width * 0.099,
+                      width: size.width * 0.099,
 
-                color: Get.isDarkMode
-                    ? Colors.white
-                    : Theme.of(context).primaryColor,
-
-              )
+                      color: Get.isDarkMode
+                          ? Colors.white
+                          : Theme.of(context).primaryColor,
+                    )
                   : Image.asset(
-                "assets/fingerprint.png",
-                height: 24,
-                width: 24,
-                color: Get.isDarkMode
-                    ? Colors.white
-                    : Theme.of(context).primaryColor,
-
-              ),
+                      "assets/fingerprint.png",
+                      height: 24,
+                      width: 24,
+                      color: Get.isDarkMode
+                          ? Colors.white
+                          : Theme.of(context).primaryColor,
+                    ),
             ),
         ],
       ),
@@ -324,61 +326,56 @@ class _PinEntryPageState extends State<PinEntryPage> {
 
   // SEPARATE KEYPAD COMPONENT
   Widget _buildKeypad(Size size) {
-    return Column(
+    return Column(spacing: 12,
       children: [
         // Row 1: 1 2 3
         Row(
+          spacing: size.width * 0.10,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildCircleKey('1', size),
-            SizedBox(width: size.width * 0.08),
+
             _buildCircleKey('2', size),
-            SizedBox(width: size.width * 0.08),
+
             _buildCircleKey('3', size),
           ],
         ),
-        SizedBox(height: size.height * 0.02),
 
         // Row 2: 4 5 6
         Row(
+          crossAxisAlignment: .center,
+          spacing: size.width * 0.10,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildCircleKey('4', size),
-            SizedBox(width: size.width * 0.08),
+
             _buildCircleKey('5', size),
-            SizedBox(width: size.width * 0.08),
+
             _buildCircleKey('6', size),
           ],
         ),
-        SizedBox(height: size.height * 0.02),
 
         // Row 3: 7 8 9
         Row(
+          spacing: size.width * 0.10,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildCircleKey('7', size),
-            SizedBox(width: size.width * 0.08),
+
             _buildCircleKey('8', size),
-            SizedBox(width: size.width * 0.08),
+
             _buildCircleKey('9', size),
           ],
         ),
-        SizedBox(height: size.height * 0.02),
 
         // Row 4: 0 and delete
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Empty space for symmetry
-            SizedBox(width: size.width * 0.26),
-
-            // 0 Key
-            _buildCircleKey('0', size),
-
-            // Delete Key
-            SizedBox(width: size.width * 0.08),
-            _buildDeleteKey(size),
-          ],
+        Padding(
+          padding: EdgeInsets.only(right: size.width * 0.08),
+          child: Row(
+            spacing: 40,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [_buildCircleKey('0', size), _buildDeleteKey(size)],
+          ),
         ),
       ],
     );
@@ -400,10 +397,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
           onTap: () => _onNumberTap(int.parse(number)),
           borderRadius: BorderRadius.circular(keySize / 2),
           child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: bgColor,
-            ),
+            decoration: BoxDecoration(shape: BoxShape.circle, color: bgColor),
             alignment: Alignment.center,
             child: Text(
               number,
@@ -437,10 +431,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
             _pin.value = '';
           },
           child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: bgColor,
-            ),
+            decoration: BoxDecoration(shape: BoxShape.circle, color: bgColor),
             alignment: Alignment.center,
             child: Icon(
               Icons.backspace_outlined,
@@ -460,7 +451,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
         title: const Text('Biometric Login'),
         content: const Text(
           'Sign in with your CNIC and Mobile Number to enable biometric login. '
-              'Next time, simply tap the Biometric icon to sign in.',
+          'Next time, simply tap the Biometric icon to sign in.',
           textAlign: TextAlign.justify,
         ),
         actions: [

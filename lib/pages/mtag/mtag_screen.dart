@@ -1,12 +1,7 @@
-import 'dart:developer';
-
-
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/theme/app_theme.dart';
-import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
-
+import '../../theme/app_theme.dart';
+import '../../widgets/gradient_appbar.dart';
 import '../../widgets/dashboard_widget.dart';
 import '../../widgets/dialog/cupertino_dialog.dart';
 import '../../widgets/dialog/delink_dialog.dart';
@@ -27,7 +22,7 @@ class MyMtagScreen extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: GradientAppBar( title: const Text("My M-Tag")),
+      appBar: GradientAppBar(title: const Text("My M-Tag")),
       body: Container(
         constraints: const BoxConstraints.expand(),
         height: size.height,
@@ -36,13 +31,9 @@ class MyMtagScreen extends StatelessWidget {
         child: Container(
           height: size.height,
           width: size.width,
-          // margin: const EdgeInsets.only(top: 10),
+
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
-            // borderRadius: const BorderRadius.only(
-            //   topLeft: Radius.circular(12),
-            //   topRight: Radius.circular(12),
-            // ),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -50,219 +41,293 @@ class MyMtagScreen extends StatelessWidget {
               itemCount: argument.length,
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () async {
-                    argument[index].isactive == 8
-                        ? showPopDialog(
-                            "You have pending dues on your account. You are not allowed to enter the motorway until your dues are cleared.",
-                            () => Get.back(),
-                          )
-                        : await Get.toNamed(
-                            '/mtagDetails',
-                            arguments: argument[index],
-                          );
-                    log(argument[index].toString());
-                  },
-                  child: Container(
-                    key: UniqueKey(),
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                    gradient: Theme.of(context).extension<AppGradients>()!.background,
-                      borderRadius: BorderRadius.circular(12),
-                      border: argument[index].isactive == 8
-                          ? Border.all(color: Colors.redAccent, width: 1)
-                          : Border.all(
-                              color: Theme.of(context).disabledColor,
-                              width: 1,
-                            ),
-                    ),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 100,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                'assets/mtag_logo.svg',
-                                colorFilter: ColorFilter.mode(
-                                  Theme.of(context).hintColor,
-                                  BlendMode.srcIn,
-                                ),
-                                fit: BoxFit.fill,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'M-TAG',
-                                style: Theme.of(context).textTheme.displayMedium
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.red,
-                                    ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                argument[index].tokenno ?? "",
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.displayMedium,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).disabledColor,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+                return MtagCardWidget(argument: argument, dlinkVehicleController: dlinkVehicleController,index: index,);
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+class MtagCardWidget extends StatelessWidget {
+  const MtagCardWidget({
+    super.key,
+    required this.argument,
+    required this.dlinkVehicleController,required this.index,
+  });
+
+  final List<ActiveMtags> argument;
+  final DelinkController dlinkVehicleController;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () async {
+        if (argument[index].isactive == 8) {
+          showPopDialog(
+            "You have pending dues on your account. You are not allowed to enter the motorway until your dues are cleared.",
+            () => Get.back(),
+          );
+        } else {
+          await Get.toNamed(
+            '/mtagDetails',
+            arguments: argument[index],
+          );
+        }
+      },
+      child: Container(
+        key: UniqueKey(),
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          gradient: Theme.of(
+            context,
+          ).extension<AppGradients>()!.background,
+          borderRadius: BorderRadius.circular(12),
+          border: argument[index].isactive == 8
+              ? Border.all(color: Colors.redAccent, width: 1)
+              : Border.all(
+                  color: Theme.of(context).disabledColor,
+                  width: 1,
+                ),
+        ),
+        child: Column(
+          mainAxisAlignment: .start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+    
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  FittedBox(
+                    child: Image.asset(
+                      getVehicleImage(
+                        argument[index].vehicletype ?? '',
+                      ),
+                      height: 100,
+                      width: 80,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Flexible(
+                    child: Column(
+                      spacing: 4,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // M-TAG Row
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                          child: RichText(
+                            text: TextSpan(
                               children: [
-                                Text(
-                                  '${argument[index].ownername}',
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.displayMedium,
-                                  maxLines: 1,
+                                TextSpan(
+                                  text:
+                                      argument[index]
+                                          .registration ??
+                                      '',
+                                  style: TextTheme.of(context)
+                                      .bodyMedium
+                                      ?.copyWith(fontSize: 13),
                                 ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'PKR ${argument[index].balance}',
-                                  style: Theme.of(context).textTheme.labelLarge
-                                      ?.copyWith(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                  maxLines: 1,
+    
+                                TextSpan(
+                                  text: ' • M-TAG ', // rest of text
+                                  style: TextStyle(
+                                    fontFamily: 'biotifbold',
+                                    color:
+                                        Colors.grey, // black color
+                                    fontWeight: FontWeight.w900,
+                                  ),
                                 ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  argument[index].registration ?? '',
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.displaySmall,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  argument[index].vehicletype ?? '',
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.displaySmall,
+                                TextSpan(
+                                  text:
+                                      ' #${argument[index].tokenno}',
+                                  style: TextTheme.of(context)
+                                      .bodyMedium
+                                      ?.copyWith(fontSize: 13),
                                 ),
                               ],
                             ),
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            // const SizedBox(height: 30, width: 20),
-                            InkWell(
-                              onTap: () => argument[index].isactive == 8
-                                  ? Container()
-                                  : showDialog(
-                                      context: Get.context!,
-                                      builder: (ctx) {
-                                        return DeLinkVehicleDialog(
-                                          regId:
-                                              argument[index].registration ??
-                                              '',
-
-                                          onCancel: () => Get.back(),
-                                          onConfirm: () {
-                                            Get.back();
-                                            dlinkVehicleController.deLinkVehicle(
-                                              mtagID:
-                                                  argument[index].tokenno ?? '',
-                                              rDesc:
-                                                  "${0}--${"Vehicle has been sold out."}",
-                                              rID: "1",
-                                            );
-                                          },
-                                        );
-                                      },
-                                    ),
-                              child: argument[index].isactive == 8
-                                  ? Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 5,
-                                        vertical: 5,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.red,
-                                        borderRadius: BorderRadius.circular(8),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.red.withAlpha(77),
-                                            blurRadius: 4,
-                                            offset: Offset(2, 2),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Text(
-                                        'Blacklisted',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                          letterSpacing: 0.5,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 8,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).disabledColor,
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(color: Colors.red),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            Icons.delete_forever_outlined,
-                                            size: 18,
-                                            color: Colors.red,
-                                          ),
-                                          const SizedBox(width: 2),
-                                          Text(
-                                            'Delete',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.red,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                            ),
-                            const SizedBox(height: 20),
-                            Image.asset(
-                              getVehicleImage(
-                                argument[index].vehicletype ?? '',
+                        FittedBox(
+                          child: Row(
+                            mainAxisAlignment: .start,
+                            crossAxisAlignment: .start,
+                            children: [
+                              Text(
+                                'Vehicle Type : ',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
                               ),
-                              height: 40,
-                              width: 50,
-                              
-                            ),
-                          ],
+                              Text(
+                                '${argument[index].vehicletype}',
+                                style: TextTheme.of(
+                                  context,
+                                ).bodyMedium,
+                              ),
+                            ],
+                          ),
+                        ),
+                        FittedBox(
+                          child: Row(
+                            mainAxisAlignment: .start,
+                            crossAxisAlignment: .center,
+                            children: [
+                              Text(
+                                'Available Balance : ',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              Text(
+                                'Rs ${argument[index].balance}',
+                                style: TextTheme.of(context)
+                                    .bodyLarge
+                                    ?.copyWith(fontWeight: .w600),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Divider(
+                          color: Colors.grey.shade300,
+                          thickness: 1.5,
+                          height: 8,
+                          indent: 1,
+                          endIndent: 10,
+                        ),
+    
+                        // Name Row
+                        FittedBox(
+                          child: Row(
+                            mainAxisAlignment: .start,
+                            crossAxisAlignment: .start,
+                            children: [
+                              Icon(
+                                Icons.person_2,
+                                color: Colors.green.shade400,
+                                size: 19,
+                              ),
+                              Text(
+                                'Owner : ',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              Text(
+                                '${argument[index].ownername}',
+                                style: TextTheme.of(
+                                  context,
+                                ).bodyMedium,
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
+                ],
+              ),
+            ),
+    
+            InkWell(
+              onTap: () {
+                if (argument[index].isactive == 8) {
+                  return;
+                }
+                showDialog(
+                  context: Get.context!,
+                  builder: (ctx) {
+                    return DeLinkVehicleDialog(
+                      regId: argument[index].registration ?? '',
+                      onCancel: () => Get.back(),
+                      onConfirm: () {
+                        Get.back();
+                        dlinkVehicleController.deLinkVehicle(
+                          mtagID: argument[index].tokenno ?? '',
+                          rDesc:
+                              "${0}--${"Vehicle has been sold out."}",
+                          rID: "1",
+                        );
+                      },
+                    );
+                  },
                 );
               },
+              child: argument[index].isactive == 8
+                  ? Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.red.withAlpha(77),
+                            blurRadius: 4,
+                            offset: const Offset(2, 2),
+                          ),
+                        ],
+                      ),
+                      child: const Text(
+                        'Blacklisted',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    )
+                  : Container(
+                      width: double.infinity,
+                      margin: .only(top: 10, left: 36, right: 36),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.red),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: .center,
+                        crossAxisAlignment: .center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Icon(
+                            Icons.delete_forever_outlined,
+                            size: 18,
+                            color: Colors.red,
+                          ),
+                          SizedBox(width: 4),
+                          Text(
+                            'Delete',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
             ),
-          ),
+          ],
         ),
       ),
     );

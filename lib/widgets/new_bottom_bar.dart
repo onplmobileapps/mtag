@@ -173,11 +173,9 @@ class NewBottomBar extends StatelessWidget {
             child: OverflowBox(
               alignment: Alignment.topCenter,
               maxHeight: double.infinity,
-              child: Transform.translate(
-                offset: Offset(0, -fabSize * 0.48),
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: onCenterTap,
+              child: GestureDetector(  onTap: onCenterTap,behavior: .opaque,
+                child: Transform.translate(
+                  offset: Offset(0, -fabSize * 0.48),
                   child: Container(
                     width: fabSize,
                     height: fabSize,

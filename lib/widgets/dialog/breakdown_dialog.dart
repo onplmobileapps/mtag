@@ -27,7 +27,10 @@ void showBreakdownDialog({
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Stack(
+          child: Column(
+            mainAxisAlignment: .start,
+            crossAxisAlignment: .start,
+            mainAxisSize: .min,
             children: [
               Container(
                 decoration: BoxDecoration(
@@ -40,129 +43,191 @@ void showBreakdownDialog({
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      'Payment Details',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(blackListRecharge ? 'Fine' : 'M-Tag Balance'),
-                        Text(
-                          '$amount',
-                          style: Theme.of(context).dialogTheme.contentTextStyle,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Bank Charges'),
-                        Text(
-                          blackListRecharge ? '+$fee' : '-$fee',
-                          style: Theme.of(context).dialogTheme.contentTextStyle,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          blackListRecharge
-                              ? 'Payable Amount'
-                              : 'Recharge Amount',
-                        ),
-                        Text(
-                          '$remaining',
-                          style: Theme.of(context).dialogTheme.contentTextStyle
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.redAccent,
-                              ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      blackListRecharge
-                          ? '*Note : Recovery amount is inclusive of bank charges.'
-                          : '',
-                      style: Theme.of(context).dialogTheme.contentTextStyle
-                          ?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.redAccent,
-                            fontSize: 12.0,
+                    Align(
+                      alignment: AlignmentGeometry.xy(1, 2),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: CircleAvatar(
+                          radius: 12,
+                          backgroundColor: Colors.red,
+                          child: const Icon(
+                            Icons.close,
+                            size: 16,
+                            color: Colors.white,
                           ),
-                    ),
-                    const SizedBox(height: 16),
-                    Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(),
+                        ),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    ),
+                    Container(
+                      padding: .all(6),
+                      decoration: BoxDecoration(
+                        color: ColorScheme.of(context).surface,
+                        borderRadius: .circular(8),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: .start,
+                        crossAxisAlignment: .start,
                         children: [
-                          Text(psid),
-                          InkWell(
-                            onTap: () {
-                              Clipboard.setData(ClipboardData(text: psid));
-                            },
-                            child: Icon(Icons.copy),
+                          Text(
+                            'Payment Details',
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                blackListRecharge ? 'Fine' : 'M-Tag Balance',
+                              ),
+                              Text(
+                                '$amount',
+                                style: Theme.of(
+                                  context,
+                                ).dialogTheme.contentTextStyle,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Bank Charges'),
+                              Text(
+                                blackListRecharge ? '+$fee' : '-$fee',
+                                style: Theme.of(
+                                  context,
+                                ).dialogTheme.contentTextStyle,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                blackListRecharge
+                                    ? 'Payable Amount'
+                                    : 'Recharge Amount',
+                              ),
+                              Text(
+                                '$remaining',
+                                style: Theme.of(context)
+                                    .dialogTheme
+                                    .contentTextStyle
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.redAccent,
+                                    ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            blackListRecharge
+                                ? '*Note : Recovery amount is inclusive of bank charges.'
+                                : '',
+                            style: Theme.of(context)
+                                .dialogTheme
+                                .contentTextStyle
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.redAccent,
+                                  fontSize: 12.0,
+                                ),
+                          ),
+                          const SizedBox(height: 16),
+                          Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(psid),
+                                InkWell(
+                                  onTap: () {
+                                    Clipboard.setData(
+                                      ClipboardData(text: psid),
+                                    );
+                                  },
+                                  child: Icon(Icons.copy),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                     ),
+
                     SizedBox(height: 10),
-                    Text(
-                      "Recharge Instructions",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.redAccent,
-                        fontWeight: FontWeight.bold,
+
+                    Container(
+                      padding: .all(6),
+                      decoration: BoxDecoration(
+                        color: ColorScheme.of(context).surface,
+                        borderRadius: .circular(8),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    // Payment Instructions as Bullet Points
-                    buildBulletPoint(context, "Copy the above PSID."),
-                    const SizedBox(height: 5),
-                    buildBulletPoint(
-                      context,
-                      "Open your banking app, go to 1Bill and select Invoice.",
-                    ),
-                    const SizedBox(height: 5),
-                    buildBulletPoint(context, "Paste the PSID and confirm."),
-                    const SizedBox(height: 5),
-                    buildBulletPoint(
-                      context,
-                      "Your balance will be updated within a few minutes.",
-                    ),
-                    const SizedBox(height: 5),
-                    // Timer
-                    ValueListenableBuilder(
-                      valueListenable: inVoicetimerNotifier!,
-                      builder: (context, remainingTime, child) => Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      child: Column(
+                        mainAxisAlignment: .start,
+                        crossAxisAlignment: .start,
                         children: [
                           Text(
-                            'PSID will expire in: ',
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(fontSize: 14, color: Colors.red),
+                            "Recharge Instructions",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.redAccent,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                          Text(
-                            '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  fontSize: 16,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
+                          const SizedBox(height: 8),
+                          // Payment Instructions as Bullet Points
+                          buildBulletPoint(context, "Copy the above PSID."),
+                          const SizedBox(height: 5),
+                          buildBulletPoint(
+                            context,
+                            "Open your banking app, go to 1Bill and select Invoice.",
+                          ),
+                          const SizedBox(height: 5),
+                          buildBulletPoint(
+                            context,
+                            "Paste the PSID and confirm.",
+                          ),
+                          const SizedBox(height: 5),
+                          buildBulletPoint(
+                            context,
+                            "Your balance will be updated within a few minutes.",
+                          ),
+                          const SizedBox(height: 5),
+                          // Timer
+                          ValueListenableBuilder(
+                            valueListenable: inVoicetimerNotifier!,
+                            builder: (context, remainingTime, child) => Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'PSID will expire in: ',
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(
+                                        fontSize: 14,
+                                        color: Colors.red,
+                                      ),
                                 ),
+                                Text(
+                                  '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(
+                                        fontSize: 16,
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -170,25 +235,8 @@ void showBreakdownDialog({
                   ],
                 ),
               ),
+
               // Close Button
-              Positioned(
-                top: 8,
-                right: 8,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: CircleAvatar(
-                    radius: 12,
-                    backgroundColor: Colors.red,
-                    child: const Icon(
-                      Icons.close,
-                      size: 16,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -220,10 +268,12 @@ void showTopUpDialog({
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Stack(
+          child: Column(
+            mainAxisSize: .min,
             children: [
               Container(
-                decoration: BoxDecoration(borderRadius: .circular(8),
+                decoration: BoxDecoration(
+                  borderRadius: .circular(8),
                   gradient: Theme.of(
                     context,
                   ).extension<AppGradients>()!.background,
@@ -231,95 +281,152 @@ void showTopUpDialog({
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: .start,
+                  crossAxisAlignment: .start,
                   children: [
-                    Text(
-                      'Payment Details',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                    Align(
+                      alignment: AlignmentGeometry.xy(1, 2),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: CircleAvatar(
+                          radius: 12,
+                          backgroundColor: Colors.red,
+                          child: const Icon(
+                            Icons.close,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          blackListRecharge
-                              ? 'Recovery Amount'
-                              : 'Recharge Amount',
-                        ),
-                        Text(
-                          '$amount',
-                          style: Theme.of(context).dialogTheme.contentTextStyle
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.redAccent,
-                              ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 10),
                     Container(
-                      padding: EdgeInsets.all(8),
+                      padding: .all(8),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(),
+                        color: ColorScheme.of(context).surface,
+                        borderRadius: .circular(8),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
+                        mainAxisAlignment: .start,
+                        crossAxisAlignment: .start,
                         children: [
-                          Text(psid),
-                          InkWell(
-                            onTap: () {
-                              Clipboard.setData(ClipboardData(text: psid));
-                            },
-                            child: Icon(Icons.copy),
+                          Text(
+                            'Payment Details',
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                blackListRecharge
+                                    ? 'Recovery Amount'
+                                    : 'Recharge Amount',
+                              ),
+                              Text(
+                                '$amount',
+                                style: Theme.of(context)
+                                    .dialogTheme
+                                    .contentTextStyle
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.redAccent,
+                                    ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(psid),
+                                InkWell(
+                                  onTap: () {
+                                    Clipboard.setData(
+                                      ClipboardData(text: psid),
+                                    );
+                                  },
+                                  child: Icon(Icons.copy),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Text(
-                      "Recharge Instructions",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.redAccent,
-                        fontWeight: FontWeight.bold,
+                    SizedBox(height: 10),
+                    Container(
+                      padding: .all(6),
+                      decoration: BoxDecoration(
+                        color: ColorScheme.of(context).surface,
+                        borderRadius: .circular(8),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    // Payment Instructions as Bullet Points
-                    buildBulletPoint(context, "Copy the above PSID."),
-                    const SizedBox(height: 5),
-                    buildBulletPoint(
-                      context,
-                      "Open your banking app, go to 1Bill and select Top Up.",
-                    ),
-                    const SizedBox(height: 5),
-                    buildBulletPoint(context, "Paste the PSID and confirm."),
-                    const SizedBox(height: 5),
-                    buildBulletPoint(
-                      context,
-                      "Your balance will be updated within a few minutes.",
-                    ),
-                    const SizedBox(height: 5),
-                    // Timer
-                    ValueListenableBuilder(
-                      valueListenable: inVoicetimerNotifier!,
-                      builder: (context, remainingTime, child) => Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      child: Column(
+                        mainAxisAlignment: .start,
+                        crossAxisAlignment: .start,
+
                         children: [
                           Text(
-                            'PSID will expire in: ',
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(fontSize: 14, color: Colors.red),
+                            "Recharge Instructions",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.redAccent,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                          Text(
-                            '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  fontSize: 16,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
+                          const SizedBox(height: 8),
+                          // Payment Instructions as Bullet Points
+                          buildBulletPoint(context, "Copy the above PSID."),
+                          const SizedBox(height: 5),
+                          buildBulletPoint(
+                            context,
+                            "Open your banking app, go to 1Bill and select Top Up.",
+                          ),
+                          const SizedBox(height: 5),
+                          buildBulletPoint(
+                            context,
+                            "Paste the PSID and confirm.",
+                          ),
+                          const SizedBox(height: 5),
+                          buildBulletPoint(
+                            context,
+                            "Your balance will be updated within a few minutes.",
+                          ),
+                          const SizedBox(height: 5),
+                          // Timer
+                          ValueListenableBuilder(
+                            valueListenable: inVoicetimerNotifier!,
+                            builder: (context, remainingTime, child) => Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'PSID will expire in: ',
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(
+                                        fontSize: 14,
+                                        color: Colors.red,
+                                      ),
                                 ),
+                                Text(
+                                  '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(
+                                        fontSize: 16,
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -329,24 +436,6 @@ void showTopUpDialog({
               ),
 
               // Close Button
-              Positioned(
-                top: 8,
-                right: 8,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: CircleAvatar(
-                    radius: 12,
-                    backgroundColor: Colors.red,
-                    child: const Icon(
-                      Icons.close,
-                      size: 16,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),

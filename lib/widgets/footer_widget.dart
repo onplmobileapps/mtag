@@ -16,92 +16,67 @@ class FooterWidget extends StatelessWidget {
 
     return SafeArea(
       top: false,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final screenWidth = MediaQuery.of(context).size.width;
-
-          // Adaptive padding based on screen size
-          final horizontalPadding = screenWidth < 360 ? 12.0 : 16.0;
-          final itemSpacing = screenWidth < 360 ? 6.0 : 8.0;
-
-          // Calculate exact item width for pixel-perfect layout
-          final availableWidth = constraints.maxWidth - (horizontalPadding * 2);
-          final totalSpacing = itemSpacing * 3;
-          final itemWidth = (availableWidth - totalSpacing) / 4;
-
-          return Padding(
-            padding: EdgeInsets.fromLTRB(
-              horizontalPadding,
-              0,
-              horizontalPadding,
-              MediaQuery.of(context).padding.bottom > 0 ? 8 : 16,
-            ),
-            child: IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _FooterItem(
-                    image: 'assets/whatsapp_1.png',
-                    label: 'WhatsApp',
-                    semantics: 'Open WhatsApp support',
-                    width: itemWidth,
-                    screenWidth: screenWidth,
-                    isDark: isDark,
-                    isMultiColor: true,
-                    onTap: () async {
-                      await CallWhatsappUtil.openWhatsAppChat();
-                    },
-                  ),
-                  SizedBox(width: itemSpacing),
-                  _FooterItem(
-                    image: 'assets/phone.png',
-                    label: 'Helpline 1313',
-                    semantics: 'Call helpline 1313',
-                    width: itemWidth,
-                    screenWidth: screenWidth,
-                    isDark: isDark,
-                    onTap: () async {
-                      await CallWhatsappUtil.openCall1313();
-                    },
-                  ),
-                  SizedBox(width: itemSpacing),
-                  _FooterItem(
-                    image: 'assets/location.png',
-                    label: 'Recharge Locations',
-                    semantics: 'Find recharge locations',
-                    width: itemWidth,
-                    screenWidth: screenWidth,
-                    isDark: isDark,
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => RechargeMapScreen()),
-                      );
-                      try {
-                        Get.find<AuthController>().clearSharedData();
-                      } catch (e) {
-                        debugPrint("⚠️ Could not find AuthController: $e");
-                      }
-                    },
-                  ),
-                  SizedBox(width: itemSpacing),
-                  _FooterItem(
-                    image: 'assets/question.png',
-                    label: 'FAQ\'s',
-                    semantics: 'Open frequently asked questions',
-                    width: itemWidth,
-                    screenWidth: screenWidth,
-                    isDark: isDark,
-                    onTap: () {
-                      Navigator.of(
-                        context,
-                      ).push(MaterialPageRoute(builder: (_) => FaqsScreen()));
-                    },
-                  ),
-                ],
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 16,
+          right: 16,
+          top: 12,
+          bottom: MediaQuery.of(context).padding.bottom + 12,
+        ),
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 500),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _FooterItem(
+                image: 'assets/whatsapp_1.png',
+                label: 'WhatsApp',
+                semantics: 'Open WhatsApp support',
+                isDark: isDark,
+                isMultiColor: true,
+                onTap: () async {
+                  await CallWhatsappUtil.openWhatsAppChat();
+                },
               ),
-            ),
-          );
-        },
+              _FooterItem(
+                image: 'assets/phone.png',
+                label: 'Helpline 1313',
+                semantics: 'Call helpline 1313',
+                isDark: isDark,
+                onTap: () async {
+                  await CallWhatsappUtil.openCall1313();
+                },
+              ),
+              _FooterItem(
+                image: 'assets/location.png',
+                label: 'Recharge Locations',
+                semantics: 'Find recharge locations',
+                isDark: isDark,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => RechargeMapScreen()),
+                  );
+                  try {
+                    Get.find<AuthController>().clearSharedData();
+                  } catch (e) {
+                    debugPrint("⚠️ Could not find AuthController: $e");
+                  }
+                },
+              ),
+              _FooterItem(
+                image: 'assets/question.png',
+                label: 'FAQ\'s',
+                semantics: 'Open frequently asked questions',
+                isDark: isDark,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => FaqsScreen()),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -111,8 +86,6 @@ class _FooterItem extends StatefulWidget {
   final String image;
   final String label;
   final String semantics;
-  final double width;
-  final double screenWidth;
   final bool isDark;
   final bool isMultiColor;
   final VoidCallback onTap;
@@ -121,8 +94,6 @@ class _FooterItem extends StatefulWidget {
     required this.image,
     required this.label,
     required this.semantics,
-    required this.width,
-    required this.screenWidth,
     required this.isDark,
     this.isMultiColor = false,
     required this.onTap,
@@ -139,7 +110,6 @@ class _FooterItemState extends State<_FooterItem>
   @override
   void initState() {
     super.initState();
-
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 120),
@@ -167,42 +137,11 @@ class _FooterItemState extends State<_FooterItem>
     _controller.forward();
   }
 
-  double get _iconSize {
-    if (widget.screenWidth < 340) return 20.0;
-    if (widget.screenWidth < 375) return 22.0;
-    return 24.0;
-  }
-
-  double get _fontSize {
-    if (widget.screenWidth < 340) return 9.5;
-    if (widget.screenWidth < 375) return 10.5;
-    return 11.5;
-  }
-
-  double get _textHeight {
-    if (widget.screenWidth < 340) return 28.0;
-    if (widget.screenWidth < 375) return 30.0;
-    return 32.0;
-  }
-
-  double get _verticalPadding {
-    if (widget.screenWidth < 340) return 10.0;
-    if (widget.screenWidth < 375) return 11.0;
-    return 12.0;
-  }
-
-  double get _spacing {
-    if (widget.screenWidth < 340) return 4.0;
-    if (widget.screenWidth < 375) return 5.0;
-    return 6.0;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
       label: widget.semantics,
-      excludeSemantics: true,
       child: ScaleTransition(
         scale: _controller,
         child: Material(
@@ -214,13 +153,14 @@ class _FooterItemState extends State<_FooterItem>
             onTap: widget.onTap,
             borderRadius: BorderRadius.circular(12),
             splashColor: widget.isDark
-                ? Colors.white.withValues(alpha: 0.05)
-                : Colors.black.withValues(alpha: 0.05),
+                ? Colors.white.withValues(alpha:0.05)
+                : Colors.black.withValues(alpha:0.05),
             highlightColor: widget.isDark
-                ? Colors.white.withValues(alpha: 0.03)
-                : Colors.black.withValues(alpha: 0.03),
-            child: Ink(
-              width: widget.width,
+                ? Colors.white.withValues(alpha:0.03)
+                : Colors.black.withValues(alpha:0.03),
+            child: Container(
+              width: 72, // Fixed base width
+              height: 72, // Fixed base height
               decoration: BoxDecoration(
                 color: widget.isDark
                     ? const Color(0xFF1A1C28)
@@ -230,29 +170,25 @@ class _FooterItemState extends State<_FooterItem>
                     ? null
                     : [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.03),
+                          color: Colors.black.withValues(alpha:0.03),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
                       ],
               ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: _verticalPadding,
-                  horizontal: 4,
-                ),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
                   children: [
-                    SizedBox(
-                      height: _iconSize,
-                      width: _iconSize,
+                    Container(
+                      width: 24,
+                      height: 24,
+                      margin: const EdgeInsets.only(bottom: 6),
                       child: Image.asset(
                         widget.image,
                         fit: BoxFit.contain,
                         filterQuality: FilterQuality.medium,
-                        isAntiAlias: true,
                         // Apply white tint in dark mode, unless it's a multi-color icon like WhatsApp
                         color: (widget.isDark && !widget.isMultiColor)
                             ? Colors.white
@@ -260,31 +196,23 @@ class _FooterItemState extends State<_FooterItem>
                         colorBlendMode: (widget.isDark && !widget.isMultiColor)
                             ? BlendMode.srcIn
                             : null,
-                        cacheWidth:
-                            (_iconSize *
-                                    MediaQuery.of(context).devicePixelRatio)
-                                .round(),
                       ),
                     ),
-                    SizedBox(height: _spacing),
                     SizedBox(
-                      height: _textHeight,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          widget.label,
-                          maxLines: 2,
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: _fontSize,
-                            height: 1.2,
-                            fontWeight: FontWeight.w500,
-                            color: widget.isDark
-                                ? Colors.white
-                                : const Color(0xFF1A1A1A),
-                            letterSpacing: -0.1,
-                          ),
+                      width: 64, // Constrain text width
+                      child: Text(
+                        widget.label,
+                        maxLines: 2,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 11,
+                          height: 1.2,
+                          fontWeight: FontWeight.w500,
+                          color: widget.isDark
+                              ? Colors.white
+                              : const Color(0xFF1A1A1A),
+                          letterSpacing: -0.1,
                         ),
                       ),
                     ),

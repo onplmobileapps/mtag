@@ -699,7 +699,7 @@ class _TransferRemoveRow extends StatelessWidget {
         children: [
           if (hasMultipleCars) ...[
             Expanded(
-              child: _ActionButton(
+              child: ActionButton(
                 imagePath: "assets/transfer_balance.png",
                 label: 'Balance Transfer',
                 isDestructive: false,
@@ -723,7 +723,7 @@ class _TransferRemoveRow extends StatelessWidget {
           ],
 
           Expanded(
-            child: _ActionButton(
+            child: ActionButton(
               icon: Icons.delete_outlined,
               label: 'Remove',
               isDestructive: false,
@@ -784,14 +784,14 @@ class _TransferRemoveRow extends StatelessWidget {
   }
 }
 
-class _ActionButton extends StatelessWidget {
+class ActionButton extends StatelessWidget {
   final IconData? icon;
   final String? imagePath;
   final String label;
   final VoidCallback? onTap;
   final bool isDestructive;
 
-  const _ActionButton({
+  const ActionButton({super.key, 
     this.icon,
     this.imagePath,
     required this.label,
