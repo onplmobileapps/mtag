@@ -25,8 +25,8 @@ class BalanceTransferSheet extends StatelessWidget {
   }) {
     /// ✅ Set first car as default (only if list is not empty)
     if (dropDownCars.isNotEmpty) {
-      selectedCar.value = dropDownCars.first["carNumber"];
-      selectedCarMtag.value = dropDownCars.first["mtagID"];
+      selectedCar.value = dropDownCars.first["carNumber"]?.toString();
+      selectedCarMtag.value = dropDownCars.first["mtagID"]?.toString();
     }
   }
 
@@ -212,13 +212,22 @@ class BalanceTransferSheet extends StatelessWidget {
             );
           }).toList(),
           onChanged: (value) {
+            if (value == null) return;
+
             selectedCar.value = value;
-            final selectedCarData = dropDownCars.firstWhere(
-              (c) => c["carNumber"] == value,
-              orElse: () => <String, dynamic>{},
-            );
-            selectedCarMtag.value = selectedCarData["mtagID"] as String?;
+
+            // 🔒 PROD SAFE LOOKUP (NO GENERICS, NO firstWhere)
+            for (final car in dropDownCars) {
+              if (car["carNumber"] == value) {
+                selectedCarMtag.value = car["mtagID"]?.toString();
+                return;
+              }
+            }
+
+            // Fallback (never crash)
+            selectedCarMtag.value = null;
           },
+
         ),
       ),
     );

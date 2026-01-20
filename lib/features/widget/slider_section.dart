@@ -16,7 +16,7 @@ class SliderSection extends StatelessWidget {
         children: [
           SizedBox(height: 5),
           Text(
-            'Tap to see what\'s new',
+            'Promotions',
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           const SizedBox(height: 5),

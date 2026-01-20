@@ -211,7 +211,7 @@ class TollPlazaTab extends StatelessWidget {
     final selectedMotorwayIndex = controller.selectedMotorway.value;
 
   if (selectedMotorwayIndex != -1) {
-    final motorway = OtherConsts.mwNameList[selectedMotorwayIndex];
+    final motorway = controller.mwNameList[selectedMotorwayIndex];
 
     if (motorway.motorwayID == 200 || motorway.motorwayID == 300) {
       return const SizedBox.shrink();

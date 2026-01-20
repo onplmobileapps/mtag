@@ -1,10 +1,12 @@
 // ignore_for_file: non_constant_identifier_names, constant_identifier_names
- // static const String _BASE_URL = 'http://10.0.1.127:9008';
-  // static const String _BASE_URL = 'https://ocotapp.com';
- const String  _BASE_URL = 'https://ocotapp.com';
-   const String _IMAGE_ULR ='https://ocotapp.com';
-   String get IMAGE_ULR => _IMAGE_ULR;
- String get BASE_URL => _BASE_URL;
+// static const String _BASE_URL = 'http://10.0.1.127:9008';
+// static const String _BASE_URL = 'https://ocotapp.com';
+const String _BASE_URL = 'https://ocotapp.com';
+const String _IMAGE_ULR = 'https://ocotapp.com';
+
+String get IMAGE_ULR => _IMAGE_ULR;
+
+String get BASE_URL => _BASE_URL;
 List<Map<int, String>> API_ERROR_RESPONSE = [
   {200: ResponseType.REQUEST_SUCCESSFULL},
   {400: ResponseType.BAD_REQUEST},
@@ -20,13 +22,13 @@ List<Map<int, String>> API_ERROR_RESPONSE = [
   {501: ResponseType.Not_Implemented},
   {503: ResponseType.Service_Unavailable},
   {507: ResponseType.Insufficient_Storage},
-  {509: ResponseType.Bandwidth_Limit_Exceeded}
+  {509: ResponseType.Bandwidth_Limit_Exceeded},
 ];
 
 class APIREQUESTMETHOD {
-  static const String POST = "Post";
-  static const String GET = "Get";
-  static const String PUT = "Put";
+  static const String POST = "POST";
+  static const String GET = "GET";
+  static const String PUT = "PUT";
   static const String DELETE = "Delete";
   // static const String REQUEST = "Request";
 }
@@ -58,7 +60,9 @@ class ResponseType {
 
 class APIRESPONSE {
   static String? GetErrorResponse(int errorCode) {
-    Map<int, String> responseError = API_ERROR_RESPONSE.firstWhere((error) => error.containsKey(errorCode));
+    Map<int, String> responseError = API_ERROR_RESPONSE.firstWhere(
+      (error) => error.containsKey(errorCode),
+    );
     return responseError[errorCode];
   }
 

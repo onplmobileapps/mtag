@@ -1,15 +1,14 @@
 import '../../features/design/home_page.dart';
 import '../../features/recharge_center_locator.dart';
-import '../../widgets/bottom_bar.dart';
+import '../../widgets/new_bottom_bar.dart';
 import '../settings/setting_screen.dart';
 
 final navItems = [
   BottomNavItem(
-    imagePath: 'assets/house-blank.svg',
+    imagePath: 'assets/home_new.svg',
     label: 'Home',
     index: 0,
     page: HomePageContent(),
-    // page: const _HomeContent(),
   ),
   BottomNavItem(
     imagePath: 'assets/weather.svg',
@@ -17,7 +16,7 @@ final navItems = [
     index: 1,
     page: HomePageContent(),
   ),
-  BottomNavItem.spacer(),
+
   BottomNavItem(
     imagePath: 'assets/location.svg',
     label: 'Recharge Centers',
@@ -25,8 +24,8 @@ final navItems = [
     page: RechargeMapScreen(),
   ),
   BottomNavItem(
-    imagePath: 'assets/user.svg',
-    label: 'Profile',
+    imagePath: 'assets/setting.svg',
+    label: 'Settings',
     index: 3,
     page: SettingScreen(),
   ),

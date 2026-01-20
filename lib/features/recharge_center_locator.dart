@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../api/auth_controller.dart';
+import '../controller/home_controller.dart';
 import 'recharge_centers.dart';
 import 'widget/city_dropdown.dart';
 import 'widget/recharge_center_bottom_sheet.dart';
@@ -69,14 +72,11 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
 
     _buildMarkersAsync();
 
-    _updateTimer = Timer.periodic(
-      const Duration(minutes: 5),
-          (_) {
-        if (mounted && !_isDisposed) {
-          _buildMarkersAsync();
-        }
-      },
-    );
+    _updateTimer = Timer.periodic(const Duration(minutes: 5), (_) {
+      if (mounted && !_isDisposed) {
+        _buildMarkersAsync();
+      }
+    });
   }
 
   @override
@@ -151,10 +151,10 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
   }
 
   Widget _buildMarkerWidget(
-      RechargeCenter center,
-      bool isOpen,
-      String cacheKey,
-      ) {
+    RechargeCenter center,
+    bool isOpen,
+    String cacheKey,
+  ) {
     try {
       return GestureDetector(
         onTap: () {
@@ -171,7 +171,10 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
             mainAxisSize: MainAxisSize.max,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 1),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 1,
+                ),
                 margin: const EdgeInsets.only(bottom: 1),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
@@ -188,10 +191,9 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .displaySmall
-                          ?.copyWith(fontSize: 9),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.displaySmall?.copyWith(fontSize: 9),
                     ),
                     _statusChip(isOpen),
                   ],
@@ -308,9 +310,11 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
 
         try {
           final t = curve.value;
-          final lat = startCenter.latitude +
+          final lat =
+              startCenter.latitude +
               (target.latitude - startCenter.latitude) * t;
-          final lng = startCenter.longitude +
+          final lng =
+              startCenter.longitude +
               (target.longitude - startCenter.longitude) * t;
           final zoom = startZoom + (targetZoom - startZoom) * t;
 
@@ -350,10 +354,7 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
       final currentZoom = _mapController.camera.zoom;
       final targetZoom = (currentZoom + delta).clamp(5.0, 18.0);
 
-      final anim = Tween<double>(
-        begin: currentZoom,
-        end: targetZoom,
-      ).animate(
+      final anim = Tween<double>(begin: currentZoom, end: targetZoom).animate(
         CurvedAnimation(parent: controller, curve: Curves.easeOutCubic),
       );
 
@@ -377,260 +378,306 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
     }
   }
 
+  void _handleBack() {
+    final authController = Get.find<AuthController>();
+    final isLoggedIn = authController.isLogedIn() ?? false;
+
+    if (isLoggedIn) {
+      if (Get.isRegistered<HomeController>()) {
+        Get.find<HomeController>().currentPage.value = 0;
+      }
+    } else {
+      Get.back();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          RepaintBoundary(
-            child: ValueListenableBuilder<double>(
-              valueListenable: _zoomNotifier,
-              builder: (context, zoom, child) {
-                return FlutterMap(
-                  mapController: _mapController,
-                  options: MapOptions(
-                    backgroundColor: Theme.of(context).colorScheme.surface,
-                    initialCenter: _pakistanCenter,
-                    initialZoom: _pakistanZoom,
-                    minZoom: 5.0,
-                    maxZoom: 18.0,
-                    interactionOptions: const InteractionOptions(
-                      flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
-                      enableMultiFingerGestureRace: true,
-                    ),
-                    onPositionChanged: (pos, hasGesture) {
-                      if (!hasGesture || _isAnimating || _isDisposed || !mounted) {
-                        return;
-                      }
+      body: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (bool didPop, Object? result) {
+          if (!didPop) {
+            _handleBack();
+          }
+        },
+        child: Stack(
+          children: [
+            RepaintBoundary(
+              child: ValueListenableBuilder<double>(
+                valueListenable: _zoomNotifier,
+                builder: (context, zoom, child) {
+                  return FlutterMap(
+                    mapController: _mapController,
+                    options: MapOptions(
+                      backgroundColor: Theme.of(context).colorScheme.surface,
+                      initialCenter: _pakistanCenter,
+                      initialZoom: _pakistanZoom,
+                      minZoom: 5.0,
+                      maxZoom: 18.0,
+                      interactionOptions: const InteractionOptions(
+                        flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                        enableMultiFingerGestureRace: true,
+                      ),
+                      onPositionChanged: (pos, hasGesture) {
+                        if (!hasGesture ||
+                            _isAnimating ||
+                            _isDisposed ||
+                            !mounted) {
+                          return;
+                        }
 
-                      try {
-                        _markerRebuildTimer?.cancel();
-                        _markerRebuildTimer = Timer(
-                          const Duration(milliseconds: 50),
-                              () {
-                            if (mounted && !_isDisposed) {
-                              final center = pos.center;
-                              final posZoom = pos.zoom;
-                              _centerNotifier.value = center;
-                              _zoomNotifier.value = posZoom;
-                                                          }
-                          },
-                        );
-                      } catch (e) {
-                        debugPrint('Error in onPositionChanged: $e');
-                      }
-                    },
-                  ),
-                  children: [
-                    TileLayer(
-                      urlTemplate: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-                      subdomains: const ['a', 'b', 'c', 'd'],
-                      userAgentPackageName: 'com.playdev.mtagapp',
-                      maxNativeZoom: 18,
-                      maxZoom: 18,
-                      keepBuffer: 2,
-                      errorTileCallback: (tile, error, stackTrace) {
-                        debugPrint('Tile load error: $error');
+                        try {
+                          _markerRebuildTimer?.cancel();
+                          _markerRebuildTimer = Timer(
+                            const Duration(milliseconds: 50),
+                            () {
+                              if (mounted && !_isDisposed) {
+                                final center = pos.center;
+                                final posZoom = pos.zoom;
+                                _centerNotifier.value = center;
+                                _zoomNotifier.value = posZoom;
+                              }
+                            },
+                          );
+                        } catch (e) {
+                          debugPrint('Error in onPositionChanged: $e');
+                        }
                       },
                     ),
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+                        subdomains: const ['a', 'b', 'c', 'd'],
+                        userAgentPackageName: 'com.playdev.mtagapp',
+                        maxNativeZoom: 18,
+                        maxZoom: 18,
+                        keepBuffer: 2,
 
-                    if (_isInitialized && _markers.isNotEmpty)
-                      ValueListenableBuilder<int>(
-                        valueListenable: _markerVersion,
-                        builder: (_, version, _) {
-                          try {
-                            return MarkerClusterLayerWidget(
-                              options: MarkerClusterLayerOptions(
-                                maxClusterRadius: 80,
-                                size: const Size(50, 50),
-                                alignment: Alignment.center,
-                                padding: const EdgeInsets.all(40),
-                                markers: _markers,
-                                polygonOptions: const PolygonOptions(
-                                  borderColor: Colors.transparent,
-                                  color: Colors.transparent,
-                                  borderStrokeWidth: 0,
-                                ),
-                                builder: (context, markers) {
-                                  try {
-                                    final count = markers.length;
-                                    final size = count > 100
-                                        ? 60.0
-                                        : count > 50
-                                        ? 55.0
-                                        : 50.0;
+                        errorTileCallback: (_, _, _) {},
+                      ),
 
-                                    return AnimatedContainer(
-                                      duration:
-                                      const Duration(milliseconds: 200),
-                                      width: size,
-                                      height: size,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        gradient: LinearGradient(
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                          colors: [
-                                            Colors.blue.shade500,
-                                            Colors.blue.shade700,
-                                          ],
+                      if (_isInitialized && _markers.isNotEmpty)
+                        ValueListenableBuilder<int>(
+                          valueListenable: _markerVersion,
+                          builder: (_, version, _) {
+                            try {
+                              return MarkerClusterLayerWidget(
+                                options: MarkerClusterLayerOptions(
+                                  maxClusterRadius: 80,
+                                  size: const Size(50, 50),
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.all(40),
+                                  markers: _markers,
+                                  polygonOptions: const PolygonOptions(
+                                    borderColor: Colors.transparent,
+                                    color: Colors.transparent,
+                                    borderStrokeWidth: 0,
+                                  ),
+                                  builder: (context, markers) {
+                                    try {
+                                      final count = markers.length;
+                                      final size = count > 100
+                                          ? 60.0
+                                          : count > 50
+                                          ? 55.0
+                                          : 50.0;
+
+                                      return AnimatedContainer(
+                                        duration: const Duration(
+                                          milliseconds: 200,
                                         ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.blue.withValues(
-                                              alpha: 0.4,
-                                            ),
-                                            blurRadius: 12,
-                                            spreadRadius: 2,
-                                            offset: const Offset(0, 4),
-                                          ),
-                                        ],
-                                        border: Border.all(
-                                          color: Colors.white,
-                                          width: 3,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          count > 999 ? '999+' : '$count',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: count > 99 ? 14 : 16,
-                                            fontWeight: FontWeight.bold,
-                                            shadows: const [
-                                              Shadow(
-                                                color: Colors.black26,
-                                                offset: Offset(0, 1),
-                                                blurRadius: 2,
-                                              ),
+                                        width: size,
+                                        height: size,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [
+                                              Colors.blue.shade500,
+                                              Colors.blue.shade700,
                                             ],
                                           ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.blue.withValues(
+                                                alpha: 0.4,
+                                              ),
+                                              blurRadius: 12,
+                                              spreadRadius: 2,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ],
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            width: 3,
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  } catch (e) {
-                                    debugPrint('Error building cluster: $e');
-                                    return Container(
-                                      width: 50,
-                                      height: 50,
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.blue,
-                                      ),
-                                      child: const Center(
-                                        child: Icon(
-                                          Icons.location_on,
-                                          color: Colors.white,
-                                          size: 24,
+                                        child: Center(
+                                          child: Text(
+                                            count > 999 ? '999+' : '$count',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: count > 99 ? 14 : 16,
+                                              fontWeight: FontWeight.bold,
+                                              shadows: const [
+                                                Shadow(
+                                                  color: Colors.black26,
+                                                  offset: Offset(0, 1),
+                                                  blurRadius: 2,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                spiderfyCircleRadius: 80,
-                                spiderfySpiralDistanceMultiplier: 3,
-                                circleSpiralSwitchover: 12,
-                                showPolygon: false,
-                                disableClusteringAtZoom: 16,
-                                zoomToBoundsOnClick: true,
-                                centerMarkerOnClick: true,
-                                rotate: true,
-                              ),
-                            );
-                          } catch (e) {
-                            debugPrint('Error creating cluster layer: $e');
-                            return const SizedBox.shrink();
-                          }
-                        },
+                                      );
+                                    } catch (e) {
+                                      debugPrint('Error building cluster: $e');
+                                      return Container(
+                                        width: 50,
+                                        height: 50,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.blue,
+                                        ),
+                                        child: const Center(
+                                          child: Icon(
+                                            Icons.location_on,
+                                            color: Colors.white,
+                                            size: 24,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  spiderfyCircleRadius: 80,
+                                  spiderfySpiralDistanceMultiplier: 3,
+                                  circleSpiralSwitchover: 12,
+                                  showPolygon: false,
+                                  disableClusteringAtZoom: 16,
+                                  zoomToBoundsOnClick: true,
+                                  centerMarkerOnClick: true,
+                                  rotate: true,
+                                ),
+                              );
+                            } catch (e) {
+                              debugPrint('Error creating cluster layer: $e');
+                              return const SizedBox.shrink();
+                            }
+                          },
+                        ),
+                    ],
+                  );
+                },
+              ),
+            ),
+
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 16,
+              left: 16,
+              right: 16,
+              child: SlideTransition(
+                position:
+                    Tween<Offset>(
+                      begin: const Offset(0, -1),
+                      end: Offset.zero,
+                    ).animate(
+                      CurvedAnimation(
+                        parent: _headerController,
+                        curve: Curves.easeOutCubic,
                       ),
-                  ],
-                );
-              },
-            ),
-          ),
-
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 16,
-            left: 16,
-            right: 16,
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(0, -1),
-                end: Offset.zero,
-              ).animate(
-                CurvedAnimation(
-                  parent: _headerController,
-                  curve: Curves.easeOutCubic,
-                ),
-              ),
-              child: FadeTransition(
-                opacity: _headerController,
-                child: CityDropdown(
-                  cities: RechargeCenter.cities.keys.toList(),
-                  onCitySelected: _onCityChanged,
-                  placeholder: "Select City",
-                ),
-              ),
-            ),
-          ),
-
-          Positioned(
-            right: 16,
-            bottom: 100,
-            child: ScaleTransition(
-              scale: CurvedAnimation(
-                parent: _fabController,
-                curve: Curves.easeOutBack,
-              ),
-              child: ZoomControl(
-                onPlus: () => _animateZoom(1),
-                onMinus: () => _animateZoom(-1),
-              ),
-            ),
-          ),
-
-          Positioned(
-            bottom: 16,
-            left: 16,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface.withAlpha(230),
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .outline
-                      .withAlpha(50),
-                ),
-              ),
-              child: Text(
-                '© OpenStreetMap © CARTO',
-                style: TextStyle(
-                  fontSize: 9,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withAlpha(155),
-                ),
-              ),
-            ),
-          ),
-
-          if (!_isInitialized)
-            Positioned.fill(
-              child: Container(
-                color: Theme.of(context).colorScheme.surface,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(context).colorScheme.primary,
                     ),
+                child: FadeTransition(
+                  opacity: _headerController,
+                  child: Row(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: _handleBack,
+                        ),
+                      ),
+                      Expanded(
+                        child: CityDropdown(
+                          cities: RechargeCenter.cities.keys.toList(),
+                          onCitySelected: _onCityChanged,
+                          placeholder: "Select City",
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-        ],
+
+            Positioned(
+              right: 16,
+              bottom: 100,
+              child: ScaleTransition(
+                scale: CurvedAnimation(
+                  parent: _fabController,
+                  curve: Curves.easeOutBack,
+                ),
+                child: ZoomControl(
+                  onPlus: () => _animateZoom(1),
+                  onMinus: () => _animateZoom(-1),
+                ),
+              ),
+            ),
+
+            Positioned(
+              bottom: 16,
+              left: 16,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface.withAlpha(230),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.outline.withAlpha(50),
+                  ),
+                ),
+                child: Text(
+                  '© OpenStreetMap © CARTO',
+                  style: TextStyle(
+                    fontSize: 9,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withAlpha(155),
+                  ),
+                ),
+              ),
+            ),
+
+            if (!_isInitialized)
+              Positioned.fill(
+                child: Container(
+                  color: Theme.of(context).colorScheme.surface,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

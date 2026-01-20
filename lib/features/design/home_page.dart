@@ -8,8 +8,8 @@ import '../../controller/home_controller.dart';
 import '../../pages/dashboard/nav_item.dart';
 import '../../pages/dashboard/model/dashboard_model.dart';
 import '../../theme/app_theme.dart';
-import '../../widgets/bottom_bar.dart';
 import '../../widgets/elevated_button.dart';
+import '../../widgets/new_bottom_bar.dart';
 import '../../widgets/shimmer_dashboard.dart';
 import '../../constants/call_helper.dart';
 import '../../pages/dashboard/model/mtag_model.dart';
@@ -27,7 +27,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetX(
+    return GetX<HomeController>(
       init: Get.find<HomeController>(),
       builder: (controller) {
         final currentPage =
@@ -38,21 +38,19 @@ class HomePage extends StatelessWidget {
                 )
                 .page ??
             const SizedBox.shrink();
-        return Scaffold(
-          floatingActionButtonLocation: .miniCenterDocked,
-          floatingActionButton: GestureDetector(
-            onTap: () async {
-              CallWhatsappUtil.openWhatsAppChat();
-            },
-            child: Image.asset('assets/whatsapp.png', height: 50, width: 50),
-          ),
-          bottomNavigationBar: CustomBottomNavBar(
-            height: 60,
-            controller: controller,
-            items: navItems,
-          ),
 
+        return Scaffold(
           body: currentPage,
+
+          bottomNavigationBar: SafeArea(
+            child: NewBottomBar(
+              controller: controller,
+              items: navItems,
+              onCenterTap: () {
+                CallWhatsappUtil.openWhatsAppChat();
+              },
+            ),
+          ),
         );
       },
     );
@@ -64,6 +62,7 @@ class HomePageContent extends StatelessWidget {
   final ValueNotifier<int> _currentPage = ValueNotifier<int>(0);
 
   HomePageContent({super.key});
+
   @override
   Widget build(BuildContext context) {
     log('height:${MediaQuery.sizeOf(context).height}');
@@ -110,7 +109,8 @@ class HomePageContent extends StatelessWidget {
                 Get.isDarkMode ? 'assets/darklogo.png' : 'assets/logolight.png',
                 height: 60,
                 width: 70,
-              ),),
+              ),
+            ),
             // ),
             Expanded(
               flex: 1,
@@ -119,7 +119,7 @@ class HomePageContent extends StatelessWidget {
                 clipBehavior: .antiAlias,
                 slivers: [
                   SliverAppBar(
-                    toolbarHeight:60,
+                    toolbarHeight: 0,
                     foregroundColor: Colors.transparent,
                     forceMaterialTransparency: false,
                     clipBehavior: .none,
@@ -228,6 +228,7 @@ class HomePageContent extends StatelessWidget {
 
 class VehicleCard extends StatelessWidget {
   final ActiveMtags mtags;
+
   const VehicleCard({super.key, required this.mtags});
 
   @override
@@ -261,6 +262,7 @@ class VehicleCard extends StatelessWidget {
 class _MtagDataWidget extends StatelessWidget {
   final double width;
   final ActiveMtags mtag;
+
   const _MtagDataWidget({super.key, this.width = 0, required this.mtag});
 
   @override
@@ -433,6 +435,7 @@ class _MtagDataWidget extends StatelessWidget {
 
 class _ActiveBadge extends StatelessWidget {
   final double isActive;
+
   const _ActiveBadge(this.isActive);
 
   @override
@@ -482,9 +485,11 @@ class _ActiveBadge extends StatelessWidget {
 
 class BalanceCard extends StatelessWidget {
   BalanceCard({super.key, this.mtag, this.balance});
+
   final ActiveMtags? mtag;
   final double? balance;
   final ValueNotifier<bool> balanceVisibleNotifier = ValueNotifier(true);
+
   @override
   Widget build(BuildContext context) {
     final balance = double.tryParse('${mtag?.balance}');
@@ -621,6 +626,7 @@ class BalanceCard extends StatelessWidget {
 
 class _RechargeButton extends StatelessWidget {
   final ActiveMtags activeMtags;
+
   const _RechargeButton(this.activeMtags);
 
   @override
@@ -655,22 +661,34 @@ class _RechargeButton extends StatelessWidget {
 
 class _TransferRemoveRow extends StatelessWidget {
   final ActiveMtags mtag;
+
   const _TransferRemoveRow(this.mtag);
 
   @override
   Widget build(BuildContext context) {
-    final allCars = Get.find<HomeController>().dashboradData.value.activeMtags!
-        .where((car) => car.registration != mtag.registration)
+    final homeController = Get.find<HomeController>();
+
+    final activeMtags =
+        homeController.dashboradData.value.activeMtags ?? const [];
+
+    final bool hasMultipleCars = activeMtags.length > 1;
+
+    final List<Map<String, dynamic>> allCars = activeMtags
+        .where(
+          (car) =>
+              car.registration != null && car.registration != mtag.registration,
+        )
         .map(
           (car) => {
-            "carNumber": car.registration,
-            "balance": double.tryParse(car.balance ?? '0.0') ?? 0.0,
-            "mtagID": car.tokenno,
+            "carNumber": car.registration ?? '',
+            "balance": double.tryParse(car.balance ?? '') ?? 0.0,
+            "mtagID": car.tokenno ?? '',
           },
         )
         .toList();
+
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
       decoration: BoxDecoration(
         color: ColorScheme.of(
           context,
@@ -678,36 +696,38 @@ class _TransferRemoveRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(50),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Expanded(
-            child: _ActionButton(
-              icon: Icons.swap_horiz_rounded,
-              label: 'Transfer',
-              onTap: () {
-                _showBalanceTransferSheet(context, mtag, allCars);
-              }, //
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              '|',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w100,
-                color: Colors.grey.shade300,
+          if (hasMultipleCars) ...[
+            Expanded(
+              child: _ActionButton(
+                imagePath: "assets/transfer_balance.png",
+                label: 'Balance Transfer',
+                isDestructive: false,
+                onTap: () {
+                  if (allCars.isEmpty) return;
+                  _showBalanceTransferSheet(context, mtag, allCars);
+                },
               ),
             ),
-          ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: Text(
+                '|',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w100,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+          ],
+
           Expanded(
             child: _ActionButton(
-              icon: Icons.delete,
+              icon: Icons.delete_outlined,
               label: 'Remove',
-              isDestructive: true,
-              onTap: () {
-                _showDeleteDialog(mtag);
-              },
+              isDestructive: false,
+              onTap: () => _showDeleteDialog(mtag),
             ),
           ),
         ],
@@ -720,17 +740,19 @@ class _TransferRemoveRow extends StatelessWidget {
     ActiveMtags mtag,
     List<Map<String, dynamic>> allCars,
   ) {
+    if (!context.mounted) return;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) {
         return BalanceTransferSheet(
-          carRegistration: mtag.registration,
-          balance: mtag.balance,
+          carRegistration: mtag.registration ?? '',
+          balance: mtag.balance ?? '0',
           cnicNumber: OtherConsts().ownerCNIC.value,
-          mobileNumber: mtag.mobilenum,
-          mtagid: mtag.tokenno,
+          mobileNumber: mtag.mobilenum ?? '',
+          mtagid: mtag.tokenno ?? '',
           dropDownCars: allCars,
         );
       },
@@ -738,13 +760,20 @@ class _TransferRemoveRow extends StatelessWidget {
   }
 
   void _showDeleteDialog(ActiveMtags mtag) {
+    if (mtag.tokenno == null || mtag.tokenno!.isEmpty) return;
+
     Get.dialog(
       DeLinkVehicleDialog(
         regId: mtag.registration ?? '',
-        onCancel: Get.back,
+        onCancel: () {
+          if (Get.isDialogOpen ?? false) Get.back();
+        },
         onConfirm: () {
-          Get.back();
-          Get.find<DelinkController>().deLinkVehicle(
+          if (Get.isDialogOpen ?? false) Get.back();
+
+          final controller = Get.find<DelinkController>();
+
+          controller.deLinkVehicle(
             mtagID: mtag.tokenno ?? '',
             rDesc: "0--Vehicle has been sold out.",
             rID: "1",
@@ -756,13 +785,15 @@ class _TransferRemoveRow extends StatelessWidget {
 }
 
 class _ActionButton extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
+  final String? imagePath;
   final String label;
   final VoidCallback? onTap;
   final bool isDestructive;
 
   const _ActionButton({
-    required this.icon,
+    this.icon,
+    this.imagePath,
     required this.label,
     this.onTap,
     this.isDestructive = false,
@@ -770,20 +801,42 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textStyle = TextTheme.of(context).displayMedium?.copyWith(
+      fontSize: 9.4,
+      fontWeight: FontWeight.bold,
+      color: isDestructive ? Colors.red : null,
+    );
+
+    Widget? leadingWidget;
+    if (imagePath != null && imagePath!.isNotEmpty) {
+      leadingWidget = Image.asset(
+        imagePath!,
+        width: 25,
+        height: 25,
+        fit: BoxFit.contain,
+        color: Get.isDarkMode ? Colors.white : null,
+      );
+    } else if (icon != null) {
+      leadingWidget = Icon(
+        icon,
+        size: 20,
+        color: isDestructive ? Colors.red : null,
+      );
+    }
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(50),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+        padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 6),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 20),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: TextTheme.of(context).bodyMedium?.copyWith(fontSize: 13),
-            ),
+            if (leadingWidget != null) ...[
+              leadingWidget,
+              const SizedBox(width: 8),
+            ],
+            Text(label, style: textStyle),
           ],
         ),
       ),
@@ -793,6 +846,7 @@ class _ActionButton extends StatelessWidget {
 
 class ActionGrid extends StatelessWidget {
   const ActionGrid({super.key, required this.controller});
+
   final HomeController controller;
 
   @override
@@ -826,6 +880,7 @@ class _ActionTile extends StatelessWidget {
   final MtagModel item;
   final bool? isCalculatorWidget;
   final HomeController controller;
+
   const _ActionTile({
     required this.item,
     this.isCalculatorWidget = false,
@@ -902,4 +957,3 @@ class _ActionTile extends StatelessWidget {
     rechargeController.isRechageVisible(true);
   }
 }
-

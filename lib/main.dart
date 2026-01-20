@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -29,9 +31,8 @@ void main() async {
     name: 'mtagFlutter',
   );
 
-  //uncomment when go to production
-  // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-//  setupErrorHandling();
+  setupErrorHandling();
+
   final sharedPreferences = await SharedPreferences.getInstance();
 
   SystemChrome.setSystemUIOverlayStyle(
@@ -94,7 +95,6 @@ class _MTagAppState extends State<MTagApp> {
           child: ConnectionBanner(child: child ?? const SizedBox()),
         );
       },
-      // ✅ pass sharedPreferences into Binding
       initialBinding: Binding(widget.sharedPreferences),
       getPages: getPages,
       theme: (AppData.theme == null || AppData.theme == false)
@@ -113,44 +113,43 @@ class _MTagAppState extends State<MTagApp> {
                 upgraderOS: UpgraderOS(),
                 languageCode: "en",
                 countryCode: "PK",
-                durationUntilAlertAgain: Duration(seconds: 1),
+                durationUntilAlertAgain: const Duration(days: 1),
                 messages: CustomUpgraderMessages()..languageCode,
-                debugLogging: true,
+                debugLogging: kDebugMode,
                 willDisplayUpgrade:
                     ({
                       required bool display,
                       String? installedVersion,
                       UpgraderVersionInfo? versionInfo,
                     }) {
-                      debugPrint('🟢 Upgrade check:');
-                      debugPrint('Installed version: $installedVersion');
-                      debugPrint(
-                        'App Store version: ${versionInfo?.appStoreVersion}',
-                      );
-                      debugPrint('Display = $display');
+                      if (kDebugMode) {
+                        debugPrint('🟢 Upgrade check:');
+                        debugPrint('Installed version: $installedVersion');
+                        debugPrint(
+                          'App Store version: ${versionInfo?.appStoreVersion}',
+                        );
+                        debugPrint('Display = $display');
+                      }
 
                       if (installedVersion != null &&
                           versionInfo?.appStoreVersion != null) {
                         final installed = Version.parse(installedVersion);
-                        final store = versionInfo!
-                            .appStoreVersion!; // already a Version object
+                        final store = versionInfo!.appStoreVersion!;
 
                         if (store > installed) {
-                          debugPrint('⬆️ Update available!');
-                          Upgrader.clearSavedSettings(); // optional: force showing
+                          if (kDebugMode) debugPrint('⬆️ Update available!');
+                          Upgrader.clearSavedSettings();
                         } else {
-                          debugPrint('✅ App is up-to-date.');
+                          if (kDebugMode) debugPrint('✅ App is up-to-date.');
                         }
                       }
                     },
               ),
-
               dialogStyle: UpgradeDialogStyle.cupertino,
               cupertinoButtonTextStyle: const TextStyle(fontFamily: 'Poppins'),
               barrierDismissible: false,
               showIgnore: false,
               showLater: false,
-
               showReleaseNotes: true,
               child: AppData.getPinData() != null ? PinEntryPage() : AuthPage(),
             )
@@ -194,19 +193,46 @@ class CustomUpgraderMessages extends UpgraderMessages {
 
 void setupErrorHandling() {
   FlutterError.onError = (FlutterErrorDetails details) {
-
-    if (_isUrlLauncherError(details.exception)) {
-      debugPrint('URL Launcher error ignored: ${details.exception}');
+    if (_shouldIgnoreError(details.exception)) {
+      if (kDebugMode) {
+        debugPrint('🚫 Ignored error: ${details.exception}');
+      }
       return;
     }
+
+    if (kDebugMode) {
+      debugPrint('🐛 Debug mode - Error: ${details.exception}');
+      debugPrint('Stack trace: ${details.stack}');
+      return;
+    }
+
+    debugPrint('📊 Production - Logging to Crashlytics: ${details.exception}');
     FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+  };
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    if (_shouldIgnoreError(error)) {
+      if (kDebugMode) {
+        debugPrint('🚫 Ignored async error: $error');
+      }
+      return true;
+    }
+
+    if (kDebugMode) {
+      debugPrint('🐛 Debug mode - Async error: $error');
+      debugPrint('Stack trace: $stack');
+      return true;
+    }
+
+    debugPrint('📊 Production - Logging async error to Crashlytics: $error');
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
   };
 }
 
-bool _isUrlLauncherError(dynamic exception) {
+bool _shouldIgnoreError(dynamic exception) {
   final errorString = exception.toString();
 
-  // Common URL launcher/map errors to ignore
   final ignoredPatterns = [
     'Could not launch',
     'No application found',
@@ -217,7 +243,21 @@ bool _isUrlLauncherError(dynamic exception) {
     'Maps app not available',
     'No map application',
     'ERR_UNKNOWN_URL_SCHEME',
+
+    'basemaps.cartocdn.com',
+    'a.basemaps.cartocdn.com',
+    'b.basemaps.cartocdn.com',
+    'c.basemaps.cartocdn.com',
   ];
 
-  return ignoredPatterns.any((pattern) => errorString.contains(pattern));
+  final shouldIgnore = ignoredPatterns.any(
+    (pattern) => errorString.toLowerCase().contains(pattern.toLowerCase()),
+  );
+
+  if (errorString.contains('Failed host lookup') &&
+      errorString.contains('basemaps.cartocdn.com')) {
+    return true;
+  }
+
+  return shouldIgnore;
 }
