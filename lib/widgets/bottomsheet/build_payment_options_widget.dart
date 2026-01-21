@@ -73,7 +73,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                 var data = await Get.find<PaymentCardController>().generatePSID(
                   mtagID: mtagId,
                   amount: blackListRecharge
-                      ? recoveryAmount! + calculateCharges(recoveryAmount)
+                      ? recoveryAmount??0.0 + calculateCharges(recoveryAmount)
                       : double.parse(amount.text),
                   cnic: OtherConsts().ownerCNIC.value,
                   mobileNum: OtherConsts().mobile.value,

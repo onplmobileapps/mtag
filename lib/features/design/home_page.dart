@@ -294,7 +294,7 @@ class _MtagDataWidget extends StatelessWidget {
                   children: [
                     Padding(
                       padding: .only(right: 8, top: 8),
-                      child: _ActiveBadge(mtag.isactive),
+                      child: ActiveBadge(mtag.isactive),
                     ),
                   ],
                 ),
@@ -433,10 +433,10 @@ class _MtagDataWidget extends StatelessWidget {
   }
 }
 
-class _ActiveBadge extends StatelessWidget {
+class ActiveBadge extends StatelessWidget {
   final double isActive;
 
-  const _ActiveBadge(this.isActive);
+  const ActiveBadge(this.isActive, {super.key});
 
   @override
   Widget build(BuildContext context) {

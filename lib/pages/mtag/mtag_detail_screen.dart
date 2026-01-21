@@ -7,7 +7,6 @@ import 'package:mtag_flutterapp/theme/app_theme.dart';
 import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
 import '../../pages/tollhistory/toll_history_screen.dart';
 
-
 import '../../widgets/dashboard_widget.dart';
 import '/pages/recharge/controller/recharge_controller.dart';
 import '../../pages/tollhistory/controller/tollcontroller.dart';
@@ -23,26 +22,28 @@ class MatagDetailScreen extends GetView<TollController> {
       : [ActiveMtags()];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: GradientAppBar(title: const Text('Vehicle Details')),
+    return Scaffold(
+      appBar: GradientAppBar(title: const Text('Vehicle Details')),
 
       body: Container(
         constraints: const BoxConstraints.expand(),
         decoration: BoxDecoration(color: Theme.of(context).primaryColor),
         child: Container(
           decoration: BoxDecoration(
-           
             color: Theme.of(context).scaffoldBackgroundColor,
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 27, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.only(top: 8,left: 16,right: 16,bottom: 5),
                   decoration: BoxDecoration(
-                   gradient: Theme.of(context).extension<AppGradients>()!.background,
+                    gradient: Theme.of(
+                      context,
+                    ).extension<AppGradients>()!.background,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
@@ -52,112 +53,135 @@ class MatagDetailScreen extends GetView<TollController> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Available Balance',
-                            style: Theme.of(context).textTheme.bodyMedium,
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Image.asset(
+                              getVehicleImage(
+                                arguments.first.vehicletype ?? '',
+                              ),
+
+                              height: 70,
+                              width: 90,
+                            ),
                           ),
-                          Text(
-                            'PKR ${arguments.isNotEmpty ? arguments.first.balance ?? '00.00' : '00.00'}',
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  color: Colors.green,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+
+                          Column(
+                            mainAxisAlignment: .start,
+                            crossAxisAlignment: .start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: .spaceBetween,
+                                children: [
+                                  Text(
+                                    'Available Balance     ',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium,
+                                  ),
+                                  Text(
+                                    'PKR ${arguments.isNotEmpty ? arguments.first.balance ?? '00.00' : '00.00'}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: Colors.green,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                                ],
+                              ),
+
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.topLeft,
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text:
+                                            arguments.first.registration ?? '',
+                                        style: TextTheme.of(
+                                          context,
+                                        ).bodyMedium?.copyWith(fontSize: 13),
+                                      ),
+
+                                      TextSpan(
+                                        text: ' • M-TAG ', // rest of text
+                                        style: TextStyle(
+                                          fontFamily: 'biotifbold',
+                                          color: Colors.grey, // black color
+                                          fontWeight: FontWeight.w900,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text:
+                                            ' #${arguments.first.tokenno ?? ''}',
+                                        style: TextTheme.of(
+                                          context,
+                                        ).bodyMedium?.copyWith(fontSize: 13),
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                              ),
+                              FittedBox(
+                                child: Row(
+                                  mainAxisAlignment: .start,
+                                  crossAxisAlignment: .start,
+                                  children: [
+                                    Text(
+                                      'Vehicle Type : ',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                    Text(
+                                      '${arguments.first.vehicletype}',
+                                      style: TextTheme.of(context).bodyMedium,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                      FittedBox(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            DefaultTextStyle(
-                              style: Theme.of(context).textTheme.displaySmall!,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    'M-TAG ${arguments.isNotEmpty ? arguments.first.tokenno ?? '' : ''}',
-                                  ),
-                                  const SizedBox(height: 5),
-                                  SizedBox(
-                                    width: 200,
-                                    child: Text(
-                                      'Owner: ${arguments.isNotEmpty ? arguments.first.ownername ?? '' : ''}',
-                        
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    'Registration # ${arguments.isNotEmpty ? arguments.first.registration ?? '' : ''}',
-                                  ),
-                                  const SizedBox(height: 5),
-                                ],
-                              ),
-                            ),
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Image.asset(
-                                    getVehicleImage(
-                                      arguments.first.vehicletype ?? '',
-                                    ),
-                                   
-                                    height: 30,
-                                    width: 30,
-                                  ),
-                                ),
-                                const SizedBox(height: 5),
-                                FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Text(
-                                    'Vehicle: ${arguments.isNotEmpty ? arguments.first.vehicletype ?? '' : ''}',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.displaySmall,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                      ElevatedButton1(height: 35,
+                        backgroundColor: Theme.of(context).primaryColor,
+                        width: double.infinity,
+                        onclick: () async {
+                          if (arguments.isNotEmpty &&
+                              arguments.first.tokenno != null) {
+                            Get.find<RechargeController>()
+                                .isPaymentModdeVisible(false);
+                            Get.find<RechargeController>().isSummaryVisible(
+                              false,
+                            );
+                            Get.find<RechargeController>().isRechageVisible(
+                              true,
+                            );
+                            await Get.toNamed(
+                              '/recharge',
+                              arguments: arguments,
+                            );
+                          } else {
+                            log(
+                              'Error: Invalid arguments or missing token number',
+                            );
+                            // Optionally show an error message to the user
+                          }
+                        },
+                        text: 'Recharge M-TAG',
+                         icon: Icon(Icons.add_circle),
+      isShowIcon: true,
+      iconAlignment: .start,
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+
                 // Recharge button
-                ElevatedButton1(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  width: double.infinity,
-                  onclick: () async {
-                    if (arguments.isNotEmpty &&
-                        arguments.first.tokenno != null) {
-                      Get.find<RechargeController>().isPaymentModdeVisible(
-                        false,
-                      );
-                      Get.find<RechargeController>().isSummaryVisible(false);
-                      Get.find<RechargeController>().isRechageVisible(true);
-                      await Get.toNamed('/recharge', arguments: arguments);
-                    } else {
-                      log('Error: Invalid arguments or missing token number');
-                      // Optionally show an error message to the user
-                    }
-                  },
-                  text: 'Recharge',
-                ),
                 const SizedBox(height: 15),
-                const Text('Recharge History'),
+                 Text('Recharge History',style: TextTheme.of(context).labelLarge,),
                 Expanded(
                   child: FutureBuilder(
                     future: controller.geTollHistory(
