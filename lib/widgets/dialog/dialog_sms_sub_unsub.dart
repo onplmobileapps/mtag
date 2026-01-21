@@ -40,15 +40,15 @@ class SubUnsubDialog extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Center(
-              child: Image.asset(
-                'assets/branding-development.png',
-                width: 80.0,
-                height: 60.0,
-              ),
-            ),
-            const Divider(thickness: 0.3, color: Colors.black),
-            const SizedBox(height: 10.0),
+            // Center(
+            //   child: Image.asset(
+            //     'assets/branding-development.png',
+            //     width: 80.0,
+            //     height: 60.0,
+            //   ),
+            // ),
+            // const Divider(thickness: 0.3, color: Colors.black),
+            // const SizedBox(height: 10.0),
             SizedBox(
               width: double.infinity,
               child: Column(
@@ -73,12 +73,12 @@ class SubUnsubDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Expanded(
-                  child: ElevatedButton1(
-                    backgroundColor: primarSwatch,
-                    onclick: () {
+                  child: OutlinedButton(
+             
+                    onPressed: () {
                       Get.back();
                     },
-                    text: 'Cancel',
+                    child:Text( 'Cancel'),
                   ),
                 ),
                 const SizedBox(width: 5.0),

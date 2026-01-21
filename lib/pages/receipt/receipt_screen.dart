@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
 import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
 import '../../pages/receipt/controller/receipt_generate_controller.dart';
 import 'package:pdf/pdf.dart';
@@ -284,90 +285,77 @@ class ReceiptScreen extends StatelessWidget {
                   icon: const Icon(Icons.share))
             ],
           ),
-          body: Container(
+          body: Container(alignment: .center,
             constraints: const BoxConstraints.expand(),
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+            decoration: BoxDecoration(color: ColorScheme.of(context).surface),
             child: Screenshot(
               controller: _screenshotController,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  // borderRadius: const BorderRadiusDirectional.only(
-                  //   topEnd: Radius.circular(15),
-                  //   topStart: Radius.circular(15),
-                  // ),
+                  color: ColorScheme.of(context).surface
                 ),
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 15.0),
-                      Image.asset(
-                        'assets/mtagbrand.png',
-                        height: 50.0,
-                      ),
-                      const SizedBox(height: 15.0),
-                      Stack(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0),
-                            padding: const EdgeInsets.all(20.0),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).focusColor,
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const SizedBox(height: 40.0),
-                                Align(
-                                  child: Text(
-                                    'PKR ${data?.amount ?? data?.fare ?? ''}/-',
-                                    style: TextStyle(
-                                        fontSize: 25.0, color: Theme.of(context).primaryColor, fontFamily: "Poppins"),
+                     
+                  
+
+                      Center(
+                        child: Column(
+                          children: [
+                           
+                            Container(
+                              margin: const EdgeInsets.only(top: 0.0, left: 20.0, right: 20.0),
+                              padding: const EdgeInsets.all(20.0),
+                              decoration: BoxDecoration(
+                              gradient: Theme.of(context).extension<AppGradients>()!.background,
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Transform.translate(offset: Offset(1,-68),
+                               child: CircleAvatar(
+                                 backgroundColor: istravel ? Colors.redAccent : Colors.green,
+                                 radius: 30,
+                                 child: const Icon(
+                                   Icons.done_sharp,
+                                   size: 30,
+                                   color: Colors.white,
+                                 ),
+                               ),
+                             ),
+                                 
+                                  Align(
+                                    child: Text(
+                                      'PKR ${data?.amount ?? data?.fare ?? ''}/-',
+                                      style: TextStyle(
+                                          fontSize: 25.0, color: Theme.of(context).primaryColor, fontFamily: "Poppins"),
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  data?.registration ?? '',
-                                  style: Theme.of(context).textTheme.titleSmall,
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(data?.mTagID ?? '',
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black)),
-                                const SizedBox(height: 10),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Date & Time (PKT)',
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    data?.registration ?? '',
                                     style: Theme.of(context).textTheme.titleSmall,
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    data?.rechargeDate ?? data?.time ?? '',
-                                    style: TextStyle(
-                                        fontSize: 14.0, color: Theme.of(context).primaryColor, fontFamily: "Poppins"),
+                                  const SizedBox(
+                                    height: 5,
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                ...[
+                                  Text(data?.mTagID ?? '',
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black)),
+                                  const SizedBox(height: 10),
                                   Align(
                                     alignment: Alignment.centerLeft,
-                                    child: Text('Booth Name', style: Theme.of(context).textTheme.titleSmall),
+                                    child: Text(
+                                      'Date & Time (PKT)',
+                                      style: Theme.of(context).textTheme.titleSmall,
+                                    ),
                                   ),
                                   const SizedBox(
                                     height: 5,
@@ -375,7 +363,7 @@ class ReceiptScreen extends StatelessWidget {
                                   Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      data?.boothName ?? '',
+                                      data?.rechargeDate ?? data?.time ?? '',
                                       style: TextStyle(
                                           fontSize: 14.0, color: Theme.of(context).primaryColor, fontFamily: "Poppins"),
                                     ),
@@ -383,9 +371,85 @@ class ReceiptScreen extends StatelessWidget {
                                   const SizedBox(
                                     height: 10,
                                   ),
+                                  ...[
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text('Booth Name', style: Theme.of(context).textTheme.titleSmall),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        data?.boothName ?? '',
+                                        style: TextStyle(
+                                            fontSize: 14.0, color: Theme.of(context).primaryColor, fontFamily: "Poppins"),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text('Payment Options', style: Theme.of(context).textTheme.titleSmall),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        data?.paymentOption ?? '',
+                                        style: TextStyle(
+                                            fontSize: 14.0, color: Theme.of(context).primaryColor, fontFamily: "Poppins"),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                  ],
+                                  if (istravel) ...[
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text("Entry Station", style: Theme.of(context).textTheme.titleSmall),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        data?.entryStation ?? '',
+                                        style: TextStyle(
+                                            fontSize: 14.0, color: Theme.of(context).primaryColor, fontFamily: "Poppins"),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text("Exit Station", style: Theme.of(context).textTheme.titleSmall),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        data?.exitStation ?? '',
+                                        style: TextStyle(
+                                            fontSize: 14.0, color: Theme.of(context).primaryColor, fontFamily: "Poppins"),
+                                      ),
+                                    ),
+                                  ],
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
                                   Align(
                                     alignment: Alignment.centerLeft,
-                                    child: Text('Payment Options', style: Theme.of(context).textTheme.titleSmall),
+                                    child: Text('Reference Number', style: Theme.of(context).textTheme.titleSmall),
                                   ),
                                   const SizedBox(
                                     height: 5,
@@ -393,84 +457,18 @@ class ReceiptScreen extends StatelessWidget {
                                   Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      data?.paymentOption ?? '',
+                                      data?.uID ?? '',
                                       style: TextStyle(
                                           fontSize: 14.0, color: Theme.of(context).primaryColor, fontFamily: "Poppins"),
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
                                   ),
                                 ],
-                                if (istravel) ...[
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text("Entry Station", style: Theme.of(context).textTheme.titleSmall),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      data?.entryStation ?? '',
-                                      style: TextStyle(
-                                          fontSize: 14.0, color: Theme.of(context).primaryColor, fontFamily: "Poppins"),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text("Exit Station", style: Theme.of(context).textTheme.titleSmall),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      data?.exitStation ?? '',
-                                      style: TextStyle(
-                                          fontSize: 14.0, color: Theme.of(context).primaryColor, fontFamily: "Poppins"),
-                                    ),
-                                  ),
-                                ],
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text('Reference Number', style: Theme.of(context).textTheme.titleSmall),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    data?.uID ?? '',
-                                    style: TextStyle(
-                                        fontSize: 14.0, color: Theme.of(context).primaryColor, fontFamily: "Poppins"),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Center(
-                            child: CircleAvatar(
-                              backgroundColor: istravel ? Colors.redAccent : Colors.green,
-                              radius: 30,
-                              child: const Icon(
-                                Icons.done_sharp,
-                                size: 30,
-                                color: Colors.white,
                               ),
                             ),
-                          ),
-                          //NOTE: ENTRY STATION & EXIT STATIONS ARE FOR TRAVEL RECEIPT HIDE BOTH TEXTVIEWS IN RECHARGE RECEIPT AND CHECK_GREEN.PNG FOR RECHARGE AND CHECK.PNG FOR TRAVEL RECEIPT.
-                        ],
+                           
+                            //NOTE: ENTRY STATION & EXIT STATIONS ARE FOR TRAVEL RECEIPT HIDE BOTH TEXTVIEWS IN RECHARGE RECEIPT AND CHECK_GREEN.PNG FOR RECHARGE AND CHECK.PNG FOR TRAVEL RECEIPT.
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 10.0),
                       Text(

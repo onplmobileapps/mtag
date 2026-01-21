@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mtag_flutterapp/api/user_repo.dart';
-import 'package:mtag_flutterapp/theme/app_theme.dart';
-import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
+import '../../api/user_repo.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/gradient_appbar.dart';
 import 'package:shimmer/shimmer.dart';
 
 
@@ -184,7 +184,7 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
     return Container(
       margin: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: Theme.of(context).disabledColor,
+      gradient: Theme.of(context).extension<AppGradients>()!.gridWidget,
         borderRadius: BorderRadius.circular(8),
       ),
       child: ListTile(
