@@ -2,16 +2,18 @@ import 'dart:developer';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/features/recharge_center_locator.dart';
+import 'package:mtag_flutterapp/pages/settings/setting_screen.dart';
+import 'package:mtag_flutterapp/widgets/whatsapp_widget.dart';
 import '../../constants/other_consts.dart';
 import '../../controller/home_controller.dart';
-import '../../pages/dashboard/nav_item.dart';
 import '../../pages/dashboard/model/dashboard_model.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/elevated_button.dart';
-import '../../widgets/new_bottom_bar.dart';
+import '../../widgets/notched_border_painter.dart';
 import '../../widgets/shimmer_dashboard.dart';
-import '../../constants/call_helper.dart';
 import '../../pages/dashboard/model/mtag_model.dart';
 import '../../pages/mtag/controller/delink_controller.dart';
 import '../../pages/recharge/controller/recharge_controller.dart';
@@ -23,39 +25,136 @@ import '../widget/help_section.dart';
 import '../widget/slider_section.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
+  HomePage({super.key});
+  final List<Widget> _navigationPages = [
+    HomePageContent(),
+    HomePageContent(),
+    RechargeMapScreen(),
+    SettingScreen(),
+  ];
   @override
   Widget build(BuildContext context) {
     return GetX<HomeController>(
       init: Get.find<HomeController>(),
       builder: (controller) {
-        final currentPage =
-            navItems
-                .firstWhere(
-                  (item) => item.index == controller.currentPage.value,
-                  orElse: () => navItems[0],
-                )
-                .page ??
+       
             const SizedBox.shrink();
-
         return Scaffold(
-          body: currentPage,
-
-          bottomNavigationBar: SafeArea(
-            child: NewBottomBar(
-              controller: controller,
-              items: navItems,
-              onCenterTap: () {
-                CallWhatsappUtil.openWhatsAppChat();
-              },
+          body: _navigationPages[controller.currentPage.value],
+          bottomNavigationBar: CustomPaint(
+            painter: NotchedBorderPainter(
+              borderColor: ColorScheme.of(context).outline,
+              strokeWidth: 1.4,
+              notchMargin: 7,
+              radius: 12,
+            ),
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(18),
+                topRight: Radius.circular(18),
+              ),
+              child: BottomAppBar(
+                height: 50,
+                clipBehavior: Clip.hardEdge,
+                elevation: 0,
+                shadowColor: ColorScheme.of(context).secondaryContainer,
+                notchMargin: 2,
+                color: ColorScheme.of(context).surface,
+                shape: const CircularNotchedRectangle(),
+                child: _BottomNavItems(),
+              ),
             ),
           ),
+          floatingActionButton: Container(
+            decoration: BoxDecoration(shape: BoxShape.circle, border: .all(color:ColorScheme.of(context).outline)),
+            child: WhatsAppButton(),
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
         );
       },
     );
   }
 }
+
+class _BottomNavItems extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.find<HomeController>();
+
+    return Obx(() {
+      final currentIndex = controller.currentPage.value;
+
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: List.generate(4, (index) {
+          return _NavItem(
+            index: index,
+            currentIndex: currentIndex,
+             icon: _navItems[index]['icon']!,
+            label: _navItems[index]['label']!,
+            onTap: () => controller.setCurrentIndex(index),
+          );
+        }),
+      );
+    });
+  }
+}
+
+class _NavItem extends StatelessWidget {
+  final int index;
+  final int currentIndex;
+  final String icon;
+  final VoidCallback onTap;
+  final String label;
+
+  const _NavItem({
+    required this.index,
+    required this.currentIndex,
+    required this.icon,
+    required this.onTap,required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isActive = index == currentIndex;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: FittedBox(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOut,
+          padding: const EdgeInsets.symmetric(vertical: 0),
+          child: Column(
+            children: [
+              SvgPicture.asset(
+                icon,
+                height: 20,
+                colorFilter: ColorFilter.mode(
+                  isActive ? ColorScheme.of(context).primary : Colors.grey,
+                  BlendMode.srcIn,
+                ),
+              ),
+              Text(label,style: TextTheme.of(context).displaySmall,)
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+final _navItems = [
+  {'icon': 'assets/home_new.svg', 'label': 'Home'},
+  {'icon': 'assets/weather.svg', 'label': 'Weather'},
+  {'icon': 'assets/location.svg', 'label': 'Location'},
+  {'icon': 'assets/setting.svg', 'label': 'Settings'},
+];
+
+
+
 
 class HomePageContent extends StatelessWidget {
   final PageController _pageController = PageController();
@@ -791,7 +890,8 @@ class ActionButton extends StatelessWidget {
   final VoidCallback? onTap;
   final bool isDestructive;
 
-  const ActionButton({super.key, 
+  const ActionButton({
+    super.key,
     this.icon,
     this.imagePath,
     required this.label,

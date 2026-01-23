@@ -18,21 +18,19 @@ class HomeController extends GetxController implements GetxService {
   final balances = <String, String>{}.obs;
   final hiddenStates = <String, bool>{}.obs;
   final UserRepo userRepo;
-
   HomeController({required this.userRepo});
-
   final RxInt currentPage = 0.obs;
   final RxBool isLoading = false.obs;
-
-  //new logic for loading
   var balanceUpdate = false.obs;
   var transferBalance = false.obs;
   var chassisNumberUpdate = false.obs;
   RxInt selectedMtagIndex = 0.obs;
   final navigationStack = <int>[0].obs;
   final int homePageIndex = 0;
-
-  void setCurrentIndex(int value) => currentPage.value = value;
+  void setCurrentIndex(int value) {
+    currentPage.value = value;
+    if (value == 1) showWeatherUpdateDialog(Get.context!);
+  }
   final _otherConstants = OtherConsts();
   final List<MtagModel> dashBoardModel = [
     // Sir Suleman asked to change M-TAG to Vehicles(Date 27-12-25)
@@ -104,8 +102,6 @@ class HomeController extends GetxController implements GetxService {
     return response;
   }
 
-  //update chassis call
-
   Future<Map<String, dynamic>> updateChassisCall({
     String? cnicNumber,
     mobileNumber,
@@ -175,10 +171,9 @@ class HomeController extends GetxController implements GetxService {
     final response = await userRepo.checkBalance(mtagIds ?? []);
 
     Map<String, dynamic> actualData;
-    if (response.containsKey("Success")) {
-      actualData = response["Success"];
+    if (response.containsKey(APIRESPONSE.SUCCESS)) {
+      actualData = response[APIRESPONSE.SUCCESS];
     } else if (response.containsKey("Error")) {
-      debugPrint("❌ API failed with error response: $response");
       balanceUpdate.value = false;
       _handleError(response);
       return response;

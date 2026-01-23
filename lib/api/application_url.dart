@@ -10,7 +10,9 @@ class ApplicationUrl {
   }
 
   // static const String _BASE_URL = 'https://10.0.1.127:5000';
-  static const String _BASE_URL = 'https://ocotapp.com';
+  // static const String _BASE_URL = 'https://ocotapp.com';
+  static const String _BASE_URL = 'https://ocottapp.com';
+
   static const String _IMAGE_ULR = _BASE_URL;
 
   static String get IMAGE_ULR => _IMAGE_ULR;
