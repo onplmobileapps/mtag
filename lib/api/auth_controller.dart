@@ -235,6 +235,7 @@ class AuthController extends GetxController implements GetxService {
             resendOTP(cnic: cnic, islogin: islogin);
           },
           mobileNumber: mobile,
+          cnic: cnic,
         ),
       );
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
@@ -417,4 +418,32 @@ class AuthController extends GetxController implements GetxService {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], onTap);
     }
   }
+
+  Future<Map<String, dynamic>> sendNetworkOperator({
+    String? cnicNumber,
+    String? mobileNum,
+    int? simOperator,
+  }) async {
+    final response = await authRepo.updateSimOperator(
+      CnicNumber: cnicNumber,
+      MobileNum: mobileNum,
+      sim_operator: simOperator,
+    );
+
+    if (response.containsKey(APIRESPONSE.SUCCESS)) {
+      showCupertinoModalPopup(
+        context: Get.context!,
+        builder: (_) => CupertinoAlertDialog(
+          content: Text('${response[APIRESPONSE.SUCCESS]['Message']}'),
+          actions: [
+            CupertinoDialogAction(onPressed: Get.back, child: const Text('Ok')),
+          ],
+        ),
+      );
+    } else {
+      // _handleError(response);
+    }
+    return response;
+  }
+
 }

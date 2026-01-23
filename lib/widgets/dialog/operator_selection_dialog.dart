@@ -9,12 +9,15 @@ class OperatorSelectionDialog extends StatefulWidget {
   final void Function(int value) onSubmit;
   final String? mobileNumber;
   final int? value;
-
+  final VoidCallback? onResendOtp;
+  final VoidCallback? onResetTimer;
   const OperatorSelectionDialog({
     super.key,
     required this.onSubmit,
     this.mobileNumber,
     this.value,
+    this.onResendOtp,
+    this.onResetTimer,
   });
 
   static void show(
@@ -22,6 +25,8 @@ class OperatorSelectionDialog extends StatefulWidget {
     void Function(int) onSubmit, {
     String? mobileNumber,
     int? value,
+        VoidCallback? onResendOtp,
+        VoidCallback? onResetTimer,
   }) {
     showDialog(
       context: context,
@@ -39,6 +44,8 @@ class OperatorSelectionDialog extends StatefulWidget {
             onSubmit: onSubmit,
             mobileNumber: mobileNumber,
             value: value,
+            onResendOtp: onResendOtp,
+            onResetTimer: onResetTimer,
           ),
         ),
       ),
@@ -208,6 +215,8 @@ class _OperatorSelectionDialogState extends State<OperatorSelectionDialog>
                           if (selectedOperatorValue != null) {
                             Navigator.of(context).pop();
                             widget.onSubmit(selectedOperatorValue!);
+                            widget.onResendOtp?.call();
+                            widget.onResetTimer?.call();
                           } else {
                             setState(() {
                               _showError = true;

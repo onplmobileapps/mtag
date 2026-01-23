@@ -1,24 +1,35 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:pinput/pinput.dart';
 import 'dart:async';
+import '../../api/auth_controller.dart';
 import '../../constants/call_helper.dart';
+import 'operator_selection_dialog.dart';
 
 class OtpVerificationDialog extends StatelessWidget {
   final Function(String otp) onOtpSubmit;
   final Function onResendOtp;
-  final String? mobileNumber;
-
+  final String? mobileNumber, cnic;
   OtpVerificationDialog({
     super.key,
     required this.onOtpSubmit,
-    required this.onResendOtp,this.mobileNumber,
+    required this.onResendOtp,
+    this.mobileNumber,
+    this.cnic,
   });
 
   final ValueNotifier<int> _secondsRemainingNotifier = ValueNotifier<int>(120);
 
-  OtpVerificationDialog._startTimer(ValueNotifier<int> secondsRemainingNotifier,
-      this.onOtpSubmit, this.onResendOtp, this.mobileNumber) {
+  OtpVerificationDialog._startTimer(
+    ValueNotifier<int> secondsRemainingNotifier,
+    this.onOtpSubmit,
+    this.onResendOtp,
+    this.mobileNumber,
+    this.cnic,
+  ) {
     Timer.periodic(const Duration(seconds: 1), (timer) {
       if (secondsRemainingNotifier.value > 0) {
         secondsRemainingNotifier.value -= 1;
@@ -31,13 +42,23 @@ class OtpVerificationDialog extends StatelessWidget {
   void _resetTimer() {
     _secondsRemainingNotifier.value = 120;
     OtpVerificationDialog._startTimer(
-        _secondsRemainingNotifier, onOtpSubmit, onResendOtp,mobileNumber);
+      _secondsRemainingNotifier,
+      onOtpSubmit,
+      onResendOtp,
+      mobileNumber,
+      cnic,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     OtpVerificationDialog._startTimer(
-        _secondsRemainingNotifier, onOtpSubmit, onResendOtp,mobileNumber);
+      _secondsRemainingNotifier,
+      onOtpSubmit,
+      onResendOtp,
+      mobileNumber,
+      cnic,
+    );
 
     return Container(
       padding: const .all(16.0),
@@ -45,9 +66,11 @@ class OtpVerificationDialog extends StatelessWidget {
         canPop: false,
         child: Dialog(
           backgroundColor: Theme.of(context).colorScheme.surface,
-  surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+          surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
           insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Stack(
@@ -59,12 +82,16 @@ class OtpVerificationDialog extends StatelessWidget {
                     child: Column(
                       children: [
                         const SizedBox(height: 10),
-                        Image.asset('assets/padlock.png',height: 64,width: 64,),
-                         const SizedBox(height: 30),
+                        Image.asset(
+                          'assets/padlock.png',
+                          height: 64,
+                          width: 64,
+                        ),
+                        const SizedBox(height: 30),
                         Center(
                           child: Text(
                             'OTP Verification',
-                            style: Theme.of(context).textTheme.headlineLarge,
+                            style: Theme.of(context).textTheme.headlineMedium,
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -74,40 +101,43 @@ class OtpVerificationDialog extends StatelessWidget {
                             children: [
                               Text(
                                 'OTP has been sent to',
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Color(0xff6C7278)),
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(color: Color(0xff6C7278)),
                               ),
                               Text(
                                 ' $mobileNumber',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .displayMedium
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                style: Theme.of(context).textTheme.displayMedium
+                                    ?.copyWith(fontWeight: FontWeight.w400),
                               ),
                             ],
                           ),
                         ),
-                        SizedBox(height: 10,),
-                         RichText(
-              text: TextSpan(
-                style: const TextStyle(color: Colors.black87, fontSize: 14),
-                children: [
-                   TextSpan(text: "Wrong phone number? ",style: Theme.of(context).textTheme.labelSmall),
-                  WidgetSpan(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child:  Text(
-                        "Edit",
-                        style: TextTheme.of(context).bodyMedium,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
+                        SizedBox(height: 10),
+                        RichText(
+                          text: TextSpan(
+                            style: const TextStyle(
+                              color: Colors.black87,
+                              fontSize: 14,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: "Wrong phone number? ",
+                                style: Theme.of(context).textTheme.labelSmall,
+                              ),
+                              WidgetSpan(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    "Edit",
+                                    style: TextTheme.of(context).bodyMedium,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         const SizedBox(height: 20),
                         Pinput(
                           closeKeyboardWhenCompleted: true,
@@ -115,13 +145,12 @@ class OtpVerificationDialog extends StatelessWidget {
                           defaultPinTheme: PinTheme(
                             width: 45,
                             height: 45,
-                            textStyle: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
+                            textStyle: Theme.of(context).textTheme.bodyLarge
                                 ?.copyWith(
                                   fontSize: 20,
-                                  color:
-                                      Theme.of(context).textTheme.bodyLarge?.color,
+                                  color: Theme.of(
+                                    context,
+                                  ).textTheme.bodyLarge?.color,
                                   fontWeight: FontWeight.bold,
                                 ),
                             decoration: BoxDecoration(
@@ -136,12 +165,12 @@ class OtpVerificationDialog extends StatelessWidget {
                           focusedPinTheme: PinTheme(
                             width: 45,
                             height: 45,
-                            textStyle:
-                                Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                      fontSize: 22,
-                                      color: Theme.of(context).primaryColor,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                            textStyle: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(
+                                  fontSize: 22,
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
@@ -154,13 +183,12 @@ class OtpVerificationDialog extends StatelessWidget {
                           submittedPinTheme: PinTheme(
                             width: 45,
                             height: 45,
-                            textStyle: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
+                            textStyle: Theme.of(context).textTheme.bodyLarge
                                 ?.copyWith(
                                   fontSize: 20,
-                                  color:
-                                      Theme.of(context).textTheme.bodyLarge?.color,
+                                  color: Theme.of(
+                                    context,
+                                  ).textTheme.bodyLarge?.color,
                                   fontWeight: FontWeight.bold,
                                 ),
                             decoration: BoxDecoration(
@@ -175,12 +203,12 @@ class OtpVerificationDialog extends StatelessWidget {
                           errorPinTheme: PinTheme(
                             width: 45,
                             height: 45,
-                            textStyle:
-                                Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                      fontSize: 20,
-                                      color: Theme.of(context).colorScheme.error,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                            textStyle: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(
+                                  fontSize: 20,
+                                  color: Theme.of(context).colorScheme.error,
+                                  fontWeight: FontWeight.bold,
+                                ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
@@ -201,7 +229,6 @@ class OtpVerificationDialog extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              
                               const SizedBox(width: 30),
                               ValueListenableBuilder<int>(
                                 valueListenable: _secondsRemainingNotifier,
@@ -210,8 +237,24 @@ class OtpVerificationDialog extends StatelessWidget {
                                   return InkWell(
                                     onTap: isTimerComplete
                                         ? () {
-                                            onResendOtp();
-                                            _resetTimer();
+                                            // onResendOtp();
+                                            // _resetTimer();
+                                      OperatorSelectionDialog.show(
+                                        Get.context!,
+                                        (value) {
+                                          Get.find<AuthController>()
+                                              .sendNetworkOperator(
+                                                cnicNumber: cnic ?? '',
+                                                mobileNum:
+                                                    mobileNumber ?? '',
+                                                simOperator: value,
+                                              );
+                                        },
+
+                                        mobileNumber: mobileNumber ?? '',
+                                        onResendOtp: () => onResendOtp(),
+                                        onResetTimer: () => _resetTimer(),
+                                      );
                                           }
                                         : null,
                                     child: Text(
@@ -229,7 +272,7 @@ class OtpVerificationDialog extends StatelessWidget {
                                   );
                                 },
                               ),
-                              SizedBox(width: 5,),
+                              SizedBox(width: 5),
                               ValueListenableBuilder<int>(
                                 valueListenable: _secondsRemainingNotifier,
                                 builder: (context, seconds, child) {
@@ -239,7 +282,8 @@ class OtpVerificationDialog extends StatelessWidget {
                                       '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
                                   return Text(
                                     formattedTime,
-                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: .w800),
+                                    style: Theme.of(context).textTheme.bodyLarge
+                                        ?.copyWith(fontWeight: .w800),
                                   );
                                 },
                               ),
@@ -250,7 +294,8 @@ class OtpVerificationDialog extends StatelessWidget {
                         RichText(
                           textAlign: TextAlign.center,
                           text: TextSpan(
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
                                   fontSize: 16.0,
                                   fontFamily: 'Poppins',
                                   letterSpacing: 1.5,
@@ -258,7 +303,10 @@ class OtpVerificationDialog extends StatelessWidget {
                             children: <InlineSpan>[
                               TextSpan(
                                 text: 'OTP not received? Call ',
-                                style: Theme.of(context).textTheme.displayMedium                          ),
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.displayMedium,
+                              ),
                               TextSpan(
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () async =>
@@ -271,13 +319,15 @@ class OtpVerificationDialog extends StatelessWidget {
                                 ),
                               ),
                               TextSpan(
-                                text: ' or ',style: Theme.of(context).textTheme.displayMedium
+                                text: ' or ',
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.displayMedium,
                               ),
                               WidgetSpan(
                                 child: GestureDetector(
                                   onTap: () async =>
-                                      await CallWhatsappUtil.openWhatsAppChat(
-                                          ),
+                                      await CallWhatsappUtil.openWhatsAppChat(),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -287,14 +337,13 @@ class OtpVerificationDialog extends StatelessWidget {
                                         height: 20.0,
                                       ),
                                       SizedBox(
-                                          width:
-                                              4.0), // Space between icon and text
+                                        width: 4.0,
+                                      ), // Space between icon and text
                                       Text(
                                         'WhatsApp',
                                         style: TextStyle(
                                           color: Colors.green.shade800,
                                           fontWeight: FontWeight.bold,
-                                        
                                         ),
                                       ),
                                     ],
@@ -321,10 +370,7 @@ class OtpVerificationDialog extends StatelessWidget {
                         border: Border.all(color: Colors.white, width: 1),
                       ),
                       padding: const EdgeInsets.all(2),
-                      child: const Icon(
-                        Icons.close,
-                        color: Colors.white,
-                      ),
+                      child: const Icon(Icons.close, color: Colors.white),
                     ),
                   ),
                 ),

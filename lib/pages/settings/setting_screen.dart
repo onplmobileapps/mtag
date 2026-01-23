@@ -143,7 +143,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               OperatorSelectionDialog.show(
                                 Get.context!,
                                 (value) {
-                                  homeController.sendNetworkOperator(
+                                  Get.find<AuthController>().sendNetworkOperator(
                                     cnicNumber: customer?.cNIC ?? '',
                                     mobileNum: customer?.mobileNumber ?? '',
                                     simOperator: value,

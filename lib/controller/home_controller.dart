@@ -75,32 +75,32 @@ class HomeController extends GetxController implements GetxService {
     return response;
   }
 
-  Future<Map<String, dynamic>> sendNetworkOperator({
-    String? cnicNumber,
-    String? mobileNum,
-    int? simOperator,
-  }) async {
-    final response = await userRepo.updateSimOperator(
-      CnicNumber: cnicNumber,
-      MobileNum: mobileNum,
-      sim_operator: simOperator,
-    );
-
-    if (response.containsKey(APIRESPONSE.SUCCESS)) {
-      showCupertinoModalPopup(
-        context: Get.context!,
-        builder: (_) => CupertinoAlertDialog(
-          content: Text('${response[APIRESPONSE.SUCCESS]['Message']}'),
-          actions: [
-            CupertinoDialogAction(onPressed: Get.back, child: const Text('Ok')),
-          ],
-        ),
-      );
-    } else {
-      _handleError(response);
-    }
-    return response;
-  }
+  // Future<Map<String, dynamic>> sendNetworkOperator({
+  //   String? cnicNumber,
+  //   String? mobileNum,
+  //   int? simOperator,
+  // }) async {
+  //   final response = await userRepo.updateSimOperator(
+  //     CnicNumber: cnicNumber,
+  //     MobileNum: mobileNum,
+  //     sim_operator: simOperator,
+  //   );
+  //
+  //   if (response.containsKey(APIRESPONSE.SUCCESS)) {
+  //     showCupertinoModalPopup(
+  //       context: Get.context!,
+  //       builder: (_) => CupertinoAlertDialog(
+  //         content: Text('${response[APIRESPONSE.SUCCESS]['Message']}'),
+  //         actions: [
+  //           CupertinoDialogAction(onPressed: Get.back, child: const Text('Ok')),
+  //         ],
+  //       ),
+  //     );
+  //   } else {
+  //     _handleError(response);
+  //   }
+  //   return response;
+  // }
 
   Future<Map<String, dynamic>> updateChassisCall({
     String? cnicNumber,
@@ -274,7 +274,7 @@ class HomeController extends GetxController implements GetxService {
       OperatorSelectionDialog.show(
         Get.context!,
         (value) {
-          sendNetworkOperator(
+          Get.find<AuthController>().sendNetworkOperator(
             cnicNumber: dashboradData.value.customerDetail!.cNIC,
             mobileNum: dashboradData.value.customerDetail!.mobileNumber,
             simOperator: value,

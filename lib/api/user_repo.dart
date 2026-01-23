@@ -61,27 +61,27 @@ class UserRepo {
     );
   }
 
-  Future<Map<String, dynamic>> updateSimOperator({
-    String? CnicNumber,
-    MobileNum,
-    int? sim_operator,
-  }) async {
-    APISTRUCTURE apiObject = APISTRUCTURE(
-      apiUrl: ApplicationUrl.UPDATE_OPERATOR,
-      apiRequestMethod: APIREQUESTMETHOD.POST,
-      isWantSuccessMessage: true,
-      body: {
-        "CnicNumber": CnicNumber,
-        "MobileNum": MobileNum,
-        "sim_operator": sim_operator,
-      },
-    );
-
-    return await apiObject.requestAPI(
-      isShowLoading: true,
-      isCheckAuthorization: true,
-    );
-  }
+  // Future<Map<String, dynamic>> updateSimOperator({
+  //   String? CnicNumber,
+  //   MobileNum,
+  //   int? sim_operator,
+  // }) async {
+  //   APISTRUCTURE apiObject = APISTRUCTURE(
+  //     apiUrl: ApplicationUrl.UPDATE_OPERATOR,
+  //     apiRequestMethod: APIREQUESTMETHOD.POST,
+  //     isWantSuccessMessage: true,
+  //     body: {
+  //       "CnicNumber": CnicNumber,
+  //       "MobileNum": MobileNum,
+  //       "sim_operator": sim_operator,
+  //     },
+  //   );
+  //
+  //   return await apiObject.requestAPI(
+  //     isShowLoading: true,
+  //     isCheckAuthorization: true,
+  //   );
+  // }
 
   Future<Map<String, dynamic>> checkBalance(List<String> mtagIds) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
