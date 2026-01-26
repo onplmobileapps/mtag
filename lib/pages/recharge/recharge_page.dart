@@ -372,7 +372,7 @@ Widget _buildAmountSection(
                     Text(
                       'Min: Rs. ${controller.homeController.dashboradData.value.rechargeMinAmount} '
                       'Max: Rs. ${controller.homeController.dashboradData.value.rechargeMaxAmount}',
-                      style: const TextStyle(fontSize: 7, color: Colors.black),
+                      style: TextTheme.of(context).bodySmall?.copyWith(fontSize: 9),
                     ),
                   ],
                 ),

@@ -1,86 +1,127 @@
 import 'package:flutter/material.dart';
 
 class NotchedBorderPainter extends CustomPainter {
-  final double radius;
+  final double cornerRadius;
   final double notchMargin;
   final Color borderColor;
+  final Color notchColor;
   final double strokeWidth;
 
   NotchedBorderPainter({
-    this.radius = 18,
-    this.notchMargin = 10,
+    this.cornerRadius = 16,
+    this.notchMargin = 6,
     this.borderColor = Colors.grey,
+    this.notchColor = Colors.grey,
     this.strokeWidth = 1.5,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth
-      ..color = borderColor;
-
-    final fabRadius = 23.0;
+    final fabRadius = 22.5;
     final centerX = size.width / 2;
-
     final notchDepth = fabRadius + notchMargin;
-    final notchWidth = fabRadius * 2.2 + notchMargin * 2;
+    final notchWidth = fabRadius * 2.8;
 
-    final path = Path();
+    // Create main border paint (grey color)
+    final borderPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeJoin = StrokeJoin.round
+      ..strokeCap = StrokeCap.round
+      ..isAntiAlias = true
+      ..color = borderColor
+      ..strokeWidth = strokeWidth;
 
-    // ─── TOP LEFT ─────────────────────────────
-    path.moveTo(radius, 0);
-    path.lineTo(centerX - notchWidth / 2, 0);
+    // Create notch paint
+    final notchPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeJoin = StrokeJoin.round
+      ..strokeCap = StrokeCap.round
+      ..isAntiAlias = true
+      ..color = notchColor
+      ..strokeWidth = strokeWidth;
 
-    // ─── CURVED NOTCH ─────────────────────────
+    // ─── DRAW HORIZONTAL TOP LINES ────────────
+    // Left horizontal line (from left corner to notch start)
+    canvas.drawLine(
+      Offset(cornerRadius, 0),
+      Offset(centerX - notchWidth / 2, 0),
+      borderPaint,
+    );
 
-    final notchStartX = centerX - notchWidth / 2;
-    final notchEndX = centerX + notchWidth / 2;
+    // Right horizontal line (from notch end to right corner)
+    canvas.drawLine(
+      Offset(centerX + notchWidth / 2, 0),
+      Offset(size.width - cornerRadius, 0),
+      borderPaint,
+    );
 
-    path.cubicTo(
-      notchStartX + fabRadius * 0.3,
-      0, // smooth entry
-      centerX - fabRadius * 1.1,
-      notchDepth, // left dip control
+    // ─── DRAW NOTCH CURVE ─────────────────────
+    final notchPath = Path();
+
+    // Start notch from left connection point
+    notchPath.moveTo(centerX - notchWidth / 2, 0);
+
+    // Draw the notch curve
+    notchPath.quadraticBezierTo(
+      centerX - fabRadius,
+      notchDepth,
       centerX,
-      notchDepth, // bottom center
+      notchDepth,
     );
 
-    path.cubicTo(
-      centerX + fabRadius * 1.1,
-      notchDepth, // right dip control
-      notchEndX - fabRadius * 0.3,
-      0, // smooth exit
-      notchEndX,
-      0,
+    notchPath.quadraticBezierTo(
+      centerX + fabRadius,
+      notchDepth,
+      centerX + notchWidth / 2,
+      0.0,
     );
 
-    // ─── TOP RIGHT ────────────────────────────
-    path.lineTo(size.width - radius, 0);
-    path.arcToPoint(
-      Offset(size.width, radius),
-      radius: Radius.circular(radius),
+    // Draw the notch curve
+    canvas.drawPath(notchPath, notchPaint);
+
+    // ─── DRAW REST OF THE BORDER ──────────────
+    final borderPath = Path();
+
+    // Top right corner
+    borderPath.moveTo(size.width - cornerRadius, 0);
+    borderPath.arcToPoint(
+      Offset(size.width, cornerRadius),
+      radius: Radius.circular(cornerRadius),
+      clockwise: true,
     );
 
-    // ─── RIGHT ────────────────────────────────
-    path.lineTo(size.width, size.height - radius);
-    path.arcToPoint(
-      Offset(size.width - radius, size.height),
-      radius: Radius.circular(radius),
+    // Right side
+    borderPath.lineTo(size.width, size.height - cornerRadius);
+
+    // Bottom right corner
+    borderPath.arcToPoint(
+      Offset(size.width - cornerRadius, size.height),
+      radius: Radius.circular(cornerRadius),
+      clockwise: true,
     );
 
-    // ─── BOTTOM ───────────────────────────────
-    path.lineTo(radius, size.height);
-    path.arcToPoint(
-      Offset(0, size.height - radius),
-      radius: Radius.circular(radius),
+    // Bottom side
+    borderPath.lineTo(cornerRadius, size.height);
+
+    // Bottom left corner
+    borderPath.arcToPoint(
+      Offset(0, size.height - cornerRadius),
+      radius: Radius.circular(cornerRadius),
+      clockwise: true,
     );
 
-    // ─── LEFT ─────────────────────────────────
-    path.lineTo(0, radius);
-    path.arcToPoint(Offset(radius, 0), radius: Radius.circular(radius));
+    // Left side
+    borderPath.lineTo(0, cornerRadius);
 
-    canvas.drawPath(path, paint);
+    // Top left corner
+    borderPath.arcToPoint(
+      Offset(cornerRadius, 0),
+      radius: Radius.circular(cornerRadius),
+      clockwise: true,
+    );
+
+    // Draw the rest of the border
+    canvas.drawPath(borderPath, borderPaint);
   }
 
   @override

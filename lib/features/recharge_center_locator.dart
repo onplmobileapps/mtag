@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:get/get.dart';
@@ -244,36 +246,71 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
     );
   }
 
-  Future<void> _openInGoogleMaps(LatLng latLng) async {
-    try {
-      final url = Uri.parse(
-        'https://www.google.com/maps/search/?api=1&query=${latLng.latitude},${latLng.longitude}',
-      );
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url, mode: LaunchMode.externalApplication);
-      } else {
-        debugPrint('Could not launch Google Maps');
-        if (mounted && !_isDisposed) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Could not open maps application'),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      debugPrint('Error launching Google Maps: $e');
-      if (mounted && !_isDisposed) {
+ Future<void> _openInMaps(LatLng latLng) async {
+  try {
+    String url;
+    
+    // Check platform and create appropriate URL
+    if (Platform.isIOS) {
+      // Apple Maps URL format
+      url = 'https://maps.apple.com/?q=${latLng.latitude},${latLng.longitude}';
+    } else if (Platform.isAndroid) {
+      // Google Maps URL format
+      url = 'https://www.google.com/maps/search/?api=1&query=${latLng.latitude},${latLng.longitude}';
+    } else {
+      // Fallback to Google Maps for other platforms
+      url = 'https://www.google.com/maps/search/?api=1&query=${latLng.latitude},${latLng.longitude}';
+    }
+
+    final uri = Uri.parse(url);
+    
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      debugPrint('Could not launch maps application');
+      
+      // Try alternative URL if primary fails
+      final fallbackUrl = 'https://maps.google.com/?q=${latLng.latitude},${latLng.longitude}';
+      final fallbackUri = Uri.parse(fallbackUrl);
+      
+      if (await canLaunchUrl(fallbackUri)) {
+        await launchUrl(fallbackUri, mode: LaunchMode.externalApplication);
+      } else if (mounted && !_isDisposed) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error opening maps'),
-            duration: Duration(seconds: 2),
+          SnackBar(
+            content: const Text('Could not open maps application'),
+            duration: const Duration(seconds: 2),
+            action: SnackBarAction(
+              label: 'Copy Location',
+              onPressed: () {
+                Clipboard.setData(ClipboardData(
+                  text: '${latLng.latitude}, ${latLng.longitude}',
+                ));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Location copied to clipboard'),
+                    duration: Duration(seconds: 1),
+                  ),
+                );
+              },
+            ),
           ),
         );
       }
     }
+  } catch (e) {
+    debugPrint('Error launching maps: $e');
+    if (mounted && !_isDisposed) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Error opening maps application'),
+          duration: const Duration(seconds: 2),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+    }
   }
+}
 
   Future<void> _onCityChanged(String city) async {
     if (_isAnimating || _isDisposed || !mounted) return;
@@ -709,7 +746,7 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
               top: false,
               child: RechargeCenterBottomSheet(
                 center: center,
-                onOpenMap: () => _openInGoogleMaps(center.location),
+                onOpenMap: () => _openInMaps(center.location),
               ),
             ),
           );

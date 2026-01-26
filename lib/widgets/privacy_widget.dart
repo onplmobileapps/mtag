@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mtag_flutterapp/theme/app_theme.dart';
 
 class PrivacyPolicySection extends StatelessWidget {
   final String title;
@@ -7,8 +8,8 @@ class PrivacyPolicySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+    return Container(decoration: BoxDecoration(gradient: Theme.of(context).extension<AppGradients>()!.background,borderRadius: .circular(8)),
+     margin: .all(4),padding: .all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

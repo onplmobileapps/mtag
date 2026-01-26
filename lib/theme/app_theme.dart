@@ -29,21 +29,21 @@ ThemeData appTheme = ThemeData(
         ),
       ],
     ),
-    const AppGradients(
-      gridWidget: LinearGradient(
+    AppGradients(
+      gridWidget: const LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: [Color(0xFFFFFCFC), Color(0xFFD9EDF8), Color(0xFFE4EBF5)],
       ),
       // App / Screen background
-      background: LinearGradient(
+      background: const LinearGradient(
         begin: .topLeft,
         end: AlignmentGeometry.centerRight,
         colors: [Color(0xFFE4EDFC), Color(0xFFFCFCFC), Color(0xFFEAEBFD)],
       ),
 
       // Scroll / list fade
-      verticalFade: LinearGradient(
+      verticalFade: const LinearGradient(
         end: AlignmentGeometry.xy(0, 3),
         colors: [
           Color(0xFFFFFFFF),
@@ -59,19 +59,29 @@ ThemeData appTheme = ThemeData(
       ),
 
       // Card / tile gradient
-      card: LinearGradient(
+      card: const LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: [Color(0xFFFFFFFF), Color(0xFFF4F6FF)],
       ),
 
       // Header / AppBar / Hero section
-      header: LinearGradient(
+      header: const LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [Color(0xFFE6EBFF), Color(0xFFFFFFFF)],
       ),
+      stickyNote: LinearGradient(
+  colors: [
+    Colors.yellow.shade100.withValues(alpha:0.9),
+    Colors.yellow.shade200,
+    Colors.orange.shade100.withValues(alpha:0.6),
+    Colors.yellow.shade100.withValues(alpha:0.8),
+  ],
+  stops: const [0.0, 0.3, 0.7, 1.0],
+),
     ),
+    
   ],
 
   tabBarTheme: TabBarThemeData(
@@ -441,6 +451,14 @@ ThemeData darkTheme = ThemeData(
         end: Alignment.bottomCenter,
         colors: [Color(0xFF2B3552), Color(0xFF1E2433)],
       ),
+  stickyNote: LinearGradient(
+  colors: [
+    Color(0xFFF57C00), // Orange 800
+    Color(0xFFFFA000), // Amber 700
+    Color(0xFFFFB300), // Amber 600
+    Color(0xFFFFA000), // Amber 700
+  ],
+),
     ),
   ],
 
@@ -666,12 +684,13 @@ class AppGradients extends ThemeExtension<AppGradients> {
   final LinearGradient card;
   final LinearGradient header;
   final LinearGradient gridWidget;
+    final LinearGradient stickyNote;
   const AppGradients({
     required this.background,
     required this.verticalFade,
     required this.card,
     required this.header,
-    required this.gridWidget,
+    required this.gridWidget,required this.stickyNote,
   });
 
   @override
@@ -681,13 +700,15 @@ class AppGradients extends ThemeExtension<AppGradients> {
     LinearGradient? card,
     LinearGradient? header,
     LinearGradient? gridWidget,
+     LinearGradient? stickyNote,
+
   }) {
     return AppGradients(
       background: background ?? this.background,
       verticalFade: verticalFade ?? this.verticalFade,
       card: card ?? this.card,
       header: header ?? this.header,
-      gridWidget: gridWidget ?? this.gridWidget,
+      gridWidget: gridWidget ?? this.gridWidget,stickyNote: stickyNote??this.stickyNote
     );
   }
 
@@ -701,6 +722,7 @@ class AppGradients extends ThemeExtension<AppGradients> {
       card: LinearGradient.lerp(card, other.card, t)!,
       header: LinearGradient.lerp(header, other.header, t)!,
       gridWidget: LinearGradient.lerp(gridWidget, other.gridWidget, t)!,
+      stickyNote:  LinearGradient.lerp(stickyNote, other.stickyNote, t)!,
     );
   }
 }

@@ -425,9 +425,9 @@ class AuthController extends GetxController implements GetxService {
     int? simOperator,
   }) async {
     final response = await authRepo.updateSimOperator(
-      CnicNumber: cnicNumber,
-      MobileNum: mobileNum,
-      sim_operator: simOperator,
+      cnicNumber: cnicNumber,
+      mobileNum: mobileNum,
+      simOperator: simOperator,
     );
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {

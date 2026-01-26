@@ -44,24 +44,26 @@ class HomePage extends StatelessWidget {
           bottomNavigationBar: CustomPaint(
             painter: NotchedBorderPainter(
               borderColor: ColorScheme.of(context).outline,
-              strokeWidth: 1.4,
-              notchMargin: 7,
-              radius: 12,
+              strokeWidth: 1.0,
+              notchMargin: 7,notchColor: ColorScheme.of(context).outline.withValues(alpha: 0.7)
+             
             ),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(18),
-                topRight: Radius.circular(18),
-              ),
-              child: BottomAppBar(
-                height: 50,
-                clipBehavior: Clip.hardEdge,
-                elevation: 0,
-                shadowColor: ColorScheme.of(context).secondaryContainer,
-                notchMargin: 2,
-                color: ColorScheme.of(context).surface,
-                shape: const CircularNotchedRectangle(),
-                child: _BottomNavItems(),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 1),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(18),
+                  topRight: Radius.circular(18),
+                ),
+                child: BottomAppBar(
+                  height: 55,
+                  clipBehavior: Clip.none,
+                  elevation: 4,
+                  notchMargin: 1.0,padding: .zero,
+                  color: ColorScheme.of(context).surface,
+                  shape: const CircularNotchedRectangle(),
+                  child: _BottomNavItems(),
+                ),
               ),
             ),
           ),
@@ -131,7 +133,7 @@ class _NavItem extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 icon,
-                height: 20,
+                height: 25,
                 colorFilter: ColorFilter.mode(
                   isActive ? ColorScheme.of(context).primary : Colors.grey,
                   BlendMode.srcIn,
@@ -148,8 +150,8 @@ class _NavItem extends StatelessWidget {
 
 final _navItems = [
   {'icon': 'assets/home_new.svg', 'label': 'Home'},
-  {'icon': 'assets/weather.svg', 'label': 'Weather'},
-  {'icon': 'assets/location.svg', 'label': 'Location'},
+  {'icon': 'assets/weather.svg', 'label': 'Weather Updates'},
+  {'icon': 'assets/location.svg', 'label': ' Reacharge Locations'},
   {'icon': 'assets/setting.svg', 'label': 'Settings'},
 ];
 
@@ -824,7 +826,7 @@ class _TransferRemoveRow extends StatelessWidget {
           Expanded(
             child: ActionButton(
               icon: Icons.delete_outlined,
-              label: 'Remove',
+              label: 'Delete Vehicle',
               isDestructive: false,
               onTap: () => _showDeleteDialog(mtag),
             ),

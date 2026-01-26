@@ -18,9 +18,6 @@ class FooterWidget extends StatelessWidget {
       top: false,
       child: Padding(
         padding: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          top: 12,
           bottom: MediaQuery.of(context).padding.bottom + 12,
         ),
         child: Container(
@@ -69,9 +66,9 @@ class FooterWidget extends StatelessWidget {
                 semantics: 'Open frequently asked questions',
                 isDark: isDark,
                 onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => FaqsScreen()),
-                  );
+                  Navigator.of(
+                    context,
+                  ).push(MaterialPageRoute(builder: (_) => FaqsScreen()));
                 },
               ),
             ],
@@ -153,11 +150,11 @@ class _FooterItemState extends State<_FooterItem>
             onTap: widget.onTap,
             borderRadius: BorderRadius.circular(12),
             splashColor: widget.isDark
-                ? Colors.white.withValues(alpha:0.05)
-                : Colors.black.withValues(alpha:0.05),
+                ? Colors.white.withValues(alpha: 0.05)
+                : Colors.black.withValues(alpha: 0.05),
             highlightColor: widget.isDark
-                ? Colors.white.withValues(alpha:0.03)
-                : Colors.black.withValues(alpha:0.03),
+                ? Colors.white.withValues(alpha: 0.03)
+                : Colors.black.withValues(alpha: 0.03),
             child: Container(
               width: 72, // Fixed base width
               height: 72, // Fixed base height
@@ -170,7 +167,7 @@ class _FooterItemState extends State<_FooterItem>
                     ? null
                     : [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha:0.03),
+                          color: Colors.black.withValues(alpha: 0.03),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),

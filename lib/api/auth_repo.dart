@@ -330,18 +330,18 @@ class AuthRepo {
     return await safeRequest(api: api, showLoader: true);
   }
 Future<Map<String, dynamic>> updateSimOperator({
-  String? CnicNumber,
-  MobileNum,
-  int? sim_operator,
+  String? cnicNumber,
+  mobileNum,
+  int? simOperator,
 }) async {
   APISTRUCTURE apiObject = APISTRUCTURE(
     apiUrl: ApplicationUrl.UPDATE_OPERATOR,
     apiRequestMethod: APIREQUESTMETHOD.POST,
     isWantSuccessMessage: true,
     body: {
-      "CnicNumber": CnicNumber,
-      "MobileNum": MobileNum,
-      "sim_operator": sim_operator,
+      "CnicNumber": cnicNumber,
+      "MobileNum": mobileNum,
+      "sim_operator": simOperator,
     },
   );
 

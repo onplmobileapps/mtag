@@ -156,9 +156,9 @@ class _PinEntryPageState extends State<PinEntryPage> {
         child: Column(
           children: [
             // Top Section
-            SizedBox(height: size.height * 0.01),
+                 const Spacer(),
             _buildLogo(size, isDarkMode),
-            SizedBox(height: size.height * 0.01),
+               const Spacer(),
             _buildSubtitle(context),
             SizedBox(height: size.height * 0.02),
             _buildPinField(size),

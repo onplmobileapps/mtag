@@ -65,21 +65,23 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: GradientAppBar(title: const Text('Toll History')),
-      body: Column(
-        children: [
-          _buildStickyMessage(context),
-          Expanded(
-            child: Obx(
-              () => isLoading.value
-                  ? ListSkeleton()
-                  : GetX<TollController>(
-                      init: TollController(userRepo: UserRepo()),
-                      builder: (controller) =>
-                          _buildTollHistoryContent(controller),
-                    ),
+      body: SafeArea(top: false,
+        child: Column(
+          children: [
+            _buildStickyMessage(context),
+            Expanded(
+              child: Obx(
+                () => isLoading.value
+                    ? ListSkeleton()
+                    : GetX<TollController>(
+                        init: TollController(userRepo: UserRepo()),
+                        builder: (controller) =>
+                            _buildTollHistoryContent(controller),
+                      ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -170,127 +172,170 @@ class _TollHistoryPageState extends State<TollHistoryPage> {
         labelStyle: TextStyle(
           color: controller.isSlected.value == value
               ? Colors.white
-              : Theme.of(context).highlightColor,
+              : Theme.of(context).highlightColor,fontFamily: 'biotifbold',
         ),
         backgroundColor: controller.isSlected.value == value
             ? primarSwatch
             : Theme.of(context).disabledColor,
-        side: const BorderSide(color: Colors.black12),
+   shape: RoundedRectangleBorder(borderRadius: .circular(18)),
       ),
     );
   }
 
   Widget _buildListTile(dynamic item) {
-    return Container(
-      margin: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
+  return Container(
+    margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    decoration: BoxDecoration(
       gradient: Theme.of(context).extension<AppGradients>()!.gridWidget,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: ListTile(
-        tileColor: Theme.of(context).listTileTheme.tileColor,
-        minVerticalPadding: 4,
-        onTap: () => onListTileTap(item),
-        title: Text(
-          textAlign: TextAlign.left,
-          '${item?.eNTRYSTATIONNAME ?? ''}${item?.eXITSTATIONNAME != null ? ' - ' : ''}${item?.eXITSTATIONNAME ?? ''}',
-        ),
-        trailing: _buildTrailingColumn(item),
-        subtitle: Column(spacing: 12,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('M-TAG ${item?.iTOKKENNO ?? ''}',style: TextTheme.of(context).bodySmall,),
-            Text(
-              item?.tRANSTIME ?? '',
-              style: Theme.of(context).textTheme.displaySmall,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTrailingColumn(dynamic item) {
-    final String? cR = item?.cR;
-
-    late final Color color;
-    late final String label;
-
-    if (cR == '-') {
-      color = Colors.redAccent;
-      label = 'Travel';
-    } else if (cR == 'P') {
-      color = Colors.redAccent;
-      label = 'Parking';
-    } else {
-      color = Colors.green;
-      label = 'Recharge';
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Text(
-          cR == 'P' ? 'Rs. ${item?.fARE ?? ''}' : '$cR Rs. ${item?.fARE ?? ''}',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: color),
-        ),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: color),
-          textAlign: TextAlign.end,
+      borderRadius: BorderRadius.circular(12),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha:0.05),
+          blurRadius: 4,
+          offset: Offset(0, 2),
         ),
       ],
-    );
-  }
+    ),
+    child: ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+      tileColor: Colors.transparent,
+      onTap: () => onListTileTap(item),
+      title: Text(
+        '${item?.eNTRYSTATIONNAME ?? ''}${item?.eXITSTATIONNAME != null ? ' → ' : ''}${item?.eXITSTATIONNAME ?? ''}',
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      trailing: _buildTrailingColumn(item),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Icon(
+                Icons.nfc,
+                size: 14,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                'M-TAG ${item?.iTOKKENNO ?? ''}',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 2),
+          Row(
+            children: [
+              Icon(
+                Icons.access_time,
+                size: 14,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                item?.tRANSTIME ?? '',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w500,
+                    ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
-Widget _buildStickyMessage(BuildContext context) {
+Widget _buildTrailingColumn(dynamic item) {
+  final String? cR = item?.cR;
+  final String fare = item?.fARE ?? '0';
+  
+  final isTravel = cR == '-';
+  final isParking = cR == 'P';
+  
+  // Use Material 3 tonal colors
+  final color = isTravel
+      ? Colors.red
+      : isParking
+          ? Theme.of(context).colorScheme.error
+          : Colors.green;
+  
+  final label = isTravel ? 'Travel' : isParking ? 'Parking' : 'Recharge';
+  
   return Container(
-    margin: EdgeInsets.all(5),
-    width: double.infinity,
-    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(4),
-      color: Colors.yellow.shade100,
+      color: color.withValues(alpha:0.08),
+      borderRadius: BorderRadius.circular(8),
     ),
     child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          children: [
-            Icon(Icons.campaign, color: Theme.of(context).primaryColor),
-            Text(
-              'Announcement',
-              style: TextStyle(
-                color: Theme.of(context).primaryColor,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+        Text(
+          isParking ? 'Rs. $fare' : '$cR Rs. $fare',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w500,
+         color: color
+          ),
         ),
-
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Flexible(
-              child: Text(
-                'The history section displays only M-Tag transactions, cash transactions are not included.',
-                textAlign: TextAlign.justify,
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-          ],
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+         
+          
+          ),
         ),
       ],
     ),
   );
 }
+
+Widget _buildStickyMessage(BuildContext context) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      
+      const SizedBox(height: 10),
+      Container(margin: .symmetric(horizontal:8),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+    gradient: Theme.of(context).extension<AppGradients>()!.stickyNote,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.campaign,
+
+              size: 18,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'The history section displays only M-Tag transactions. '
+                'Cash transactions are not included in this view.',
+                style: TextTheme.of(context).displaySmall,
+                textAlign: TextAlign.left,
+              ),
+            ),
+          ],
+        ),
+      ),
+      
+    ],
+  );
+}}
 
 class ListSkeleton extends StatelessWidget {
   final int itemCount;

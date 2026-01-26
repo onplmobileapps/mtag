@@ -25,7 +25,7 @@ Widget buildPaymentOption(
               groupValue: selectedOption,
               onChanged: (newValue) {
                 if (remainingTime == Duration.zero) {
-                  selectedOptionNotifier.value = newValue!;
+                  selectedOptionNotifier.value = newValue??-1;
                   if (onTap != null) onTap();
                 }
               },
