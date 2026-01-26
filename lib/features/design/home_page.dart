@@ -824,7 +824,7 @@ class _TransferRemoveRow extends StatelessWidget {
           Expanded(
             child: ActionButton(
               icon: Icons.delete_outlined,
-              label: 'Remove',
+              label: 'Delete Vehicle',
               isDestructive: false,
               onTap: () => _showDeleteDialog(mtag),
             ),

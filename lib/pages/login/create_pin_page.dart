@@ -293,8 +293,8 @@ class _PinEntryPageState extends State<PinEntryPage> {
                     )
                   : Image.asset(
                       "assets/fingerprint.png",
-                      height: 24,
-                      width: 24,
+                height: size.width * 0.099,
+                width: size.width * 0.099,
                       color: Get.isDarkMode
                           ? Colors.white
                           : Theme.of(context).primaryColor,
