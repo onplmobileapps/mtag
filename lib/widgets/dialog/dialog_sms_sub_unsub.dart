@@ -36,19 +36,23 @@ class SubUnsubDialog extends StatelessWidget {
          gradient: Theme.of(context).extension<AppGradients>()!.background
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Center(
-            //   child: Image.asset(
-            //     'assets/branding-development.png',
-            //     width: 80.0,
-            //     height: 60.0,
-            //   ),
-            // ),
-            // const Divider(thickness: 0.3, color: Colors.black),
-            // const SizedBox(height: 10.0),
+
+            Center(
+              child: Image.asset(
+                'assets/sms_sub.png',
+                width: 80.0,
+                height: 60.0,
+              ),
+            ),
+            const SizedBox(height: 10.0),
+            Text("SMS Subscription",
+                style: Theme.of(context).textTheme.titleLarge),
+            const Divider(thickness: 0.3, color: Colors.black),
+            const SizedBox(height: 10.0),
             SizedBox(
               width: double.infinity,
               child: Column(
