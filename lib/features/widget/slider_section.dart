@@ -15,10 +15,7 @@ class SliderSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 5),
-          Text(
-            'Promotions',
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
+          Text('Promotions', style: Theme.of(context).textTheme.bodyLarge),
           const SizedBox(height: 5),
           Column(
             children: [
@@ -90,6 +87,7 @@ class SliderSection extends StatelessWidget {
     );
   }
 }
+
 class SliderItem extends StatelessWidget {
   final int imageIndex;
 
@@ -102,14 +100,18 @@ class SliderItem extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        showDialog(
-          barrierDismissible: false,
-          useRootNavigator: false,
+        showGeneralDialog(
           context: context,
-          builder: (_) => Dialog.fullscreen(
-            backgroundColor: Colors.transparent,
-            child: StoryViewPage(storiesIndex: [imageIndex]),
-          ),
+          barrierDismissible: false,
+          barrierLabel: "StoryDialog",
+          barrierColor: Colors.transparent, // Fully transparent background
+          transitionDuration: Duration(milliseconds: 300),
+          pageBuilder: (context, animation1, animation2) {
+            return StoryViewPage(storiesIndex: [imageIndex]);
+          },
+          transitionBuilder: (context, animation1, animation2, child) {
+            return FadeTransition(opacity: animation1, child: child);
+          },
         );
       },
       child: Container(
