@@ -29,8 +29,7 @@ class APIREQUESTMETHOD {
   static const String POST = "POST";
   static const String GET = "GET";
   static const String PUT = "PUT";
-  static const String DELETE = "Delete";
-  // static const String REQUEST = "Request";
+  static const String DELETE = "DELETE";
 }
 
 class APIEXCEPTION {
@@ -38,6 +37,7 @@ class APIEXCEPTION {
   static String HTTP = "Http Exception\n Please Try again";
   static String FORMAT = "Format Exception\n Please Try again later";
   static String UNKNOWN = "Unknown Exception\n Please Try again later";
+  static String UNPROCESS='We couldn’t complete your request\n Try again or contact assistance.';
 }
 
 class ResponseType {

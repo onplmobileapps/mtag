@@ -102,6 +102,7 @@ ThemeData appTheme = ThemeData(
     onPrimary: Colors.white,
     scrim: Colors.white,
     surface: Colors.white,
+    outline: Color(0xFF2C2E65),
     secondary: Colors.grey,
     surfaceContainer: Color(0xff21295E),
     surfaceContainerLowest: Color(0xffE1E1E1),
@@ -391,23 +392,18 @@ ThemeData darkTheme = ThemeData(
         BoxShadow(color: Colors.grey.shade800, offset: Offset(0, 0)),
         BoxShadow(color: Colors.grey.shade800, offset: Offset(0, 0)),
       ],
-      gridShadow: [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.04),
-          blurRadius: 12,
-          offset: const Offset(1, 2),
-        ),
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.04),
-          blurRadius: 10,
-          offset: const Offset(4, 1),
-        ),
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.04),
-          blurRadius: 8,
-          offset: const Offset(2, 2),
-        ),
-      ],
+      gridShadow:    const [
+            BoxShadow(
+              color: Color(0x14000000), // 8% black
+              blurRadius: 14,
+              offset: Offset(0, 8),
+            ),
+            BoxShadow(
+              color: Color(0x0A000000), // inner soft depth
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
     ),
     const AppGradients(
       gridWidget: LinearGradient(
@@ -591,6 +587,7 @@ ThemeData darkTheme = ThemeData(
     primary: Colors.white,
     secondary: Colors.grey,
     surfaceContainerLowest: Color(0xFF2C2C2C),
+    outline: Colors.white,
   ),
   primaryColor: const Color(0xff212121),
   primarySwatch: primarSwatchDark,

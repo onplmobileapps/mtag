@@ -38,21 +38,25 @@ class HomeController extends GetxController implements GetxService {
       routeName: '/mTag',
       title: 'Vehicles',
       image: 'assets/icons/receipt.png',
+      subtitle: 'Manage your vehicles'
     ),
     MtagModel(
       routeName: '/tollHostory',
-      title: 'Toll\nHistory',
+      title: 'Toll History',
       image: 'assets/icons/toll.png',
+      subtitle: 'View transactions'
     ),
     MtagModel(
       routeName: '/tollCalculator',
-      title: 'Toll\nCalculator',
+      title: 'Toll Calculator',
       image: 'assets/icons/calculator1.png',
+      subtitle: 'Calculate charges'
     ),
     MtagModel(
       routeName: '/recharge',
       title: 'Recharge',
       image: 'assets/icons/card.png',
+      subtitle: 'Reload your balance'
     ),
   ];
 
@@ -221,7 +225,7 @@ class HomeController extends GetxController implements GetxService {
   void _handleError(Map<String, dynamic> response) {
     final message = response.containsKey(APIRESPONSE.ERROR)
         ? response[APIRESPONSE.ERROR]['Message']
-        : 'We couldn’t complete your request\n Try again or contact assistance.';
+        : APIEXCEPTION.UNPROCESS;
 
     showPopDialog(message, _resetAndNavigate);
   }

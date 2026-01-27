@@ -104,7 +104,7 @@ class PaymentCardController extends GetxController implements GetxService {
         builder: (_) => JazzResponseDialog(
           message:
               response[APIRESPONSE.SUCCESS]['Message'] ??
-              'We couldn’t complete your request\n Try again or contact assistance.',
+              APIEXCEPTION.UNPROCESS,
           isSuccess: false,
           color: Colors.red,
         ),
@@ -112,9 +112,9 @@ class PaymentCardController extends GetxController implements GetxService {
     } else {
       showDialog(
         context: Get.context!,
-        builder: (_) => const JazzResponseDialog(
+        builder: (_) =>  JazzResponseDialog(
           message:
-              'We couldn’t complete your request\n Try again or contact assistance.\nTry again later.',
+              APIEXCEPTION.UNPROCESS,
           isSuccess: false,
           color: Colors.red,
         ),

@@ -94,8 +94,6 @@ class _OperatorSelectionDialogState extends State<OperatorSelectionDialog>
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
     return AnimatedBuilder(
       animation: _animationController,
       builder: (context, child) {
@@ -110,9 +108,7 @@ class _OperatorSelectionDialogState extends State<OperatorSelectionDialog>
           Container(
             decoration: BoxDecoration(
               gradient: Theme.of(context).extension<AppGradients>()?.background,
-              border: isDarkMode
-                  ? Border.all(color: Colors.grey.withAlpha(128), width: 1)
-                  : null, // No border in light mode
+             // No border in light mode
               borderRadius: BorderRadius.circular(15),
             ),
             child: Padding(

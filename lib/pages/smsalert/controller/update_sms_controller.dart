@@ -36,7 +36,7 @@ class UpdateSmsStatusController extends GetxController implements GetxService {
       });
     } else {
       showPopDialog(
-        'We couldn’t complete your request\n Try again or contact assistance.\nTry again later.',
+        APIEXCEPTION.UNPROCESS,
         () {
           Get.offAllNamed('/pinPage');
           Get.deleteAll();

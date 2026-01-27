@@ -143,11 +143,12 @@ class _SettingScreenState extends State<SettingScreen> {
                               OperatorSelectionDialog.show(
                                 Get.context!,
                                 (value) {
-                                  Get.find<AuthController>().sendNetworkOperator(
-                                    cnicNumber: customer?.cNIC ?? '',
-                                    mobileNum: customer?.mobileNumber ?? '',
-                                    simOperator: value,
-                                  );
+                                  Get.find<AuthController>()
+                                      .sendNetworkOperator(
+                                        cnicNumber: customer?.cNIC ?? '',
+                                        mobileNum: customer?.mobileNumber ?? '',
+                                        simOperator: value,
+                                      );
                                 },
                                 mobileNumber: customer?.mobileNumber ?? '',
                               );
@@ -223,14 +224,11 @@ class _ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       margin: const EdgeInsets.all(12),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: isDark
-            ? const Color(0xFF2C2C2C)
-            : Theme.of(context).primaryColor,
+        color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(

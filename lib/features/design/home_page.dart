@@ -37,16 +37,17 @@ class HomePage extends StatelessWidget {
     return GetX<HomeController>(
       init: Get.find<HomeController>(),
       builder: (controller) {
-       
-            const SizedBox.shrink();
+        const SizedBox.shrink();
         return Scaffold(
           body: _navigationPages[controller.currentPage.value],
           bottomNavigationBar: CustomPaint(
             painter: NotchedBorderPainter(
               borderColor: ColorScheme.of(context).outline,
               strokeWidth: 1.0,
-              notchMargin: 7,notchColor: ColorScheme.of(context).outline.withValues(alpha: 0.7)
-             
+              notchMargin: 7,
+              notchColor: ColorScheme.of(
+                context,
+              ).outline.withValues(alpha: 0.7),
             ),
             child: Padding(
               padding: const EdgeInsets.only(top: 1),
@@ -57,9 +58,10 @@ class HomePage extends StatelessWidget {
                 ),
                 child: BottomAppBar(
                   height: 55,
-                  clipBehavior: Clip.none,
+                  clipBehavior: Clip.hardEdge,
                   elevation: 4,
-                  notchMargin: 1.0,padding: .zero,
+                  notchMargin: 1.0,
+                  padding: .zero,
                   color: ColorScheme.of(context).surface,
                   shape: const CircularNotchedRectangle(),
                   child: _BottomNavItems(),
@@ -68,7 +70,10 @@ class HomePage extends StatelessWidget {
             ),
           ),
           floatingActionButton: Container(
-            decoration: BoxDecoration(shape: BoxShape.circle, border: .all(color:ColorScheme.of(context).outline)),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: .all(color: ColorScheme.of(context).outline),
+            ),
             child: WhatsAppButton(),
           ),
           floatingActionButtonLocation:
@@ -93,7 +98,7 @@ class _BottomNavItems extends StatelessWidget {
           return _NavItem(
             index: index,
             currentIndex: currentIndex,
-             icon: _navItems[index]['icon']!,
+            icon: _navItems[index]['icon']!,
             label: _navItems[index]['label']!,
             onTap: () => controller.setCurrentIndex(index),
           );
@@ -114,7 +119,8 @@ class _NavItem extends StatelessWidget {
     required this.index,
     required this.currentIndex,
     required this.icon,
-    required this.onTap,required this.label,
+    required this.onTap,
+    required this.label,
   });
 
   @override
@@ -139,7 +145,7 @@ class _NavItem extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
-              Text(label,style: TextTheme.of(context).displaySmall,)
+              Text(label, style: TextTheme.of(context).displaySmall),
             ],
           ),
         ),
@@ -154,9 +160,6 @@ final _navItems = [
   {'icon': 'assets/location.svg', 'label': ' Reacharge Locations'},
   {'icon': 'assets/setting.svg', 'label': 'Settings'},
 ];
-
-
-
 
 class HomePageContent extends StatelessWidget {
   final PageController _pageController = PageController();
@@ -957,10 +960,10 @@ class ActionGrid extends StatelessWidget {
       padding: .symmetric(horizontal: 10),
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.5,
+          maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.6,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
-          mainAxisExtent: MediaQuery.of(context).size.height * 0.09,
+          mainAxisExtent: MediaQuery.of(context).size.height * 0.07,
         ),
         delegate: SliverChildBuilderDelegate(
           childCount: controller.dashBoardModel.length,
@@ -969,7 +972,7 @@ class ActionGrid extends StatelessWidget {
             return _ActionTile(
               item: e,
               controller: controller,
-              isCalculatorWidget: e.title == 'Toll\nCalculator' ? true : false,
+              isCalculatorWidget: e.title == 'Toll Calculator' ? true : false,
             );
           },
         ),
@@ -997,41 +1000,63 @@ class _ActionTile extends StatelessWidget {
     return GestureDetector(
       onTap: () => handleItemTap(context, item, controller),
       child: Container(
+        padding: .symmetric(horizontal: 16),
         clipBehavior: .none,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           gradient: LinearGradient(
             begin: AlignmentGeometry.xy(-1.1, 0.9),
-            end: Alignment(-1.0, 2.0),
-
+            end: Alignment(-1.0, 2.2),
             colors: isCalculatorWidget == true && !Get.isDarkMode
-                ? [Color(0xFFFFFEF8), Color(0xFFFFF9E5), Color(0xFFFFF2B8)]
+                ? const [
+                    Color(0xFFFFFDF5),
+                    Color(0xFFFFF3CC),
+                    Color(0xFFFFF3CC),
+                    Color(0xFFFFE7A0),
+                  ]
                 : gradientColor,
           ),
+          boxShadow: Theme.of(context).extension<AppShadows>()!.gridShadow,
         ),
-        child: FittedBox(
-          child: Row(
-            children: [
-              Container(
-                width: 44,
-                height: 44,
 
-                alignment: Alignment.center,
-                child: Image.asset(
-                  item.image ?? '',
-                  width: 38,
-                  height: 38,
-                  fit: BoxFit.contain,
-                ),
+        child: FittedBox(
+          child: Row(mainAxisAlignment: .start,crossAxisAlignment: .center,
+            children: [
+              Image.asset(
+                item.image ?? '',
+                width: 30,
+                height: 30,
+                fit: BoxFit.contain,
               ),
-              const SizedBox(width: 16),
-              FittedBox(
-                child: Text(
-                  item.title ?? '',
-                  style: TextTheme.of(context).displayMedium,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  spacing: 3,
+                  mainAxisAlignment: .start,
+                  crossAxisAlignment: .start,
+                  children: [
+                    FittedBox(
+                      child: Text(
+                        item.title ?? '',
+                        style: TextTheme.of(context).displayMedium,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+
+                    FittedBox(
+                      child: Text(
+                        item.subtitle ?? '',
+                        style: TextTheme.of(
+                          context,
+                        ).bodySmall?.copyWith(fontSize: 7),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

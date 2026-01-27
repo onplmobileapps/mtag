@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/api/api_constants.dart';
 import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
 import '../../api/auth_controller.dart';
 import '../../controller/home_controller.dart';
@@ -164,14 +165,14 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
           title: const Text('Recharge M-TAG'),
         ),
         body: isNoInternet
-            ? const Center(
+            ?  Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Icon(Icons.warning_sharp, color: Colors.red, size: 100),
                     Text(
-                      'We couldn’t complete your request\n Try again or contact assistance.\n Try again later.',
+                      APIEXCEPTION.UNPROCESS,
                       style: TextStyle(color: Colors.black),
                       textAlign: TextAlign.center,
                     ),

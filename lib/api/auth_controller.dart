@@ -97,17 +97,17 @@ class AuthController extends GetxController implements GetxService {
       }
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(
-        '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.'}',
+        '${response[APIRESPONSE.ERROR]['Message'] ??APIEXCEPTION.UNPROCESS}',
         Get.back,
       );
     } else if (response['Code'] == '02') {
       showPopDialog(
-        '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.'}',
+        '${response[APIRESPONSE.ERROR]['Message'] ?? APIEXCEPTION.UNPROCESS}',
         Get.back,
       );
     } else {
       showPopDialog(
-        '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.'}',
+        '${response[APIRESPONSE.ERROR]['Message'] ?? APIEXCEPTION.UNPROCESS}',
         Get.back,
       );
     }
@@ -155,12 +155,12 @@ class AuthController extends GetxController implements GetxService {
       );
     } else if (response.containsKey(APIRESPONSE.SUCCESS)) {
       showPopDialog(
-        '${response[APIRESPONSE.ERROR]['Message'] ?? 'We couldn’t complete your request\n Try again or contact assistance.'}',
+        '${response[APIRESPONSE.ERROR]['Message'] ?? APIEXCEPTION.UNPROCESS}',
         Get.back,
       );
     } else {
       showPopDialog(
-        'We couldn’t complete your request\n Try again or contact assistance.',
+        APIEXCEPTION.UNPROCESS,
         () {},
       );
     }
@@ -242,7 +242,7 @@ class AuthController extends GetxController implements GetxService {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () => Get.back());
     } else {
       showPopDialog(
-        'We couldn’t complete your request\n Try again or contact assistance.',
+        APIEXCEPTION.UNPROCESS,
         () => Get.back(),
       );
     }
@@ -271,7 +271,7 @@ class AuthController extends GetxController implements GetxService {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () => Get.back());
     } else {
       showPopDialog(
-        'We couldn’t complete your request\n Try again or contact assistance.',
+        APIEXCEPTION.UNPROCESS,
         () => Get.back(),
       );
     }
@@ -323,7 +323,7 @@ class AuthController extends GetxController implements GetxService {
       );
     } else {
       showPopDialog(
-        'We couldn’t complete your request\n Try again or contact assistance.',
+        APIEXCEPTION.UNPROCESS,
         null,
         otpVerificationError: true,
       );
@@ -400,7 +400,6 @@ class AuthController extends GetxController implements GetxService {
     );
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
-      log('ontapp:$onTap');
       authRepo.saveLoginUserData(
         user: UserModel(
           code: response[APIRESPONSE.SUCCESS]['Code'],
