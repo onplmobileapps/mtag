@@ -358,6 +358,7 @@ ThemeData appTheme = ThemeData(
       color: Colors.black,
       fontFamily: fontFamily,
     ),
+    
   ),
   chipTheme: ChipThemeData(
     labelStyle: TextStyle(
@@ -645,6 +646,11 @@ ThemeData darkTheme = ThemeData(
       fontFamily: fontFamily,
     ),
     labelSmall: TextStyle(fontFamily: fontFamily),
+    labelMedium: TextStyle(
+      fontSize: 14,
+      color: Colors.white,
+      fontFamily: fontFamily,
+    ),
   ),
 
   tabBarTheme: TabBarThemeData(indicatorColor: Colors.white),

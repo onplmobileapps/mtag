@@ -21,15 +21,9 @@ class TollCalculator extends StatelessWidget {
     // test
     return Scaffold(
       appBar: GradientAppBar(title: const Text(TollCalculator.title)),
-      body: Column(
-        children: [
-          Expanded(
-            child: TollPlazaTab(
-              animationController: animationController,
-              fadeAnimation: fadeAnimation,
-            ),
-          ),
-        ],
+      body: TollPlazaTab(
+        animationController: animationController,
+        fadeAnimation: fadeAnimation,
       ),
     );
   }

@@ -281,10 +281,8 @@ class TollPlazaTab extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               border: Border.all(
-                color: station.isEmpty
-                    ? Colors.grey
-                    : Theme.of(context).primaryColor,
-                width: 0.5,
+                color: ColorScheme.of(context).outline,
+                width: 0.6
               ),
               borderRadius: BorderRadius.circular(12),
             ),
@@ -299,10 +297,8 @@ class TollPlazaTab extends StatelessWidget {
                   ),
                 ),
                 Icon(
-                  Icons.arrow_drop_down,
-                  color: station.isEmpty
-                      ? Colors.grey[600]
-                      : Theme.of(context).primaryColor,
+                  Icons.keyboard_arrow_down,
+                  
                 ),
               ],
             ),
@@ -484,17 +480,19 @@ class TollPlazaTab extends StatelessWidget {
         const SizedBox(height: 12),
         FadeTransition(
           opacity: fadeAnimation,
-          child: _section(
-            context,
-            child: TollDisplay(
-              padding: padding,
-              isCalculating:
-                  controller.isCalculatingPlaza.value && !isSpecialMotorway,
-              entry: isSpecialMotorway ? null : controller.entryStation.value,
-              exit: isSpecialMotorway ? null : controller.exitStation.value,
-              vehicleName: vehicle.name,
-              toll: toll,
-              route: route,
+          child: SafeArea(top: false,
+            child: _section(
+              context,
+              child: TollDisplay(
+                padding: padding,
+                isCalculating:
+                    controller.isCalculatingPlaza.value && !isSpecialMotorway,
+                entry: isSpecialMotorway ? null : controller.entryStation.value,
+                exit: isSpecialMotorway ? null : controller.exitStation.value,
+                vehicleName: vehicle.name,
+                toll: toll,
+                route: route,
+              ),
             ),
           ),
         ),
