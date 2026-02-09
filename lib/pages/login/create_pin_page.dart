@@ -156,9 +156,9 @@ class _PinEntryPageState extends State<PinEntryPage> {
         child: Column(
           children: [
             // Top Section
-                 const Spacer(),
+            const Spacer(),
             _buildLogo(size, isDarkMode),
-               const Spacer(),
+            const Spacer(),
             _buildSubtitle(context),
             SizedBox(height: size.height * 0.02),
             _buildPinField(size),
@@ -231,7 +231,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
                       color: pin.length > index
                           ? Theme.of(context).primaryColor
                           : Colors.grey.shade400,
-                      width: 1.0,
+                      width: 0.5,
                     ),
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -291,13 +291,26 @@ class _PinEntryPageState extends State<PinEntryPage> {
                           ? Colors.white
                           : Theme.of(context).primaryColor,
                     )
-                  : Image.asset(
-                      "assets/fingerprint.png",
-                height: size.width * 0.099,
-                width: size.width * 0.099,
-                      color: Get.isDarkMode
-                          ? Colors.white
-                          : Theme.of(context).primaryColor,
+                  : Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(8.0),
+                        border: Border.all(
+                          color: Get.isDarkMode
+                              ? Colors.white
+                              : Theme.of(context).primaryColor,
+                          width: 1.0,
+                        ),
+                      ),
+                      child: Image.asset(
+                        "assets/fingerprint.png",
+                        height: size.width * 0.08,
+                        width: size.width * 0.08,
+                        color: Get.isDarkMode
+                            ? Colors.white
+                            : Theme.of(context).primaryColor,
+                      ),
                     ),
             ),
         ],
@@ -326,7 +339,8 @@ class _PinEntryPageState extends State<PinEntryPage> {
 
   // SEPARATE KEYPAD COMPONENT
   Widget _buildKeypad(Size size) {
-    return Column(spacing: 12,
+    return Column(
+      spacing: 12,
       children: [
         // Row 1: 1 2 3
         Row(

@@ -7,7 +7,6 @@ import 'package:mtag_flutterapp/api/api_constants.dart';
 import 'package:mtag_flutterapp/widgets/gradient_appbar.dart';
 import '../../api/auth_controller.dart';
 import '../../controller/home_controller.dart';
-import 'package:video_player/video_player.dart';
 
 class AlfaWebView2 extends StatefulWidget {
   final String? url;
@@ -22,6 +21,8 @@ class AlfaWebView2 extends StatefulWidget {
 class _AlfaWebViewState extends State<AlfaWebView2> {
   final GlobalKey webViewKey = GlobalKey();
   InAppWebViewController? _appWebViewController;
+  bool _isDisposed = false;
+
   InAppWebViewSettings settings = InAppWebViewSettings(
     underPageBackgroundColor: Colors.white,
     javaScriptCanOpenWindowsAutomatically: true,
@@ -40,30 +41,45 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
     mixedContentMode: MixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
     pageZoom: 1,
   );
-  late VideoPlayerController _videocontroller;
+
   int loadingPercentage = 0;
   bool isNoInternet = false;
 
   Future<void> handlePageFinished(String url) async {
-    // 'Recharge%20Success' old
-    if (url.contains('status') && url.contains('status=succes')) {
-      await showSuccessPopup();
-      return;
-    } else if (url.contains('status=failure')) {
-      //status=failure
-      showPaymentCancelledPopup('Payment Failed');
-      return;
-    } else if (url.contains('status=cancel')) {
-      showPaymentCancelledPopup('Payment Cancelled');
-    } else if (url.contains('invalid')) {
-      showPaymentCancelledPopup('Payment Failed Due to Invalid Card Details');
+    // Critical: Check if widget is disposed
+    if (_isDisposed || !mounted) return;
+
+    try {
+      if (url.contains('status') && url.contains('status=succes')) {
+        if (!_isDisposed && mounted) {
+          await showSuccessPopup(context);
+        }
+        return;
+      } else if (url.contains('status=failure')) {
+        if (!_isDisposed && mounted) {
+          showPaymentCancelledPopup('Payment Failed');
+        }
+        return;
+      } else if (url.contains('status=cancel')) {
+        if (!_isDisposed && mounted) {
+          showPaymentCancelledPopup('Payment Cancelled');
+        }
+      } else if (url.contains('invalid')) {
+        if (!_isDisposed && mounted) {
+          showPaymentCancelledPopup('Payment Failed Due to Invalid Card Details');
+        }
+      }
+    } catch (e) {
+      log('Error handling page finish: $e');
     }
   }
 
-  Future<void> showSuccessPopup() async {
+  Future<void> showSuccessPopup(BuildContext context) async {
+    if (_isDisposed || !mounted) return;
+
     await showCupertinoModalPopup(
       barrierDismissible: false,
-      context: Get.context!,
+      context: context,
       builder: (_) => Theme(
         data: ThemeData.dark(),
         child: PopScope(
@@ -74,7 +90,15 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
                 SizedBox(
                   height: 120,
                   width: MediaQuery.sizeOf(context).width,
-                  child: VideoPlayer(_videocontroller..play()),
+                  child: Image.asset(
+                    'assets/mcsuccess.gif',
+                    cacheHeight: 250,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      log("Image decompression error: $error");
+                      return const Icon(Icons.check_circle, color: Colors.green, size: 60);
+                    },
+                  ),
                 ),
                 const SizedBox(height: 8),
                 const Text('M-Tag Successfully Recharged'),
@@ -83,7 +107,7 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
             actions: [
               CupertinoDialogAction(
                 onPressed: () async {
-                  await Get.find<HomeController>().pullRefreshDashboardData();
+                  Get.find<HomeController>().pullRefreshDashboardData();
                   await Get.offAllNamed('/dashboard');
                 },
                 child: const Text('Ok'),
@@ -96,6 +120,8 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
   }
 
   Future<void> showPaymentCancelledPopup(String message) async {
+    if (_isDisposed || !mounted) return;
+
     await showCupertinoModalPopup(
       semanticsDismissible: false,
       useRootNavigator: false,
@@ -126,24 +152,13 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
 
   @override
   void initState() {
-    _videocontroller =
-        VideoPlayerController.asset(
-            'assets/mcsuccess.mp4',
-            videoPlayerOptions: VideoPlayerOptions(
-              allowBackgroundPlayback: true,
-            ),
-          )
-          ..setLooping(false)
-          ..initialize();
     super.initState();
   }
 
   @override
   void dispose() {
-    _videocontroller.dispose();
-    _appWebViewController?.stopLoading();
-    _appWebViewController?.dispose();
-
+    _isDisposed = true;
+    _appWebViewController = null;
     super.dispose();
   }
 
@@ -152,137 +167,144 @@ class _AlfaWebViewState extends State<AlfaWebView2> {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) async {
-        showPaymentCancelledPopup('Payment has been cancelled');
-
+        if (!_isDisposed && mounted) {
+          showPaymentCancelledPopup('Payment has been cancelled');
+        }
         return;
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
         appBar: GradientAppBar(
-          // backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-          // titleTextStyle: Theme.of(context).appBarTheme.titleTextStyle,
           title: const Text('Recharge M-TAG'),
         ),
         body: isNoInternet
-            ?  Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(Icons.warning_sharp, color: Colors.red, size: 100),
-                    Text(
-                      APIEXCEPTION.UNPROCESS,
-                      style: TextStyle(color: Colors.black),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              )
-            : Stack(
-                children: [
-                  InAppWebView(
-                    initialUrlRequest: URLRequest(
-                      url: WebUri(widget.url.toString()),
-                      headers: {
-                        "Accept": "application/json",
-                        "User-Agent":
-                            "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.0.0 Mobile Safari/537.36",
-                        "Connection": "Keep-Alive",
-                        "Access-Control-Allow-Origin": "*",
-                        "Authorization":
-                            "Bearer ${Get.find<AuthController>().authRepo.getAuthToken()}",
-                      },
-                    ),
-                    initialSettings: settings,
-                    onWebViewCreated: (controller) async {
-                      if (_appWebViewController != null) {
-                        _appWebViewController?.dispose();
-                        _appWebViewController = controller;
-                      }
-                    },
-                    onDidReceiveServerRedirectForProvisionalNavigation:
-                        (controller) {},
-                    onLoadStart: (controller, url) {
-                      if (mounted) setState(() {});
-                    },
-                    onPermissionRequest: (controller, request) async {
-                      return PermissionResponse(
-                        resources: request.resources,
-                        action: PermissionResponseAction.GRANT,
-                      ); // final mtagIds =
-                      //     homeController.dashboradData.value.activeMtags
-                      //         ?.map((e) => e.tokenno)
-                      //         .whereType<String>()
-                      //         .toList() ??
-                      //     [];
-                      // await homeController.sendCheckBalance(mtagIds);
-                    },
-
-                    onPageCommitVisible: (controller, url) {
-                      if (mounted) handlePageFinished(url.toString());
-                    },
-                    shouldOverrideUrlLoading: (controller, navigationAction) async {
-                      log(
-                        "navigation Url==>${navigationAction.request.url} $navigationAction",
-                      );
-                      return NavigationActionPolicy.ALLOW;
-                    },
-                    onLoadStop: (controller, url) {
-                      log('load stope==>${url?.data}');
-                    },
-                    onReceivedError: (controller, request, error) {
-                      log("Error on Load==>${error.description}");
-                      if (error.type ==
-                              WebResourceErrorType.BAD_SERVER_RESPONSE ||
-                          error.type ==
-                              WebResourceErrorType.NETWORK_CONNECTION_LOST ||
-                          error.type ==
-                              WebResourceErrorType.CANNOT_LOAD_FROM_NETWORK ||
-                          error.type ==
-                              WebResourceErrorType.NOT_CONNECTED_TO_INTERNET ||
-                          error.type == WebResourceErrorType.BAD_URL ||
-                          error.type == WebResourceErrorType.HOST_LOOKUP ||
-                          error.type == WebResourceErrorType.FILE_NOT_FOUND ||
-                          error.type == WebResourceErrorType.CANCELLED ||
-                          error.type ==
-                              WebResourceErrorType
-                                  .CLIENT_CERTIFICATE_REJECTED ||
-                          error.type ==
-                              WebResourceErrorType.CANNOT_CONNECT_TO_HOST ||
-                          error.type ==
-                              WebResourceErrorType.CANNOT_LOAD_FROM_NETWORK) {
-                        isNoInternet = true;
-                        if (mounted) setState(() {});
-                      }
-                    },
-                    onProgressChanged: (controller, progress) {
-                      setState(() {
-                        loadingPercentage = progress;
-                      });
-                    },
-                    onUpdateVisitedHistory: (controller, url, isReload) {
-                      setState(() {});
-                    },
-                    onConsoleMessage: (controller, consoleMessage) {},
-                    onReceivedHttpError: (controller, request, errorResponse) =>
-                        log(errorResponse.toString()),
-                    onLoadResource: (controller, resource) =>
-                        log(resource.toString()),
-                    onReceivedServerTrustAuthRequest:
-                        (controller, challenge) async =>
-                            ServerTrustAuthResponse(
-                              action: ServerTrustAuthResponseAction.PROCEED,
-                            ),
-                  ),
-                  if (loadingPercentage < 100)
-                    LinearProgressIndicator(
-                      color: Theme.of(context).primaryColor,
-                      minHeight: 5.0,
-                      value: loadingPercentage / 100.00,
-                    ),
-                ],
+            ? Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(Icons.warning_sharp, color: Colors.red, size: 100),
+              Text(
+                APIEXCEPTION.UNPROCESS,
+                style: const TextStyle(color: Colors.black),
+                textAlign: TextAlign.center,
               ),
+            ],
+          ),
+        )
+            : Stack(
+          children: [
+            InAppWebView(
+              key: webViewKey,
+              initialUrlRequest: URLRequest(
+                url: WebUri(widget.url.toString()),
+                headers: {
+                  "Accept": "application/json",
+                  "User-Agent":
+                  "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.0.0 Mobile Safari/537.36",
+                  "Connection": "Keep-Alive",
+                  "Access-Control-Allow-Origin": "*",
+                  "Authorization":
+                  "Bearer ${Get.find<AuthController>().authRepo.getAuthToken()}",
+                },
+              ),
+              initialSettings: settings,
+              onWebViewCreated: (controller) async {
+                if (!_isDisposed) {
+                  _appWebViewController = controller;
+                }
+              },
+              onDidReceiveServerRedirectForProvisionalNavigation: (controller) {},
+              onLoadStart: (controller, url) {
+                if (!_isDisposed && mounted) {
+                  setState(() {});
+                }
+              },
+              onPermissionRequest: (controller, request) async {
+                return PermissionResponse(
+                  resources: request.resources,
+                  action: PermissionResponseAction.GRANT,
+                );
+              },
+              onPageCommitVisible: (controller, url) {
+                if (!_isDisposed && mounted) {
+                  handlePageFinished(url.toString());
+                }
+              },
+              shouldOverrideUrlLoading: (controller, navigationAction) async {
+                if (!_isDisposed) {
+                  log(
+                    "navigation Url==>${navigationAction.request.url} $navigationAction",
+                  );
+                }
+                return NavigationActionPolicy.ALLOW;
+              },
+              onLoadStop: (controller, url) {
+                if (!_isDisposed) {
+                  log('load stop==>${url?.data}');
+                }
+              },
+              onReceivedError: (controller, request, error) {
+                if (_isDisposed) return;
+
+                log("Error on Load==>${error.description}");
+
+                if (error.type == WebResourceErrorType.BAD_SERVER_RESPONSE ||
+                    error.type == WebResourceErrorType.NETWORK_CONNECTION_LOST ||
+                    error.type == WebResourceErrorType.CANNOT_LOAD_FROM_NETWORK ||
+                    error.type == WebResourceErrorType.NOT_CONNECTED_TO_INTERNET ||
+                    error.type == WebResourceErrorType.BAD_URL ||
+                    error.type == WebResourceErrorType.HOST_LOOKUP ||
+                    error.type == WebResourceErrorType.FILE_NOT_FOUND ||
+                    error.type == WebResourceErrorType.CANCELLED ||
+                    error.type == WebResourceErrorType.CLIENT_CERTIFICATE_REJECTED ||
+                    error.type == WebResourceErrorType.CANNOT_CONNECT_TO_HOST ||
+                    error.type == WebResourceErrorType.CANNOT_LOAD_FROM_NETWORK) {
+                  isNoInternet = true;
+                  if (mounted) setState(() {});
+                }
+              },
+              onProgressChanged: (controller, progress) {
+                if (!_isDisposed && mounted) {
+                  setState(() {
+                    loadingPercentage = progress;
+                  });
+                }
+              },
+              onUpdateVisitedHistory: (controller, url, isReload) {
+                if (!_isDisposed && mounted) {
+                  setState(() {});
+                }
+              },
+              onConsoleMessage: (controller, consoleMessage) {
+                if (!_isDisposed) {
+                  // Handle console messages if needed
+                }
+              },
+              onReceivedHttpError: (controller, request, errorResponse) {
+                if (!_isDisposed) {
+                  log(errorResponse.toString());
+                }
+              },
+              onLoadResource: (controller, resource) {
+                if (!_isDisposed) {
+                  log(resource.toString());
+                }
+              },
+              onReceivedServerTrustAuthRequest: (controller, challenge) async =>
+                  ServerTrustAuthResponse(
+                    action: ServerTrustAuthResponseAction.PROCEED,
+                  ),
+            ),
+            if (loadingPercentage < 100 && !_isDisposed)
+              LinearProgressIndicator(
+                color: Theme.of(context).primaryColor,
+                minHeight: 5.0,
+                value: loadingPercentage / 100.00,
+              ),
+          ],
+        ),
       ),
     );
   }

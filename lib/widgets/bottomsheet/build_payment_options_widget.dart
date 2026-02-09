@@ -53,7 +53,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
           children: [
             Text(
               'Recommended Payment Methods',
-              style: TextTheme.of(context).labelLarge?.copyWith(fontWeight: .w600),
+              style: TextTheme.of(context).labelLarge?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 5),
             _buildPaymentOption(
@@ -70,11 +70,15 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                   });
                   return;
                 }
+
+                final effectiveRecoveryAmount = recoveryAmount ?? 0.0;
+                final totalAmount = blackListRecharge
+                    ? effectiveRecoveryAmount + calculateCharges(effectiveRecoveryAmount)
+                    : double.tryParse(amount.text) ?? 0.0;
+
                 var data = await Get.find<PaymentCardController>().generatePSID(
                   mtagID: mtagId,
-                  amount: blackListRecharge
-                      ? recoveryAmount??0.0 + calculateCharges(recoveryAmount)
-                      : double.parse(amount.text),
+                  amount: totalAmount,
                   cnic: OtherConsts().ownerCNIC.value,
                   mobileNum: OtherConsts().mobile.value,
                   isBlocked: blackListRecharge ? true : false,
@@ -86,7 +90,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                       double.tryParse(data['charges'].toString()) ?? 0.0;
                   final enteredAmount = double.tryParse(amount.text) ?? 0.0;
                   final effectiveAmount = blackListRecharge
-                      ? (recoveryAmount ?? 0.0)
+                      ? effectiveRecoveryAmount
                       : enteredAmount;
         
                   showBreakdownDialog(
@@ -149,8 +153,8 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
                           psid: data[APIRESPONSE.SUCCESS]['Data'],
                           context: context,
                           amount: blackListRecharge
-                              ? recoveryAmount
-                              : double.parse(amount.text),
+                              ? (recoveryAmount ?? 0.0)
+                              : (double.tryParse(amount.text) ?? 0.0),
         
                           inVoicetimerNotifier: topUptimerNotifier,
                           blackListRecharge: blackListRecharge,
@@ -272,19 +276,20 @@ bool isAmountValid(String amount) {
 }
 
 double calculateCharges(double? amount) {
-  if (amount! > 0 && amount <= 10000) {
+  final effectiveAmount = amount ?? 0.0;
+  if (effectiveAmount > 0 && effectiveAmount <= 10000) {
     return 10;
-  } else if (amount > 10000 && amount <= 100000) {
+  } else if (effectiveAmount > 10000 && effectiveAmount <= 100000) {
     return 25;
-  } else if (amount > 100000 && amount <= 250000) {
+  } else if (effectiveAmount > 100000 && effectiveAmount <= 250000) {
     return 62.50;
-  } else if (amount > 250000 && amount <= 1000000) {
+  } else if (effectiveAmount > 250000 && effectiveAmount <= 1000000) {
     return 125;
-  } else if (amount > 1000000 && amount <= 2500000) {
+  } else if (effectiveAmount > 1000000 && effectiveAmount <= 2500000) {
     return 250;
-  } else if (amount > 2500000 && amount <= 5000000) {
+  } else if (effectiveAmount > 2500000 && effectiveAmount <= 5000000) {
     return 375;
-  } else if (amount > 5000000) {
+  } else if (effectiveAmount > 5000000) {
     return 375;
   } else {
     return 0;

@@ -9,7 +9,7 @@ class OperatorSelectionDialog extends StatefulWidget {
   final void Function(int value) onSubmit;
   final String? mobileNumber;
   final int? value;
-  final VoidCallback? onResendOtp;
+  final void Function(int value)? onResendOtp;
   final VoidCallback? onResetTimer;
   const OperatorSelectionDialog({
     super.key,
@@ -25,8 +25,8 @@ class OperatorSelectionDialog extends StatefulWidget {
     void Function(int) onSubmit, {
     String? mobileNumber,
     int? value,
-        VoidCallback? onResendOtp,
-        VoidCallback? onResetTimer,
+    void Function(int)? onResendOtp,
+    VoidCallback? onResetTimer,
   }) {
     showDialog(
       context: context,
@@ -108,7 +108,6 @@ class _OperatorSelectionDialogState extends State<OperatorSelectionDialog>
           Container(
             decoration: BoxDecoration(
               gradient: Theme.of(context).extension<AppGradients>()?.background,
-             // No border in light mode
               borderRadius: BorderRadius.circular(15),
             ),
             child: Padding(
@@ -120,7 +119,6 @@ class _OperatorSelectionDialogState extends State<OperatorSelectionDialog>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 10),
-                    // Centered Logo - changes based on theme
                     Center(
                       child: Image.asset(
                         'assets/operator_selection.png',
@@ -131,13 +129,13 @@ class _OperatorSelectionDialogState extends State<OperatorSelectionDialog>
                     Center(
                       child: Text(
                         'Change SIM Operator',
-                        style: TextTheme.of(
-                          context,
-                        ).bodyLarge?.copyWith(fontWeight: .w600, fontSize: 20),
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                            ),
                       ),
                     ),
                     const SizedBox(height: 24),
-                    // Mobile Number Field (Read-Only)
                     TextField(
                       controller: _numberController,
                       keyboardType: TextInputType.phone,
@@ -175,27 +173,28 @@ class _OperatorSelectionDialogState extends State<OperatorSelectionDialog>
                       ),
                     ),
                     const SizedBox(height: 20),
-                    // Operator Selection Section
                     Text(
                       'Select Mobile Operator',
-                      style: Theme.of(context).textTheme.displayMedium
+                      style: Theme.of(context)
+                          .textTheme
+                          .displayMedium
                           ?.copyWith(fontWeight: FontWeight.w300),
                     ),
                     const SizedBox(height: 8),
                     OperatorDropdown(
                       selectedOperator: selectedOperatorValue != null
                           ? OperatorDropdown.defaultOperators
-                                .firstWhere(
-                                  (op) => op.value == selectedOperatorValue,
-                                )
-                                .name
+                              .firstWhere(
+                                (op) => op.value == selectedOperatorValue,
+                              )
+                              .name
                           : null,
                       onChanged: (value) {
                         setState(() {
                           selectedOperatorValue = value != null
                               ? OperatorDropdown.defaultOperators
-                                    .firstWhere((op) => op.name == value)
-                                    .value
+                                  .firstWhere((op) => op.name == value)
+                                  .value
                               : null;
                           _showError = false;
                           _animationController.reset();
@@ -203,7 +202,6 @@ class _OperatorSelectionDialogState extends State<OperatorSelectionDialog>
                       },
                     ),
                     const SizedBox(height: 15),
-                    // Submit Button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -211,7 +209,7 @@ class _OperatorSelectionDialogState extends State<OperatorSelectionDialog>
                           if (selectedOperatorValue != null) {
                             Navigator.of(context).pop();
                             widget.onSubmit(selectedOperatorValue!);
-                            widget.onResendOtp?.call();
+                            widget.onResendOtp?.call(selectedOperatorValue!);
                             widget.onResetTimer?.call();
                           } else {
                             setState(() {
@@ -229,23 +227,20 @@ class _OperatorSelectionDialogState extends State<OperatorSelectionDialog>
                         ),
                         child: Text(
                           'Submit',
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
                               ),
                         ),
                       ),
                     ),
-                    // Error Message
                     if (_showError)
                       Center(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 8),
                           child: Text(
                             'Please select Mobile Operator.',
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: Theme.of(context).colorScheme.error,
                                 ),
                           ),
@@ -256,10 +251,10 @@ class _OperatorSelectionDialogState extends State<OperatorSelectionDialog>
                       textAlign: TextAlign.center,
                       text: TextSpan(
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 16.0,
-                          fontFamily: 'Poppins',
-                          letterSpacing: 1.5,
-                        ),
+                              fontSize: 16.0,
+                              fontFamily: 'Poppins',
+                              letterSpacing: 1.5,
+                            ),
                         children: <InlineSpan>[
                           TextSpan(
                             text: 'Further assistance? Call ',
@@ -298,7 +293,6 @@ class _OperatorSelectionDialogState extends State<OperatorSelectionDialog>
                                     style: TextStyle(
                                       color: Colors.green.shade800,
                                       fontWeight: FontWeight.bold,
-                                      decoration: TextDecoration.underline,
                                     ),
                                   ),
                                 ],
@@ -314,17 +308,21 @@ class _OperatorSelectionDialogState extends State<OperatorSelectionDialog>
             ),
           ),
           Positioned(
-            top: 0,
-            right: 0,
-            child: InkWell(
-              onTap: () => Navigator.pop(context),
-              borderRadius: BorderRadius.circular(20),
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: CircleAvatar(
-                  backgroundColor: Colors.red,
-                  radius: 16,
-                  child: Icon(Icons.close, color: Colors.white, size: 18),
+            top: -8,
+            right: -8,
+            child: IconButton(
+              padding: const EdgeInsets.all(0),
+              onPressed: () => Navigator.of(context).pop(),
+              icon: Container(
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 2),
+                ),
+                child: const Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: 20,
                 ),
               ),
             ),

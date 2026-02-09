@@ -36,8 +36,7 @@ class RechargeSelfPage extends StatelessWidget {
         onPopInvokedWithResult: controller.handlePop,
         child: Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar: GradientAppBar(title: Text('Recharge M-Tag')),
-          // appBar: AppBar(title: const Text('Recharge M-Tag')),
+          appBar: GradientAppBar(title: const Text('Recharge M-Tag')),
           body: _buildBody(context, controller),
         ),
       ),
@@ -51,7 +50,6 @@ class RechargeSelfPage extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
-          // borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -127,6 +125,11 @@ class RechargeSelfController extends GetxController {
 
   @override
   void onClose() {
+    // Use addPostFrameCallback to avoid "setState() called when widget tree was locked"
+    // which happens when updating ValueNotifier during disposal.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      selected1linkOpt.value = -1;
+    });
     _disposeControllers();
     super.onClose();
   }
@@ -149,21 +152,34 @@ class RechargeSelfController extends GetxController {
       amountController.text = arguments.first.amount ?? '';
 
       _handleInitialPayment();
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        selected1linkOpt.value = -1;
+      });
     }
   }
 
   void _handleInitialPayment() {
     if (arguments.first.payId != null) {
       fetchPaymentCards(arguments.first.payId!);
-      if (arguments.first.payId == '1') {
-        isCardsVisible.value = true;
-        setPayment(2);
-      } else if (arguments.first.payId == '0') {
-        isCardsVisible.value = true;
-        setPayment(1);
-      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (arguments.first.payId == '1') {
+          isCardsVisible.value = true;
+          setPayment(2);
+          selected1linkOpt.value = 2; // JazzCash value in BuildPaymentOptionsWidget
+        } else if (arguments.first.payId == '0') {
+          isCardsVisible.value = true;
+          setPayment(1);
+          selected1linkOpt.value = 3; // Credit/Debit value in BuildPaymentOptionsWidget
+        }
+      });
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        selected1linkOpt.value = -1;
+      });
     }
   }
+
 
   void _disposeControllers() {
     amountController.dispose();
@@ -177,11 +193,11 @@ class RechargeSelfController extends GetxController {
 
   void handlePop(bool didPop, dynamic result) {
     if (!didPop) {
-      selected1linkOpt.value = -1;
-      log('pop invoked:$didPop ${selected1linkOpt.value}');
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        selected1linkOpt.value = -1;
         Get.back();
       });
+      log('pop invoked:$didPop ${selected1linkOpt.value}');
     }
   }
 
@@ -237,11 +253,11 @@ Widget _buildMtagSection(
 ) {
   return Obx(
     () => Container(
-      margin: .symmetric(vertical: 8),
-      padding: .symmetric(horizontal: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
         gradient: Theme.of(context).extension<AppGradients>()!.background,
-        borderRadius: .circular(8),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -264,7 +280,7 @@ Widget _buildMtagSection(
           ),
           if (controller.isOtherMtagFieldVisible.value)
             _buildOtherMtagField(context, controller),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
         ],
       ),
     ),
@@ -278,7 +294,7 @@ Widget _buildSectionTitle(BuildContext context, String title) {
       title,
       style: Theme.of(
         context,
-      ).textTheme.labelLarge?.copyWith(fontWeight: .w600),
+      ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
     ),
   );
 }
@@ -354,19 +370,19 @@ Widget _buildAmountSection(
   return Obx(
     () => !controller.showPsidField.value
         ? Container(
-            padding: .symmetric(horizontal: 8, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             decoration: BoxDecoration(
               gradient: Theme.of(context).extension<AppGradients>()!.background,
-              borderRadius: .circular(8),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Column(
-              crossAxisAlignment: .start,
-              mainAxisAlignment: .start,
-              mainAxisSize: .min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
-                  mainAxisAlignment: .spaceBetween,
-                  crossAxisAlignment: .center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     _buildSectionTitle(context, 'Enter Amount'),
                     Text(
@@ -409,11 +425,11 @@ Widget _buildPaymentSection(
 ) {
   return Obx(
     () => Container(
-      margin: .symmetric(vertical: 8),
-      padding: .symmetric(vertical: 8, horizontal: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       decoration: BoxDecoration(
         gradient: Theme.of(context).extension<AppGradients>()!.background,
-        borderRadius: .circular(8),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: BuildPaymentOptionsWidget(
         onChanged: (paymentMethod) =>
@@ -462,18 +478,21 @@ extension RechargeSelfControllerExtensions on RechargeSelfController {
       return;
     }
 
-    setPayment(
-      paymentMethod,
-    ); // Use paymentMethod directly (1 for Credit/Debit, 2 for JazzCash)
-    fetchPaymentCards(paymentMethod.toString());
-    isCardsVisible.value =
-        paymentMethod == 1 || paymentMethod == 2; // Show cards for 1 or 2
-    if (isCardsVisible.value) isJazzShown.value = false;
-
-    setPayment(paymentMethod == 1 ? 2 : 1);
-    fetchPaymentCards(paymentMethod.toString());
-    isCardsVisible.value = paymentMethod <= 1;
-    if (isCardsVisible.value) isJazzShown.value = false;
+    // paymentMethod 0: Credit/Debit (from onChanged(0)), 1: JazzCash (from onChanged(1))
+    if (paymentMethod == 0) { // Credit Card
+       setPayment(1);
+       fetchPaymentCards("0");
+       isCardsVisible.value = true;
+       isJazzShown.value = false;
+    } else if (paymentMethod == 1) { // JazzCash
+       setPayment(2);
+       fetchPaymentCards("1");
+       isCardsVisible.value = true;
+       isJazzShown.value = false;
+    } else {
+       isCardsVisible.value = false;
+       isJazzShown.value = false;
+    }
   }
 
   bool isMtagValid() =>

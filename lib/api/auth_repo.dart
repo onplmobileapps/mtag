@@ -150,6 +150,7 @@ class AuthRepo {
     String? smsText,
     String? cnic,
     int? islogin,
+    dynamic operatorId,
   }) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
       apiUrl: ApplicationUrl.GENERATEOTP_URL,
@@ -160,11 +161,12 @@ class AuthRepo {
             "Your authentication code for M-TAG One Network app is VERIFICATION_CODE_HERE. Never share it with anyone, ever.",
         "CnicNumber": cnic,
         "is_login": islogin,
+        "operator_id": operatorId ?? "",
       },
     );
 
     return await apiObject.requestAPI(
-      isShowLoading: false,
+      isShowLoading: true,
       isCheckAuthorization: false,
     );
   }

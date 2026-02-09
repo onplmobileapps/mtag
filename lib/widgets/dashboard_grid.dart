@@ -50,9 +50,14 @@ class DashboardGrid extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (item.image != null)
+                  if (item.image != null && item.image!.isNotEmpty)
                     SvgPicture.asset(
                       item.image!,
+                      width: maxCrossAxisExtent * 0.2,
+                      height: mainAxisExtent * 0.5,
+                    )
+                  else if (item.image != null && item.image!.isEmpty)
+                    SizedBox(
                       width: maxCrossAxisExtent * 0.2,
                       height: mainAxisExtent * 0.5,
                     ),

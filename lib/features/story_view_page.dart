@@ -128,8 +128,7 @@ class _StoryViewPageState extends State<StoryViewPage>
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onHorizontalDragStart: (details) {
-        if (details.globalPosition.dx < 20) {
-        }
+        if (details.globalPosition.dx < 20) {}
       },
       onHorizontalDragUpdate: (details) {
         // Block horizontal drag updates
@@ -162,6 +161,9 @@ class _StoryViewPageState extends State<StoryViewPage>
             child: Image.asset(
               "assets/slider/${OtherConsts.sliderImages[widget.storiesIndex[index]]}",
               fit: BoxFit.cover,
+              // Scaling down during decoding reduces GPU memory pressure and prevents
+              // "Failed to submit image decoding command buffer" errors.
+              cacheWidth: 1080,
               errorBuilder: (context, error, stackTrace) {
                 return const Center(
                   child: Icon(

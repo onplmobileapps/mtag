@@ -21,7 +21,6 @@ class ReceiptScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final box = context.findRenderObject() as RenderBox?;
     return Obx(() {
       var data = _receiptController.receiptModel.value.data;
       return Scaffold(
@@ -49,6 +48,11 @@ class ReceiptScreen extends StatelessWidget {
                             try {
                               final box =
                                   context.findRenderObject() as RenderBox?;
+                              final sharePositionOrigin =
+                                  box!.localToGlobal(Offset.zero) & box.size;
+
+                              // Close the bottom sheet before starting share process
+                              Get.back();
 
                               _screenshotController.capture().then((
                                 Uint8List? image,
@@ -64,15 +68,13 @@ class ReceiptScreen extends StatelessWidget {
                                   await SharePlus.instance.share(
                                     ShareParams(
                                       files: [XFile(imagePath.path)],
-                                      sharePositionOrigin:
-                                          box!.localToGlobal(Offset.zero) &
-                                          box.size,
+                                      sharePositionOrigin: sharePositionOrigin,
                                     ),
                                   );
                                 }
                               });
                             } catch (e) {
-                              throw Exception(e);
+                              debugPrint("Screenshot share failed: $e");
                             }
                           },
                           dense: true,
@@ -82,9 +84,17 @@ class ReceiptScreen extends StatelessWidget {
                             style: Theme.of(context).textTheme.displaySmall,
                           ),
                         ),
-                        const Divider(endIndent: 10,indent: 10,),
+                        const Divider(endIndent: 10, indent: 10),
                         ListTile(
                           onTap: () async {
+                            final box =
+                                context.findRenderObject() as RenderBox?;
+                            final sharePositionOrigin =
+                                box!.localToGlobal(Offset.zero) & box.size;
+
+                            // Close the bottom sheet before starting share process
+                            Get.back();
+
                             final headerImage = pw.MemoryImage(
                               (await rootBundle.load(
                                 'assets/h.png',
@@ -100,9 +110,7 @@ class ReceiptScreen extends StatelessWidget {
                                 'assets/footer.png',
                               )).buffer.asUint8List(),
                             );
-                            final pdf = pw.Document(
-                              version: PdfVersion.pdf_1_4,
-                            );
+                            final pdf = pw.Document(version: PdfVersion.pdf_1_4);
 
                             pdf.addPage(
                               pw.Page(
@@ -372,16 +380,13 @@ class ReceiptScreen extends StatelessWidget {
                                 await getApplicationDocumentsDirectory();
                             String documentPath = documentDirectory.path;
 
-                            File pdfFile = File(
-                              '$documentPath/${data?.uID}.pdf',
-                            );
+                            File pdfFile = File('$documentPath/${data?.uID}.pdf');
 
                             pdfFile.writeAsBytesSync(await pdf.save());
-                            SharePlus.instance.share(
+                            await SharePlus.instance.share(
                               ShareParams(
                                 files: [XFile(pdfFile.path)],
-                                sharePositionOrigin:
-                                    box!.localToGlobal(Offset.zero) & box.size,
+                                sharePositionOrigin: sharePositionOrigin,
                               ),
                             );
                           },
@@ -484,7 +489,7 @@ class ReceiptScreen extends StatelessWidget {
                 ],
 
                 _infoRow(context, "Reference No.", data?.uID),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
                   'Powered By One Network\u00AE Private Limited',
                   style: Theme.of(context).textTheme.displaySmall,

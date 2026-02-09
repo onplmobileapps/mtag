@@ -17,113 +17,93 @@ class NotchedBorderPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final fabRadius = 22.5;
+    final fabRadius = 28.0;
     final centerX = size.width / 2;
-    final notchDepth = fabRadius + notchMargin;
-    final notchWidth = fabRadius * 2.8;
+    final notchDepth = 20.0; // Reduced depth for subtle curve
 
-    // Create main border paint (grey color)
-    final borderPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeJoin = StrokeJoin.round
-      ..strokeCap = StrokeCap.round
-      ..isAntiAlias = true
+    // Moderate width for visible curve
+    final notchWidth = fabRadius * 2.5;
+
+    final Paint paint = Paint()
       ..color = borderColor
-      ..strokeWidth = strokeWidth;
-
-    // Create notch paint
-    final notchPaint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeJoin = StrokeJoin.round
-      ..strokeCap = StrokeCap.round
+      ..strokeWidth = strokeWidth
       ..isAntiAlias = true
-      ..color = notchColor
-      ..strokeWidth = strokeWidth;
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
 
-    // ─── DRAW HORIZONTAL TOP LINES ────────────
-    // Left horizontal line (from left corner to notch start)
-    canvas.drawLine(
-      Offset(cornerRadius, 0),
-      Offset(centerX - notchWidth / 2, 0),
-      borderPaint,
+    final path = Path();
+
+    // Start at top-left, after the corner
+    path.moveTo(cornerRadius, 0);
+
+    // Top line to notch start
+    final pStart = Offset(centerX - (notchWidth / 2), 0);
+    path.lineTo(pStart.dx, pStart.dy);
+
+    // Create notch with clear curve
+    final pBottom = Offset(centerX, notchDepth);
+    final pEnd = Offset(centerX + (notchWidth / 2), 0);
+
+    // Downward curve with moderate smoothness
+    path.cubicTo(
+      pStart.dx + (notchWidth * 0.15), 0,              // Start control
+      pBottom.dx - (notchWidth * 0.35), pBottom.dy,    // Bottom approach
+      pBottom.dx, pBottom.dy,                          // Bottom point
     );
 
-    // Right horizontal line (from notch end to right corner)
-    canvas.drawLine(
-      Offset(centerX + notchWidth / 2, 0),
-      Offset(size.width - cornerRadius, 0),
-      borderPaint,
+    // Upward curve back to top
+    path.cubicTo(
+      pBottom.dx + (notchWidth * 0.35), pBottom.dy,    // Bottom exit
+      pEnd.dx - (notchWidth * 0.15), 0,                // Top approach
+      pEnd.dx, 0,                                      // End point
     );
 
-    // ─── DRAW NOTCH CURVE ─────────────────────
-    final notchPath = Path();
+    // Top line to top-right corner
+    path.lineTo(size.width - cornerRadius, 0);
 
-    // Start notch from left connection point
-    notchPath.moveTo(centerX - notchWidth / 2, 0);
-
-    // Draw the notch curve
-    notchPath.quadraticBezierTo(
-      centerX - fabRadius,
-      notchDepth,
-      centerX,
-      notchDepth,
+    // Top-right corner
+    path.quadraticBezierTo(
+      size.width, 0,
+      size.width, cornerRadius,
     );
 
-    notchPath.quadraticBezierTo(
-      centerX + fabRadius,
-      notchDepth,
-      centerX + notchWidth / 2,
-      0.0,
+    // Right edge
+    path.lineTo(size.width, size.height - cornerRadius);
+
+    // Bottom-right corner
+    path.quadraticBezierTo(
+      size.width, size.height,
+      size.width - cornerRadius, size.height,
     );
 
-    // Draw the notch curve
-    canvas.drawPath(notchPath, notchPaint);
+    // Bottom edge
+    path.lineTo(cornerRadius, size.height);
 
-    // ─── DRAW REST OF THE BORDER ──────────────
-    final borderPath = Path();
-
-    // Top right corner
-    borderPath.moveTo(size.width - cornerRadius, 0);
-    borderPath.arcToPoint(
-      Offset(size.width, cornerRadius),
-      radius: Radius.circular(cornerRadius),
-      clockwise: true,
+    // Bottom-left corner
+    path.quadraticBezierTo(
+      0, size.height,
+      0, size.height - cornerRadius,
     );
 
-    // Right side
-    borderPath.lineTo(size.width, size.height - cornerRadius);
+    // Left edge
+    path.lineTo(0, cornerRadius);
 
-    // Bottom right corner
-    borderPath.arcToPoint(
-      Offset(size.width - cornerRadius, size.height),
-      radius: Radius.circular(cornerRadius),
-      clockwise: true,
+    // Top-left corner
+    path.quadraticBezierTo(
+      0, 0,
+      cornerRadius, 0,
     );
 
-    // Bottom side
-    borderPath.lineTo(cornerRadius, size.height);
-
-    // Bottom left corner
-    borderPath.arcToPoint(
-      Offset(0, size.height - cornerRadius),
-      radius: Radius.circular(cornerRadius),
-      clockwise: true,
-    );
-
-    // Left side
-    borderPath.lineTo(0, cornerRadius);
-
-    // Top left corner
-    borderPath.arcToPoint(
-      Offset(cornerRadius, 0),
-      radius: Radius.circular(cornerRadius),
-      clockwise: true,
-    );
-
-    // Draw the rest of the border
-    canvas.drawPath(borderPath, borderPaint);
+    canvas.drawPath(path, paint);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant NotchedBorderPainter oldDelegate) {
+    return oldDelegate.cornerRadius != cornerRadius ||
+        oldDelegate.notchMargin != notchMargin ||
+        oldDelegate.borderColor != borderColor ||
+        oldDelegate.notchColor != notchColor ||
+        oldDelegate.strokeWidth != strokeWidth;
+  }
 }

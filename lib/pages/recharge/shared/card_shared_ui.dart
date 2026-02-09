@@ -8,10 +8,29 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '/pages/payment/controller/payment_card_controller.dart';
 import '/utils/utils.dart';
 import '/widgets/textform_widget.dart';
+import '../../../theme/app_theme.dart';
 import '../../payment/model/payment_card_model.dart';
 
+// final List<CardsData> dummyCards = [
+//   CardsData(
+//     bRAND: 'MASTERCARD',
+//     cARDNUMBER: '5555444433331111',
+//     tOKEN: 'dummy_master_token',
+//   ),
+//   CardsData(
+//     bRAND: 'VISA',
+//     cARDNUMBER: '4111111111111111',
+//     tOKEN: 'dummy_visa_token',
+//   ),
+//   CardsData(
+//     bRAND: 'AMEX',
+//     cARDNUMBER: '3782828282828282',
+//     tOKEN: 'dummy_amex_token',
+//   ),
+// ];
+
 final ValueNotifier<bool> isJazzShown = ValueNotifier(false);
-final ValueNotifier<bool> isCardsVisible = ValueNotifier(false);
+final ValueNotifier<bool> isCardsVisible = ValueNotifier(true);
 
 class CardSharedUi extends StatelessWidget {
   const CardSharedUi({
@@ -41,6 +60,8 @@ class CardSharedUi extends StatelessWidget {
           loading: loading,
           payId: payId,
           cardListData: cardListData,
+          // cardListData: dummyCards,
+
           mtagId: mtagId,
           amount: amount,
         ),
@@ -82,7 +103,7 @@ class _CardListSection extends StatelessWidget {
           children: [
             if (paymentHead != null)
               Padding(
-                padding: const EdgeInsets.only(bottom: 5.0),
+                padding: const EdgeInsets.only(bottom: 8.0, left: 4),
                 child: Text(
                   paymentHead!,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -124,52 +145,60 @@ class _CardCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        _ScrollButton(
-          icon: Icons.keyboard_arrow_left,
-          offset: -100,
-          controller: _scrollController,
-        ),
-        Expanded(
-          child: SizedBox(
-            height: 100, // Fixed height for consistency
-            child: loading
-                ? Center(
-                    child: LoadingAnimationWidget.flickr(
-                      leftDotColor: Colors.white,
-                      rightDotColor: Theme.of(context).primaryColor,
-                      size: 30,
-                    ),
-                  )
-                : ListView(
-                    controller: _scrollController,
-                    scrollDirection: Axis.horizontal,
-                    physics: const BouncingScrollPhysics(),
-                    children: [
-                      _AddNewCardTile(
-                        payId: payId,
-                        mtagId: mtagId,
-                        amount: amount,
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        gradient: Theme.of(context).extension<AppGradients>()?.background,
+      ),
+      child: Row(
+        children: [
+          // _ScrollButton(
+          //   icon: Icons.keyboard_arrow_left,
+          //   offset: -100,
+          //   controller: _scrollController,
+          // ),
+          Expanded(
+            child: SizedBox(
+              height: 120,
+              child: loading
+                  ? Center(
+                      child: LoadingAnimationWidget.flickr(
+                        leftDotColor: Colors.white,
+                        rightDotColor: Theme.of(context).primaryColor,
+                        size: 30,
                       ),
-                      ...cardListData.map(
-                        (card) => _CardTile(
-                          card: card,
+                    )
+                  : ListView(
+                      controller: _scrollController,
+                      scrollDirection: Axis.horizontal,
+                      clipBehavior: Clip.none,
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        _AddNewCardTile(
                           payId: payId,
                           mtagId: mtagId,
                           amount: amount,
                         ),
-                      ),
-                    ],
-                  ),
+                        ...cardListData.map(
+                          (card) => _CardTile(
+                            card: card,
+                            payId: payId,
+                            mtagId: mtagId,
+                            amount: amount,
+                          ),
+                        ),
+                      ],
+                    ),
+            ),
           ),
-        ),
-        _ScrollButton(
-          icon: Icons.keyboard_arrow_right,
-          offset: 100,
-          controller: _scrollController,
-        ),
-      ],
+          // _ScrollButton(
+          //   icon: Icons.keyboard_arrow_right,
+          //   offset: 100,
+          //   controller: _scrollController,
+          // ),
+        ],
+      ),
     );
   }
 }
@@ -190,14 +219,10 @@ class _ScrollButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // Check if the controller is attached to a scrollable widget
         if (controller.hasClients) {
-          // Ensure the scroll position is valid before animating
           final currentOffset = controller.offset;
           final maxScrollExtent = controller.position.maxScrollExtent;
           final minScrollExtent = controller.position.minScrollExtent;
-
-          // Calculate new offset and clamp it within bounds
           final newOffset = (currentOffset + offset).clamp(minScrollExtent, maxScrollExtent);
 
           controller.animateTo(
@@ -207,9 +232,9 @@ class _ScrollButton extends StatelessWidget {
           );
         }
       },
-      child: Transform.translate(
-        offset: const Offset(0, -25),
-        child: Icon(icon),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Icon(icon, color: Colors.grey.shade600),
       ),
     );
   }
@@ -242,18 +267,27 @@ class _AddNewCardTile extends StatelessWidget {
             payId: payId == 1 ? '0' : '1',
             amount: amount ?? '0',
           );
-        
+
           isJazzShown.value = false;
         }
       },
       child: _CardContainer(
         label: 'Add New +',
         labelColor: Colors.green,
-        child: SvgPicture.asset(
-          payId == 2 ? 'assets/jazz_cash_new.svg' : 'assets/addnew.svg',
-          height: 35,
-          fit: BoxFit.contain,
-        ),
+        child: payId == 2 
+            ? SvgPicture.asset(
+                'assets/jazz_cash_new.svg',
+                fit: BoxFit.contain,
+              )
+            : Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: SvgPicture.asset(
+                    'assets/addnew.svg',
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
       ),
     );
   }
@@ -276,6 +310,8 @@ class _CardTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<PaymentCardController>();
+    final brand = (card.bRAND ?? '').toUpperCase();
+    
     return GestureDetector(
       onTap: () async => await controller.getRechargeSummary(
         isFleet: false,
@@ -292,16 +328,17 @@ class _CardTile extends StatelessWidget {
             child: SvgPicture.asset(
               payId == 2
                   ? 'assets/jazz_cash_new.svg'
-                  : card.bRAND == 'MASTERCARD'
+                  : brand == 'MASTERCARD'
                       ? 'assets/mastercard.svg'
-                      : 'assets/visa-logo.svg',
-              height: 20,
-              fit: BoxFit.cover,
+                      : brand == 'AMEX'
+                          ? 'assets/american.svg'
+                          : 'assets/visa-logo.svg',
+              fit: BoxFit.fitWidth,
             ),
           ),
           Positioned(
-            top: -8,
-            right: -8,
+            top: -12,
+            right: 0,
             child: _DeleteButton(
               onDelete: () => _showDeleteDialog(context, card, controller),
             ),
@@ -328,7 +365,7 @@ class _CardTile extends StatelessWidget {
                 token: card.tOKEN ?? '',
                 payId: payId == 1 ? '0' : '1',
               );
-          
+
             },
             child: const Text('Confirm'),
           ),
@@ -361,30 +398,30 @@ class _CardContainer extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 100,
+          width: 80,
           height: 50,
-          margin: const EdgeInsets.symmetric(horizontal: 8),
-          padding: const EdgeInsets.all(8),
+          margin: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade300, width: 0.5),
             color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(width: 0.2),
-            boxShadow: const [
+            boxShadow: [
               BoxShadow(
-                color: Colors.black12,
-                blurRadius: 4,
-                offset: Offset(2, 2),
+                color: Colors.black.withValues(alpha: 0.08),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
-          child: Center(child: child),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(2),
-          child: Text(
-            label,
-            style: TextStyle(fontSize: 11, color: labelColor),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: child,
           ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          label,
+          style: TextStyle(fontSize: 12, color: labelColor, fontWeight: FontWeight.w500),
         ),
       ],
     );
@@ -403,14 +440,15 @@ class _DeleteButton extends StatelessWidget {
       onTap: onDelete,
       child: Container(
         padding: const EdgeInsets.all(4),
-        decoration: const BoxDecoration(
-          color: Colors.red,
+        decoration: BoxDecoration(
+          color: Colors.red.shade600,
           shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(2, 2)),
+          border: Border.all(color: Colors.white, width: 1.5),
+          boxShadow: const [
+            BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2)),
           ],
         ),
-        child: const Icon(Icons.close, color: Colors.white, size: 16),
+        child: const Icon(Icons.close, color: Colors.white, size: 14),
       ),
     );
   }
@@ -429,14 +467,14 @@ class _JazzCashInputSection extends StatelessWidget {
     return ValueListenableBuilder<bool>(
       valueListenable: isJazzShown,
       builder: (context, isVisible, _) {
-     
+
         return Visibility(visible: isVisible,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  SvgPicture.asset('assets/jazz_cash_new.svg', height: 10),
+                  SvgPicture.asset('assets/jazz_cash_new.svg', height: 20),
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: Column(
@@ -454,7 +492,7 @@ class _JazzCashInputSection extends StatelessWidget {
               ),
               CustomTextField(
                 hint: 'Enter JazzCash Account Number',
-                maxLength: 11,keyboardType: TextInputType.numberWithOptions(signed: true),
+                maxLength: 11,keyboardType: const TextInputType.numberWithOptions(signed: true),
                 validator: validateJazzcashNumber,inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 controller: _jazzCashController,
                 onTapOutside: (_) => FocusScope.of(context).unfocus(),

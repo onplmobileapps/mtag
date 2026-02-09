@@ -53,26 +53,41 @@ sealed class AppReviewUtils {
     }
   }
 
-  /// ✅ ANDROID — fire & forget (NO await)
+  /// ✅ ANDROID — fire & forget with extra safety and delay
   static void _android() {
     final review = InAppReview.instance;
 
-    Future.delayed(const Duration(milliseconds: 300), () {
+    // Increased delay to 2 seconds to ensure activity is fully stable 
+    // and layout is complete before triggering native review flow.
+    Future.delayed(const Duration(seconds: 2), () async {
       try {
-        review.requestReview();
-       } catch (_) {
-        review.openStoreListing();
+        if (await review.isAvailable()) {
+          // Extra check: ensure app is still in foreground before showing review
+          if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
+            await review.requestReview();
+          } else {
+             log('In-App Review skipped: App not in resumed state');
+          }
+        } else {
+          log('In-App Review API unavailable on Android');
         }
+      } catch (e) {
+        log('Error requesting app review on Android: $e');
+      }
     });
   }
 
   /// ✅ IOS — safe to await
   static Future<void> _ios() async {
     final review = InAppReview.instance;
-    if (!await review.isAvailable()) return;
+    try {
+      if (!await review.isAvailable()) return;
 
-    await Future.delayed(const Duration(milliseconds: 300));
-    await review.requestReview();
+      await Future.delayed(const Duration(milliseconds: 500));
+      await review.requestReview();
+    } catch (e) {
+      log('Error requesting app review on iOS: $e');
+    }
   }
 }
 

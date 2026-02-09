@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -26,12 +25,14 @@ import '../widget/slider_section.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
+
   final List<Widget> _navigationPages = [
     HomePageContent(),
     HomePageContent(),
     RechargeMapScreen(),
     SettingScreen(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return GetX<HomeController>(
@@ -43,7 +44,7 @@ class HomePage extends StatelessWidget {
           bottomNavigationBar: CustomPaint(
             painter: NotchedBorderPainter(
               borderColor: ColorScheme.of(context).outline,
-              strokeWidth: 1.0,
+              strokeWidth: 1.5,
               notchMargin: 7,
               notchColor: ColorScheme.of(
                 context,
@@ -69,12 +70,19 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ),
-          floatingActionButton: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: .all(color: ColorScheme.of(context).outline),
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.only(bottom: 20.0),
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: ColorScheme.of(context).surface,
+                border: .all(
+                  color: ColorScheme.of(context).outline,
+                  width: 1.5,
+                ),
+              ),
+              child: WhatsAppButton(),
             ),
-            child: WhatsAppButton(),
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
@@ -129,6 +137,9 @@ class _NavItem extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      overlayColor: WidgetStateProperty.all(Colors.transparent),
       borderRadius: BorderRadius.circular(16),
       child: FittedBox(
         child: AnimatedContainer(
@@ -137,14 +148,15 @@ class _NavItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 0),
           child: Column(
             children: [
-              SvgPicture.asset(
-                icon,
-                height: 25,
-                colorFilter: ColorFilter.mode(
-                  isActive ? ColorScheme.of(context).primary : Colors.grey,
-                  BlendMode.srcIn,
+              if (icon.isNotEmpty)
+                SvgPicture.asset(
+                  icon,
+                  height: 25,
+                  colorFilter: ColorFilter.mode(
+                    isActive ? ColorScheme.of(context).primary : Colors.grey,
+                    BlendMode.srcIn,
+                  ),
                 ),
-              ),
               Text(label, style: TextTheme.of(context).displaySmall),
             ],
           ),
@@ -157,7 +169,7 @@ class _NavItem extends StatelessWidget {
 final _navItems = [
   {'icon': 'assets/home_new.svg', 'label': 'Home'},
   {'icon': 'assets/weather.svg', 'label': 'Weather Updates'},
-  {'icon': 'assets/location.svg', 'label': ' Reacharge Locations'},
+  {'icon': 'assets/location.svg', 'label': 'Recharge Locations'},
   {'icon': 'assets/setting.svg', 'label': 'Settings'},
 ];
 
@@ -193,137 +205,157 @@ class HomePageContent extends StatelessWidget {
         if (controller.isLoading.value || mtags == null || mtags.isEmpty) {
           return buildShimmerEffect(double.infinity, context.height);
         }
-        return Column(
-          children: [
-            AppBar(
-              clipBehavior: .none,
-              centerTitle: true,
-              elevation: 0,
-              systemOverlayStyle: Get.isDarkMode
-                  ? SystemUiOverlayStyle(
-                      statusBarBrightness: .dark,
-                      statusBarIconBrightness: .light,
-                    )
-                  : SystemUiOverlayStyle(
-                      statusBarBrightness: .light,
-                      statusBarIconBrightness: .dark,
-                    ),
-              backgroundColor: Colors.transparent,
-              title: Image.asset(
-                Get.isDarkMode ? 'assets/darklogo.png' : 'assets/logolight.png',
-                height: 60,
-                width: 70,
+        return RefreshIndicator(
+          onRefresh: () async {
+            controller.isLoading.value = true;
+            try {
+              await controller.refreshDashboardData();
+            } finally {
+              controller.isLoading.value = false;
+            }
+          },
+          color: Theme.of(context).colorScheme.primary,
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          displacement: 40,
+          strokeWidth: 2.8,
+          triggerMode: RefreshIndicatorTriggerMode.onEdge,
+          child: Column(
+            children: [
+              AppBar(
+                clipBehavior: .none,
+                centerTitle: true,
+                elevation: 0,
+                systemOverlayStyle: Get.isDarkMode
+                    ? SystemUiOverlayStyle(
+                        statusBarBrightness: .dark,
+                        statusBarIconBrightness: .light,
+                      )
+                    : SystemUiOverlayStyle(
+                        statusBarBrightness: .light,
+                        statusBarIconBrightness: .dark,
+                      ),
+                backgroundColor: Colors.transparent,
+                title: Image.asset(
+                  Get.isDarkMode
+                      ? 'assets/darklogo.png'
+                      : 'assets/logolight.png',
+                  height: 60,
+                  width: 70,
+                ),
               ),
-            ),
-            // ),
-            Expanded(
-              flex: 1,
-              child: CustomScrollView(
-                shrinkWrap: true,
-                clipBehavior: .antiAlias,
-                slivers: [
-                  SliverAppBar(
-                    toolbarHeight: 0,
-                    foregroundColor: Colors.transparent,
-                    forceMaterialTransparency: false,
-                    clipBehavior: .none,
-                    pinned: true,
-                    floating: false,
-                    forceElevated: false,
-                    expandedHeight: getExpandedHeight(context),
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    automaticallyImplyLeading: false,
-                    flexibleSpace: FlexibleSpaceBar(
-                      collapseMode: CollapseMode.none,
-                      background: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Expanded(
-                            child: PageView(
-                              padEnds: false,
-                              clipBehavior: .none,
-                              controller: _pageController,
-                              scrollDirection: .horizontal,
-                              onPageChanged: (value) =>
-                                  _currentPage.value = value,
-                              children: [
-                                for (
-                                  int i = 0;
-                                  i <
-                                      controller
+              // ),
+              Expanded(
+                flex: 1,
+                child: CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  clipBehavior: .antiAlias,
+                  slivers: [
+                    SliverAppBar(
+                      toolbarHeight: 0,
+                      foregroundColor: Colors.transparent,
+                      forceMaterialTransparency: false,
+                      clipBehavior: .none,
+                      pinned: true,
+                      floating: false,
+                      forceElevated: false,
+                      expandedHeight: getExpandedHeight(context),
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      automaticallyImplyLeading: false,
+                      flexibleSpace: FlexibleSpaceBar(
+                        collapseMode: CollapseMode.none,
+                        background: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Expanded(
+                              child: PageView(
+                                padEnds: false,
+                                clipBehavior: .none,
+                                controller: _pageController,
+                                scrollDirection: .horizontal,
+                                onPageChanged: (value) =>
+                                    _currentPage.value = value,
+                                children: [
+                                  for (
+                                    int i = 0;
+                                    i <
+                                        controller
+                                            .dashboradData
+                                            .value
+                                            .activeMtags!
+                                            .length;
+                                    i++
+                                  )
+                                    VehicleCard(
+                                      mtags: controller
                                           .dashboradData
                                           .value
-                                          .activeMtags!
-                                          .length;
-                                  i++
-                                )
-                                  VehicleCard(
-                                    mtags: controller
-                                        .dashboradData
-                                        .value
-                                        .activeMtags![i],
-                                  ),
-                              ],
+                                          .activeMtags![i],
+                                    ),
+                                ],
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 5),
-                          ValueListenableBuilder(
-                            valueListenable: _currentPage,
-                            builder: (context, value, child) {
-                              return Container(
-                                color: Colors.transparent, // Solid color
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    for (
-                                      int i = 0;
-                                      i <
-                                          controller
-                                              .dashboradData
-                                              .value
-                                              .activeMtags!
-                                              .length;
-                                      i++
-                                    )
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: i == value
-                                              ? ColorScheme.of(context).primary
-                                              : ColorScheme.of(
-                                                  context,
-                                                ).surfaceContainerLowest,
-                                          borderRadius: BorderRadius.circular(
-                                            8,
+                            SizedBox(height: 5),
+                            ValueListenableBuilder(
+                              valueListenable: _currentPage,
+                              builder: (context, value, child) {
+                                return Container(
+                                  color: Colors.transparent, // Solid color
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      for (
+                                        int i = 0;
+                                        i <
+                                            controller
+                                                .dashboradData
+                                                .value
+                                                .activeMtags!
+                                                .length;
+                                        i++
+                                      )
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: i == value
+                                                ? ColorScheme.of(
+                                                    context,
+                                                  ).primary
+                                                : ColorScheme.of(
+                                                    context,
+                                                  ).surfaceContainerLowest,
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
                                           ),
+                                          margin: EdgeInsets.all(2),
+                                          height: 5,
+                                          width: i == value ? 15 : 10,
                                         ),
-                                        margin: EdgeInsets.all(2),
-                                        height: 5,
-                                        width: i == value ? 15 : 10,
-                                      ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        ],
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  SliverToBoxAdapter(child: SizedBox(height: 8)),
-                  ActionGrid(controller: controller),
+                    SliverToBoxAdapter(child: SizedBox(height: 8)),
+                    ActionGrid(controller: controller),
 
-                  SliverPadding(
-                    sliver: SliderSection(),
-                    padding: .symmetric(horizontal: 8),
-                  ),
-                  SliverToBoxAdapter(child: SizedBox(height: 10)),
-                  HelpSection(),
-                  SliverToBoxAdapter(child: SizedBox(height: 10)),
-                ],
+                    SliverPadding(
+                      sliver: SliderSection(),
+                      padding: .symmetric(horizontal: 8),
+                    ),
+                    SliverToBoxAdapter(child: SizedBox(height: 10)),
+                    HelpSection(),
+                    SliverToBoxAdapter(child: SizedBox(height: 10)),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
@@ -371,6 +403,7 @@ class _MtagDataWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final vehicleImagePath = getVehicleImage(mtag.vehicletype ?? '');
     return Row(
       mainAxisAlignment: .start,
       crossAxisAlignment: .start,
@@ -379,10 +412,9 @@ class _MtagDataWidget extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.only(top: 16, left: width * 0.03, bottom: 0),
 
-            child: Image.asset(
-              getVehicleImage(mtag.vehicletype ?? ''),
-              height: width * 0.32,
-            ),
+            child: vehicleImagePath.isNotEmpty
+                ? Image.asset(vehicleImagePath, height: width * 0.32)
+                : SizedBox(height: width * 0.32),
           ),
         ),
         Expanded(
@@ -394,7 +426,7 @@ class _MtagDataWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: .end,
                   children: [
                     Padding(
                       padding: .only(right: 8, top: 8),
@@ -450,14 +482,13 @@ class _MtagDataWidget extends StatelessWidget {
                               ),
                             ),
                             // Number
-                            if (mtag.isactive != 8 &&
-                                (mtag.chassis_number == null ||
-                                    mtag.chassis_number == '' ||
-                                    mtag.chassis_number!.trim().isEmpty)) ...[
-                              TextSpan(
-                                text: 'Chassis number is missing',
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () async {
+                            if (mtag.chassis_number == null ||
+                                mtag.chassis_number == '' ||
+                                mtag.chassis_number!.trim().isEmpty) ...[
+                              WidgetSpan(
+                                alignment: PlaceholderAlignment.middle,
+                                child: GestureDetector(
+                                  onTap: () async {
                                     await showDialog(
                                       context: context,
                                       builder: (_) => ChassisNumberDialog(
@@ -471,6 +502,45 @@ class _MtagDataWidget extends StatelessWidget {
                                       ),
                                     );
                                   },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(left: 6),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red.withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(4),
+                                      border: Border.all(
+                                        color: Colors.red.withValues(
+                                          alpha: 0.4,
+                                        ),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(
+                                          Icons.add_circle_outline,
+                                          size: 11,
+                                          color: Colors.red,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        const Text(
+                                          'Add Chassis Number',
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.w900,
+                                            fontSize: 9,
+                                            letterSpacing: 0.5,
+                                            fontFamily: 'biotifbold',
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
                             ],
                             TextSpan(
@@ -547,7 +617,9 @@ class ActiveBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.green.withValues(alpha: 0.15),
+        color: isActive == 1.0
+            ? Colors.green.withValues(alpha: 0.15)
+            : Colors.red.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -567,11 +639,11 @@ class ActiveBadge extends StatelessWidget {
           FittedBox(
             fit: .scaleDown,
             child: Text(
-              'ACTIVE',
+              isActive == 1.0 ? 'ACTIVE' : "BLACKLISTED",
               style: TextStyle(
                 color: isActive == 1.0
                     ? Colors.green.shade900
-                    : isActive == 1.5
+                    : isActive == 8.0
                     ? Colors.red
                     : Colors.black,
                 fontSize: 12.5,
@@ -597,6 +669,8 @@ class BalanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final balance = double.tryParse('${mtag?.balance}');
+    final recoveryAmount = double.tryParse('${mtag?.block_amount}');
+
     return Container(
       clipBehavior: .none,
       decoration: BoxDecoration(
@@ -666,24 +740,40 @@ class BalanceCard extends StatelessWidget {
                 FittedBox(
                   fit: .scaleDown,
                   child: Text(
-                    value ? 'Rs. ${balance ?? ''}' : '****',
-                    style: TextTheme.of(
-                      context,
-                    ).headlineLarge?.copyWith(letterSpacing: 1.2),
+                    value
+                        ? mtag?.isactive == 1.0
+                              ? 'Rs. ${balance ?? ''}'
+                              : 'Rs. ${recoveryAmount ?? ''}'
+                        : '****',
+                    style: TextTheme.of(context).titleLarge?.copyWith(
+                      letterSpacing: 1.2,
+                      fontSize: 24,
+                      fontWeight: .bold,
+                    ),
                   ),
                 ),
-                if (mtag?.isactive != 8.0 && balance != null && balance <= 50.0)
+                if (balance != null && balance <= 50.0)
                   Row(
                     children: [
                       Text(
-                        'Low Balance',
-                        style: TextTheme.of(context).titleMedium,
+                        mtag?.isactive == 8.0
+                            ? 'Pay Recovery Amount to start using M-TAG'
+                            : 'Low Balance',
+                        style: mtag?.isactive == 8.0
+                            ? Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: Colors.red.shade900,
+                              )
+                            : Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Theme.of(context).primaryColor,
+                              ),
                       ),
                       SizedBox(width: 6),
                       Icon(
                         Icons.warning_rounded,
-                        size: 24,
-                        color: Colors.yellow.shade800,
+                        size: 20,
+                        color: mtag?.isactive == 8.0
+                            ? Colors.red.shade900
+                            : Colors.yellow.shade800,
                       ),
                     ],
                   ),
@@ -702,7 +792,7 @@ class BalanceCard extends StatelessWidget {
                     child: mtag?.isactive != 1.0
                         ? ElevatedButton1(
                             width: double.infinity,
-                            backgroundColor: Colors.red.shade900,
+                            // backgroundColor: Colors.red.shade900,
                             onclick: () async {
                               showPaymentBottomSheet(
                                 context,
@@ -712,7 +802,7 @@ class BalanceCard extends StatelessWidget {
                                 recoveryAmount: mtag?.block_amount,
                               );
                             },
-                            text: 'Pay now',
+                            text: 'Pay Now',
                           )
                         : _RechargeButton(mtag!),
                   ),
@@ -741,7 +831,7 @@ class _RechargeButton extends StatelessWidget {
         color: Colors.white,
         fontFamily: 'biotifbold',
         fontSize: 18,
-        fontWeight: .w600,
+        fontWeight: FontWeight.w600,
       ),
       onclick: () => _showRechargeBottomSheet(activeMtags, context),
       text: 'Recharge M-TAG',
@@ -997,6 +1087,8 @@ class _ActionTile extends StatelessWidget {
     final gradientColor = Theme.of(
       context,
     ).extension<AppGradients>()!.gridWidget.colors;
+    final imagePath = item.image ?? '';
+
     return GestureDetector(
       onTap: () => handleItemTap(context, item, controller),
       child: Container(
@@ -1021,14 +1113,17 @@ class _ActionTile extends StatelessWidget {
         ),
 
         child: FittedBox(
-          child: Row(mainAxisAlignment: .start,crossAxisAlignment: .center,
+          child: Row(
+            mainAxisAlignment: .start,
+            crossAxisAlignment: .center,
             children: [
-              Image.asset(
-                item.image ?? '',
-                width: 30,
-                height: 30,
-                fit: BoxFit.contain,
-              ),
+              if (imagePath.isNotEmpty)
+                Image.asset(
+                  imagePath,
+                  width: 30,
+                  height: 30,
+                  fit: BoxFit.contain,
+                ),
 
               Padding(
                 padding: const EdgeInsets.all(8.0),

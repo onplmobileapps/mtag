@@ -43,7 +43,7 @@ Widget buildPaymentOption(
                         label,
                         style: Theme.of(
                           context,
-                        ).textTheme.bodyMedium?.copyWith(fontWeight: .w600),
+                        ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -69,7 +69,9 @@ Widget buildPaymentOption(
                 dense: true,
 
                 contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                secondary: Image.asset(assetPath, height: 30, width: 45),
+                secondary: assetPath.isNotEmpty
+                    ? Image.asset(assetPath, height: 30, width: 45)
+                    : const SizedBox(height: 30, width: 45),
               ),
             ),
           );

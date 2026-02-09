@@ -71,6 +71,7 @@ class PaymentCardController extends GetxController implements GetxService {
     required String? mobile,
     required String? amount,
     required String? mtagId,
+
   }) async {
     jazzLoader();
     var response = await userRepo.jazzCashRecharg(
@@ -233,7 +234,7 @@ class PaymentCardController extends GetxController implements GetxService {
     required bool? isBlocked,
     bool? isInvoice,
   }) async {
-    var response = await userRepo.genearatePSID(
+    final Map<String, dynamic> response = await userRepo.genearatePSID(
       mtagID: mtagID,
       amount: amount,
       cnic: cnic,
@@ -242,9 +243,16 @@ class PaymentCardController extends GetxController implements GetxService {
       isInvoice: isInvoice,
     );
 
-    // Check if the response is successful and contains the expected data
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
-      return response[APIRESPONSE.SUCCESS]['Data']; // Extract the Data field
+      final successData = response[APIRESPONSE.SUCCESS];
+      if (successData is Map<String, dynamic> && successData.containsKey('Data')) {
+        final data = successData['Data'];
+        if (data is Map<String, dynamic>) {
+          return Map<String, dynamic>.from(data);
+        } else if (data is String) {
+          return {'PSID': data, 'charges': 0};
+        }
+      }
     }
 
     return response;
@@ -279,6 +287,6 @@ class PaymentCardController extends GetxController implements GetxService {
       log(response[APIRESPONSE.SUCCESS]['Data']['charges'].toString());
       return response[APIRESPONSE.SUCCESS]['Data']['charges'].toString();
     }
-    return response[APIRESPONSE.ERROR]['Message'];
+    return response[APIRESPONSE.ERROR]['Message'] ?? APIEXCEPTION.UNPROCESS;
   }
 }

@@ -1,17 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:pinput/pinput.dart';
 import 'dart:async';
-import '../../api/auth_controller.dart';
 import '../../constants/call_helper.dart';
 import 'operator_selection_dialog.dart';
 
 class OtpVerificationDialog extends StatelessWidget {
   final Function(String otp) onOtpSubmit;
-  final Function onResendOtp;
+  final Function(int? operatorId) onResendOtp;
   final String? mobileNumber, cnic;
   OtpVerificationDialog({
     super.key,
@@ -23,12 +21,8 @@ class OtpVerificationDialog extends StatelessWidget {
 
   final ValueNotifier<int> _secondsRemainingNotifier = ValueNotifier<int>(120);
 
-  OtpVerificationDialog._startTimer(
+  static void _startTimer(
     ValueNotifier<int> secondsRemainingNotifier,
-    this.onOtpSubmit,
-    this.onResendOtp,
-    this.mobileNumber,
-    this.cnic,
   ) {
     Timer.periodic(const Duration(seconds: 1), (timer) {
       if (secondsRemainingNotifier.value > 0) {
@@ -41,27 +35,15 @@ class OtpVerificationDialog extends StatelessWidget {
 
   void _resetTimer() {
     _secondsRemainingNotifier.value = 120;
-    OtpVerificationDialog._startTimer(
-      _secondsRemainingNotifier,
-      onOtpSubmit,
-      onResendOtp,
-      mobileNumber,
-      cnic,
-    );
+    _startTimer(_secondsRemainingNotifier);
   }
 
   @override
   Widget build(BuildContext context) {
-    OtpVerificationDialog._startTimer(
-      _secondsRemainingNotifier,
-      onOtpSubmit,
-      onResendOtp,
-      mobileNumber,
-      cnic,
-    );
+    _startTimer(_secondsRemainingNotifier);
 
     return Container(
-      padding: const .all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: PopScope(
         canPop: false,
         child: Dialog(
@@ -102,7 +84,7 @@ class OtpVerificationDialog extends StatelessWidget {
                               Text(
                                 'OTP has been sent to',
                                 style: Theme.of(context).textTheme.bodyMedium
-                                    ?.copyWith(color: Color(0xff6C7278)),
+                                    ?.copyWith(color: const Color(0xff6C7278)),
                               ),
                               Text(
                                 ' $mobileNumber',
@@ -112,7 +94,7 @@ class OtpVerificationDialog extends StatelessWidget {
                             ],
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         RichText(
                           text: TextSpan(
                             style: const TextStyle(
@@ -131,7 +113,7 @@ class OtpVerificationDialog extends StatelessWidget {
                                   },
                                   child: Text(
                                     "Edit",
-                                    style: TextTheme.of(context).bodyMedium,
+                                    style: Theme.of(context).textTheme.bodyMedium,
                                   ),
                                 ),
                               ),
@@ -237,24 +219,14 @@ class OtpVerificationDialog extends StatelessWidget {
                                   return InkWell(
                                     onTap: isTimerComplete
                                         ? () {
-                                            // onResendOtp();
-                                            // _resetTimer();
-                                      OperatorSelectionDialog.show(
-                                        Get.context!,
-                                        (value) {
-                                          Get.find<AuthController>()
-                                              .sendNetworkOperator(
-                                                cnicNumber: cnic ?? '',
-                                                mobileNum:
-                                                    mobileNumber ?? '',
-                                                simOperator: value,
-                                              );
-                                        },
-
-                                        mobileNumber: mobileNumber ?? '',
-                                        onResendOtp: () => onResendOtp(),
-                                        onResetTimer: () => _resetTimer(),
-                                      );
+                                            OperatorSelectionDialog.show(
+                                              context,
+                                              (value) {},
+                                              mobileNumber: mobileNumber ?? '',
+                                              onResendOtp: (value) =>
+                                                  onResendOtp(value),
+                                              onResetTimer: () => _resetTimer(),
+                                            );
                                           }
                                         : null,
                                     child: Text(
@@ -272,7 +244,7 @@ class OtpVerificationDialog extends StatelessWidget {
                                   );
                                 },
                               ),
-                              SizedBox(width: 5),
+                              const SizedBox(width: 5),
                               ValueListenableBuilder<int>(
                                 valueListenable: _secondsRemainingNotifier,
                                 builder: (context, seconds, child) {
@@ -282,8 +254,10 @@ class OtpVerificationDialog extends StatelessWidget {
                                       '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
                                   return Text(
                                     formattedTime,
-                                    style: Theme.of(context).textTheme.bodyLarge
-                                        ?.copyWith(fontWeight: .w800),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.copyWith(fontWeight: FontWeight.w800),
                                   );
                                 },
                               ),
@@ -294,12 +268,12 @@ class OtpVerificationDialog extends StatelessWidget {
                         RichText(
                           textAlign: TextAlign.center,
                           text: TextSpan(
-                            style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(
-                                  fontSize: 16.0,
-                                  fontFamily: 'Poppins',
-                                  letterSpacing: 1.5,
-                                ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      fontSize: 16.0,
+                                      fontFamily: 'Poppins',
+                                      letterSpacing: 1.5,
+                                    ),
                             children: <InlineSpan>[
                               TextSpan(
                                 text: 'OTP not received? Call ',
@@ -312,7 +286,7 @@ class OtpVerificationDialog extends StatelessWidget {
                                   ..onTap = () async =>
                                       await CallWhatsappUtil.openCall1313(),
                                 text: '1313',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.red,
                                   fontWeight: FontWeight.bold,
                                   decoration: TextDecoration.underline,
@@ -332,13 +306,13 @@ class OtpVerificationDialog extends StatelessWidget {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Image.asset(
-                                        'assets/whatsapp.png', // Ensure you have this image in your assets
+                                        'assets/whatsapp.png',
                                         width: 20.0,
                                         height: 20.0,
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 4.0,
-                                      ), // Space between icon and text
+                                      ),
                                       Text(
                                         'WhatsApp',
                                         style: TextStyle(
@@ -361,16 +335,19 @@ class OtpVerificationDialog extends StatelessWidget {
                   top: -8,
                   right: -8,
                   child: IconButton(
-                    padding: EdgeInsets.all(0),
+                    padding: const EdgeInsets.all(0),
                     onPressed: () => Navigator.of(context).pop(),
                     icon: Container(
                       decoration: BoxDecoration(
                         color: Colors.red,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 1),
+
                       ),
-                      padding: const EdgeInsets.all(2),
-                      child: const Icon(Icons.close, color: Colors.white),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                     ),
                   ),
                 ),

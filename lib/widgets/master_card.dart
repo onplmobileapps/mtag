@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class DebitCard extends StatelessWidget {
   final String? cardNumber;
@@ -63,6 +64,12 @@ class DebitCard extends StatelessWidget {
                             height: 40,
                             width: 40,
                           )
+                :brandName == 'AMEX'
+                    ? SvgPicture.asset(
+                        'assets/american.svg',
+                        height: 40,
+                        width: 40,
+                      )
                         : const SizedBox(
                             height: 40,
                             width: 40,

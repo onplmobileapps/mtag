@@ -97,7 +97,7 @@ class AuthController extends GetxController implements GetxService {
       }
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(
-        '${response[APIRESPONSE.ERROR]['Message'] ??APIEXCEPTION.UNPROCESS}',
+        '${response[APIRESPONSE.ERROR]['Message'] ?? APIEXCEPTION.UNPROCESS}',
         Get.back,
       );
     } else if (response['Code'] == '02') {
@@ -208,7 +208,6 @@ class AuthController extends GetxController implements GetxService {
       islogin: islogin,
     );
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
-      
       authRepo.saveLoginUserData(
         user: UserModel(
           data: Data(accessToken: response[APIRESPONSE.SUCCESS]['Data']),
@@ -231,8 +230,8 @@ class AuthController extends GetxController implements GetxService {
               isForgetPin: isForgetPin,
             );
           },
-          onResendOtp: () {
-            resendOTP(cnic: cnic, islogin: islogin);
+          onResendOtp: (operator_id) {
+            resendOTP(cnic: cnic, islogin: islogin, operator_id: operator_id);
           },
           mobileNumber: mobile,
           cnic: cnic,
@@ -255,10 +254,12 @@ class AuthController extends GetxController implements GetxService {
     String? smsText,
     String? cnic,
     int? islogin,
+    int? operator_id,
   }) async {
     Map<String, dynamic> response = await authRepo.genearateOtp(
       cnic: cnic,
       islogin: islogin,
+      operatorId: operator_id,
     );
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
@@ -439,10 +440,7 @@ class AuthController extends GetxController implements GetxService {
           ],
         ),
       );
-    } else {
-      // _handleError(response);
     }
     return response;
   }
-
 }

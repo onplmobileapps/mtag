@@ -81,7 +81,7 @@ ThemeData appTheme = ThemeData(
   stops: const [0.0, 0.3, 0.7, 1.0],
 ),
     ),
-    
+
   ],
 
   tabBarTheme: TabBarThemeData(
@@ -276,10 +276,14 @@ ThemeData appTheme = ThemeData(
   scaffoldBackgroundColor: Colors.white,
   appBarTheme: AppBarTheme(
     scrolledUnderElevation: 0.0,
-    systemOverlayStyle: SystemUiOverlayStyle(
-      statusBarColor: primarSwatch,
+    systemOverlayStyle: const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
       statusBarBrightness: Brightness.light,
       statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+      systemNavigationBarContrastEnforced: false,
+      systemStatusBarContrastEnforced: false,
     ),
     iconTheme: const IconThemeData(color: Colors.black),
     backgroundColor: const Color(0xFF2C2E65),
@@ -358,7 +362,7 @@ ThemeData appTheme = ThemeData(
       color: Colors.black,
       fontFamily: fontFamily,
     ),
-    
+
   ),
   chipTheme: ChipThemeData(
     labelStyle: TextStyle(
@@ -554,9 +558,13 @@ ThemeData darkTheme = ThemeData(
   scaffoldBackgroundColor: Colors.black,
   appBarTheme: AppBarTheme(
     systemOverlayStyle: const SystemUiOverlayStyle(
-      statusBarColor: Colors.black,
+      statusBarColor: Colors.transparent,
       statusBarBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.light,
+      systemNavigationBarContrastEnforced: false,
+      systemStatusBarContrastEnforced: false,
     ),
     iconTheme: const IconThemeData(color: Colors.white),
     backgroundColor: Colors.black,

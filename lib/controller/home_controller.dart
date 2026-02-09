@@ -38,25 +38,25 @@ class HomeController extends GetxController implements GetxService {
       routeName: '/mTag',
       title: 'Vehicles',
       image: 'assets/icons/receipt.png',
-      subtitle: 'Manage your vehicles'
+      subtitle: 'Manage Vehicles'
     ),
     MtagModel(
       routeName: '/tollHostory',
       title: 'Toll History',
       image: 'assets/icons/toll.png',
-      subtitle: 'View transactions'
+      subtitle: 'View Transactions'
     ),
     MtagModel(
       routeName: '/tollCalculator',
       title: 'Toll Calculator',
       image: 'assets/icons/calculator1.png',
-      subtitle: 'Calculate charges'
+      subtitle: 'Calculate Toll Rates'
     ),
     MtagModel(
       routeName: '/recharge',
       title: 'Recharge',
       image: 'assets/icons/card.png',
-      subtitle: 'Reload your balance'
+      subtitle: 'Recharge M-Tag'
     ),
   ];
 

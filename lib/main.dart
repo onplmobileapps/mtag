@@ -1,13 +1,14 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/features/splash_ad_screen.dart';
 import 'package:mtag_flutterapp/pages/login/auth_page.dart';
 import 'package:mtag_flutterapp/pages/login/create_pin_page.dart';
+import 'package:mtag_flutterapp/utils/error_handling.dart';
 import 'package:mtag_flutterapp/widgets/connectivity_banner.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +24,9 @@ import 'routes/approute.dart';
 import 'theme/app_theme.dart';
 import 'utils/utils.dart';
 
+//show/hide the splash ad
+const bool showAdSplash = false;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppData.initialize();
@@ -31,7 +35,7 @@ void main() async {
     name: 'mtagFlutter',
   );
 
-  // setupErrorHandling();
+  GlobalErrorHandler.initialize();
 
   final sharedPreferences = await SharedPreferences.getInstance();
 
@@ -39,6 +43,8 @@ void main() async {
     const SystemUiOverlayStyle(
       systemNavigationBarColor: Colors.transparent,
       statusBarColor: Colors.transparent,
+      systemNavigationBarContrastEnforced: false,
+      systemStatusBarContrastEnforced: false,
     ),
   );
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
@@ -82,6 +88,56 @@ class _MTagAppState extends State<MTagApp> {
 
   @override
   Widget build(BuildContext context) {
+    Widget initialScreen = AppData.getPinData() != null ? PinEntryPage() : AuthPage();
+
+    Widget mainContent = Platform.isIOS
+        ? UpgradeAlert(
+            upgrader: Upgrader(
+              upgraderOS: UpgraderOS(),
+              languageCode: "en",
+              countryCode: "PK",
+              durationUntilAlertAgain: const Duration(days: 1),
+              messages: CustomUpgraderMessages()..languageCode,
+              debugLogging: kDebugMode,
+              willDisplayUpgrade:
+                  ({
+                    required bool display,
+                    String? installedVersion,
+                    UpgraderVersionInfo? versionInfo,
+                  }) {
+                    if (kDebugMode) {
+                      debugPrint('🟢 Upgrade check:');
+                      debugPrint('Installed version: $installedVersion');
+                      debugPrint(
+                        'App Store version: ${versionInfo?.appStoreVersion}',
+                      );
+                      debugPrint('Display = $display');
+                    }
+
+                    if (installedVersion != null &&
+                        versionInfo?.appStoreVersion != null) {
+                      final installed = Version.parse(installedVersion);
+                      final store = versionInfo!.appStoreVersion!;
+
+                      if (store > installed) {
+                        if (kDebugMode) debugPrint('⬆️ Update available!');
+                        Upgrader.clearSavedSettings();
+                      } else {
+                        if (kDebugMode) debugPrint('✅ App is up-to-date.');
+                      }
+                    }
+                  },
+            ),
+            dialogStyle: UpgradeDialogStyle.cupertino,
+            cupertinoButtonTextStyle: const TextStyle(fontFamily: 'Poppins'),
+            barrierDismissible: false,
+            showIgnore: false,
+            showLater: false,
+            showReleaseNotes: true,
+            child: initialScreen,
+          )
+        : initialScreen;
+
     return GetMaterialApp(
       smartManagement: SmartManagement.keepFactory,
       defaultTransition: Transition.native,
@@ -107,55 +163,9 @@ class _MTagAppState extends State<MTagApp> {
           ? ThemeMode.light
           : ThemeMode.system,
       debugShowCheckedModeBanner: false,
-      home: Platform.isIOS
-          ? UpgradeAlert(
-              upgrader: Upgrader(
-                upgraderOS: UpgraderOS(),
-                languageCode: "en",
-                countryCode: "PK",
-                durationUntilAlertAgain: const Duration(days: 1),
-                messages: CustomUpgraderMessages()..languageCode,
-                debugLogging: kDebugMode,
-                willDisplayUpgrade:
-                    ({
-                      required bool display,
-                      String? installedVersion,
-                      UpgraderVersionInfo? versionInfo,
-                    }) {
-                      if (kDebugMode) {
-                        debugPrint('🟢 Upgrade check:');
-                        debugPrint('Installed version: $installedVersion');
-                        debugPrint(
-                          'App Store version: ${versionInfo?.appStoreVersion}',
-                        );
-                        debugPrint('Display = $display');
-                      }
-
-                      if (installedVersion != null &&
-                          versionInfo?.appStoreVersion != null) {
-                        final installed = Version.parse(installedVersion);
-                        final store = versionInfo!.appStoreVersion!;
-
-                        if (store > installed) {
-                          if (kDebugMode) debugPrint('⬆️ Update available!');
-                          Upgrader.clearSavedSettings();
-                        } else {
-                          if (kDebugMode) debugPrint('✅ App is up-to-date.');
-                        }
-                      }
-                    },
-              ),
-              dialogStyle: UpgradeDialogStyle.cupertino,
-              cupertinoButtonTextStyle: const TextStyle(fontFamily: 'Poppins'),
-              barrierDismissible: false,
-              showIgnore: false,
-              showLater: false,
-              showReleaseNotes: true,
-              child: AppData.getPinData() != null ? PinEntryPage() : AuthPage(),
-            )
-          : AppData.getPinData() != null
-          ? PinEntryPage()
-          : AuthPage(),
+      home: showAdSplash 
+          ? SplashAdScreen(nextScreen: mainContent)
+          : mainContent,
     );
   }
 }
@@ -189,75 +199,4 @@ class CustomUpgraderMessages extends UpgraderMessages {
 
   @override
   String get buttonTitleLater => 'Remind Me Later';
-}
-
-void setupErrorHandling() {
-  FlutterError.onError = (FlutterErrorDetails details) {
-    if (_shouldIgnoreError(details.exception)) {
-      if (kDebugMode) {
-        debugPrint('🚫 Ignored error: ${details.exception}');
-      }
-      return;
-    }
-
-    if (kDebugMode) {
-      debugPrint('🐛 Debug mode - Error: ${details.exception}');
-      debugPrint('Stack trace: ${details.stack}');
-      return;
-    }
-
-    debugPrint('📊 Production - Logging to Crashlytics: ${details.exception}');
-    FirebaseCrashlytics.instance.recordFlutterFatalError(details);
-  };
-
-  PlatformDispatcher.instance.onError = (error, stack) {
-    if (_shouldIgnoreError(error)) {
-      if (kDebugMode) {
-        debugPrint('🚫 Ignored async error: $error');
-      }
-      return true;
-    }
-
-    if (kDebugMode) {
-      debugPrint('🐛 Debug mode - Async error: $error');
-      debugPrint('Stack trace: $stack');
-      return true;
-    }
-
-    debugPrint('📊 Production - Logging async error to Crashlytics: $error');
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
-}
-
-bool _shouldIgnoreError(dynamic exception) {
-  final errorString = exception.toString();
-
-  final ignoredPatterns = [
-    'Could not launch',
-    'No application found',
-    'No Activity found',
-    'No installed applications',
-    'url_launcher',
-    'No directions apps',
-    'Maps app not available',
-    'No map application',
-    'ERR_UNKNOWN_URL_SCHEME',
-
-    'basemaps.cartocdn.com',
-    'a.basemaps.cartocdn.com',
-    'b.basemaps.cartocdn.com',
-    'c.basemaps.cartocdn.com',
-  ];
-
-  final shouldIgnore = ignoredPatterns.any(
-    (pattern) => errorString.toLowerCase().contains(pattern.toLowerCase()),
-  );
-
-  if (errorString.contains('Failed host lookup') &&
-      errorString.contains('basemaps.cartocdn.com')) {
-    return true;
-  }
-
-  return shouldIgnore;
 }

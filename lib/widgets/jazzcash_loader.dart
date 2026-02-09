@@ -75,6 +75,7 @@ Future<void> jazzLoader() {
               Image.asset(
                 'assets/jazzcash.png',
                 height: 70,
+                cacheHeight: 150,
               ),
               const SizedBox(
                 height: 10,
