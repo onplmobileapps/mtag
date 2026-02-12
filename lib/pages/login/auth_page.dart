@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/widgets/custom_keyboard_actions.dart';
 import 'package:mtag_flutterapp/widgets/elevated_button.dart';
@@ -17,6 +16,7 @@ class AuthPage extends StatelessWidget {
 
   final controller = Get.put(AuthPageController());
   final ScrollController scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
@@ -109,6 +109,7 @@ class AuthPage extends StatelessWidget {
                                   ),
                                 ],
                                 SizedBox(height: screenHeight * 0.02),
+
                                 Text(
                                   'CNIC',
                                   style: Theme.of(context).textTheme.bodySmall,
@@ -148,195 +149,166 @@ class AuthPage extends StatelessWidget {
                                   style: Theme.of(context).textTheme.bodySmall,
                                 ),
                                 SizedBox(height: screenHeight * 0.004),
-                                Obx(
-                                  () => TextFormField(
-                                    focusNode: controller.phoneFocusNode,
+                                TextFormField(
+                                  focusNode: controller.phoneFocusNode,
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: numberInputFormatters,
+                                  maxLength: 11,
+                                  validator: (v) {
+                                    if (v == null ||
+                                        v.isEmpty ||
+                                        !v.startsWith('03') ||
+                                        v.length < 11) {
+                                      return 'Please enter your mobile number';
+                                    }
+                                    return null;
+                                  },
+                                  style: const TextStyle(height: 1),
+                                  controller: controller.phoneController,
+                                  decoration: InputDecoration(
+                                    hintText: 'Mobile Number',
+                                    counterText: "",
+                                    prefixIcon: Icon(
+                                      Icons.phone,
+                                      color: Colors.grey,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  onEditingComplete: () =>
+                                      FocusScope.of(context).unfocus(),
+                                ),
+                                if (controller.authIndex.value == 1) ...[
+                                  SizedBox(height: screenHeight * 0.02),
+                                  Text(
+                                    'Select Operator',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall,
+                                  ),
+                                  SizedBox(height: screenHeight * 0.004),
+                                  DropdownButtonFormField<Map<String, dynamic>>(
+                                    initialValue:
+                                        controller.selectedOperator.value,
                                     autovalidateMode:
                                         AutovalidateMode.onUserInteraction,
-                                    keyboardType: TextInputType.number,
-                                    inputFormatters: numberInputFormatters,
-                                    maxLength: 11,
+                                    decoration: InputDecoration(
+                                      prefixIcon: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        // child: SvgPicture.asset(
+                                        //   'assets/simcard.svg',
+                                        //   height: 20,
+                                        //   width: 20,
+                                        // ),
+                                        child: Icon(
+                                          Icons.sim_card,
+                                          size: 20,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      hintText: 'Select Operator',
+                                    ),
+                                    icon: const Icon(
+                                      Icons.keyboard_arrow_down,
+
+                                      size: 18,
+                                    ),
+                                    isExpanded: true,
+                                    onChanged: (newValue) {
+                                      controller.selectedOperator.value =
+                                          newValue;
+                                    },
                                     validator: (v) {
-                                      if (v == null ||
-                                          v.isEmpty ||
-                                          !v.startsWith('03') ||
-                                          v.length < 11) {
-                                        return 'Please enter your mobile number';
+                                      if (v == null) {
+                                        return 'Please select your operator';
                                       }
                                       return null;
                                     },
-                                    style: const TextStyle(height: 1),
-                                    controller: controller.phoneController,
-                                    decoration: InputDecoration(
-                                      hintText: 'Mobile Number',
-                                      counterText: "",
-
-                                      prefixIconConstraints:
-                                          const BoxConstraints(
-                                            minWidth: 50,
-                                            maxWidth: 140,
-                                          ),
-                                      prefixIcon:
-                                          controller.authIndex.value == 1
-                                          ? Padding(
-                                              padding: const EdgeInsets.only(
-                                                left: 16,
-                                                right: 4,
-                                              ),
-                                              child: SizedBox(
-                                                width: 100,
-                                                child: DropdownButtonHideUnderline(
-                                                  child: DropdownButton<Map<String, dynamic>>(
-                                                    value: controller
-                                                        .selectedOperator
-                                                        .value,
-                                                    icon: const Icon(
-                                                      Icons.keyboard_arrow_down,
-                                                      size: 18,
-                                                    ),
-                                                    isExpanded: true,
-                                                    hint: Row(
-                                                      children: [
-                                                        SvgPicture.asset(
-                                                          'assets/simcard.svg',
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    onChanged: (newValue) {
-                                                      if (newValue != null) {
-                                                        controller
-                                                                .selectedOperator
-                                                                .value =
-                                                            newValue;
-                                                      }
-                                                    },
-                                                    selectedItemBuilder: (context) {
-                                                      return operatorList.map((
-                                                        operator,
-                                                      ) {
-                                                        return Row(
-                                                          children: [
-                                                            Image.asset(
-                                                              operator['image'],
-                                                              height: 20,
-                                                              width: 20,
-                                                              errorBuilder:
-                                                                  (
-                                                                    context,
-                                                                    error,
-                                                                    stackTrace,
-                                                                  ) => const Icon(
-                                                                    Icons
-                                                                        .sim_card,
-                                                                    size: 20,
-                                                                  ),
-                                                            ),
-                                                            const SizedBox(
-                                                              width: 6,
-                                                            ),
-                                                            Flexible(
-                                                              child: Text(
-                                                                operator['text'],
-                                                                style: theme
-                                                                    .textTheme
-                                                                    .bodyMedium
-                                                                    ?.copyWith(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      color: colorScheme
-                                                                          .onSurface,
-                                                                    ),
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        );
-                                                      }).toList();
-                                                    },
-                                                    items: operatorList.map((
-                                                      operator,
-                                                    ) {
-                                                      return DropdownMenuItem<
-                                                        Map<String, dynamic>
-                                                      >(
-                                                        value: operator,
-                                                        child: Row(
-                                                          children: [
-                                                            Image.asset(
-                                                              operator['image'],
-                                                              height: 24,
-                                                              width: 24,
-                                                              errorBuilder:
-                                                                  (
-                                                                    context,
-                                                                    error,
-                                                                    stackTrace,
-                                                                  ) => const Icon(
-                                                                    Icons
-                                                                        .sim_card,
-                                                                    size: 20,
-                                                                  ),
-                                                            ),
-                                                            const SizedBox(
-                                                              width: 8,
-                                                            ),
-                                                            Flexible(
-                                                              child: Text(
-                                                                operator['text'],
-                                                                style: theme
-                                                                    .textTheme
-                                                                    .bodyMedium
-                                                                    ?.copyWith(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      color: colorScheme
-                                                                          .onSurface,
-                                                                    ),
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    }).toList(),
-                                                    isDense: false,
-                                                    dropdownColor: Theme.of(
-                                                      context,
-                                                    ).colorScheme.surface,
-                                                    menuMaxHeight: 300,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          8,
-                                                        ),
+                                    selectedItemBuilder: (context) {
+                                      return operatorList.map((operator) {
+                                        return Row(
+                                          children: [
+                                            Image.asset(
+                                              operator['image'],
+                                              height: 20,
+                                              width: 20,
+                                              errorBuilder:
+                                                  (
+                                                    context,
+                                                    error,
+                                                    stackTrace,
+                                                  ) => const Icon(
+                                                    Icons.sim_card,
+                                                    size: 20,
                                                   ),
-                                                ),
-                                              ),
-                                            )
-                                          : Icon(
-                                              Icons.phone,
-                                              color: Colors.grey,
-                                              size: 20,
                                             ),
-                                    ),
-                                    onChanged: (value) {
-                                      final detectedOperator = _detectOperator(
-                                        value,
-                                      );
-                                      if (detectedOperator != null) {
-                                        controller.selectedOperator.value =
-                                            detectedOperator;
-                                      }
+                                            const SizedBox(width: 6),
+                                            Flexible(
+                                              child: Text(
+                                                operator['text'],
+                                                style: theme
+                                                    .textTheme
+                                                    .bodyMedium
+                                                    ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color:
+                                                          colorScheme.onSurface,
+                                                    ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      }).toList();
                                     },
-                                    onEditingComplete: () =>
-                                        FocusScope.of(context).unfocus(),
+                                    items: operatorList.map((operator) {
+                                      return DropdownMenuItem<
+                                        Map<String, dynamic>
+                                      >(
+                                        value: operator,
+                                        child: Row(
+                                          children: [
+                                            Image.asset(
+                                              operator['image'],
+                                              height: 24,
+                                              width: 24,
+                                              errorBuilder:
+                                                  (
+                                                    context,
+                                                    error,
+                                                    stackTrace,
+                                                  ) => const Icon(
+                                                    Icons.sim_card,
+                                                    size: 20,
+                                                  ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Flexible(
+                                              child: Text(
+                                                operator['text'],
+                                                style: theme
+                                                    .textTheme
+                                                    .bodyMedium
+                                                    ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color:
+                                                          colorScheme.onSurface,
+                                                    ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }).toList(),
+                                    dropdownColor: theme.colorScheme.surface,
+                                    menuMaxHeight: 300,
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                                ),
+                                ],
                                 SizedBox(height: screenHeight * 0.02),
                                 if (controller.authIndex.value == 0)
                                   Row(
@@ -475,16 +447,4 @@ class AuthPage extends StatelessWidget {
       return mainContent;
     }
   }
-}
-
-Map<String, dynamic>? _detectOperator(String phoneNumber) {
-  if (phoneNumber.length >= 4) {
-    String prefix = phoneNumber.substring(0, 4);
-    for (var operator in operatorList) {
-      if (operator['prefixes']?.contains(prefix) ?? false) {
-        return operator;
-      }
-    }
-  }
-  return null;
 }

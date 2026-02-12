@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -88,7 +87,9 @@ class _MTagAppState extends State<MTagApp> {
 
   @override
   Widget build(BuildContext context) {
-    Widget initialScreen = AppData.getPinData() != null ? PinEntryPage() : AuthPage();
+    Widget initialScreen = AppData.getPinData() != null
+        ? PinEntryPage()
+        : AuthPage();
 
     Widget mainContent = Platform.isIOS
         ? UpgradeAlert(
@@ -163,7 +164,7 @@ class _MTagAppState extends State<MTagApp> {
           ? ThemeMode.light
           : ThemeMode.system,
       debugShowCheckedModeBanner: false,
-      home: showAdSplash 
+      home: showAdSplash
           ? SplashAdScreen(nextScreen: mainContent)
           : mainContent,
     );

@@ -1,7 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:pinput/pinput.dart';
 import 'dart:async';
 import '../../constants/call_helper.dart';
@@ -11,6 +9,7 @@ class OtpVerificationDialog extends StatelessWidget {
   final Function(String otp) onOtpSubmit;
   final Function(int? operatorId) onResendOtp;
   final String? mobileNumber, cnic;
+
   OtpVerificationDialog({
     super.key,
     required this.onOtpSubmit,
@@ -21,9 +20,7 @@ class OtpVerificationDialog extends StatelessWidget {
 
   final ValueNotifier<int> _secondsRemainingNotifier = ValueNotifier<int>(120);
 
-  static void _startTimer(
-    ValueNotifier<int> secondsRemainingNotifier,
-  ) {
+  static void _startTimer(ValueNotifier<int> secondsRemainingNotifier) {
     Timer.periodic(const Duration(seconds: 1), (timer) {
       if (secondsRemainingNotifier.value > 0) {
         secondsRemainingNotifier.value -= 1;
@@ -113,7 +110,9 @@ class OtpVerificationDialog extends StatelessWidget {
                                   },
                                   child: Text(
                                     "Edit",
-                                    style: Theme.of(context).textTheme.bodyMedium,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium,
                                   ),
                                 ),
                               ),
@@ -254,9 +253,7 @@ class OtpVerificationDialog extends StatelessWidget {
                                       '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
                                   return Text(
                                     formattedTime,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge
+                                    style: Theme.of(context).textTheme.bodyLarge
                                         ?.copyWith(fontWeight: FontWeight.w800),
                                   );
                                 },
@@ -268,12 +265,12 @@ class OtpVerificationDialog extends StatelessWidget {
                         RichText(
                           textAlign: TextAlign.center,
                           text: TextSpan(
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      fontSize: 16.0,
-                                      fontFamily: 'Poppins',
-                                      letterSpacing: 1.5,
-                                    ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  fontSize: 16.0,
+                                  fontFamily: 'Poppins',
+                                  letterSpacing: 1.5,
+                                ),
                             children: <InlineSpan>[
                               TextSpan(
                                 text: 'OTP not received? Call ',
@@ -310,9 +307,7 @@ class OtpVerificationDialog extends StatelessWidget {
                                         width: 20.0,
                                         height: 20.0,
                                       ),
-                                      const SizedBox(
-                                        width: 4.0,
-                                      ),
+                                      const SizedBox(width: 4.0),
                                       Text(
                                         'WhatsApp',
                                         style: TextStyle(
@@ -341,7 +336,6 @@ class OtpVerificationDialog extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.red,
                         shape: BoxShape.circle,
-
                       ),
                       child: const Icon(
                         Icons.close,
