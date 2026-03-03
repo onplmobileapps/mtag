@@ -13,7 +13,9 @@ class ElevatedButton1 extends StatelessWidget {
     this.shape,
     this.icon,
     this.isShowIcon = false,
-    this.iconAlignment = IconAlignment.end,this.textStyle,
+    this.iconAlignment = IconAlignment.end,
+    this.textStyle,
+    this.isEnabled = true,
   });
 
   final VoidCallback? onclick;
@@ -27,7 +29,8 @@ class ElevatedButton1 extends StatelessWidget {
   final bool isShowIcon;
   final IconAlignment iconAlignment;
   final Widget? icon;
-  final TextStyle?textStyle;
+  final TextStyle? textStyle;
+  final bool isEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -39,32 +42,30 @@ class ElevatedButton1 extends StatelessWidget {
       maximumSize: WidgetStatePropertyAll(Size(width ?? 300, height ?? 40)),
       shape: WidgetStatePropertyAll(
         shape ??
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-            ),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       ),
     );
-
+    final VoidCallback? effectiveOnPressed = isEnabled ? onclick : null;
     if (!isShowIcon || icon == null) {
       return ElevatedButton(
-        onPressed: onclick,
+        onPressed: effectiveOnPressed,
         style: style,
         child: Text(
           text ?? '',
           textAlign: TextAlign.center,
-          style:textStyle?? const TextStyle(fontSize: 14),
+          style: textStyle ?? const TextStyle(fontSize: 14),
         ),
       );
     }
 
     return ElevatedButton.icon(
-      onPressed: onclick,
+      onPressed: effectiveOnPressed,
       style: style,
       iconAlignment: iconAlignment,
       icon: icon!,
       label: Text(
         text ?? '',
-        style: textStyle?? const TextStyle(fontSize: 14),
+        style: textStyle ?? const TextStyle(fontSize: 14),
       ),
     );
   }

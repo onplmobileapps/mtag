@@ -166,11 +166,13 @@ class RechargeSelfController extends GetxController {
         if (arguments.first.payId == '1') {
           isCardsVisible.value = true;
           setPayment(2);
-          selected1linkOpt.value = 2; // JazzCash value in BuildPaymentOptionsWidget
+          selected1linkOpt.value =
+              2; // JazzCash value in BuildPaymentOptionsWidget
         } else if (arguments.first.payId == '0') {
           isCardsVisible.value = true;
           setPayment(1);
-          selected1linkOpt.value = 3; // Credit/Debit value in BuildPaymentOptionsWidget
+          selected1linkOpt.value =
+              3; // Credit/Debit value in BuildPaymentOptionsWidget
         }
       });
     } else {
@@ -179,7 +181,6 @@ class RechargeSelfController extends GetxController {
       });
     }
   }
-
 
   void _disposeControllers() {
     amountController.dispose();
@@ -322,6 +323,11 @@ Widget _buildMtagList(BuildContext context, RechargeSelfController controller) {
                     "You have pending dues on your account. You are not allowed to enter the motorway until your dues are cleared.",
                     () => Get.back(),
                   )
+                : item.isactive == 5.0
+                ? showPopDialog(
+                    "This M-Tag is decommissioned and no longer eligible for recharge.",
+                    () => Get.back(),
+                  )
                 : controller.onMTagTap(
                     controller.arguments.indexOf(item),
                     item.tokenno ?? '',
@@ -388,7 +394,9 @@ Widget _buildAmountSection(
                     Text(
                       'Min: Rs. ${controller.homeController.dashboradData.value.rechargeMinAmount} '
                       'Max: Rs. ${controller.homeController.dashboradData.value.rechargeMaxAmount}',
-                      style: TextTheme.of(context).bodySmall?.copyWith(fontSize: 9),
+                      style: TextTheme.of(
+                        context,
+                      ).bodySmall?.copyWith(fontSize: 9),
                     ),
                   ],
                 ),
@@ -479,19 +487,21 @@ extension RechargeSelfControllerExtensions on RechargeSelfController {
     }
 
     // paymentMethod 0: Credit/Debit (from onChanged(0)), 1: JazzCash (from onChanged(1))
-    if (paymentMethod == 0) { // Credit Card
-       setPayment(1);
-       fetchPaymentCards("0");
-       isCardsVisible.value = true;
-       isJazzShown.value = false;
-    } else if (paymentMethod == 1) { // JazzCash
-       setPayment(2);
-       fetchPaymentCards("1");
-       isCardsVisible.value = true;
-       isJazzShown.value = false;
+    if (paymentMethod == 0) {
+      // Credit Card
+      setPayment(1);
+      fetchPaymentCards("0");
+      isCardsVisible.value = true;
+      isJazzShown.value = false;
+    } else if (paymentMethod == 1) {
+      // JazzCash
+      setPayment(2);
+      fetchPaymentCards("1");
+      isCardsVisible.value = true;
+      isJazzShown.value = false;
     } else {
-       isCardsVisible.value = false;
-       isJazzShown.value = false;
+      isCardsVisible.value = false;
+      isJazzShown.value = false;
     }
   }
 

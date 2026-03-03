@@ -15,17 +15,20 @@ import '../dashboard/model/dashboard_model.dart';
 
 class MatagDetailScreen extends GetView<TollController> {
   MatagDetailScreen({super.key});
+
   final arguments = Get.arguments is List<ActiveMtags>
       ? Get.arguments as List<ActiveMtags>
       : Get.arguments != null
       ? [Get.arguments as ActiveMtags]
       : [ActiveMtags()];
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(top: false,
+    return SafeArea(
+      top: false,
       child: Scaffold(
         appBar: GradientAppBar(title: const Text('Vehicle Details')),
-      
+
         body: Container(
           constraints: const BoxConstraints.expand(),
           decoration: BoxDecoration(color: Theme.of(context).primaryColor),
@@ -65,18 +68,16 @@ class MatagDetailScreen extends GetView<TollController> {
                                 getVehicleImage(
                                   arguments.first.vehicletype ?? '',
                                 ),
-      
+
                                 height: 70,
                                 width: 90,
                               ),
                             ),
-      
+
                             Column(
                               mainAxisAlignment: .start,
                               crossAxisAlignment: .start,
                               children: [
-                                
-      
                                 FittedBox(
                                   fit: BoxFit.scaleDown,
                                   alignment: Alignment.topLeft,
@@ -85,12 +86,13 @@ class MatagDetailScreen extends GetView<TollController> {
                                       children: [
                                         TextSpan(
                                           text:
-                                              arguments.first.registration ?? '',
+                                              arguments.first.registration ??
+                                              '',
                                           style: TextTheme.of(
                                             context,
                                           ).bodyMedium?.copyWith(fontSize: 13),
                                         ),
-      
+
                                         TextSpan(
                                           text: ' • M-TAG ', // rest of text
                                           style: TextStyle(
@@ -111,7 +113,6 @@ class MatagDetailScreen extends GetView<TollController> {
                                   ),
                                 ),
                                 Row(
-                                
                                   children: [
                                     Text(
                                       'Available Balance  ',
@@ -153,6 +154,9 @@ class MatagDetailScreen extends GetView<TollController> {
                           ],
                         ),
                         ElevatedButton1(
+                          isEnabled: arguments.first.isactive == 5.0
+                              ? false
+                              : true,
                           height: 35,
                           backgroundColor: Theme.of(context).primaryColor,
                           width: double.infinity,
@@ -178,6 +182,7 @@ class MatagDetailScreen extends GetView<TollController> {
                               // Optionally show an error message to the user
                             }
                           },
+
                           text: 'Recharge M-TAG',
                           icon: Icon(Icons.add_circle),
                           isShowIcon: true,
@@ -186,15 +191,16 @@ class MatagDetailScreen extends GetView<TollController> {
                       ],
                     ),
                   ),
-      
+
                   // Recharge button
                   const SizedBox(height: 10),
                   Text(
                     'Recharge History',
                     style: TextTheme.of(context).titleLarge,
                   ),
-                       const SizedBox(height: 8),
-                  Expanded(flex: 1,
+                  const SizedBox(height: 8),
+                  Expanded(
+                    flex: 1,
                     child: FutureBuilder(
                       future: controller.geTollHistory(
                         mtagID: arguments.isNotEmpty
@@ -202,10 +208,11 @@ class MatagDetailScreen extends GetView<TollController> {
                             : '',
                       ),
                       builder: (_, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return ListSkeleton();
                         }
-      
+
                         var transactions = controller
                             .tollHistoryModel
                             .value
@@ -216,66 +223,87 @@ class MatagDetailScreen extends GetView<TollController> {
                             child: Text('No transactions found'),
                           );
                         }
-      
-                        return ListView.builder(scrollDirection: .vertical,
+
+                        return ListView.builder(
+                          scrollDirection: .vertical,
                           itemCount: transactions.length,
                           shrinkWrap: true,
                           padding: EdgeInsets.zero,
                           itemBuilder: (ctx, index) {
                             var data = transactions[index];
-                            return Container(margin: .only(bottom:4),
+                            return Container(
+                              margin: .only(bottom: 4),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
-                                gradient: Theme.of(context).extension<AppGradients>()!.gridWidget
+                                gradient: Theme.of(
+                                  context,
+                                ).extension<AppGradients>()!.gridWidget,
                               ),
                               child: ListTile(
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                leading: Container(margin: .only(bottom:4,right:8),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 8,
+                                ),
+                                leading: Container(
+                                  margin: .only(bottom: 4, right: 8),
                                   width: 50,
                                   height: 60,
-                                  decoration: BoxDecoration(borderRadius: .circular(8),color: ColorScheme.of(context).surface,
+                                  decoration: BoxDecoration(
+                                    borderRadius: .circular(8),
+                                    color: ColorScheme.of(context).surface,
                                     shape: BoxShape.rectangle,
-                                    
                                   ),
-                                  child:  FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Image.asset(
-                                getVehicleImage(
-                                  arguments.first.vehicletype ?? '',
-                                ),
-      
-                                height: 80,
-                                width: 90,
-                              ),
-                            ),
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Image.asset(
+                                      getVehicleImage(
+                                        arguments.first.vehicletype ?? '',
+                                      ),
+
+                                      height: 80,
+                                      width: 90,
+                                    ),
+                                  ),
                                 ),
                                 title: Row(
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        data.eXITSTATIONNAME ?? 'Unknown Station',
-                                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                        data.eXITSTATIONNAME ??
+                                            'Unknown Station',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium
+                                            ?.copyWith(
                                               fontWeight: FontWeight.w600,
-                                              color: Theme.of(context).colorScheme.onSurface,
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.onSurface,
                                             ),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 2,
+                                      ),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(12),
                                         gradient: LinearGradient(
                                           colors: [
-                                            Colors.green.withValues(alpha:0.2),
-                                            Colors.green.withValues(alpha:0.1),
+                                            Colors.green.withValues(alpha: 0.2),
+                                            Colors.green.withValues(alpha: 0.1),
                                           ],
                                         ),
                                       ),
                                       child: Text(
                                         '${data.cR ?? ''} PKR ${data.fARE ?? ''}',
-                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
                                               color: Colors.green.shade700,
                                               fontWeight: FontWeight.w600,
                                             ),
@@ -284,22 +312,34 @@ class MatagDetailScreen extends GetView<TollController> {
                                   ],
                                 ),
                                 subtitle: Container(
-                                  margin: const EdgeInsets.only(top: 4,bottom: 2),
+                                  margin: const EdgeInsets.only(
+                                    top: 4,
+                                    bottom: 2,
+                                  ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
                                           Icon(
                                             Icons.confirmation_number,
                                             size: 14,
-                                            color: Theme.of(context).colorScheme.secondary,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.secondary,
                                           ),
                                           const SizedBox(width: 4),
                                           Text(
                                             'M-TAG ${data.iTOKKENNO ?? ''}',
-                                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha:0.7),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall
+                                                ?.copyWith(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onSurface
+                                                      .withValues(alpha: 0.7),
                                                 ),
                                           ),
                                         ],
@@ -310,13 +350,21 @@ class MatagDetailScreen extends GetView<TollController> {
                                           Icon(
                                             Icons.access_time,
                                             size: 14,
-                                            color: Theme.of(context).colorScheme.secondary,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.secondary,
                                           ),
                                           const SizedBox(width: 4),
                                           Text(
                                             data.tRANSTIME ?? '',
-                                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha:0.7),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall
+                                                ?.copyWith(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onSurface
+                                                      .withValues(alpha: 0.7),
                                                 ),
                                           ),
                                         ],

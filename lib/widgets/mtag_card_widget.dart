@@ -40,7 +40,7 @@ class MTagCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: Theme.of(context).focusColor,
               border: Border.all(
-                color: isActive == 8
+                color: isActive == 8 || isActive == 5.0
                     ? Colors.redAccent
                     : isSelected
                     ? Theme.of(context).primaryColor
@@ -69,7 +69,7 @@ class MTagCard extends StatelessWidget {
                     scale: isSelected
                         ? 1.2
                         : 1.0, // Slightly larger when selected
-                    child: isActive == 8
+                    child: isActive == 8 || isActive == 5.0
                         ? CircleAvatar(
                             backgroundColor: Colors.redAccent,
                             radius: 12,
@@ -97,7 +97,7 @@ class MTagCard extends StatelessWidget {
                 Center(
                   child: Column(
                     children: [
-                      isActive == 8
+                      isActive == 8 || isActive == 5.0
                           ? Container(
                               alignment: .center,
                               padding: EdgeInsets.symmetric(
@@ -116,7 +116,9 @@ class MTagCard extends StatelessWidget {
                                 ],
                               ),
                               child: Text(
-                                'Blacklisted',
+                                isActive == 8.0
+                                    ? 'Blacklisted'
+                                    : "De-Commissioned",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,

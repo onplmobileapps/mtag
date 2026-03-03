@@ -639,7 +639,11 @@ class ActiveBadge extends StatelessWidget {
           FittedBox(
             fit: .scaleDown,
             child: Text(
-              isActive == 1.0 ? 'ACTIVE' : "BLACKLISTED",
+              isActive == 1.0
+                  ? 'ACTIVE'
+                  : isActive == 5.0
+                  ? "De-Commission"
+                  : "BLACKLISTED",
               style: TextStyle(
                 color: isActive == 1.0
                     ? Colors.green.shade900
@@ -743,6 +747,8 @@ class BalanceCard extends StatelessWidget {
                     value
                         ? mtag?.isactive == 1.0
                               ? 'Rs. ${balance ?? ''}'
+                              : mtag?.isactive == 5.0
+                              ? 'Rs. ${balance ?? ''}'
                               : 'Rs. ${recoveryAmount ?? ''}'
                         : '****',
                     style: TextTheme.of(context).titleLarge?.copyWith(
@@ -780,33 +786,36 @@ class BalanceCard extends StatelessWidget {
                 SizedBox(height: 4),
 
                 // ← was 8 → much tighter
-                Card(
-                  elevation: 1,
-                  borderOnForeground: true,
-                  shape: RoundedSuperellipseBorder(borderRadius: .circular(50)),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 4,
-                      vertical: 2,
+                if (mtag?.isactive != 5.0)
+                  Card(
+                    elevation: 1,
+                    borderOnForeground: true,
+                    shape: RoundedSuperellipseBorder(
+                      borderRadius: .circular(50),
                     ),
-                    child: mtag?.isactive != 1.0
-                        ? ElevatedButton1(
-                            width: double.infinity,
-                            // backgroundColor: Colors.red.shade900,
-                            onclick: () async {
-                              showPaymentBottomSheet(
-                                context,
-                                blackListRecharge: true,
-                                mtagId: mtag?.tokenno,
-                                regId: mtag?.registration,
-                                recoveryAmount: mtag?.block_amount,
-                              );
-                            },
-                            text: 'Pay Now',
-                          )
-                        : _RechargeButton(mtag!),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 4,
+                        vertical: 2,
+                      ),
+                      child: mtag?.isactive != 1.0
+                          ? ElevatedButton1(
+                              width: double.infinity,
+                              // backgroundColor: Colors.red.shade900,
+                              onclick: () async {
+                                showPaymentBottomSheet(
+                                  context,
+                                  blackListRecharge: true,
+                                  mtagId: mtag?.tokenno,
+                                  regId: mtag?.registration,
+                                  recoveryAmount: mtag?.block_amount,
+                                );
+                              },
+                              text: 'Pay Now',
+                            )
+                          : _RechargeButton(mtag!),
+                    ),
                   ),
-                ),
                 SizedBox(height: 5),
                 if (mtag?.isactive != 8.0) _TransferRemoveRow(mtag!),
               ],
