@@ -63,19 +63,19 @@ class HelpSection extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 20),
-                      Expanded(
-                        child: _buildCallButton(
-                          onTap: () async =>
-                              await CallWhatsappUtil.openWhatsAppChat(),
-                          text: 'WhatsApp',
-                          icon: Image.asset(
-                            'assets/whatsapp.png',
-                            height: 20,
-                            width: 20,
-                          ),
-                        ),
-                      ),
+                      // const SizedBox(width: 20),
+                      // Expanded(
+                      //   child: _buildCallButton(
+                      //     onTap: () async =>
+                      //         await CallWhatsappUtil.openWhatsAppChat(),
+                      //     text: 'WhatsApp',
+                      //     icon: Image.asset(
+                      //       'assets/whatsapp.png',
+                      //       height: 20,
+                      //       width: 20,
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ],

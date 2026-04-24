@@ -2,7 +2,8 @@
 // static const String _BASE_URL = 'http://10.0.1.127:9008';
 // static const String _BASE_URL = 'https://ocotapp.com';
 const String _BASE_URL = 'https://ocotapp.com';
-const String _IMAGE_ULR = 'https://ocotapp.com';
+// const String _IMAGE_ULR = 'https://ocotapp.com';
+const String _IMAGE_ULR = 'https://ocottapp.com';
 
 String get IMAGE_ULR => _IMAGE_ULR;
 
@@ -37,7 +38,8 @@ class APIEXCEPTION {
   static String HTTP = "Http Exception\n Please Try again";
   static String FORMAT = "Format Exception\n Please Try again later";
   static String UNKNOWN = "Unknown Exception\n Please Try again later";
-  static String UNPROCESS='We couldn’t complete your request\n Try again or contact assistance.';
+  static String UNPROCESS =
+      'We couldn’t complete your request\n Try again or contact assistance.';
 }
 
 class ResponseType {

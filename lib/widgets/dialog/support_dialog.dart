@@ -55,18 +55,18 @@ class SupportDialog extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 15),
-                _SupportOption(
-                  imagePath: 'assets/whatsapp_1.png',
-                  title: 'WhatsApp',
-                  subtitle: 'Chat with us on WhatsApp',
-                  color: const Color(0xFF25D366),
-                  iconBgColor: Colors.white,
-                  onTap: () {
-                    Navigator.pop(context);
-                    CallWhatsappUtil.openWhatsAppChat();
-                  },
-                ),
-                const SizedBox(height: 10),
+                // _SupportOption(
+                //   imagePath: 'assets/whatsapp_1.png',
+                //   title: 'WhatsApp',
+                //   subtitle: 'Chat with us on WhatsApp',
+                //   color: const Color(0xFF25D366),
+                //   iconBgColor: Colors.white,
+                //   onTap: () {
+                //     Navigator.pop(context);
+                //     CallWhatsappUtil.openWhatsAppChat();
+                //   },
+                // ),
+                // const SizedBox(height: 10),
               ],
             ),
           ),

@@ -41,16 +41,17 @@ class HomePage extends StatelessWidget {
         const SizedBox.shrink();
         return Scaffold(
           body: _navigationPages[controller.currentPage.value],
-          bottomNavigationBar: CustomPaint(
-            painter: NotchedBorderPainter(
-              borderColor: ColorScheme.of(context).outline,
-              strokeWidth: 1.5,
-              notchMargin: 7,
-              notchColor: ColorScheme.of(
-                context,
-              ).outline.withValues(alpha: 0.7),
-            ),
-            child: Padding(
+          bottomNavigationBar: // CustomPaint(
+            // painter: NotchedBorderPainter(
+            //   borderColor: ColorScheme.of(context).outline,
+            //   strokeWidth: 1.5,
+            //   notchMargin: 7,
+            //   notchColor: ColorScheme.of(
+            //     context,
+            //   ).outline.withValues(alpha: 0.7),
+            // ),
+            // child: 
+            Padding(
               padding: const EdgeInsets.only(top: 1),
               child: ClipRRect(
                 borderRadius: const BorderRadius.only(
@@ -61,31 +62,31 @@ class HomePage extends StatelessWidget {
                   height: 55,
                   clipBehavior: Clip.hardEdge,
                   elevation: 4,
-                  notchMargin: 1.0,
+                  // notchMargin: 1.0,
                   padding: .zero,
                   color: ColorScheme.of(context).surface,
-                  shape: const CircularNotchedRectangle(),
+                  // shape: const CircularNotchedRectangle(),
                   child: _BottomNavItems(),
                 ),
               ),
             ),
-          ),
-          floatingActionButton: Padding(
-            padding: const EdgeInsets.only(bottom: 20.0),
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: ColorScheme.of(context).surface,
-                border: .all(
-                  color: ColorScheme.of(context).outline,
-                  width: 1.5,
-                ),
-              ),
-              child: WhatsAppButton(),
-            ),
-          ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
+          // ),
+          // floatingActionButton: Padding(
+          //   padding: const EdgeInsets.only(bottom: 20.0),
+          //   child: Container(
+          //     decoration: BoxDecoration(
+          //       shape: BoxShape.circle,
+          //       color: ColorScheme.of(context).surface,
+          //       border: .all(
+          //         color: ColorScheme.of(context).outline,
+          //         width: 1.5,
+          //       ),
+          //     ),
+          //     child: WhatsAppButton(),
+          //   ),
+          // ),
+          // floatingActionButtonLocation:
+          //     FloatingActionButtonLocation.centerDocked,
         );
       },
     );

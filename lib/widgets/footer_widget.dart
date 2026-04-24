@@ -25,16 +25,16 @@ class FooterWidget extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _FooterItem(
-                image: 'assets/whatsapp_1.png',
-                label: 'WhatsApp',
-                semantics: 'Open WhatsApp support',
-                isDark: isDark,
-                isMultiColor: true,
-                onTap: () async {
-                  await CallWhatsappUtil.openWhatsAppChat();
-                },
-              ),
+              // _FooterItem(
+              //   image: 'assets/whatsapp_1.png',
+              //   label: 'WhatsApp',
+              //   semantics: 'Open WhatsApp support',
+              //   isDark: isDark,
+              //   isMultiColor: true,
+              //   onTap: () async {
+              //     await CallWhatsappUtil.openWhatsAppChat();
+              //   },
+              // ),
               _FooterItem(
                 image: 'assets/phone.png',
                 label: 'Helpline 1313',
