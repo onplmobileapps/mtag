@@ -273,24 +273,43 @@ class RechargeCenter {
 }
 
 LatLng dmsToLatLng(String dms) {
-  final parts = dms.split(' ');
-  if (parts.length != 2) throw FormatException('Invalid DMS format');
+  try {
+    final parts = dms.trim().split(RegExp(r'\s+'));
+    if (parts.length != 2) return const LatLng(0, 0);
 
-  double convert(String dmsPart) {
-    int degIndex = dmsPart.indexOf('°');
-    int minIndex = dmsPart.indexOf('\'');
-    int secIndex = dmsPart.indexOf('"');
+    double convert(String dmsPart) {
+      int degIndex = dmsPart.indexOf('°');
+      int minIndex = dmsPart.indexOf('\'');
+      int secIndex = dmsPart.indexOf('"');
 
-    double deg = double.parse(dmsPart.substring(0, degIndex));
-    double min = double.parse(dmsPart.substring(degIndex + 1, minIndex));
-    double sec = double.parse(dmsPart.substring(minIndex + 1, secIndex));
-    String dir = dmsPart.substring(secIndex + 1);
+      if (degIndex == -1 || minIndex == -1) return 0.0;
 
-    double decimal = deg + (min / 60) + (sec / 3600);
-    if (dir == 'S' || dir == 'W') decimal = -decimal;
+      double deg = double.tryParse(dmsPart.substring(0, degIndex)) ?? 0.0;
+      double min =
+          double.tryParse(dmsPart.substring(degIndex + 1, minIndex)) ?? 0.0;
+      double sec = 0.0;
+      if (secIndex != -1) {
+        sec = double.tryParse(dmsPart.substring(minIndex + 1, secIndex)) ?? 0.0;
+      } else {
+        sec = 0.0;
+      }
 
-    return decimal;
+      String dir = dmsPart.substring(dmsPart.length - 1);
+
+      double decimal = deg + (min / 60) + (sec / 3600);
+      if (dir == 'S' || dir == 'W') decimal = -decimal;
+
+      return decimal;
+    }
+
+    final lat = convert(parts[0]);
+    final lng = convert(parts[1]);
+
+    if (lat.isFinite && lng.isFinite) {
+      return LatLng(lat, lng);
+    }
+    return const LatLng(0, 0);
+  } catch (e) {
+    return const LatLng(0, 0);
   }
-
-  return LatLng(convert(parts[0]), convert(parts[1]));
 }

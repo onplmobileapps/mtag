@@ -159,76 +159,82 @@ class BalanceTransferSheet extends StatelessWidget {
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 1),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: selectedCar.value,
-          icon: Icon(
-            Icons.keyboard_arrow_down,
-            color: Theme.of(context).iconTheme.color, // dynamic icon color
-          ),
-          isExpanded: true,
-          elevation: 0,
-          // dynamic background
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            // ensures correct text color
-          ),
-          items: dropDownCars.map((car) {
-            return DropdownMenuItem<String>(
-              value: car["carNumber"],
-              child: Row(mainAxisAlignment: .spaceBetween,
-                children: [
-                  Container(padding: .all(4),
-                    clipBehavior: .none,decoration: BoxDecoration(color: ColorScheme.of(context).surface,borderRadius: .circular(4)),
-                    child: Text(
-                      car["carNumber"] ?? "",
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleSmall?.copyWith(),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.surface, // dynamic background
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      "Rs.${car["balance"] ?? "0"}",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).textTheme.bodyMedium?.color,
-                      ),
-                    ),
-                  ),
-                ],
+      child: ValueListenableBuilder<String?>(
+        valueListenable: selectedCar,
+        builder: (context, value, child) {
+          return DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: value,
+              icon: Icon(
+                Icons.keyboard_arrow_down,
+                color: Theme.of(context).iconTheme.color, // dynamic icon color
               ),
-            );
-          }).toList(),
-          onChanged: (value) {
-            if (value == null) return;
+              isExpanded: true,
+              elevation: 0,
+              // dynamic background
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                // ensures correct text color
+              ),
+              items: dropDownCars.map((car) {
+                return DropdownMenuItem<String>(
+                  value: car["carNumber"],
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(4),
+                        clipBehavior: Clip.none,
+                        decoration: BoxDecoration(
+                          color: ColorScheme.of(context).surface,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          car["carNumber"] ?? "",
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface, // dynamic background
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          "Rs.${car["balance"] ?? "0"}",
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).textTheme.bodyMedium?.color,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+              onChanged: (value) {
+                if (value == null) return;
 
-            selectedCar.value = value;
+                selectedCar.value = value;
 
-            // 🔒 PROD SAFE LOOKUP (NO GENERICS, NO firstWhere)
-            for (final car in dropDownCars) {
-              if (car["carNumber"] == value) {
-                selectedCarMtag.value = car["mtagID"]?.toString();
-                return;
-              }
-            }
+                // 🔒 PROD SAFE LOOKUP (NO GENERICS, NO firstWhere)
+                for (final car in dropDownCars) {
+                  if (car["carNumber"] == value) {
+                    selectedCarMtag.value = car["mtagID"]?.toString();
+                    return;
+                  }
+                }
 
-            // Fallback (never crash)
-            selectedCarMtag.value = null;
-          },
-
-        ),
+                // Fallback (never crash)
+                selectedCarMtag.value = null;
+              },
+            ),
+          );
+        },
       ),
     );
   }

@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class VerifiedBadge extends StatelessWidget {
   final String label;
   final String tooltipMessage;
+  final bool isVerified;
 
   const VerifiedBadge({
     super.key,
     required this.label,
     required this.tooltipMessage,
+    required this.isVerified,
   });
 
   @override
@@ -38,7 +40,9 @@ class VerifiedBadge extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(30),
           border: Border.all(
-            color: const Color(0xffA5B891).withValues(alpha: 0.5),
+            color: isVerified
+                ? const Color(0xffA5B891).withValues(alpha: 0.5)
+                : Colors.grey.withValues(alpha: 0.5),
             width: 1.2,
           ),
           boxShadow: [
@@ -52,26 +56,14 @@ class VerifiedBadge extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                const Icon(
-                  Icons.shield,
-                  size: 16,
-                  color: Color(0xff8BC34A),
-                ),
-                const Icon(
-                  Icons.check,
-                  size: 10,
-                  color: Colors.white,
-                ),
-              ],
-            ),
+            isVerified
+                ? Image.asset('assets/verified.png', height: 16, width: 16)
+                : Image.asset('assets/unverified.png', height: 16, width: 16),
             const SizedBox(width: 6),
             Text(
               label,
-              style: const TextStyle(
-                color: Color(0xff222B5D),
+              style: TextStyle(
+                color: isVerified ? Color(0xff222B5D) : Colors.grey,
                 fontSize: 9.5,
                 fontWeight: FontWeight.w900,
                 fontFamily: 'biotifbold',

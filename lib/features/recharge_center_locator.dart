@@ -140,6 +140,10 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
         for (final centers in RechargeCenter.allCenters.values) {
           for (final center in centers) {
             try {
+              if (!center.location.latitude.isFinite ||
+                  !center.location.longitude.isFinite) {
+                continue;
+              }
               final bool isOpen = center.isOpenNow;
               final String cacheKey = '${center.name}_$isOpen';
 
@@ -313,7 +317,9 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
       });
 
       final target = RechargeCenter.cities[city];
-      if (target == null) {
+      if (target == null ||
+          !target.latitude.isFinite ||
+          !target.longitude.isFinite) {
         setState(() => _isAnimating = false);
         return;
       }
@@ -333,22 +339,35 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
       final startCenter = _mapController.camera.center;
       final startZoom = _mapController.camera.zoom;
 
+      if (!startCenter.latitude.isFinite || !startCenter.longitude.isFinite) {
+        setState(() => _isAnimating = false);
+        return;
+      }
+
       controller.addListener(() {
         if (!mounted || _isDisposed) return;
 
         try {
           final t = curve.value;
-          final lat =
-              startCenter.latitude +
-              (target.latitude - startCenter.latitude) * t;
-          final lng =
-              startCenter.longitude +
-              (target.longitude - startCenter.longitude) * t;
+          final startLat = startCenter.latitude;
+          final startLng = startCenter.longitude;
+          final targetLat = target.latitude;
+          final targetLng = target.longitude;
+
+          if (!startLat.isFinite || !startLng.isFinite || 
+              !targetLat.isFinite || !targetLng.isFinite) {
+            return;
+          }
+
+          final lat = startLat + (targetLat - startLat) * t;
+          final lng = startLng + (targetLng - startLng) * t;
           final zoom = startZoom + (targetZoom - startZoom) * t;
 
-          _mapController.move(LatLng(lat, lng), zoom);
-          _centerNotifier.value = LatLng(lat, lng);
-          _zoomNotifier.value = zoom;
+          if (lat.isFinite && lng.isFinite && zoom.isFinite) {
+            _mapController.move(LatLng(lat, lng), zoom);
+            _centerNotifier.value = LatLng(lat, lng);
+            _zoomNotifier.value = zoom;
+          }
         } catch (e) {
           debugPrint('Error during animation: $e');
         }
@@ -389,8 +408,13 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
       controller.addListener(() {
         if (!mounted || _isDisposed) return;
         try {
-          _mapController.move(_mapController.camera.center, anim.value);
-          _zoomNotifier.value = anim.value;
+          final center = _mapController.camera.center;
+          if (center.latitude.isFinite &&
+              center.longitude.isFinite &&
+              anim.value.isFinite) {
+            _mapController.move(center, anim.value);
+            _zoomNotifier.value = anim.value;
+          }
         } catch (e) {
           debugPrint('Error during zoom animation: $e');
         }
@@ -432,49 +456,52 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
         child: Stack(
           children: [
             RepaintBoundary(
-              child: ValueListenableBuilder<double>(
-                valueListenable: _zoomNotifier,
-                builder: (context, zoom, child) {
-                  return FlutterMap(
-                    mapController: _mapController,
-                    options: MapOptions(
-                      backgroundColor: Theme.of(context).colorScheme.surface,
-                      initialCenter: _pakistanCenter,
-                      initialZoom: _pakistanZoom,
-                      minZoom: 5.0,
-                      maxZoom: 18.0,
-                      interactionOptions: const InteractionOptions(
-                        flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
-                        enableMultiFingerGestureRace: true,
-                      ),
-                      onPositionChanged: (pos, hasGesture) {
-                        if (!hasGesture ||
-                            _isAnimating ||
-                            _isDisposed ||
-                            !mounted) {
-                          return;
-                        }
+              child: FlutterMap(
+                mapController: _mapController,
+                options: MapOptions(
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  initialCenter: _pakistanCenter.latitude.isFinite ? _pakistanCenter : const LatLng(30.3753, 69.3451),
+                  initialZoom: _pakistanZoom.isFinite ? _pakistanZoom : 5.0,
+                  minZoom: 5.0,
+                  maxZoom: 18.0,
+                  interactionOptions: const InteractionOptions(
+                    flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                    enableMultiFingerGestureRace: false,
+                  ),
+                  onPositionChanged: (pos, hasGesture) {
+                    if (!hasGesture ||
+                        _isAnimating ||
+                        _isDisposed ||
+                        !mounted) {
+                      return;
+                    }
 
-                        try {
-                          _markerRebuildTimer?.cancel();
-                          _markerRebuildTimer = Timer(
-                            const Duration(milliseconds: 50),
-                            () {
-                              if (mounted && !_isDisposed) {
-                                final center = pos.center;
-                                final posZoom = pos.zoom;
-                                _centerNotifier.value = center;
-                                _zoomNotifier.value = posZoom;
-                              }
-                            },
-                          );
-                        } catch (e) {
-                          debugPrint('Error in onPositionChanged: $e');
-                        }
-                      },
-                    ),
-                    children: [
-                      TileLayer(
+                    try {
+                      final center = pos.center;
+                      final posZoom = pos.zoom;
+                      
+                      if (center.latitude.isFinite &&
+                          center.longitude.isFinite &&
+                          posZoom.isFinite) {
+                        
+                        _markerRebuildTimer?.cancel();
+                        _markerRebuildTimer = Timer(
+                          const Duration(milliseconds: 100),
+                          () {
+                            if (mounted && !_isDisposed) {
+                              _centerNotifier.value = center;
+                              _zoomNotifier.value = posZoom;
+                            }
+                          },
+                        );
+                      }
+                    } catch (e) {
+                      debugPrint('Error in onPositionChanged: $e');
+                    }
+                  },
+                ),
+                children: [
+                  TileLayer(
                         urlTemplate:
                             'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
                         subdomains: const ['a', 'b', 'c', 'd'],
@@ -599,9 +626,7 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                           },
                         ),
                     ],
-                  );
-                },
-              ),
+                  ),
             ),
             Positioned(
               top: MediaQuery.of(context).padding.top + 16,

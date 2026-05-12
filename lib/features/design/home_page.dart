@@ -5,13 +5,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mtag_flutterapp/features/recharge_center_locator.dart';
 import 'package:mtag_flutterapp/pages/settings/setting_screen.dart';
-import 'package:mtag_flutterapp/widgets/whatsapp_widget.dart';
 import '../../constants/other_consts.dart';
 import '../../controller/home_controller.dart';
 import '../../pages/dashboard/model/dashboard_model.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/elevated_button.dart';
-import '../../widgets/notched_border_painter.dart';
 import '../../widgets/shimmer_dashboard.dart';
 import '../../pages/dashboard/model/mtag_model.dart';
 import '../../pages/mtag/controller/delink_controller.dart';
@@ -20,6 +18,7 @@ import '../../widgets/bottomsheet/balance_transfer_bs.dart';
 import '../../widgets/dashboard_widget.dart';
 import '../../widgets/dialog/chassis_num.dart';
 import '../../widgets/dialog/delink_dialog.dart';
+import '../../widgets/verified_badge.dart';
 import '../widget/help_section.dart';
 import '../widget/slider_section.dart';
 
@@ -42,34 +41,34 @@ class HomePage extends StatelessWidget {
         return Scaffold(
           body: _navigationPages[controller.currentPage.value],
           bottomNavigationBar: // CustomPaint(
-            // painter: NotchedBorderPainter(
-            //   borderColor: ColorScheme.of(context).outline,
-            //   strokeWidth: 1.5,
-            //   notchMargin: 7,
-            //   notchColor: ColorScheme.of(
-            //     context,
-            //   ).outline.withValues(alpha: 0.7),
-            // ),
-            // child: 
-            Padding(
-              padding: const EdgeInsets.only(top: 1),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(18),
-                  topRight: Radius.circular(18),
-                ),
-                child: BottomAppBar(
-                  height: 55,
-                  clipBehavior: Clip.hardEdge,
-                  elevation: 4,
-                  // notchMargin: 1.0,
-                  padding: .zero,
-                  color: ColorScheme.of(context).surface,
-                  // shape: const CircularNotchedRectangle(),
-                  child: _BottomNavItems(),
+              // painter: NotchedBorderPainter(
+              //   borderColor: ColorScheme.of(context).outline,
+              //   strokeWidth: 1.5,
+              //   notchMargin: 7,
+              //   notchColor: ColorScheme.of(
+              //     context,
+              //   ).outline.withValues(alpha: 0.7),
+              // ),
+              // child:
+              Padding(
+                padding: const EdgeInsets.only(top: 1),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(18),
+                    topRight: Radius.circular(18),
+                  ),
+                  child: BottomAppBar(
+                    height: 55,
+                    clipBehavior: Clip.hardEdge,
+                    elevation: 4,
+                    // notchMargin: 1.0,
+                    padding: .zero,
+                    color: ColorScheme.of(context).surface,
+                    // shape: const CircularNotchedRectangle(),
+                    child: _BottomNavItems(),
+                  ),
                 ),
               ),
-            ),
           // ),
           // floatingActionButton: Padding(
           //   padding: const EdgeInsets.only(bottom: 20.0),
@@ -374,22 +373,42 @@ class VehicleCard extends StatelessWidget {
       builder: (context, constraints) {
         final w = constraints.maxWidth;
 
-        return Container(
-          clipBehavior: .none,
-          margin: .symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-            borderRadius: .circular(16),
-            gradient: Theme.of(context).extension<AppGradients>()!.background,
-          ),
-          child: Column(
-            mainAxisAlignment: .start,
-            crossAxisAlignment: .start,
-            children: [
-              _MtagDataWidget(width: w, key: key, mtag: mtags),
-              Spacer(),
-              BalanceCard(mtag: mtags),
-            ],
-          ),
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              clipBehavior: .none,
+              margin: .symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                borderRadius: .circular(16),
+                gradient: Theme.of(
+                  context,
+                ).extension<AppGradients>()!.background,
+              ),
+              child: Column(
+                mainAxisAlignment: .start,
+                crossAxisAlignment: .start,
+                children: [
+                  _MtagDataWidget(width: w, key: key, mtag: mtags),
+                  Spacer(),
+                  BalanceCard(mtag: mtags),
+                ],
+              ),
+            ),
+            Positioned(
+              top: 8,
+              left: 18,
+              child: VerifiedBadge(
+                isVerified: mtags.eto_verified ?? false,
+                label: mtags.eto_verified == true
+                    ? 'Verified'.toUpperCase()
+                    : 'Unverified'.toUpperCase(),
+                tooltipMessage: mtags.eto_verified == true
+                    ? 'Verified by Excise & Taxation Office (ETO).'
+                    : 'To get verified, enter your correct chassis number.',
+              ),
+            ),
+          ],
         );
       },
     );
@@ -555,20 +574,21 @@ class _MtagDataWidget extends StatelessWidget {
                       ),
                       if (mtag.chassis_number?.isNotEmpty ?? false) ...[
                         SizedBox(width: 10),
-                        InkWell(
-                          onTap: () async => await showDialog(
-                            context: context,
-                            builder: (_) => ChassisNumberDialog(
-                              chassissNo: mtag.chassis_number ?? '',
-                              registration: mtag.registration ?? '',
-                              tokenNo: mtag.tokenno ?? '',
-                              mobileNumber: mtag.mobilenum ?? '',
-                              balance: mtag.balance ?? '',
-                              cnicNumber: OtherConsts().ownerCNIC.value,
+                        if (mtag.eto_verified != true)
+                          InkWell(
+                            onTap: () async => await showDialog(
+                              context: context,
+                              builder: (_) => ChassisNumberDialog(
+                                chassissNo: mtag.chassis_number ?? '',
+                                registration: mtag.registration ?? '',
+                                tokenNo: mtag.tokenno ?? '',
+                                mobileNumber: mtag.mobilenum ?? '',
+                                balance: mtag.balance ?? '',
+                                cnicNumber: OtherConsts().ownerCNIC.value,
+                              ),
                             ),
+                            child: Icon(Icons.edit_square, size: 18),
                           ),
-                          child: Icon(Icons.edit_square, size: 18),
-                        ),
                       ],
                     ],
                   ),

@@ -71,7 +71,6 @@ class PaymentCardController extends GetxController implements GetxService {
     required String? mobile,
     required String? amount,
     required String? mtagId,
-
   }) async {
     jazzLoader();
     var response = await userRepo.jazzCashRecharg(
@@ -113,9 +112,8 @@ class PaymentCardController extends GetxController implements GetxService {
     } else {
       showDialog(
         context: Get.context!,
-        builder: (_) =>  JazzResponseDialog(
-          message:
-              APIEXCEPTION.UNPROCESS,
+        builder: (_) => JazzResponseDialog(
+          message: APIEXCEPTION.UNPROCESS,
           isSuccess: false,
           color: Colors.red,
         ),
@@ -129,27 +127,20 @@ class PaymentCardController extends GetxController implements GetxService {
     required String token,
     required String payId,
   }) async {
-    var response = await userRepo.deleteCardDetails(
-      token: token,
-      payId: payId,
-    );
+    var response = await userRepo.deleteCardDetails(token: token, payId: payId);
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       isJazzShown.value = false;
       isCardsVisible.value = false;
 
-      showPopDialog(
-        response[APIRESPONSE.SUCCESS]['Message'],
-            () {
-          Get.back();
-          Get.back();
-        },
-      );
+      showPopDialog(response[APIRESPONSE.SUCCESS]['Message'], () {
+        Get.back();
+        Get.back();
+      });
     }
 
     return response;
   }
-
 
   Future<Map<String, dynamic>> getPayUUID({
     String? token,
@@ -212,7 +203,7 @@ class PaymentCardController extends GetxController implements GetxService {
             Get.to(
               () => AlfaWebView2(
                 isSaveCard: false,
-                url: "$IMAGE_ULR/payment/${result[APIRESPONSE.SUCCESS]['key']}",
+                url: "$BASE_URL/payment/${result[APIRESPONSE.SUCCESS]['key']}",
               ),
             );
           }
@@ -245,7 +236,8 @@ class PaymentCardController extends GetxController implements GetxService {
 
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
       final successData = response[APIRESPONSE.SUCCESS];
-      if (successData is Map<String, dynamic> && successData.containsKey('Data')) {
+      if (successData is Map<String, dynamic> &&
+          successData.containsKey('Data')) {
         final data = successData['Data'];
         if (data is Map<String, dynamic>) {
           return Map<String, dynamic>.from(data);

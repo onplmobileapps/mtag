@@ -107,6 +107,7 @@ class ActiveMtags {
   RxBool? isObscured;
   String? chassis_number;
   double? block_amount;
+  bool? eto_verified;
 
   ActiveMtags({
     this.balance,
@@ -124,6 +125,7 @@ class ActiveMtags {
     this.isObscured,
     this.chassis_number,
     this.block_amount,
+    this.eto_verified,
   });
 
   ActiveMtags.fromJson(Map<String, dynamic> json) {
@@ -139,6 +141,7 @@ class ActiveMtags {
     vehicletype = json['vehicletype'];
     chassis_number = json['chassis_number'];
     block_amount = json['block_amount'];
+    eto_verified = json['eto_verified'];
   }
 
   Map<String, dynamic> toJson() {
@@ -155,6 +158,7 @@ class ActiveMtags {
     data['vehicletype'] = vehicletype;
     data['chassis_number'] = chassis_number;
     data['block_amount'] = block_amount;
+    data['eto_verified'] = eto_verified;
     return data;
   }
 }
