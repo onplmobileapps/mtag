@@ -13,14 +13,14 @@ class RechargeCenter {
     'Karachi': const LatLng(24.984362758794767,67.22035480754474),
     'Hyderabad': const LatLng(25.369756757942742,68.21567818242164),
     'Peshawar': const LatLng(34.03039708462152,71.66326084028518),
-    'Swabi ': const LatLng(34.04347989118024,72.41418227031748),
-    'Swat ': const LatLng(34.63046755761476,72.031054036588),
-    'Abbottabad ': const LatLng(34.097700671625326,73.16850922716046),
-    'Mansehra ': const LatLng(34.3301, 73.1996),
-    'Mianwali ': const LatLng(32.890437448342944,71.55341896256714),
-    'Bhera ': const LatLng(32.455369501857994,72.88520196004258),
-    'Sheikhupura ': const LatLng(31.7131, 73.9783),
-    'Sial Morr ': const LatLng(31.967397826742324,73.11229467470422),
+    'Swabi': const LatLng(34.04347989118024,72.41418227031748),
+    'Swat': const LatLng(34.63046755761476,72.031054036588),
+    'Abbottabad': const LatLng(34.097700671625326,73.16850922716046),
+    'Mansehra': const LatLng(34.3301, 73.1996),
+    'Mianwali': const LatLng(32.890437448342944,71.55341896256714),
+    'Bhera': const LatLng(32.455369501857994,72.88520196004258),
+    'Sheikhupura': const LatLng(31.7131, 73.9783),
+    'Sial Morr': const LatLng(31.967397826742324,73.11229467470422),
     'Lahore': const LatLng(31.556942890173637,74.24293983040823),
     'Sialkot': const LatLng(32.46647220553786,74.39397918838688),
     'Khanewal': const LatLng(30.328147,71.849320),
@@ -278,28 +278,30 @@ LatLng dmsToLatLng(String dms) {
     if (parts.length != 2) return const LatLng(0, 0);
 
     double convert(String dmsPart) {
-      int degIndex = dmsPart.indexOf('°');
-      int minIndex = dmsPart.indexOf('\'');
-      int secIndex = dmsPart.indexOf('"');
+      try {
+        int degIndex = dmsPart.indexOf('°');
+        int minIndex = dmsPart.indexOf('\'');
+        int secIndex = dmsPart.indexOf('"');
 
-      if (degIndex == -1 || minIndex == -1) return 0.0;
+        if (degIndex == -1 || minIndex == -1) return 0.0;
 
-      double deg = double.tryParse(dmsPart.substring(0, degIndex)) ?? 0.0;
-      double min =
-          double.tryParse(dmsPart.substring(degIndex + 1, minIndex)) ?? 0.0;
-      double sec = 0.0;
-      if (secIndex != -1) {
-        sec = double.tryParse(dmsPart.substring(minIndex + 1, secIndex)) ?? 0.0;
-      } else {
-        sec = 0.0;
+        double deg = double.tryParse(dmsPart.substring(0, degIndex)) ?? 0.0;
+        double min =
+            double.tryParse(dmsPart.substring(degIndex + 1, minIndex)) ?? 0.0;
+        double sec = 0.0;
+        if (secIndex != -1 && secIndex > minIndex) {
+          sec = double.tryParse(dmsPart.substring(minIndex + 1, secIndex)) ?? 0.0;
+        }
+
+        String dir = dmsPart.isNotEmpty ? dmsPart.substring(dmsPart.length - 1) : '';
+
+        double decimal = deg + (min / 60.0) + (sec / 3600.0);
+        if (dir == 'S' || dir == 'W') decimal = -decimal;
+
+        return decimal.isFinite ? decimal : 0.0;
+      } catch (e) {
+        return 0.0;
       }
-
-      String dir = dmsPart.substring(dmsPart.length - 1);
-
-      double decimal = deg + (min / 60) + (sec / 3600);
-      if (dir == 'S' || dir == 'W') decimal = -decimal;
-
-      return decimal;
     }
 
     final lat = convert(parts[0]);

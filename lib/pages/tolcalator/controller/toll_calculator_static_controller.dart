@@ -473,11 +473,56 @@ class MotorwayStaticController extends GetxController implements GetxService {
         );
       }
 
-      final result = await calculateToll(
-        entry: entryId,
-        exit: exitId,
-        type: OtherConsts. vehicleList[selectedVehicle.value].id.toString(),
-      );
+      log('Toll Calculation Started:');
+      log('Entry Station: ${entryStation.value} (ID: $entryId)');
+      log('Exit Station: ${exitStation.value} (ID: $exitId)');
+      log('Vehicle: ${OtherConsts.vehicleList[selectedVehicle.value].name}');
+
+      Future<Map<String, dynamic>> performCalculation(
+        String eId,
+        String xId,
+      ) async {
+        return await calculateToll(
+          entry: eId,
+          exit: xId,
+          type: OtherConsts.vehicleList[selectedVehicle.value].id.toString(),
+        );
+      }
+
+      var result = await performCalculation(entryId, exitId);
+
+      // Shershah fallback logic (Interchange IDs: 11090 and 60)
+      if (result['Code'] == '00' && result['Data'] == '') {
+        List<String> entryOptions = [entryId];
+        if (entryId == '11090') {
+          entryOptions.add('60');
+        } else if (entryId == '60') {
+          entryOptions.add('11090');
+        }
+
+        List<String> exitOptions = [exitId];
+        if (exitId == '11090') {
+          exitOptions.add('60');
+        } else if (exitId == '60') {
+          exitOptions.add('11090');
+        }
+
+        if (entryOptions.length > 1 || exitOptions.length > 1) {
+          log('Record not found with primary IDs. Attempting Shershah ID swap fallback...');
+          for (var eOpt in entryOptions) {
+            for (var xOpt in exitOptions) {
+              if (eOpt == entryId && xOpt == exitId) continue;
+              log('Retrying calculation with Entry ID: $eOpt, Exit ID: $xOpt');
+              result = await performCalculation(eOpt, xOpt);
+              if (result['Code'] == '00' && result['Data'] != '') {
+                log('Record found with swapped IDs!');
+                break;
+              }
+            }
+            if (result['Code'] == '00' && result['Data'] != '') break;
+          }
+        }
+      }
 
       if (result['Code'] == '00' && result['Data'] != '') {
         animationController.reset();
@@ -497,7 +542,6 @@ class MotorwayStaticController extends GetxController implements GetxService {
       debugPrint('Toll plaza calculation error: $e');
       showSnackBar('Calculation failed: $e');
     } finally {
-    
       isCalculatingPlaza.value = false;
     }
   }

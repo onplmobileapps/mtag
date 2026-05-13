@@ -339,7 +339,9 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
       final startCenter = _mapController.camera.center;
       final startZoom = _mapController.camera.zoom;
 
-      if (!startCenter.latitude.isFinite || !startCenter.longitude.isFinite) {
+      if (!startCenter.latitude.isFinite || 
+          !startCenter.longitude.isFinite || 
+          !startZoom.isFinite) {
         setState(() => _isAnimating = false);
         return;
       }
@@ -393,13 +395,16 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
     if (_isAnimating || _isDisposed || !mounted) return;
 
     try {
+      final currentZoom = _mapController.camera.zoom;
+      if (!currentZoom.isFinite) return;
+
+      final targetZoom = (currentZoom + delta).clamp(5.0, 18.0);
+      if (!targetZoom.isFinite) return;
+
       final controller = AnimationController(
         duration: const Duration(milliseconds: 250),
         vsync: this,
       );
-
-      final currentZoom = _mapController.camera.zoom;
-      final targetZoom = (currentZoom + delta).clamp(5.0, 18.0);
 
       final anim = Tween<double>(begin: currentZoom, end: targetZoom).animate(
         CurvedAnimation(parent: controller, curve: Curves.easeOutCubic),
@@ -408,12 +413,15 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
       controller.addListener(() {
         if (!mounted || _isDisposed) return;
         try {
-          final center = _mapController.camera.center;
+          final camera = _mapController.camera;
+          final center = camera.center;
+          final currentVal = anim.value;
+          
           if (center.latitude.isFinite &&
               center.longitude.isFinite &&
-              anim.value.isFinite) {
-            _mapController.move(center, anim.value);
-            _zoomNotifier.value = anim.value;
+              currentVal.isFinite) {
+            _mapController.move(center, currentVal);
+            _zoomNotifier.value = currentVal;
           }
         } catch (e) {
           debugPrint('Error during zoom animation: $e');
