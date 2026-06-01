@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
 
 class RechargeCenter {
@@ -7,7 +6,10 @@ class RechargeCenter {
   final String timing;
   final String information;
 
-  RechargeCenter(this.name, this.location, this.timing, this.information);
+  RechargeCenter(this.name, LatLng location, this.timing, this.information)
+    : location = (location.latitude.isFinite && location.longitude.isFinite)
+          ? location
+          : const LatLng(30.3753, 69.3451);
 
   static final Map<String, LatLng> cities = {
     'Islamabad': const LatLng(33.6844, 73.0479),
@@ -38,13 +40,13 @@ class RechargeCenter {
       ),
       RechargeCenter(
         'Gulberg Green',
-        dmsToLatLng("33°36'14.9\"N 73°09'43.2\"E"),
+        const LatLng(33.604139, 73.162),
         '9 AM - 9 PM',
         "Test Information",
       ),
       RechargeCenter(
         '26 No M-Tag Center',
-        dmsToLatLng("33°36'34\"N 72°54'02\"E"),
+        const LatLng(33.609444, 72.900556),
         '24 Hours',
         "Test Information",
       ),
@@ -62,7 +64,7 @@ class RechargeCenter {
       ),
       RechargeCenter(
         'Gandum Godam',
-        dmsToLatLng("33°38'03.0\"N 73°01'31.7\"E"),
+        const LatLng(33.634167, 73.025472),
         '9 AM - 9 PM',
         "Test Information",
       ),
@@ -74,7 +76,7 @@ class RechargeCenter {
       ),
       RechargeCenter(
         'Rawat',
-        dmsToLatLng("33°31'13.9\"N 73°10'36.9\"E"),
+        const LatLng(33.520528, 73.176917),
         '9 AM - 9 PM',
         "Test Information",
       ),
@@ -104,7 +106,7 @@ class RechargeCenter {
       ),
       RechargeCenter(
         'K Sher Khan MTP (South)',
-        dmsToLatLng("34°04'33.1\"N 72°12'37.2\"E"),
+        const LatLng(34.075861, 72.210333),
         '24 Hours',
         "",
       ),
@@ -126,7 +128,7 @@ class RechargeCenter {
       ),
       RechargeCenter(
         "Malpur",
-        dmsToLatLng("33°43'52.9\"N 73°08'52.9\"E"),
+        const LatLng(33.731361, 73.148028),
         "24 Hours",
         "",
       ),
@@ -206,13 +208,13 @@ class RechargeCenter {
       ),
       RechargeCenter(
         "Kala Shah Kaku Entry",
-        dmsToLatLng("31°41'49.4\"N 74°16'09.7\"E"),
+        const LatLng(31.697056, 74.269361),
         "24 Hours",
         "",
       ),
       RechargeCenter(
         "Mominpura MTP North",
-        dmsToLatLng("31°38'45.2\"N 74°10'34.7\"E"),
+        const LatLng(31.645889, 74.176306),
         "24 Hours",
         "",
       ),
@@ -226,7 +228,7 @@ class RechargeCenter {
       ),
       RechargeCenter(
         "Kala Shah Kaku (LSM)",
-        dmsToLatLng("31°43'41.6\"N 74°18'51.2\"E"),
+        const LatLng(31.728222, 74.314222),
         "24 Hours",
         "",
       ),
@@ -285,13 +287,13 @@ class RechargeCenter {
     'Multan': [
       RechargeCenter(
         'ShujaAbad Svc Area North M5',
-        dmsToLatLng("29°59'40.1\"N 71°02'18.1\"E"),
+        const LatLng(29.994472, 71.038361),
         '24 Hours',
         "",
       ),
       RechargeCenter(
         'Shujabad Svc Area South M5',
-        dmsToLatLng("29°59'43.6\"N 71°23'15.9\"E"),
+        const LatLng(29.995444, 71.38775),
         '24 Hours',
         "",
       ),
@@ -305,7 +307,7 @@ class RechargeCenter {
       ),
       RechargeCenter(
         'Tulip (Murree Road)',
-        dmsToLatLng("33°40'23.7\"N 73°04'49.6\"E"),
+        const LatLng(33.67325, 73.080444),
         '24 Hours',
         "",
       ),
@@ -342,50 +344,5 @@ class RechargeCenter {
     }
 
     return now.isAfter(openTime) && now.isBefore(closeTime);
-  }
-}
-
-LatLng dmsToLatLng(String dms) {
-  try {
-    final parts = dms.trim().split(RegExp(r'\s+'));
-    if (parts.length != 2) return const LatLng(0, 0);
-
-    double convert(String dmsPart) {
-      int degIndex = dmsPart.indexOf('°');
-      int minIndex = dmsPart.indexOf('\'');
-      int secIndex = dmsPart.indexOf('"');
-
-      if (degIndex == -1 || minIndex == -1) return 0.0;
-
-      double deg = double.tryParse(dmsPart.substring(0, degIndex)) ?? 0.0;
-      double min =
-          double.tryParse(dmsPart.substring(degIndex + 1, minIndex)) ?? 0.0;
-      double sec = 0.0;
-      if (secIndex != -1) {
-        sec = double.tryParse(dmsPart.substring(minIndex + 1, secIndex)) ?? 0.0;
-      } else {
-        // Handle cases like 33°36'N
-        sec = 0.0;
-        secIndex = minIndex; // Adjusted for dir parsing
-      }
-
-      String dir = dmsPart.substring(dmsPart.length - 1);
-
-      double decimal = deg + (min / 60) + (sec / 3600);
-      if (dir == 'S' || dir == 'W') decimal = -decimal;
-
-      return decimal;
-    }
-
-    final lat = convert(parts[0]);
-    final lng = convert(parts[1]);
-
-    if (lat.isFinite && lng.isFinite) {
-      return LatLng(lat, lng);
-    }
-    return const LatLng(0, 0);
-  } catch (e) {
-    debugPrint('Error parsing DMS: $dms - $e');
-    return const LatLng(0, 0);
   }
 }

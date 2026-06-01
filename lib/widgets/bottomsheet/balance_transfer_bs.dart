@@ -6,7 +6,7 @@ import 'package:mtag_flutterapp/widgets/elevated_button.dart';
 import '../../controller/home_controller.dart';
 import '../dialog/cupertino_dialog.dart';
 
-class BalanceTransferSheet extends StatelessWidget {
+class BalanceTransferSheet extends StatefulWidget {
   final String? carRegistration;
   final String? balance;
   final String? cnicNumber;
@@ -14,7 +14,7 @@ class BalanceTransferSheet extends StatelessWidget {
   final String? mtagid;
   final List<Map<String, dynamic>> dropDownCars;
 
-  BalanceTransferSheet({
+  const BalanceTransferSheet({
     super.key,
     required this.carRegistration,
     required this.balance,
@@ -22,55 +22,80 @@ class BalanceTransferSheet extends StatelessWidget {
     required this.mobileNumber,
     required this.mtagid,
     required this.dropDownCars,
-  }) {
+  });
+
+  @override
+  State<BalanceTransferSheet> createState() => _BalanceTransferSheetState();
+}
+
+class _BalanceTransferSheetState extends State<BalanceTransferSheet> {
+  late final ValueNotifier<String?> selectedCar;
+  late final ValueNotifier<String?> selectedCarMtag;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedCar = ValueNotifier(null);
+    selectedCarMtag = ValueNotifier(null);
+
     /// ✅ Set first car as default (only if list is not empty)
-    if (dropDownCars.isNotEmpty) {
-      selectedCar.value = dropDownCars.first["carNumber"]?.toString();
-      selectedCarMtag.value = dropDownCars.first["mtagID"]?.toString();
+    if (widget.dropDownCars.isNotEmpty) {
+      selectedCar.value = widget.dropDownCars.first["carNumber"]?.toString();
+      selectedCarMtag.value = widget.dropDownCars.first["mtagID"]?.toString();
     }
   }
 
-  final ValueNotifier<String?> selectedCar = ValueNotifier(null);
-  final ValueNotifier<String?> selectedCarMtag = ValueNotifier(null);
+  @override
+  void dispose() {
+    selectedCar.dispose();
+    selectedCarMtag.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: .all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        borderRadius: .circular(12),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         gradient: Theme.of(context).extension<AppGradients>()!.background,
       ),
       child: Column(
-        spacing: 10,
-        mainAxisSize: .min,
-        mainAxisAlignment: .start,
-        crossAxisAlignment: .start,
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           buildHandleBar(context),
-          Text('Balance Transfer', style: TextTheme.of(context).bodyLarge),
+          const SizedBox(height: 10),
+          Text('Balance Transfer', style: Theme.of(context).textTheme.bodyLarge),
+          const SizedBox(height: 10),
           builBalanceWidget(context),
+          const SizedBox(height: 10),
           Text(
             'Select Vehicle',
-            style: TextTheme.of(context).bodyLarge?.copyWith(fontWeight: .w600),
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
+          const SizedBox(height: 10),
           buildVehicleDropdown(context: context),
+          const SizedBox(height: 10),
           Text(
             'Transfer Amount',
-            style: TextTheme.of(context).bodyLarge?.copyWith(fontWeight: .w600),
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
+          const SizedBox(height: 10),
           Container(
             width: double.infinity,
-            padding: .all(12),
-
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: ColorScheme.of(context).surface,
-              borderRadius: .circular(12),
-              border: .all(width: 0.15),
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(width: 0.15),
             ),
             clipBehavior: Clip.none,
-            child: Text(balance ?? ''),
+            child: Text(widget.balance ?? ''),
           ),
-          ValueListenableBuilder(
+          const SizedBox(height: 10),
+          ValueListenableBuilder<String?>(
             valueListenable: selectedCarMtag,
             builder: (context, value, child) {
               return Row(
@@ -78,29 +103,29 @@ class BalanceTransferSheet extends StatelessWidget {
                   Expanded(
                     flex: 2,
                     child: ElevatedButton1(
-                      onclick: (selectedCarMtag.value == null)
+                      onclick: (value == null)
                           ? null
-                          : () => _confirmTransfer(balance),
+                          : () => _confirmTransfer(widget.balance),
                       text: 'Confirm',
-                      icon: Icon(Icons.check_circle),
+                      icon: const Icon(Icons.check_circle),
                       isShowIcon: true,
-                      iconAlignment: .start,
+                      iconAlignment: IconAlignment.start,
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () {
                         Get.back();
                       },
-                      child: Text('Cancel'),
+                      child: const Text('Cancel'),
                     ),
                   ),
                 ],
               );
             },
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
         ],
       ),
     );
@@ -121,9 +146,9 @@ class BalanceTransferSheet extends StatelessWidget {
 
     try {
       await Get.find<HomeController>().transferBalanceCall(
-        cnicNumber: cnicNumber,
-        mobileNumber: mobileNumber,
-        fromMtag: mtagid,
+        cnicNumber: widget.cnicNumber,
+        mobileNumber: widget.mobileNumber,
+        fromMtag: widget.mtagid,
         toMtag: selectedCarMtag.value,
         amount: balance,
       );
@@ -134,24 +159,24 @@ class BalanceTransferSheet extends StatelessWidget {
   }
 
   Widget buildVehicleDropdown({required BuildContext context}) {
-    if (dropDownCars.isEmpty) {
+    if (widget.dropDownCars.isEmpty) {
       return Container(
         width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: ColorScheme.of(context).surface,
+          color: Theme.of(context).colorScheme.surface,
         ),
         child: Text(
           "No other vehicles available",
-          style: TextTheme.of(context).displayMedium,
+          style: Theme.of(context).textTheme.displayMedium,
         ),
       );
     }
 
     return Container(
       decoration: BoxDecoration(
-        color: ColorScheme.of(context).surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: Theme.of(context).primaryColorLight,
@@ -171,28 +196,25 @@ class BalanceTransferSheet extends StatelessWidget {
               ),
               isExpanded: true,
               elevation: 0,
-              // dynamic background
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                // ensures correct text color
-              ),
-              items: dropDownCars.map((car) {
+              style: Theme.of(context).textTheme.bodyMedium,
+              items: widget.dropDownCars.map((car) {
                 return DropdownMenuItem<String>(
                   value: car["carNumber"],
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        padding: EdgeInsets.all(4),
+                        padding: const EdgeInsets.all(4),
                         clipBehavior: Clip.none,
                         decoration: BoxDecoration(
-                          color: ColorScheme.of(context).surface,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
                           car["carNumber"] ?? "",
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(),
+                          style: Theme.of(context).textTheme.titleSmall,
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -202,35 +224,35 @@ class BalanceTransferSheet extends StatelessWidget {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface, // dynamic background
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           "Rs.${car["balance"] ?? "0"}",
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).textTheme.bodyMedium?.color,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
                     ],
                   ),
                 );
               }).toList(),
-              onChanged: (value) {
-                if (value == null) return;
+              onChanged: (newValue) {
+                if (newValue == null) return;
 
-                selectedCar.value = value;
+                setState(() {
+                  selectedCar.value = newValue;
 
-                // 🔒 PROD SAFE LOOKUP (NO GENERICS, NO firstWhere)
-                for (final car in dropDownCars) {
-                  if (car["carNumber"] == value) {
-                    selectedCarMtag.value = car["mtagID"]?.toString();
-                    return;
+                  // 🔒 PROD SAFE LOOKUP (NO GENERICS, NO firstWhere)
+                  for (final car in widget.dropDownCars) {
+                    if (car["carNumber"] == newValue) {
+                      selectedCarMtag.value = car["mtagID"]?.toString();
+                      return;
+                    }
                   }
-                }
 
-                // Fallback (never crash)
-                selectedCarMtag.value = null;
+                  // Fallback (never crash)
+                  selectedCarMtag.value = null;
+                });
               },
             ),
           );
@@ -242,19 +264,19 @@ class BalanceTransferSheet extends StatelessWidget {
   Widget builBalanceWidget(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: ColorScheme.of(context).surfaceContainerLow,
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
         boxShadow: Theme.of(context).extension<AppShadows>()!.cardShadow,
       ),
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Row(
         children: [
           Container(
-            padding: .all(12),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: ColorScheme.of(context).surface,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(8),
-              boxShadow: [],
+              boxShadow: const [],
             ),
             child: Image.asset(
               'assets/delivery.png',
@@ -268,17 +290,15 @@ class BalanceTransferSheet extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  carRegistration ?? '',
-                  style: TextTheme.of(
-                    context,
-                  ).bodyLarge?.copyWith(fontWeight: .w600),
+                  widget.carRegistration ?? '',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
                 const SizedBox(height: 4),
                 Text(
                   "Available Balance",
-                  style: TextTheme.of(context).bodyMedium,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],
             ),
@@ -287,12 +307,12 @@ class BalanceTransferSheet extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: ColorScheme.of(context).surface,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
-              "Rs.$balance",
-              style: TextTheme.of(context).displayMedium,
+              "Rs.${widget.balance}",
+              style: Theme.of(context).textTheme.displayMedium,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),

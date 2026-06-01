@@ -8,8 +8,17 @@ import 'package:get/get.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart';
+import 'package:latlong2/latlong.dart';
 
 import 'package:mtag_flutterapp/controller/home_controller.dart';
+
+extension LatLngSafety on LatLng {
+  /// Returns true if both latitude and longitude are finite (not NaN or Infinity).
+  bool get isFinite => latitude.isFinite && longitude.isFinite;
+
+  /// Returns this LatLng if finite, otherwise returns a fallback (Pakistan center).
+  LatLng get validated => isFinite ? this : const LatLng(30.3753, 69.3451);
+}
 
 sealed class AmountList {
   static final List<int> amountList = [500, 1000, 1500, 2000, 3000, 4000, 5000];

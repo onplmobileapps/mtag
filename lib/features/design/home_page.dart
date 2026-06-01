@@ -430,7 +430,7 @@ class _MtagDataWidget extends StatelessWidget {
       children: [
         FittedBox(
           child: Container(
-            padding: EdgeInsets.only(top: 16, left: width * 0.03, bottom: 0),
+            padding: EdgeInsets.only(top: 22, left: width * 0.03, bottom: 0),
 
             child: vehicleImagePath.isNotEmpty
                 ? Image.asset(vehicleImagePath, height: width * 0.32)

@@ -6,7 +6,10 @@ class RechargeCenter {
   final String timing;
   final String information;
 
-  RechargeCenter(this.name, this.location, this.timing, this.information);
+  RechargeCenter(this.name, LatLng location, this.timing, this.information)
+      : location = (location.latitude.isFinite && location.longitude.isFinite)
+            ? location
+            : const LatLng(30.3753, 69.3451);
 
   static final Map<String, LatLng> cities = {
     'Islamabad': const LatLng(33.6844, 73.0479),
@@ -53,44 +56,44 @@ class RechargeCenter {
       ),
       RechargeCenter(
         'Fatima Jinnah Park',
-        dmsToLatLng("33°41'45\"N 73°00'56\"E"),
+        LatLng(33.695833, 73.015556),
         '9 AM - 9 PM',
         "Test Information",
       ),
       RechargeCenter(
         'Kachnar Park I-8',
-        dmsToLatLng("33°40'34\"N 73°04'34\"E"),
+        LatLng(33.676111, 73.076111),
         '9 AM - 9 PM',
         "Test Information",
       ),
       RechargeCenter(
         'Gulburg Green',
-        dmsToLatLng("33°36'14.9\"N 73°09'43.2\"E"),
+        LatLng(33.604139, 73.162),
         '9 AM - 9 PM',
         "Test Information",
       ),
       RechargeCenter(
         'Tarlai CFC',
-        dmsToLatLng("33°38'47\"N 73°09'44\"E"),
+        LatLng(33.646389, 73.162222),
         '9 AM - 9 PM',
         "Test Information",
       ),
       RechargeCenter(
         'Lake View Park',
-        dmsToLatLng("33°42'56\"N 73°07'58\"E"),
+        LatLng(33.715556, 73.132778),
         '9 AM - 9 PM',
         "Test Information",
       ),
       RechargeCenter(
         'Islamabad Club',
-        dmsToLatLng("33°42'19\"N 73°06'22\"E"),
+        LatLng(33.705278, 73.106111),
         '9 AM - 9 PM',
         "Test Information",
       ),
 
       RechargeCenter(
         '26 No Chungi',
-        dmsToLatLng("33°36'34\"N 72°54'02\"E"),
+        LatLng(33.609444, 72.900556),
         '9 AM - 9 PM',
         "Test Information",
       ),
@@ -269,49 +272,5 @@ class RechargeCenter {
     }
 
     return now.isAfter(openTime) && now.isBefore(closeTime);
-  }
-}
-
-LatLng dmsToLatLng(String dms) {
-  try {
-    final parts = dms.trim().split(RegExp(r'\s+'));
-    if (parts.length != 2) return const LatLng(0, 0);
-
-    double convert(String dmsPart) {
-      try {
-        int degIndex = dmsPart.indexOf('°');
-        int minIndex = dmsPart.indexOf('\'');
-        int secIndex = dmsPart.indexOf('"');
-
-        if (degIndex == -1 || minIndex == -1) return 0.0;
-
-        double deg = double.tryParse(dmsPart.substring(0, degIndex)) ?? 0.0;
-        double min =
-            double.tryParse(dmsPart.substring(degIndex + 1, minIndex)) ?? 0.0;
-        double sec = 0.0;
-        if (secIndex != -1 && secIndex > minIndex) {
-          sec = double.tryParse(dmsPart.substring(minIndex + 1, secIndex)) ?? 0.0;
-        }
-
-        String dir = dmsPart.isNotEmpty ? dmsPart.substring(dmsPart.length - 1) : '';
-
-        double decimal = deg + (min / 60.0) + (sec / 3600.0);
-        if (dir == 'S' || dir == 'W') decimal = -decimal;
-
-        return decimal.isFinite ? decimal : 0.0;
-      } catch (e) {
-        return 0.0;
-      }
-    }
-
-    final lat = convert(parts[0]);
-    final lng = convert(parts[1]);
-
-    if (lat.isFinite && lng.isFinite) {
-      return LatLng(lat, lng);
-    }
-    return const LatLng(0, 0);
-  } catch (e) {
-    return const LatLng(0, 0);
   }
 }

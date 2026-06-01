@@ -119,8 +119,8 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
         setState(() {
           _markers = markers;
           _isInitialized = true;
+          _markerVersion.value++;
         });
-        _markerVersion.value++;
       }
     } catch (e) {
       debugPrint('Error building markers: $e');
@@ -151,8 +151,8 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                 Marker(
                   point: center.location,
                   width: 120,
-                  height: 124,
-                  alignment: Alignment.topCenter,
+                  height: 130,
+                  alignment: Alignment.bottomCenter,
                   child: _buildMarkerWidget(center, isOpen, cacheKey),
                 ),
               );
@@ -174,8 +174,11 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
     bool isOpen,
     String cacheKey,
   ) {
+    if (_markerWidgetCache.containsKey(cacheKey)) {
+      return _markerWidgetCache[cacheKey]!;
+    }
     try {
-      return GestureDetector(
+      final widget = GestureDetector(
         onTap: () {
           if (mounted && !_isDisposed) {
             _showRechargeDetails(center);
@@ -235,6 +238,8 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
           ),
         ),
       );
+      _markerWidgetCache[cacheKey] = widget;
+      return widget;
     } catch (e) {
       debugPrint('Error building marker widget: $e');
       return const SizedBox(
@@ -339,8 +344,8 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
       final startCenter = _mapController.camera.center;
       final startZoom = _mapController.camera.zoom;
 
-      if (!startCenter.latitude.isFinite || 
-          !startCenter.longitude.isFinite || 
+      if (!startCenter.latitude.isFinite ||
+          !startCenter.longitude.isFinite ||
           !startZoom.isFinite) {
         setState(() => _isAnimating = false);
         return;
@@ -356,8 +361,10 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
           final targetLat = target.latitude;
           final targetLng = target.longitude;
 
-          if (!startLat.isFinite || !startLng.isFinite || 
-              !targetLat.isFinite || !targetLng.isFinite) {
+          if (!startLat.isFinite ||
+              !startLng.isFinite ||
+              !targetLat.isFinite ||
+              !targetLng.isFinite) {
             return;
           }
 
@@ -401,6 +408,8 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
       final targetZoom = (currentZoom + delta).clamp(5.0, 18.0);
       if (!targetZoom.isFinite) return;
 
+      setState(() => _isAnimating = true);
+
       final controller = AnimationController(
         duration: const Duration(milliseconds: 250),
         vsync: this,
@@ -413,10 +422,9 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
       controller.addListener(() {
         if (!mounted || _isDisposed) return;
         try {
-          final camera = _mapController.camera;
-          final center = camera.center;
+          final center = _mapController.camera.center;
           final currentVal = anim.value;
-          
+
           if (center.latitude.isFinite &&
               center.longitude.isFinite &&
               currentVal.isFinite) {
@@ -429,12 +437,16 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
       });
 
       controller.forward().then((_) {
-        if (!_isDisposed) {
-          controller.dispose();
+        if (mounted && !_isDisposed) {
+          setState(() => _isAnimating = false);
         }
+        controller.dispose();
       });
     } catch (e) {
       debugPrint('Error animating zoom: $e');
+      if (mounted && !_isDisposed) {
+        setState(() => _isAnimating = false);
+      }
     }
   }
 
@@ -468,12 +480,17 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                 mapController: _mapController,
                 options: MapOptions(
                   backgroundColor: Theme.of(context).colorScheme.surface,
-                  initialCenter: _pakistanCenter.latitude.isFinite ? _pakistanCenter : const LatLng(30.3753, 69.3451),
+                  initialCenter: _pakistanCenter.latitude.isFinite
+                      ? _pakistanCenter
+                      : const LatLng(30.3753, 69.3451),
                   initialZoom: _pakistanZoom.isFinite ? _pakistanZoom : 5.0,
                   minZoom: 5.0,
                   maxZoom: 18.0,
                   interactionOptions: const InteractionOptions(
-                    flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                    flags:
+                        (InteractiveFlag.all &
+                        ~InteractiveFlag.rotate &
+                        ~InteractiveFlag.flingAnimation),
                     enableMultiFingerGestureRace: false,
                   ),
                   onPositionChanged: (pos, hasGesture) {
@@ -483,52 +500,66 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                         !mounted) {
                       return;
                     }
-
-                    try {
-                      final center = pos.center;
-                      final posZoom = pos.zoom;
-                      
-                      if (center.latitude.isFinite &&
-                          center.longitude.isFinite &&
-                          posZoom.isFinite) {
-                        
-                        _markerRebuildTimer?.cancel();
-                        _markerRebuildTimer = Timer(
-                          const Duration(milliseconds: 100),
-                          () {
-                            if (mounted && !_isDisposed) {
-                              _centerNotifier.value = center;
-                              _zoomNotifier.value = posZoom;
-                            }
-                          },
-                        );
-                      }
-                    } catch (e) {
-                      debugPrint('Error in onPositionChanged: $e');
-                    }
                   },
                 ),
                 children: [
-                  TileLayer(
-                        urlTemplate:
-                            'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-                        subdomains: const ['a', 'b', 'c', 'd'],
-                        userAgentPackageName: 'com.playdev.mtagapp',
-                        maxNativeZoom: 18,
-                        maxZoom: 18,
-                        keepBuffer: 2,
-                        errorTileCallback: (tile, error, stackTrace) {
-                          // Silently ignore tile load failures (prevents many FlutterErrors)
-                          // You can log in debug only if needed:
-                          // if (!kReleaseMode) debugPrint('Tile failed (ignored): $error');
-                        },
-                      ),
-                      if (_isInitialized && _markers.isNotEmpty)
-                        ValueListenableBuilder<int>(
-                          valueListenable: _markerVersion,
-                          builder: (_, version, _) {
+                  Builder(
+                    builder: (context) {
+                      try {
+                        final camera = MapCamera.of(context);
+                        if (!camera.center.latitude.isFinite ||
+                            !camera.center.longitude.isFinite ||
+                            !camera.zoom.isFinite) {
+                          return const SizedBox.shrink();
+                        }
+                        return TileLayer(
+                          urlTemplate:
+                              'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+                          subdomains: const ['a', 'b', 'c', 'd'],
+                          userAgentPackageName: 'com.playdev.mtagapp',
+                          maxNativeZoom: 18,
+                          maxZoom: 18,
+                          keepBuffer: 2,
+                          tileUpdateTransformer:
+                              TileUpdateTransformer.fromHandlers(
+                                handleData: (event, sink) {
+                                  if (!event.wasTriggeredByTap() &&
+                                      event.camera.center.latitude.isFinite &&
+                                      event.camera.center.longitude.isFinite &&
+                                      event.camera.zoom.isFinite) {
+                                    sink.add(event);
+                                  }
+                                },
+                              ),
+                          errorTileCallback: (tile, error, stackTrace) {
+                            // Silently ignore tile load failures
+                          },
+                        );
+                      } catch (e) {
+                        return const SizedBox.shrink();
+                      }
+                    },
+                  ),
+                  if (_isInitialized && _markers.isNotEmpty)
+                    ValueListenableBuilder<int>(
+                      valueListenable: _markerVersion,
+                      builder: (context, version, _) {
+                        return Builder(
+                          builder: (context) {
                             try {
+                              // Use MapCamera.of(context) to reactively monitor camera state for clustering
+                              final camera = MapCamera.of(context);
+
+                              if (!camera.center.latitude.isFinite ||
+                                  !camera.center.longitude.isFinite ||
+                                  !camera.zoom.isFinite ||
+                                  camera.size.width <= 0 ||
+                                  camera.size.height <= 0) {
+                                return const SizedBox.shrink();
+                              }
+
                               return MarkerClusterLayerWidget(
+                                key: ValueKey('cluster_layer_$version'),
                                 options: MarkerClusterLayerOptions(
                                   maxClusterRadius: 80,
                                   size: const Size(50, 50),
@@ -599,42 +630,30 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                                         ),
                                       );
                                     } catch (e) {
-                                      debugPrint('Error building cluster: $e');
-                                      return Container(
-                                        width: 50,
-                                        height: 50,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.blue,
-                                        ),
-                                        child: const Center(
-                                          child: Icon(
-                                            Icons.location_on,
-                                            color: Colors.white,
-                                            size: 24,
-                                          ),
+                                      return const Center(
+                                        child: Icon(
+                                          Icons.location_on,
+                                          color: Colors.white,
+                                          size: 24,
                                         ),
                                       );
                                     }
                                   },
-                                  spiderfyCircleRadius: 80,
-                                  spiderfySpiralDistanceMultiplier: 3,
-                                  circleSpiralSwitchover: 12,
                                   showPolygon: false,
                                   disableClusteringAtZoom: 16,
                                   zoomToBoundsOnClick: true,
                                   centerMarkerOnClick: true,
-                                  rotate: true,
                                 ),
                               );
                             } catch (e) {
-                              debugPrint('Error creating cluster layer: $e');
                               return const SizedBox.shrink();
                             }
                           },
-                        ),
-                    ],
-                  ),
+                        );
+                      },
+                    ),
+                ],
+              ),
             ),
             Positioned(
               top: MediaQuery.of(context).padding.top + 16,
