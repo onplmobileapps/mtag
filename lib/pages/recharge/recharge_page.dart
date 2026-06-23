@@ -263,7 +263,7 @@ Widget _buildMtagSection(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle(context, 'Select M-tag/Vehicle'),
+          _buildSectionTitle(context, 'Select M-Tag/Vehicle'),
           Row(
             children: [
               if (controller.arguments.length > 2)
@@ -326,6 +326,11 @@ Widget _buildMtagList(BuildContext context, RechargeSelfController controller) {
                 : item.isactive == 5.0
                 ? showPopDialog(
                     "This M-Tag is decommissioned and no longer eligible for recharge.",
+                    () => Get.back(),
+                  )
+                : item.isactive == 0.0
+                ? showPopDialog(
+                    "You have pending dues on your account. You are not allowed to enter the motorway until your dues are cleared.",
                     () => Get.back(),
                   )
                 : controller.onMTagTap(

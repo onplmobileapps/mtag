@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import '../../features/widget/weather_option_dailog.dart';
 import '../api/api_constants.dart';
 import '../api/auth_controller.dart';
@@ -18,7 +19,9 @@ class HomeController extends GetxController implements GetxService {
   final balances = <String, String>{}.obs;
   final hiddenStates = <String, bool>{}.obs;
   final UserRepo userRepo;
+
   HomeController({required this.userRepo});
+
   final RxInt currentPage = 0.obs;
   final RxBool isLoading = false.obs;
   var balanceUpdate = false.obs;
@@ -27,10 +30,12 @@ class HomeController extends GetxController implements GetxService {
   RxInt selectedMtagIndex = 0.obs;
   final navigationStack = <int>[0].obs;
   final int homePageIndex = 0;
+
   void setCurrentIndex(int value) {
     currentPage.value = value;
     if (value == 1) showWeatherUpdateDialog(Get.context!);
   }
+
   final _otherConstants = OtherConsts();
   final List<MtagModel> dashBoardModel = [
     // Sir Suleman asked to change M-TAG to Vehicles(Date 27-12-25)
@@ -38,25 +43,25 @@ class HomeController extends GetxController implements GetxService {
       routeName: '/mTag',
       title: 'Vehicles',
       image: 'assets/icons/receipt.png',
-      subtitle: 'Manage Vehicles'
+      subtitle: 'Manage Vehicles',
     ),
     MtagModel(
       routeName: '/tollHostory',
       title: 'Toll History',
       image: 'assets/icons/toll.png',
-      subtitle: 'View Transactions'
+      subtitle: 'View Transactions',
     ),
     MtagModel(
       routeName: '/tollCalculator',
       title: 'Toll Calculator',
       image: 'assets/icons/calculator1.png',
-      subtitle: 'Calculate Toll Rates'
+      subtitle: 'Calculate Toll Rates',
     ),
     MtagModel(
       routeName: '/recharge',
       title: 'Recharge',
       image: 'assets/icons/card.png',
-      subtitle: 'Recharge M-Tag'
+      subtitle: 'Recharge M-Tag',
     ),
   ];
 
@@ -220,6 +225,133 @@ class HomeController extends GetxController implements GetxService {
     }
     _otherConstants.jazzCode(dashboradData.value.jazzCashRecharge);
     _otherConstants.creditCode(dashboradData.value.creditCardRecharge);
+
+    if (dashboradData.value.activeMtags != null) {
+      for (var mtag in dashboradData.value.activeMtags!) {
+        expiryDate(mtag);
+      }
+    }
+  }
+
+  bool isMtagExpired(String? issuedate) {
+    if (issuedate == null || issuedate.isEmpty) return false;
+    try {
+      DateTime? issueDate = DateTime.tryParse(issuedate);
+
+      if (issueDate == null) {
+        try {
+          issueDate = DateFormat("dd-MMM-yyyy").parse(issuedate);
+        } catch (_) {
+          List<String> parts = issuedate.split('-');
+          if (parts.length == 3) {
+            if (parts[2].length == 4) {
+              issueDate = DateTime(
+                int.parse(parts[2]),
+                int.parse(parts[1]),
+                int.parse(parts[0]),
+              );
+            } else if (parts[0].length == 4) {
+              issueDate = DateTime(
+                int.parse(parts[0]),
+                int.parse(parts[1]),
+                int.parse(parts[2]),
+              );
+            }
+          }
+        }
+      }
+
+      if (issueDate != null) {
+        DateTime expiryDate = DateTime(
+          issueDate.year + 5,
+          issueDate.month,
+          issueDate.day,
+        );
+        return expiryDate.isBefore(DateTime.now());
+      }
+    } catch (e) {
+      debugPrint("Error parsing date: $e");
+    }
+    return false;
+  }
+
+  String expiryDate(ActiveMtags mtag) {
+    String? issuedate = mtag.issuedate;
+    String? tagExpiryDate = mtag.tag_expiry_date;
+    if (issuedate == null || issuedate.isEmpty) return "";
+    try {
+      DateTime? issueDate = DateTime.tryParse(issuedate);
+
+      if (issueDate == null) {
+        try {
+          issueDate = DateFormat("dd-MMM-yyyy").parse(issuedate);
+        } catch (_) {
+          // Fallback for numeric dd-MM-yyyy or yyyy-MM-dd
+          List<String> parts = issuedate.split('-');
+          if (parts.length == 3) {
+            if (parts[2].length == 4) {
+              issueDate = DateTime(
+                int.parse(parts[2]),
+                int.parse(parts[1]),
+                int.parse(parts[0]),
+              );
+            } else if (parts[0].length == 4) {
+              issueDate = DateTime(
+                int.parse(parts[0]),
+                int.parse(parts[1]),
+                int.parse(parts[2]),
+              );
+            }
+          }
+        }
+      }
+
+      if (issueDate != null) {
+        // Expiry is 5 years after issue date
+        DateTime expiryDate = DateTime(
+          issueDate.year + 5,
+          issueDate.month,
+          issueDate.day,
+        );
+        DateTime now = DateTime.now();
+
+        if (expiryDate.isBefore(now) || mtag.is_expired == true || mtag.isactive == 9) {
+          return tagExpiryDate ?? "Expired";
+        }
+
+        int years = expiryDate.year - now.year;
+        int months = expiryDate.month - now.month;
+        int days = expiryDate.day - now.day;
+
+        if (days < 0) {
+          months -= 1;
+          // Get last day of previous month
+          DateTime previousMonth = DateTime(now.year, now.month, 0);
+          days += previousMonth.day;
+        }
+
+        if (months < 0) {
+          years -= 1;
+          months += 12;
+        }
+
+        List<String> parts = [];
+        if (years > 0) parts.add("$years ${years == 1 ? 'Year' : 'Years'}");
+        if (months > 0) {
+          parts.add("$months ${months == 1 ? 'Month' : 'Months'}");
+        }
+        if (days > 0) parts.add("$days ${days == 1 ? 'Day' : 'Days'}");
+
+        String result = parts.join(", ");
+        debugPrint(
+          "Issue Date: $issuedate, Expiry Date: ${DateFormat("dd MMMM, yyyy").format(expiryDate)}, Expires in: $result",
+        );
+        return result;
+      }
+    } catch (e) {
+      debugPrint("Error parsing date: $e");
+    }
+    return "";
   }
 
   void _handleError(Map<String, dynamic> response) {
@@ -292,7 +424,7 @@ class HomeController extends GetxController implements GetxService {
   void changePage(int index) {
     currentPage.value = index;
     if (currentPage.value == 1) {
-    showWeatherUpdateDialog(Get.context!);
+      showWeatherUpdateDialog(Get.context!);
     }
   }
 
@@ -302,5 +434,3 @@ class HomeController extends GetxController implements GetxService {
 
   bool get isNotOnHome => currentPage.value != homePageIndex;
 }
-
-

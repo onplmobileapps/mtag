@@ -7,7 +7,7 @@ class MTagCard extends StatelessWidget {
   final String registration;
   final bool isSelected;
   final VoidCallback onTap;
-  final double isActive;
+  final int? isActive;
 
   const MTagCard({
     super.key,
@@ -97,7 +97,10 @@ class MTagCard extends StatelessWidget {
                 Center(
                   child: Column(
                     children: [
-                      isActive == 8 || isActive == 5.0
+                      isActive == 8 ||
+                              isActive == 5.0 ||
+                              isActive == 9.0 ||
+                              isActive == 0.0
                           ? Container(
                               alignment: .center,
                               padding: EdgeInsets.symmetric(
@@ -117,8 +120,12 @@ class MTagCard extends StatelessWidget {
                               ),
                               child: Text(
                                 isActive == 8.0
-                                    ? 'Blacklisted'
-                                    : "De-Commissioned",
+                                    ? 'Blacklisted'.toUpperCase()
+                                    : isActive == 9.0
+                                    ? "expired".toUpperCase()
+                                    : isActive == 0.0
+                                    ? "Blocked".toUpperCase()
+                                    : "De-Commissioned".toUpperCase(),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,

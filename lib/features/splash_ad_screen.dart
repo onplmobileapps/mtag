@@ -6,11 +6,7 @@ class SplashAdScreen extends StatefulWidget {
   final Widget nextScreen;
   final int seconds;
 
-  const SplashAdScreen({
-    super.key,
-    required this.nextScreen,
-    this.seconds = 3,
-  });
+  const SplashAdScreen({super.key, required this.nextScreen, this.seconds = 3});
 
   @override
   State<SplashAdScreen> createState() => _SplashAdScreenState();
@@ -99,8 +95,11 @@ class _SplashAdScreenState extends State<SplashAdScreen> {
                   return Container(
                     color: Colors.white,
                     child: const Center(
-                      child: Icon(Icons.image_not_supported,
-                          size: 50, color: Colors.grey),
+                      child: Icon(
+                        Icons.image_not_supported,
+                        size: 50,
+                        color: Colors.grey,
+                      ),
                     ),
                   );
                 },
@@ -113,13 +112,16 @@ class _SplashAdScreenState extends State<SplashAdScreen> {
               child: GestureDetector(
                 onTap: _navigateToNext,
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.black.withValues(alpha: 0.6),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.5)),
+                      color: Colors.white.withValues(alpha: 0.5),
+                    ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,

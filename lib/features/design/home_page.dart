@@ -37,55 +37,25 @@ class HomePage extends StatelessWidget {
     return GetX<HomeController>(
       init: Get.find<HomeController>(),
       builder: (controller) {
-        const SizedBox.shrink();
         return Scaffold(
           body: _navigationPages[controller.currentPage.value],
-          bottomNavigationBar: // CustomPaint(
-              // painter: NotchedBorderPainter(
-              //   borderColor: ColorScheme.of(context).outline,
-              //   strokeWidth: 1.5,
-              //   notchMargin: 7,
-              //   notchColor: ColorScheme.of(
-              //     context,
-              //   ).outline.withValues(alpha: 0.7),
-              // ),
-              // child:
-              Padding(
-                padding: const EdgeInsets.only(top: 1),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(18),
-                    topRight: Radius.circular(18),
-                  ),
-                  child: BottomAppBar(
-                    height: 55,
-                    clipBehavior: Clip.hardEdge,
-                    elevation: 4,
-                    // notchMargin: 1.0,
-                    padding: .zero,
-                    color: ColorScheme.of(context).surface,
-                    // shape: const CircularNotchedRectangle(),
-                    child: _BottomNavItems(),
-                  ),
-                ),
+          bottomNavigationBar: Padding(
+            padding: const EdgeInsets.only(top: 1),
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(18),
+                topRight: Radius.circular(18),
               ),
-          // ),
-          // floatingActionButton: Padding(
-          //   padding: const EdgeInsets.only(bottom: 20.0),
-          //   child: Container(
-          //     decoration: BoxDecoration(
-          //       shape: BoxShape.circle,
-          //       color: ColorScheme.of(context).surface,
-          //       border: .all(
-          //         color: ColorScheme.of(context).outline,
-          //         width: 1.5,
-          //       ),
-          //     ),
-          //     child: WhatsAppButton(),
-          //   ),
-          // ),
-          // floatingActionButtonLocation:
-          //     FloatingActionButtonLocation.centerDocked,
+              child: BottomAppBar(
+                height: 55,
+                clipBehavior: Clip.hardEdge,
+                elevation: 4,
+                padding: EdgeInsets.zero,
+                color: ColorScheme.of(context).surface,
+                child: _BottomNavItems(),
+              ),
+            ),
+          ),
         );
       },
     );
@@ -102,7 +72,7 @@ class _BottomNavItems extends StatelessWidget {
 
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(4, (index) {
+        children: List.generate(_navItems.length, (index) {
           return _NavItem(
             index: index,
             currentIndex: currentIndex,
@@ -142,11 +112,13 @@ class _NavItem extends StatelessWidget {
       overlayColor: WidgetStateProperty.all(Colors.transparent),
       borderRadius: BorderRadius.circular(16),
       child: FittedBox(
+        fit: BoxFit.scaleDown,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeOut,
           padding: const EdgeInsets.symmetric(vertical: 0),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               if (icon.isNotEmpty)
                 SvgPicture.asset(
@@ -157,7 +129,12 @@ class _NavItem extends StatelessWidget {
                     BlendMode.srcIn,
                   ),
                 ),
-              Text(label, style: TextTheme.of(context).displaySmall),
+              Text(
+                label,
+                style: TextTheme.of(context).displaySmall,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ],
           ),
         ),
@@ -181,8 +158,6 @@ class HomePageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log('height:${MediaQuery.sizeOf(context).height}');
-
     double getExpandedHeight(BuildContext context) {
       final screenHeight =
           MediaQuery.of(context).size.height -
@@ -190,11 +165,11 @@ class HomePageContent extends StatelessWidget {
           MediaQuery.of(context).padding.bottom;
 
       if (screenHeight <= 740) {
-        return screenHeight * 0.55; // small devices → more height
+        return screenHeight * 0.55;
       } else if (screenHeight <= 800) {
-        return screenHeight * 0.45; // normal devices
+        return screenHeight * 0.48;
       } else {
-        return screenHeight * 0.42; // large devices → less height
+        return screenHeight * 0.45;
       }
     }
 
@@ -222,17 +197,17 @@ class HomePageContent extends StatelessWidget {
           child: Column(
             children: [
               AppBar(
-                clipBehavior: .none,
+                clipBehavior: Clip.none,
                 centerTitle: true,
                 elevation: 0,
                 systemOverlayStyle: Get.isDarkMode
-                    ? SystemUiOverlayStyle(
-                        statusBarBrightness: .dark,
-                        statusBarIconBrightness: .light,
+                    ? const SystemUiOverlayStyle(
+                        statusBarBrightness: Brightness.dark,
+                        statusBarIconBrightness: Brightness.light,
                       )
-                    : SystemUiOverlayStyle(
-                        statusBarBrightness: .light,
-                        statusBarIconBrightness: .dark,
+                    : const SystemUiOverlayStyle(
+                        statusBarBrightness: Brightness.light,
+                        statusBarIconBrightness: Brightness.dark,
                       ),
                 backgroundColor: Colors.transparent,
                 title: Image.asset(
@@ -243,22 +218,13 @@ class HomePageContent extends StatelessWidget {
                   width: 70,
                 ),
               ),
-              // ),
               Expanded(
-                flex: 1,
                 child: CustomScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  clipBehavior: .antiAlias,
                   slivers: [
                     SliverAppBar(
                       toolbarHeight: 0,
-                      foregroundColor: Colors.transparent,
-                      forceMaterialTransparency: false,
-                      clipBehavior: .none,
                       pinned: true,
-                      floating: false,
-                      forceElevated: false,
                       expandedHeight: getExpandedHeight(context),
                       backgroundColor: Colors.transparent,
                       elevation: 0,
@@ -269,70 +235,37 @@ class HomePageContent extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Expanded(
-                              child: PageView(
-                                padEnds: false,
-                                clipBehavior: .none,
+                              child: PageView.builder(
+                                clipBehavior: Clip.none,
                                 controller: _pageController,
-                                scrollDirection: .horizontal,
                                 onPageChanged: (value) =>
                                     _currentPage.value = value,
-                                children: [
-                                  for (
-                                    int i = 0;
-                                    i <
-                                        controller
-                                            .dashboradData
-                                            .value
-                                            .activeMtags!
-                                            .length;
-                                    i++
-                                  )
-                                    VehicleCard(
-                                      mtags: controller
-                                          .dashboradData
-                                          .value
-                                          .activeMtags![i],
-                                    ),
-                                ],
+                                itemCount: mtags.length,
+                                itemBuilder: (context, i) =>
+                                    VehicleCard(mtags: mtags[i]),
                               ),
                             ),
-                            SizedBox(height: 5),
+                            const SizedBox(height: 5),
                             ValueListenableBuilder(
                               valueListenable: _currentPage,
                               builder: (context, value, child) {
-                                return Container(
-                                  color: Colors.transparent, // Solid color
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      for (
-                                        int i = 0;
-                                        i <
-                                            controller
-                                                .dashboradData
-                                                .value
-                                                .activeMtags!
-                                                .length;
-                                        i++
-                                      )
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: i == value
-                                                ? ColorScheme.of(
-                                                    context,
-                                                  ).primary
-                                                : ColorScheme.of(
-                                                    context,
-                                                  ).surfaceContainerLowest,
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
-                                          ),
-                                          margin: EdgeInsets.all(2),
-                                          height: 5,
-                                          width: i == value ? 15 : 10,
-                                        ),
-                                    ],
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: List.generate(
+                                    mtags.length,
+                                    (i) => Container(
+                                      decoration: BoxDecoration(
+                                        color: i == value
+                                            ? ColorScheme.of(context).primary
+                                            : ColorScheme.of(
+                                                context,
+                                              ).surfaceContainerLowest,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      margin: const EdgeInsets.all(2),
+                                      height: 5,
+                                      width: i == value ? 15 : 10,
+                                    ),
                                   ),
                                 );
                               },
@@ -341,16 +274,15 @@ class HomePageContent extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SliverToBoxAdapter(child: SizedBox(height: 8)),
+                    const SliverToBoxAdapter(child: SizedBox(height: 8)),
                     ActionGrid(controller: controller),
-
                     SliverPadding(
                       sliver: SliderSection(),
-                      padding: .symmetric(horizontal: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                     ),
-                    SliverToBoxAdapter(child: SizedBox(height: 10)),
+                    const SliverToBoxAdapter(child: SizedBox(height: 10)),
                     HelpSection(),
-                    SliverToBoxAdapter(child: SizedBox(height: 10)),
+                    const SliverToBoxAdapter(child: SizedBox(height: 10)),
                   ],
                 ),
               ),
@@ -377,20 +309,18 @@ class VehicleCard extends StatelessWidget {
           clipBehavior: Clip.none,
           children: [
             Container(
-              clipBehavior: .none,
-              margin: .symmetric(horizontal: 10),
+              clipBehavior: Clip.none,
+              margin: const EdgeInsets.symmetric(horizontal: 10),
               decoration: BoxDecoration(
-                borderRadius: .circular(16),
+                borderRadius: BorderRadius.circular(16),
                 gradient: Theme.of(
                   context,
                 ).extension<AppGradients>()!.background,
               ),
               child: Column(
-                mainAxisAlignment: .start,
-                crossAxisAlignment: .start,
                 children: [
-                  _MtagDataWidget(width: w, key: key, mtag: mtags),
-                  Spacer(),
+                  _MtagDataWidget(width: w, mtag: mtags),
+                  const Spacer(),
                   BalanceCard(mtag: mtags),
                 ],
               ),
@@ -400,9 +330,8 @@ class VehicleCard extends StatelessWidget {
               left: 18,
               child: VerifiedBadge(
                 isVerified: mtags.eto_verified ?? false,
-                label: mtags.eto_verified == true
-                    ? 'Verified'.toUpperCase()
-                    : 'Unverified'.toUpperCase(),
+                label: (mtags.eto_verified == true ? 'Verified' : 'Unverified')
+                    .toUpperCase(),
                 tooltipMessage: mtags.eto_verified == true
                     ? 'Verified by Excise & Taxation Office (ETO).'
                     : 'To get verified, enter your correct chassis number.',
@@ -419,19 +348,20 @@ class _MtagDataWidget extends StatelessWidget {
   final double width;
   final ActiveMtags mtag;
 
-  const _MtagDataWidget({super.key, this.width = 0, required this.mtag});
+  const _MtagDataWidget({required this.width, required this.mtag});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<HomeController>();
     final vehicleImagePath = getVehicleImage(mtag.vehicletype ?? '');
+    final expiryDate = controller.expiryDate(mtag);
+
     return Row(
-      mainAxisAlignment: .start,
-      crossAxisAlignment: .start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         FittedBox(
           child: Container(
-            padding: EdgeInsets.only(top: 22, left: width * 0.03, bottom: 0),
-
+            padding: EdgeInsets.only(top: 22, left: width * 0.03),
             child: vehicleImagePath.isNotEmpty
                 ? Image.asset(vehicleImagePath, height: width * 0.32)
                 : SizedBox(height: width * 0.32),
@@ -439,22 +369,20 @@ class _MtagDataWidget extends StatelessWidget {
         ),
         Expanded(
           child: Padding(
-            padding: .symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
-              spacing: 8,
-              mainAxisAlignment: .start,
+              spacing: 6,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: .end,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Padding(
-                      padding: .only(right: 8, top: 8),
-                      child: ActiveBadge(mtag.isactive),
+                      padding: const EdgeInsets.only(right: 8, top: 8),
+                      child: ActiveBadge(mtag),
                     ),
                   ],
                 ),
-
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.topLeft,
@@ -467,12 +395,11 @@ class _MtagDataWidget extends StatelessWidget {
                             context,
                           ).bodyMedium?.copyWith(fontSize: 13),
                         ),
-
-                        TextSpan(
-                          text: ' • M-TAG ', // rest of text
+                        const TextSpan(
+                          text: ' • M-TAG ',
                           style: TextStyle(
                             fontFamily: 'biotifbold',
-                            color: Colors.grey, // black color
+                            color: Colors.grey,
                             fontWeight: FontWeight.w900,
                           ),
                         ),
@@ -486,7 +413,53 @@ class _MtagDataWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-
+                if (expiryDate.isNotEmpty)
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: ColorScheme.of(
+                          context,
+                        ).surfaceContainerLowest.withValues(alpha: 0.8),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.warning_rounded,
+                            size: 14,
+                            color: Colors.grey.shade600,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            getMtagStatus(mtag) == 'EXPIRED'
+                                ? 'M-Tag Expires on : '
+                                : 'M-Tag Expires in : ',
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  fontSize: 10.5,
+                                  color: Colors.grey.shade600,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                          Text(
+                            expiryDate,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 FittedBox(
                   child: Row(
                     children: [
@@ -501,27 +474,11 @@ class _MtagDataWidget extends StatelessWidget {
                                 fontFamily: 'biotifbold',
                               ),
                             ),
-                            // Number
-                            if (mtag.chassis_number == null ||
-                                mtag.chassis_number == '' ||
-                                mtag.chassis_number!.trim().isEmpty) ...[
+                            if (mtag.chassis_number?.trim().isEmpty ?? true)
                               WidgetSpan(
                                 alignment: PlaceholderAlignment.middle,
                                 child: GestureDetector(
-                                  onTap: () async {
-                                    await showDialog(
-                                      context: context,
-                                      builder: (_) => ChassisNumberDialog(
-                                        chassissNo: mtag.chassis_number ?? '',
-                                        registration: mtag.registration ?? '',
-                                        tokenNo: mtag.tokenno ?? '',
-                                        mobileNumber: mtag.mobilenum ?? '',
-                                        balance: mtag.balance ?? '',
-                                        cnicNumber:
-                                            OtherConsts().ownerCNIC.value,
-                                      ),
-                                    );
-                                  },
+                                  onTap: () => _showChassisDialog(context),
                                   child: Container(
                                     margin: const EdgeInsets.only(left: 6),
                                     padding: const EdgeInsets.symmetric(
@@ -535,83 +492,66 @@ class _MtagDataWidget extends StatelessWidget {
                                         color: Colors.red.withValues(
                                           alpha: 0.4,
                                         ),
-                                        width: 1,
                                       ),
                                     ),
-                                    child: Row(
+                                    child: const Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        const Icon(
+                                        Icon(
                                           Icons.add_circle_outline,
                                           size: 11,
                                           color: Colors.red,
                                         ),
-                                        const SizedBox(width: 4),
-                                        const Text(
+                                        SizedBox(width: 4),
+                                        Text(
                                           'Add Chassis Number',
                                           style: TextStyle(
                                             color: Colors.red,
                                             fontWeight: FontWeight.w900,
                                             fontSize: 9,
                                             letterSpacing: 0.5,
-                                            fontFamily: 'biotifbold',
+                                            fontFamily: '0',
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
                                 ),
+                              )
+                            else
+                              TextSpan(
+                                text: mtag.chassis_number ?? '',
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium?.copyWith(fontSize: 13),
                               ),
-                            ],
-                            TextSpan(
-                              text: mtag.chassis_number ?? '',
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodyMedium?.copyWith(fontSize: 13),
-                            ),
                           ],
                         ),
                       ),
                       if (mtag.chassis_number?.isNotEmpty ?? false) ...[
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         if (mtag.eto_verified != true)
                           InkWell(
-                            onTap: () async => await showDialog(
-                              context: context,
-                              builder: (_) => ChassisNumberDialog(
-                                chassissNo: mtag.chassis_number ?? '',
-                                registration: mtag.registration ?? '',
-                                tokenNo: mtag.tokenno ?? '',
-                                mobileNumber: mtag.mobilenum ?? '',
-                                balance: mtag.balance ?? '',
-                                cnicNumber: OtherConsts().ownerCNIC.value,
-                              ),
-                            ),
-                            child: Icon(Icons.edit_square, size: 18),
+                            onTap: () => _showChassisDialog(context),
+                            child: const Icon(Icons.edit_square, size: 18),
                           ),
                       ],
                     ],
                   ),
                 ),
-
-                Divider(
-                  color: Colors.grey.shade300,
-                  thickness: 1.5,
-                  height: 8,
-                  indent: 1,
-                  endIndent: 10,
-                ),
+                Divider(color: Colors.grey.shade300, thickness: 1.5, height: 8),
                 FittedBox(
                   child: Row(
-                    mainAxisAlignment: .start,
-                    crossAxisAlignment: .start,
                     children: [
                       Icon(
                         Icons.person_2,
                         color: Colors.green.shade400,
                         size: 20,
                       ),
-                      Text('Owner : ', style: TextStyle(color: Colors.grey)),
+                      const Text(
+                        'Owner : ',
+                        style: TextStyle(color: Colors.grey),
+                      ),
                       Text(
                         '${mtag.ownername}',
                         style: TextTheme.of(context).bodyMedium,
@@ -626,51 +566,98 @@ class _MtagDataWidget extends StatelessWidget {
       ],
     );
   }
+
+  void _showChassisDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => ChassisNumberDialog(
+        chassissNo: mtag.chassis_number ?? '',
+        registration: mtag.registration ?? '',
+        tokenNo: mtag.tokenno ?? '',
+        mobileNumber: mtag.mobilenum ?? '',
+        balance: mtag.balance ?? '',
+        cnicNumber: OtherConsts().ownerCNIC.value,
+      ),
+    );
+  }
+}
+
+// String getMtagStatus(ActiveMtags activeMtags) {
+//   switch (activeMtags.isactive) {
+//     case 9:
+//       return 'EXPIRED';
+//     case 8:
+//       return 'BLACKLISTED';
+//     case 0:
+//       // If active is 0, check blockstatus for 3 or 4
+//       log('Blockst${activeMtags.block_status}');
+//       if (activeMtags.block_status == 3 || activeMtags.block_status == 4) {
+//         return 'BLOCKED';
+//       }
+//       return 'IN-ACTIVE';
+//     case 3:
+//     case 4:
+//       return 'BLOCKED';
+//     case 1:
+//     default:
+//       return 'ACTIVE';
+//   }
+// }
+String getMtagStatus(ActiveMtags activeMtags) {
+  switch (activeMtags.isactive) {
+    case 9.0:
+      return 'EXPIRED';
+    case 8.0:
+      return 'BLACKLISTED';
+    case 0.0:
+      return 'BLOCKED';
+    case 1.0:
+    default:
+      return 'ACTIVE';
+  }
 }
 
 class ActiveBadge extends StatelessWidget {
-  final double isActive;
+  final ActiveMtags mtag;
 
-  const ActiveBadge(this.isActive, {super.key});
+  const ActiveBadge(this.mtag, {super.key});
 
   @override
   Widget build(BuildContext context) {
+    final label = getMtagStatus(mtag);
+    final isTagActive = label == 'ACTIVE';
+    final isWarningStatus = label == 'EXPIRED' || label == 'In ACTIVE';
+
+    final Color color = isTagActive
+        ? Colors.green
+        : (isWarningStatus ? Colors.orange : Colors.red);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       decoration: BoxDecoration(
-        color: isActive == 1.0
-            ? Colors.green.withValues(alpha: 0.15)
-            : Colors.red.withValues(alpha: 0.15),
+        color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 12,
             height: 12,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(
-                color: isActive == 1.0 ? Colors.green : Colors.red,
-                width: 2.5,
-              ),
+              border: Border.all(color: color, width: 2.5),
             ),
           ),
-          SizedBox(width: 4),
+          const SizedBox(width: 4),
           FittedBox(
-            fit: .scaleDown,
+            fit: BoxFit.scaleDown,
             child: Text(
-              isActive == 1.0
-                  ? 'ACTIVE'
-                  : isActive == 5.0
-                  ? "De-Commission"
-                  : "BLACKLISTED",
+              label,
               style: TextStyle(
-                color: isActive == 1.0
+                color: isTagActive
                     ? Colors.green.shade900
-                    : isActive == 8.0
-                    ? Colors.red
-                    : Colors.black,
+                    : (isWarningStatus ? Colors.orange.shade900 : Colors.red),
                 fontSize: 12.5,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 0.4,
@@ -685,33 +672,34 @@ class ActiveBadge extends StatelessWidget {
 }
 
 class BalanceCard extends StatelessWidget {
-  BalanceCard({super.key, this.mtag, this.balance});
-
   final ActiveMtags? mtag;
   final double? balance;
   final ValueNotifier<bool> balanceVisibleNotifier = ValueNotifier(true);
 
+  BalanceCard({super.key, this.mtag, this.balance});
+
   @override
   Widget build(BuildContext context) {
-    final balance = double.tryParse('${mtag?.balance}');
-    final recoveryAmount = double.tryParse('${mtag?.block_amount}');
+    if (mtag == null) return const SizedBox.shrink();
+
+    final statusLabel = getMtagStatus(mtag!);
+    final balanceValue = double.tryParse(mtag?.balance ?? '0.0');
+    final recoveryAmount = mtag?.block_amount ?? 0.0;
+
+    final bool isRecoveryRequired =
+        statusLabel == 'BLACKLISTED' ||
+        statusLabel == 'BLOCKED' ||
+        statusLabel == 'IN-ACTIVE';
+    final bool isBalanceVisible =
+        statusLabel == 'ACTIVE' ||
+        statusLabel == 'EXPIRED' ||
+        mtag?.isactive == 5;
 
     return Container(
-      clipBehavior: .none,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         gradient: Theme.of(context).extension<AppGradients>()!.verticalFade,
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 14,
-            offset: const Offset(4, 4),
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 14,
-            offset: const Offset(4, 4),
-          ),
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 14,
@@ -721,37 +709,34 @@ class BalanceCard extends StatelessWidget {
       ),
       child: ValueListenableBuilder(
         valueListenable: balanceVisibleNotifier,
-        builder: (context, value, child) {
+        builder: (context, visible, child) {
           return Padding(
-            padding: .symmetric(horizontal: 16, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             child: Column(
-              mainAxisAlignment: .start,
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: .spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     FittedBox(
-                      fit: .scaleDown,
+                      fit: BoxFit.scaleDown,
                       child: Text(
-                        mtag?.isactive == 8.0
+                        isRecoveryRequired
                             ? 'Recovery Amount'
                             : 'Available Balance',
                         style: TextTheme.of(context).titleMedium,
                       ),
                     ),
                     InkWell(
-                      onTap: () {
-                        balanceVisibleNotifier.value =
-                            !balanceVisibleNotifier.value;
-                      },
+                      onTap: () => balanceVisibleNotifier.value = !visible,
                       child: CircleAvatar(
                         radius: 12,
                         backgroundColor: ColorScheme.of(
                           context,
                         ).surfaceContainerLowest.withValues(alpha: 0.5),
                         child: Icon(
-                          value
+                          visible
                               ? Icons.visibility_rounded
                               : Icons.visibility_off_rounded,
                           color: Colors.black54,
@@ -761,84 +746,79 @@ class BalanceCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 4), // ← was 6 → tighter
+                const SizedBox(height: 4),
                 FittedBox(
-                  fit: .scaleDown,
+                  fit: BoxFit.scaleDown,
                   child: Text(
-                    value
-                        ? mtag?.isactive == 1.0
-                              ? 'Rs. ${balance ?? ''}'
-                              : mtag?.isactive == 5.0
-                              ? 'Rs. ${balance ?? ''}'
-                              : 'Rs. ${recoveryAmount ?? ''}'
+                    visible
+                        ? (isBalanceVisible
+                              ? 'Rs. ${balanceValue ?? '0.0'}'
+                              : 'Rs. $recoveryAmount')
                         : '****',
                     style: TextTheme.of(context).titleLarge?.copyWith(
                       letterSpacing: 1.2,
                       fontSize: 24,
-                      fontWeight: .bold,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                if (balance != null && balance <= 50.0)
+                if (isRecoveryRequired ||
+                    (balanceValue != null && balanceValue <= 50.0))
                   Row(
                     children: [
                       Text(
-                        mtag?.isactive == 8.0
+                        isRecoveryRequired
                             ? 'Pay Recovery Amount to start using M-TAG'
                             : 'Low Balance',
-                        style: mtag?.isactive == 8.0
+                        style: isRecoveryRequired
                             ? Theme.of(context).textTheme.bodySmall?.copyWith(
                                 color: Colors.red.shade900,
                               )
                             : Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Theme.of(context).primaryColor,
+                                color: Theme.of(context).primaryColorLight,
                               ),
                       ),
-                      SizedBox(width: 6),
+                      const SizedBox(width: 6),
                       Icon(
                         Icons.warning_rounded,
                         size: 20,
-                        color: mtag?.isactive == 8.0
+                        color: isRecoveryRequired
                             ? Colors.red.shade900
                             : Colors.yellow.shade800,
                       ),
                     ],
                   ),
-                SizedBox(height: 4),
-
-                // ← was 8 → much tighter
-                if (mtag?.isactive != 5.0)
+                const SizedBox(height: 4),
+                if (mtag?.isactive != 5)
                   Card(
                     elevation: 1,
-                    borderOnForeground: true,
                     shape: RoundedSuperellipseBorder(
-                      borderRadius: .circular(50),
+                      borderRadius: BorderRadius.circular(50),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 4,
                         vertical: 2,
                       ),
-                      child: mtag?.isactive != 1.0
+                      child: isRecoveryRequired
                           ? ElevatedButton1(
                               width: double.infinity,
-                              // backgroundColor: Colors.red.shade900,
-                              onclick: () async {
-                                showPaymentBottomSheet(
-                                  context,
-                                  blackListRecharge: true,
-                                  mtagId: mtag?.tokenno,
-                                  regId: mtag?.registration,
-                                  recoveryAmount: mtag?.block_amount,
-                                );
-                              },
+                              isEnabled: statusLabel != 'IN-ACTIVE',
+                              backgroundColor: Colors.red.shade900,
+                              onclick: () => showPaymentBottomSheet(
+                                context,
+                                blackListRecharge: true,
+                                mtagId: mtag?.tokenno,
+                                regId: mtag?.registration,
+                                recoveryAmount: mtag?.block_amount ?? 0.0,
+                              ),
                               text: 'Pay Now',
                             )
                           : _RechargeButton(mtag!),
                     ),
                   ),
-                SizedBox(height: 5),
-                if (mtag?.isactive != 8.0) _TransferRemoveRow(mtag!),
+                const SizedBox(height: 5),
+                if (!isRecoveryRequired) _TransferRemoveRow(mtag!),
               ],
             ),
           );
@@ -863,22 +843,18 @@ class _RechargeButton extends StatelessWidget {
         fontSize: 18,
         fontWeight: FontWeight.w600,
       ),
-      onclick: () => _showRechargeBottomSheet(activeMtags, context),
+      onclick: () => showPaymentBottomSheet(
+        context,
+        mtagId: activeMtags.tokenno,
+        regId: activeMtags.registration,
+        jazzCode: '1',
+        creditCode: '0',
+        blackListRecharge: false,
+      ),
       text: 'Recharge M-TAG',
-      icon: Icon(Icons.add_circle),
+      icon: const Icon(Icons.add_circle),
       isShowIcon: true,
-      iconAlignment: .start,
-    );
-  }
-
-  void _showRechargeBottomSheet(ActiveMtags mtag, BuildContext context) {
-    showPaymentBottomSheet(
-      context,
-      mtagId: mtag.tokenno,
-      regId: mtag.registration,
-      jazzCode: '1',
-      creditCode: '0',
-      blackListRecharge: false,
+      iconAlignment: IconAlignment.start,
     );
   }
 }
@@ -891,17 +867,11 @@ class _TransferRemoveRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeController = Get.find<HomeController>();
-
-    final activeMtags =
-        homeController.dashboradData.value.activeMtags ?? const [];
-
+    final activeMtags = homeController.dashboradData.value.activeMtags ?? [];
     final bool hasMultipleCars = activeMtags.length > 1;
 
-    final List<Map<String, dynamic>> allCars = activeMtags
-        .where(
-          (car) =>
-              car.registration != null && car.registration != mtag.registration,
-        )
+    final List<Map<String, dynamic>> otherCars = activeMtags
+        .where((car) => car.registration != mtag.registration)
         .map(
           (car) => {
             "carNumber": car.registration ?? '',
@@ -912,7 +882,7 @@ class _TransferRemoveRow extends StatelessWidget {
         .toList();
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+      padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
         color: ColorScheme.of(
           context,
@@ -926,32 +896,19 @@ class _TransferRemoveRow extends StatelessWidget {
               child: ActionButton(
                 imagePath: "assets/transfer_balance.png",
                 label: 'Balance Transfer',
-                isDestructive: false,
-                onTap: () {
-                  if (allCars.isEmpty) return;
-                  _showBalanceTransferSheet(context, mtag, allCars);
-                },
+                onTap: () => _showBalanceTransferSheet(context, otherCars),
               ),
             ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Text(
-                '|',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w100,
-                  color: Colors.grey,
-                ),
-              ),
+              child: Text('|', style: TextStyle(color: Colors.grey)),
             ),
           ],
-
           Expanded(
             child: ActionButton(
               icon: Icons.delete_outlined,
               label: 'Delete Vehicle',
-              isDestructive: false,
-              onTap: () => _showDeleteDialog(mtag),
+              onTap: () => _showDeleteDialog(),
             ),
           ),
         ],
@@ -961,43 +918,31 @@ class _TransferRemoveRow extends StatelessWidget {
 
   void _showBalanceTransferSheet(
     BuildContext context,
-    ActiveMtags mtag,
-    List<Map<String, dynamic>> allCars,
+    List<Map<String, dynamic>> otherCars,
   ) {
-    if (!context.mounted) return;
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) {
-        return BalanceTransferSheet(
-          carRegistration: mtag.registration ?? '',
-          balance: mtag.balance ?? '0',
-          cnicNumber: OtherConsts().ownerCNIC.value,
-          mobileNumber: mtag.mobilenum ?? '',
-          mtagid: mtag.tokenno ?? '',
-          dropDownCars: allCars,
-        );
-      },
+      builder: (_) => BalanceTransferSheet(
+        carRegistration: mtag.registration ?? '',
+        balance: mtag.balance ?? '0',
+        cnicNumber: OtherConsts().ownerCNIC.value,
+        mobileNumber: mtag.mobilenum ?? '',
+        mtagid: mtag.tokenno ?? '',
+        dropDownCars: otherCars,
+      ),
     );
   }
 
-  void _showDeleteDialog(ActiveMtags mtag) {
-    if (mtag.tokenno == null || mtag.tokenno!.isEmpty) return;
-
+  void _showDeleteDialog() {
     Get.dialog(
       DeLinkVehicleDialog(
         regId: mtag.registration ?? '',
-        onCancel: () {
-          if (Get.isDialogOpen ?? false) Get.back();
-        },
+        onCancel: () => Get.back(),
         onConfirm: () {
-          if (Get.isDialogOpen ?? false) Get.back();
-
-          final controller = Get.find<DelinkController>();
-
-          controller.deLinkVehicle(
+          Get.back();
+          Get.find<DelinkController>().deLinkVehicle(
             mtagID: mtag.tokenno ?? '',
             rDesc: "0--Vehicle has been sold out.",
             rID: "1",
@@ -1013,7 +958,6 @@ class ActionButton extends StatelessWidget {
   final String? imagePath;
   final String label;
   final VoidCallback? onTap;
-  final bool isDestructive;
 
   const ActionButton({
     super.key,
@@ -1021,34 +965,10 @@ class ActionButton extends StatelessWidget {
     this.imagePath,
     required this.label,
     this.onTap,
-    this.isDestructive = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = TextTheme.of(context).displayMedium?.copyWith(
-      fontSize: 9.4,
-      fontWeight: FontWeight.bold,
-      color: isDestructive ? Colors.red : null,
-    );
-
-    Widget? leadingWidget;
-    if (imagePath != null && imagePath!.isNotEmpty) {
-      leadingWidget = Image.asset(
-        imagePath!,
-        width: 25,
-        height: 25,
-        fit: BoxFit.contain,
-        color: Get.isDarkMode ? Colors.white : null,
-      );
-    } else if (icon != null) {
-      leadingWidget = Icon(
-        icon,
-        size: 20,
-        color: isDestructive ? Colors.red : null,
-      );
-    }
-
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(50),
@@ -1057,11 +977,23 @@ class ActionButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (leadingWidget != null) ...[
-              leadingWidget,
-              const SizedBox(width: 8),
-            ],
-            Text(label, style: textStyle),
+            if (imagePath != null)
+              Image.asset(
+                imagePath!,
+                width: 25,
+                height: 25,
+                color: Get.isDarkMode ? Colors.white : null,
+              )
+            else if (icon != null)
+              Icon(icon, size: 20),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextTheme.of(context).displayMedium?.copyWith(
+                fontSize: 9.4,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
       ),
@@ -1070,14 +1002,14 @@ class ActionButton extends StatelessWidget {
 }
 
 class ActionGrid extends StatelessWidget {
-  const ActionGrid({super.key, required this.controller});
-
   final HomeController controller;
+
+  const ActionGrid({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
-      padding: .symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.6,
@@ -1088,12 +1020,8 @@ class ActionGrid extends StatelessWidget {
         delegate: SliverChildBuilderDelegate(
           childCount: controller.dashBoardModel.length,
           (context, index) {
-            final e = controller.dashBoardModel[index];
-            return _ActionTile(
-              item: e,
-              controller: controller,
-              isCalculatorWidget: e.title == 'Toll Calculator' ? true : false,
-            );
+            final item = controller.dashBoardModel[index];
+            return _ActionTile(item: item, controller: controller);
           },
         ),
       ),
@@ -1103,34 +1031,38 @@ class ActionGrid extends StatelessWidget {
 
 class _ActionTile extends StatelessWidget {
   final MtagModel item;
-  final bool? isCalculatorWidget;
   final HomeController controller;
 
-  const _ActionTile({
-    required this.item,
-    this.isCalculatorWidget = false,
-    required this.controller,
-  });
+  const _ActionTile({required this.item, required this.controller});
 
   @override
   Widget build(BuildContext context) {
+    final isCalc = item.title == 'Toll Calculator';
     final gradientColor = Theme.of(
       context,
     ).extension<AppGradients>()!.gridWidget.colors;
-    final imagePath = item.image ?? '';
 
     return GestureDetector(
-      onTap: () => handleItemTap(context, item, controller),
+      onTap: () {
+        if (item.routeName != null) {
+          Get.toNamed(
+            item.routeName!,
+            arguments: controller.dashboradData.value.activeMtags,
+          );
+        }
+        final rc = Get.find<RechargeController>();
+        rc.isPaymentModdeVisible(false);
+        rc.isSummaryVisible(false);
+        rc.isRechageVisible(true);
+      },
       child: Container(
-        padding: .symmetric(horizontal: 16),
-        clipBehavior: .none,
-
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           gradient: LinearGradient(
-            begin: AlignmentGeometry.xy(-1.1, 0.9),
-            end: Alignment(-1.0, 2.2),
-            colors: isCalculatorWidget == true && !Get.isDarkMode
+            begin: const Alignment(-1.1, 0.9),
+            end: const Alignment(-1.0, 2.2),
+            colors: isCalc && !Get.isDarkMode
                 ? const [
                     Color(0xFFFFFDF5),
                     Color(0xFFFFF3CC),
@@ -1141,45 +1073,26 @@ class _ActionTile extends StatelessWidget {
           ),
           boxShadow: Theme.of(context).extension<AppShadows>()!.gridShadow,
         ),
-
         child: FittedBox(
           child: Row(
-            mainAxisAlignment: .start,
-            crossAxisAlignment: .center,
             children: [
-              if (imagePath.isNotEmpty)
-                Image.asset(
-                  imagePath,
-                  width: 30,
-                  height: 30,
-                  fit: BoxFit.contain,
-                ),
-
+              if (item.image != null)
+                Image.asset(item.image!, width: 30, height: 30),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   spacing: 3,
-                  mainAxisAlignment: .start,
-                  crossAxisAlignment: .start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    FittedBox(
-                      child: Text(
-                        item.title ?? '',
-                        style: TextTheme.of(context).displayMedium,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                    Text(
+                      item.title ?? '',
+                      style: TextTheme.of(context).displayMedium,
                     ),
-
-                    FittedBox(
-                      child: Text(
-                        item.subtitle ?? '',
-                        style: TextTheme.of(
-                          context,
-                        ).bodySmall?.copyWith(fontSize: 7),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                    Text(
+                      item.subtitle ?? '',
+                      style: TextTheme.of(
+                        context,
+                      ).bodySmall?.copyWith(fontSize: 7),
                     ),
                   ],
                 ),
@@ -1189,23 +1102,5 @@ class _ActionTile extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<void> handleItemTap(
-    BuildContext context,
-    MtagModel item,
-    HomeController controller,
-  ) async {
-    final rechargeController = Get.find<RechargeController>();
-
-    if (item.routeName != null) {
-      await Get.toNamed(
-        item.routeName!,
-        arguments: controller.dashboradData.value.activeMtags,
-      );
-    }
-    rechargeController.isPaymentModdeVisible(false);
-    rechargeController.isSummaryVisible(false);
-    rechargeController.isRechageVisible(true);
   }
 }

@@ -75,7 +75,9 @@ class MtagCardWidget extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: Theme.of(context).extension<AppGradients>()!.background,
         borderRadius: BorderRadius.circular(12),
-        border: argument[index].isactive == 8
+        border: argument[index].isactive == 8 ||
+                argument[index].isactive == 3 ||
+                argument[index].isactive == 4
             ? Border.all(color: Colors.redAccent, width: 1)
             : Border.all(color: Theme.of(context).disabledColor, width: 1),
       ),
@@ -85,8 +87,7 @@ class MtagCardWidget extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: .end,
-            children: [SizedBox(height: 22,
-              child: ActiveBadge(argument[index].isactive))],
+            children: [ActiveBadge(argument[index])],
           ),
           Container(
             padding: const EdgeInsets.all(8),
@@ -116,11 +117,19 @@ class MtagCardWidget extends StatelessWidget {
                          
                           children: [
                             Text(
-                              'Available Balance : ',
-                              style: TextStyle(color: Colors.grey),
+                              argument[index].isactive == 8 ||
+                                      argument[index].isactive == 3 ||
+                                      argument[index].isactive == 4
+                                  ? 'Recovery Amount : '
+                                  : 'Available Balance : ',
+                              style: const TextStyle(color: Colors.grey),
                             ),
                             Text(
-                              'Rs ${argument[index].balance}',
+                              argument[index].isactive == 8 ||
+                                      argument[index].isactive == 3 ||
+                                      argument[index].isactive == 4
+                                  ? 'Rs ${argument[index].block_amount ?? '0.0'}'
+                                  : 'Rs ${argument[index].balance ?? '0.0'}',
                               style: TextTheme.of(
                                 context,
                               ).bodyLarge?.copyWith(fontWeight: .w500),
@@ -220,7 +229,9 @@ class MtagCardWidget extends StatelessWidget {
               Expanded(
                 child: InkWell(
                   onTap: () {
-                    if (argument[index].isactive == 8) {
+                    if (argument[index].isactive == 8 ||
+                        argument[index].isactive == 3 ||
+                        argument[index].isactive == 4) {
                       return;
                     }
                     showDialog(
@@ -241,7 +252,9 @@ class MtagCardWidget extends StatelessWidget {
                       },
                     );
                   },
-                  child: argument[index].isactive == 8
+                  child: argument[index].isactive == 8 ||
+                          argument[index].isactive == 3 ||
+                          argument[index].isactive == 4
                       ? Container(
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(
@@ -249,7 +262,7 @@ class MtagCardWidget extends StatelessWidget {
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.red,
+                            color: Colors.red.shade900,
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
@@ -259,9 +272,12 @@ class MtagCardWidget extends StatelessWidget {
                               ),
                             ],
                           ),
-                          child: const Text(
-                            'Blacklisted',
-                            style: TextStyle(
+                          child: Text(
+                            argument[index].isactive == 8
+                                ? 'Blacklisted'
+                                : 'Blocked',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 12,
@@ -309,7 +325,9 @@ class MtagCardWidget extends StatelessWidget {
               Expanded(
                 child: InkWell(
                   onTap: () async {
-                    if (argument[index].isactive == 8) {
+                    if (argument[index].isactive == 8 ||
+                        argument[index].isactive == 3 ||
+                        argument[index].isactive == 4) {
                       showPopDialog(
                         "You have pending dues on your account. You are not allowed to enter the motorway until your dues are cleared.",
                         () => Get.back(),

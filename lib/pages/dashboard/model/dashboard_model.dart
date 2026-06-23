@@ -93,7 +93,7 @@ class DashBoardModel {
 
 class ActiveMtags {
   String? balance;
-  dynamic isactive;
+  int? isactive;
   String? issuedate;
   String? mobilenum;
   int? ownNumber;
@@ -108,6 +108,9 @@ class ActiveMtags {
   String? chassis_number;
   double? block_amount;
   bool? eto_verified;
+  int? block_status;
+  String? tag_expiry_date;
+  bool? is_expired;
 
   ActiveMtags({
     this.balance,
@@ -126,11 +129,18 @@ class ActiveMtags {
     this.chassis_number,
     this.block_amount,
     this.eto_verified,
+    this.block_status,
+    this.tag_expiry_date,
+    this.is_expired,
   });
 
   ActiveMtags.fromJson(Map<String, dynamic> json) {
     balance = json['balance'];
-    isactive = json['isactive'];
+    isactive = json['isactive'] == null
+        ? 0
+        : (json['isactive'] as num?)?.toInt() ??
+              int.tryParse(json['isactive'].toString()) ??
+              0;
     issuedate = json['issuedate'];
     mobilenum = json['mobilenum'];
     ownNumber = json['own_number'];
@@ -140,8 +150,15 @@ class ActiveMtags {
     tokenno = json['tokenno'];
     vehicletype = json['vehicletype'];
     chassis_number = json['chassis_number'];
-    block_amount = json['block_amount'];
+    block_amount = (json['block_amount'] as num?)?.toDouble();
     eto_verified = json['eto_verified'];
+    block_status = json['block_status'] == null
+        ? 0
+        : (json['block_status'] as num?)?.toInt() ??
+              int.tryParse(json['block_status'].toString()) ??
+              0;
+    tag_expiry_date = json['tag_expiry_date'];
+    is_expired = json['is_expired'];
   }
 
   Map<String, dynamic> toJson() {
@@ -159,6 +176,9 @@ class ActiveMtags {
     data['chassis_number'] = chassis_number;
     data['block_amount'] = block_amount;
     data['eto_verified'] = eto_verified;
+    data['block_status'] = block_status;
+    data['tag_expiry_date'] = tag_expiry_date;
+    data['is_expired'] = is_expired;
     return data;
   }
 }

@@ -32,7 +32,7 @@ class LocalNotificationsService {
     );
 
     await _notificationsPlugin.initialize(
-      initSettings,
+      settings: initSettings,
       onDidReceiveNotificationResponse: _onSelectNotification,
     );
 
@@ -281,10 +281,10 @@ class MessagingService {
 
       if (notification?.android != null) {
         await _notificationsPlugin.show(
-          notification.hashCode,
-          notification?.title,
-          notification?.body,
-          NotificationDetails(
+          id: notification.hashCode,
+          title: notification?.title,
+          body: notification?.body,
+          notificationDetails: NotificationDetails(
             android: AndroidNotificationDetails(
               androidChannel.id,
               androidChannel.name,
@@ -293,7 +293,7 @@ class MessagingService {
               importance: Importance.max,
               priority: Priority.high,
             ),
-            iOS: DarwinNotificationDetails(
+            iOS: const DarwinNotificationDetails(
               presentAlert: true,
               presentBadge: true,
               presentSound: true,

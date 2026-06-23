@@ -2,7 +2,7 @@ name: mtag_flutterapp
 description: "M-Tag A Prime Product of One Network Solutions(FWO)."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 #mistakly upload this up version now update running in this sequence
-version: 4.6.4+2713
+version: 4.6.5+2714
 environment:
   sdk: ">=3.10.0 <4.0.0"
 dependencies:
@@ -10,16 +10,16 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   flutter_svg: ^2.0.17
-  pinput: ^6.0.1
+  pinput: ^6.0.2
   get: ^4.7.2
-  share_plus: ^12.0.0
+  share_plus: ^13.1.0
   dio: ^5.5.0+1
   loading_animation_widget: ^1.2.1
-  shared_preferences: ^2.2.3
-  firebase_messaging: 15.2.9
-  firebase_core: 3.15.2
-  flutter_local_notifications: ^19.1.0
-  in_app_update: ^4.2.3
+  shared_preferences: ^2.4.26
+  firebase_messaging: ^16.4.1
+  firebase_core: ^4.11.0
+  flutter_local_notifications: ^22.0.1
+  in_app_update: ^4.2.5
   local_auth: ^3.0.0
   lottie: ^3.1.0
   screenshot: ^3.0.0
@@ -29,21 +29,21 @@ dependencies:
   action_slider: 0.7.0
   url_launcher: ^6.2.6
   carousel_slider: ^5.1.1
-  firebase_crashlytics:
-  firebase_remote_config:
-  device_info_plus: ^12.1.0
+  firebase_crashlytics: ^5.2.4
+  firebase_remote_config: ^6.5.3
+  device_info_plus: ^13.1.0
   connectivity_plus: ^7.0.0
   cached_network_image: ^3.3.1
   in_app_review: ^2.0.11
-  package_info_plus: ^9.0.0
+  package_info_plus: ^10.1.0
   smart_auth: ^3.2.0
   flutter_inappwebview: ^6.1.5
   shimmer: ^3.0.0
-  upgrader: ^12.1.0
+  upgrader: ^13.5.0
   sqflite: ^2.4.2
   path: ^1.9.1
   csv: ^6.0.0
-  timezone: ^0.10.0
+  timezone: ^0.11.0
   pub_semver: ^2.2.0
   flutter_map_marker_popup: ^8.1.0
   flutter_map: ^8.2.2
