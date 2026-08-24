@@ -30,6 +30,7 @@ class BuildPaymentOptionsWidget extends StatelessWidget {
     this.recoveryAmount,
   });
 
+
   final ValueNotifier<bool> showPSIDField;
   final String? mtagId, regId, jazzCode, creditCode;
   final TextEditingController amount;

@@ -45,20 +45,24 @@ android {
             abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86_64", "x86")
         }
     }
-    signingConfigs {
-        create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = keystoreProperties["storeFile"]?.let { file(it) }
-            storePassword = keystoreProperties["storePassword"] as String
-        }
-    }
+//    signingConfigs {
+//        if (keystorePropertiesFile.exists()) {
+//            create("release") {
+//                keyAlias = keystoreProperties.getProperty("keyAlias")
+//                keyPassword = keystoreProperties.getProperty("keyPassword")
+//                storeFile = keystoreProperties.getProperty("storeFile")?.let { file(it) }
+//                storePassword = keystoreProperties.getProperty("storePassword")
+//            }
+//        }
+//    }
 
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("release")
+            if (keystorePropertiesFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
 
             isMinifyEnabled = true
             isShrinkResources = true
