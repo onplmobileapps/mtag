@@ -148,5 +148,16 @@ class OtherConsts {
       motorwayAbbrivation: "\t\tEastern\n\t\tBypass",
       motorwayID: 300,
     ),
+    StaticMotorwayModel(
+      motorwayName: 'GOP',
+      motorwayAbbrivation: 'Govt. of Punjab',
+      motorwayID: 19005,
+    ),
+    StaticMotorwayModel(
+      motorwayName: 'M2-BS',
+      motorwayAbbrivation: 'Babu Sabu',
+      motorwayID: 7015,
+    ),
+
   ].obs;
 }

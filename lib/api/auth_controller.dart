@@ -64,6 +64,7 @@ class AuthController extends GetxController implements GetxService {
     required String cnic,
     required String mobileNumber,
     required String metaData,
+    String? deviceId,
     int? operator, // Added optional operator parameter
     int? isForgetPin,
   }) async {
@@ -73,6 +74,7 @@ class AuthController extends GetxController implements GetxService {
       cnic: cnic,
       mobileNumber: mobileNumber,
       metaData: metaData,
+      deviceId: deviceId,
       fcmToken: fcm,
       // operator: operator, // Pass operator to repository
     );
@@ -88,12 +90,27 @@ class AuthController extends GetxController implements GetxService {
       );
 
       if (result["Code"] == '00') {
-        await generateOTP(
-          cnic: cnic,
-          islogin: 1,
-          mobile: mobileNumber,
-          isForgetPin: isForgetPin,
-        );
+        bool hasMpin = result['Data']['has_mpin'] ?? false;
+        // If user has MPIN and this is NOT a Forgot PIN request, skip OTP
+        if (hasMpin && isForgetPin != 1) {
+          AppData.clearPinData();
+          Get.off(
+            () => PinEntryPage(
+              isForgetPin: isForgetPin,
+              isCreatePin: false,
+              cnicNumber: cnic,
+              mobileNumber: mobileNumber,
+            ),
+          );
+        } else {
+          // If Forgot PIN request (isForgetPin == 1) or NO MPIN, show OTP dialog
+          await generateOTP(
+            cnic: cnic,
+            islogin: 1,
+            mobile: mobileNumber,
+            isForgetPin: isForgetPin,
+          );
+        }
       }
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(

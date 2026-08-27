@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:android_id/android_id.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -27,16 +29,21 @@ sealed class AmountList {
 sealed class DeviceInfo {
   static Future<Map<String, dynamic>> getDeviceInfo() async {
     final deviceInfoPlugin = DeviceInfoPlugin();
+    final packageInfo = await PackageInfo.fromPlatform();
 
     Map<String, dynamic> deviceData = <String, dynamic>{};
+    deviceData['appVersion'] = packageInfo.version;
 
     try {
       if (Platform.isAndroid) {
         AndroidDeviceInfo androidInfo = await deviceInfoPlugin.androidInfo;
+        const androidIdPlugin = AndroidId();
+        final String? androidId = await androidIdPlugin.getId();
+        
         deviceData['manufacturer'] = androidInfo.manufacturer;
         deviceData['model'] = androidInfo.model;
         deviceData['release'] = androidInfo.version.release;
-        deviceData['deviceId'] = androidInfo.id;
+        deviceData['deviceId'] = androidId ?? androidInfo.id;
         deviceData['buildVersion'] = androidInfo.version.sdkInt.toString();
       } else if (Platform.isIOS) {
         IosDeviceInfo iosInfo = await deviceInfoPlugin.iosInfo;

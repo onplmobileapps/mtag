@@ -26,9 +26,10 @@ android {
 
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
     }
 
     defaultConfig {
@@ -36,25 +37,26 @@ android {
         applicationId = "com.ls.onenetwork.mtag"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = 26
-        targetSdk = 35
+        minSdk = flutter.minSdkVersion
+        targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        multiDexEnabled = true
         ndk {
             // Filter for architectures supported by Flutter
             abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86_64", "x86")
         }
     }
-//    signingConfigs {
-//        if (keystorePropertiesFile.exists()) {
-//            create("release") {
-//                keyAlias = keystoreProperties.getProperty("keyAlias")
-//                keyPassword = keystoreProperties.getProperty("keyPassword")
-//                storeFile = keystoreProperties.getProperty("storeFile")?.let { file(it) }
-//                storePassword = keystoreProperties.getProperty("storePassword")
-//            }
-//        }
-//    }
+    signingConfigs {
+        if (keystorePropertiesFile.exists()) {
+            create("release") {
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+                storeFile = keystoreProperties.getProperty("storeFile")?.let { file(it) }
+                storePassword = keystoreProperties.getProperty("storePassword")
+            }
+        }
+    }
 
     buildTypes {
         release {

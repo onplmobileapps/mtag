@@ -209,6 +209,12 @@ class APISTRUCTURE {
         case apiClient.DioExceptionType.cancel:
           errorMessage = 'Request cancelled';
           break;
+        case apiClient.DioExceptionType.transformTimeout:
+          errorMessage = 'Data transformation timeout';
+          break;
+        default:
+          errorMessage = 'Something went wrong';
+          break;
       }
     } else if (e is SocketException) {
       errorMessage = 'Internet Connection Error';

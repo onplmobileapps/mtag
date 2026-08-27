@@ -97,6 +97,7 @@ class AuthRepo {
     required String mobileNumber,
     String? fcmToken,
     String? metaData,
+    String? deviceId,
     // int? operator
   }) async {
     APISTRUCTURE apiObject = APISTRUCTURE(
@@ -108,6 +109,7 @@ class AuthRepo {
         "MobileNum": mobileNumber,
         "meta_data": metaData,
         "fcmToken": fcmToken,
+        "device_id": deviceId,
         // "sim_operator":operator
       },
     );
@@ -186,8 +188,9 @@ class AuthRepo {
         "Code": code,
         "is_login": islogin,
         "fcmToken": fcmToken,
+        "device_id": release['deviceId'],
         "meta_data":
-            '${Platform.isAndroid ? "Android" : 'iOS'} __${release['release']} __${release['manufacturer']} ${release['model']} __android_id__$fcmToken __3.1.4',
+            '"${Platform.isAndroid ? "Android" : 'iOS'} ""__"${release['release']} "__"${release['manufacturer']}""${release['model']} "__"${release['deviceId']}"__"fcmToken"__"${release['appVersion']}"',
       },
     );
 
@@ -324,8 +327,9 @@ class AuthRepo {
         "cnic": cnic,
         "mobile_num": mobileNum,
         "pin": pin,
+        "device_id": release['deviceId'],
         "meta_data":
-            '${Platform.isAndroid ? "Android" : 'iOS'} __${release['release']} __${release['manufacturer']} ${release['model']} __android_id__$fcm __3.1.4',
+            '"${Platform.isAndroid ? "Android" : 'iOS'} ""__"${release['release']} "__"${release['manufacturer']}""${release['model']} "__"${release['deviceId']}"__"fcmToken"__"${release['appVersion']}"',
         "fcmToken": fcm,
       },
     );

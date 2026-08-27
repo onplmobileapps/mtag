@@ -334,6 +334,8 @@ class AuthPage extends StatelessWidget {
                                                   await DeviceInfo.getDeviceInfo();
                                               if (controller.authIndex.value ==
                                                   0) {
+                                                String metaData = '"${Platform.isAndroid ? "Android" : 'iOS'} ""__"${release['release']} "__"${release['manufacturer']}""${release['model']} "__"android_id"__"fcmToken"__"${release['appVersion']}"';
+                                                print("MetaData: $metaData");
                                                 Get.find<AuthController>().login(
                                                   cnic: controller
                                                       .cnicController
@@ -343,8 +345,8 @@ class AuthPage extends StatelessWidget {
                                                       .phoneController
                                                       .text
                                                       .trim(),
-                                                  metaData:
-                                                      '"${Platform.isAndroid ? "Android" : 'iOS'} ""__"${release['release']} "__"${release['manufacturer']}""${release['model']} "__"android_id"__"fcmToken"__"3.1.4"',
+                                                  metaData: metaData,
+                                                  deviceId: release['deviceId'],
                                                   operator:
                                                       controller
                                                               .selectedOperator
@@ -356,6 +358,7 @@ class AuthPage extends StatelessWidget {
                                           },
                                         ),
                                       ),
+
                                     ],
                                   ),
                                 SizedBox(height: screenHeight * 0.02),

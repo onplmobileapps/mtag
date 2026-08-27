@@ -127,8 +127,9 @@ class ForgetPinPage extends StatelessWidget {
                                 cnic: _cnicController.text.trim(),
                                 mobileNumber: _phoneController.text.trim(),
                                 isForgetPin: 1,
+                                deviceId: release['deviceId'],
                                 metaData:
-                                    '"${Platform.isAndroid ? "Android" : 'iOS'} ""__"${release['release']} "__"${release['manufacturer']}""${release['model']} "__"android_id"__"fcmToken"__"3.1.4',
+                                    '"${Platform.isAndroid ? "Android" : 'iOS'} ""__"${release['release']} "__"${release['manufacturer']}""${release['model']} "__"android_id"__"fcmToken"__"${release['appVersion']}"',
                               );
                             }
                           },

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mtag_flutterapp/constants/other_consts.dart';
+import 'package:mtag_flutterapp/pages/tolcalator/controller/toll_calculator_static_controller.dart';
 import 'package:mtag_flutterapp/theme/app_theme.dart';
-import '../../constants/other_consts.dart';
-import '../../widgets/toll_display_widget.dart';
-import 'controller/toll_calculator_static_controller.dart';
+import 'package:mtag_flutterapp/widgets/toll_display_widget.dart';
 
 class TollPlazaTab extends StatelessWidget {
-  final AnimationController animationController;
-  final Animation<double> fadeAnimation;
 
   const TollPlazaTab({
     super.key,
     required this.animationController,
     required this.fadeAnimation,
   });
+  final AnimationController animationController;
+  final Animation<double> fadeAnimation;
 
   static const Map<int, int> _tollMapMurree = {
     1: 200,
@@ -30,6 +30,22 @@ class TollPlazaTab extends StatelessWidget {
     4: 250,
     5: 300,
     6: 550,
+  };
+  static const Map<int, int> _babuSabu = {
+    1: 40,
+    2: 60,
+    3: 90,
+    4: 120,
+    5: 160,
+    6: 210,
+  };
+  static const Map<int, int> _govtOfPunjab = {
+    1: 30,
+    2: 40,
+    3: 40,
+    4: 70,
+    5: 90,
+    6: 170,
   };
   @override
   Widget build(BuildContext context) {
@@ -52,12 +68,12 @@ class TollPlazaTab extends StatelessWidget {
   }
 
   Widget _buildContent(
-    MotorwayStaticController controller,
-    bool isLargeScreen,
-    double padding,
-    BuildContext context,
-    BoxConstraints constraints,
-  ) {
+      MotorwayStaticController controller,
+      bool isLargeScreen,
+      double padding,
+      BuildContext context,
+      BoxConstraints constraints,
+      ) {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       controller: controller.scrollController,
@@ -84,15 +100,15 @@ class TollPlazaTab extends StatelessWidget {
   }
 
   Widget _buildMotorwaySection(
-    MotorwayStaticController controller,
-    bool isLargeScreen,
-    BuildContext context,
-  ) {
+      MotorwayStaticController controller,
+      bool isLargeScreen,
+      BuildContext context,
+      ) {
     return _section(
       context,
       child: Column(
         children: [
-                  const SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             'Select Motorway',
             style: Theme.of(context).textTheme.labelLarge,
@@ -114,11 +130,11 @@ class TollPlazaTab extends StatelessWidget {
   }
 
   Widget _buildMotorwayItem(
-    BuildContext context,
-    int index,
-    bool isLargeScreen,
-    MotorwayStaticController controller,
-  ) {
+      BuildContext context,
+      int index,
+      bool isLargeScreen,
+      MotorwayStaticController controller,
+      ) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final borderColor = isDarkMode
         ? Colors.redAccent
@@ -144,12 +160,12 @@ class TollPlazaTab extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               boxShadow: isSelected
                   ? [
-                      BoxShadow(
-                        color: borderColor.withAlpha(20),
-                        blurRadius: 0,
-                        spreadRadius: 0,
-                      ),
-                    ]
+                BoxShadow(
+                  color: borderColor.withAlpha(20),
+                  blurRadius: 0,
+                  spreadRadius: 0,
+                ),
+              ]
                   : null,
             ),
             child: FittedBox(
@@ -193,31 +209,31 @@ class TollPlazaTab extends StatelessWidget {
 
     final motorway = OtherConsts.mwNameList[index];
 
-    if (motorway.motorwayID != 200 && motorway.motorwayID != 300) {
-      controller.entryStation.value = '';
-    controller.exitStation.value = '';
+    if (motorway.motorwayID != 200 &&
+        motorway.motorwayID != 300 &&
+        motorway.motorwayID != 19005 &&
+        motorway.motorwayID != 7015) {
       controller.fetchStations(motorway.motorwayID ?? 0);
-    }else{
-      controller.entryStation.value = '';
-    controller.exitStation.value = '';
     }
   }
 
   Widget _buildStationSection(
-    MotorwayStaticController controller,
-    double padding,
-    BuildContext context,
-  ) {
+      MotorwayStaticController controller,
+      double padding,
+      BuildContext context,
+      ) {
     final selectedMotorwayIndex = controller.selectedMotorway.value;
 
-  if (selectedMotorwayIndex != -1) {
-    final motorway = controller.mwNameList[selectedMotorwayIndex];
+    if (selectedMotorwayIndex != -1) {
+      final motorway = OtherConsts.mwNameList[selectedMotorwayIndex];
 
-    if (motorway.motorwayID == 200 || motorway.motorwayID == 300) {
-      return const SizedBox.shrink();
-    
-  }
-  }
+      if (motorway.motorwayID == 200 ||
+          motorway.motorwayID == 300 ||
+          motorway.motorwayID == 19005 ||
+          motorway.motorwayID == 7015) {
+        return const SizedBox.shrink();
+      }
+    }
     return _section(
       context,
       child: Padding(
@@ -237,17 +253,17 @@ class TollPlazaTab extends StatelessWidget {
               context: context,
             ),
             Obx(
-              () => controller.entryStation.value.isNotEmpty
+                  () => controller.entryStation.value.isNotEmpty
                   ? Column(
-                      children: [
-                        const SizedBox(height: 10),
-                        _buildStationField(
-                          controller: controller,
-                          isEntry: false,
-                          context: context,
-                        ),
-                      ],
-                    )
+                children: [
+                  const SizedBox(height: 10),
+                  _buildStationField(
+                    controller: controller,
+                    isEntry: false,
+                    context: context,
+                  ),
+                ],
+              )
                   : const SizedBox.shrink(),
             ),
           ],
@@ -281,8 +297,8 @@ class TollPlazaTab extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               border: Border.all(
-                color: ColorScheme.of(context).outline,
-                width: 0.6
+                  color: ColorScheme.of(context).outline,
+                  width: 0.6
               ),
               borderRadius: BorderRadius.circular(12),
             ),
@@ -293,12 +309,12 @@ class TollPlazaTab extends StatelessWidget {
                 Expanded(
                   child: Text(
                     station.isEmpty ? hint : station,
-                   style: TextTheme.of(context).labelMedium,
+                    style: TextTheme.of(context).labelMedium,
                   ),
                 ),
                 Icon(
                   Icons.keyboard_arrow_down,
-                  
+
                 ),
               ],
             ),
@@ -309,15 +325,15 @@ class TollPlazaTab extends StatelessWidget {
   }
 
   Widget _buildVehicleSection(
-    MotorwayStaticController controller,
-    bool isLargeScreen,
-    BuildContext context,
-  ) {
+      MotorwayStaticController controller,
+      bool isLargeScreen,
+      BuildContext context,
+      ) {
     return _section(
       context,
       child: Column(
         children: [
-                  const SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             'Select Vehicle Type',
             style: Theme.of(context).textTheme.labelLarge,
@@ -340,11 +356,11 @@ class TollPlazaTab extends StatelessWidget {
   }
 
   Widget _buildVehicleItem(
-    BuildContext context,
-    int index,
-    bool isLargeScreen,
-    MotorwayStaticController controller,
-  ) {
+      BuildContext context,
+      int index,
+      bool isLargeScreen,
+      MotorwayStaticController controller,
+      ) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final borderColor = isDarkMode
         ? Colors.redAccent
@@ -370,12 +386,12 @@ class TollPlazaTab extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               boxShadow: isSelected
                   ? [
-                      BoxShadow(
-                        color: borderColor.withAlpha(20),
-                        blurRadius: 0,
-                        spreadRadius: 0,
-                      ),
-                    ]
+                BoxShadow(
+                  color: borderColor.withAlpha(20),
+                  blurRadius: 0,
+                  spreadRadius: 0,
+                ),
+              ]
                   : null,
             ),
             child: Column(
@@ -413,6 +429,8 @@ class TollPlazaTab extends StatelessWidget {
     final motorway = OtherConsts.mwNameList[selectedMotorwayIndex];
     if (motorway.motorwayID != 200 &&
         motorway.motorwayID != 300 &&
+        motorway.motorwayID != 19005 &&
+        motorway.motorwayID != 7015 &&
         (controller.entryStation.value.isEmpty ||
             controller.exitStation.value.isEmpty)) {
       controller.showSnackBar('Please select entry and exit stations first');
@@ -426,15 +444,15 @@ class TollPlazaTab extends StatelessWidget {
   }
 
   void _calculateToll(
-    MotorwayStaticController controller,
-    int? motorwayID,
-    int vehicleIndex,
-  ) {
+      MotorwayStaticController controller,
+      int? motorwayID,
+      int vehicleIndex,
+      ) {
     if (motorwayID == 200) {
       final toll =
           _tollMapMurree[OtherConsts.vehicleList[vehicleIndex].id]
               ?.toString() ??
-          '0';
+              '0';
       controller.calculatedTollPlaza.value = toll;
       controller.isCalculatingPlaza.value = false;
       animationController.forward(from: 0);
@@ -442,20 +460,38 @@ class TollPlazaTab extends StatelessWidget {
       final toll =
           _tollMapEasternBypass[OtherConsts.vehicleList[vehicleIndex].id]
               ?.toString() ??
-          '0';
+              '0';
       controller.calculatedTollPlaza.value = toll;
       controller.isCalculatingPlaza.value = false;
       animationController.forward(from: 0);
-    } else {
+    } else if (motorwayID == 7015) {
+      final toll =
+          _babuSabu[OtherConsts.vehicleList[vehicleIndex].id]
+              ?.toString() ??
+              '0';
+      controller.calculatedTollPlaza.value = toll;
+      controller.isCalculatingPlaza.value = false;
+      animationController.forward(from: 0);
+    }
+    else if (motorwayID == 19005) {
+      final toll =
+          _govtOfPunjab[OtherConsts.vehicleList[vehicleIndex].id]
+              ?.toString() ??
+              '0';
+      controller.calculatedTollPlaza.value = toll;
+      controller.isCalculatingPlaza.value = false;
+      animationController.forward(from: 0);
+    }
+    else {
       controller.calculateTollPlaza(animationController);
     }
   }
 
   Widget _buildTollDisplay(
-    MotorwayStaticController controller,
-    double padding,
-    BuildContext context,
-  ) {
+      MotorwayStaticController controller,
+      double padding,
+      BuildContext context,
+      ) {
     if (!controller.showTollPlaza.value) return const SizedBox.shrink();
     final selectedMotorwayIndex = controller.selectedMotorway.value;
     final selectedVehicleIndex = controller.selectedVehicle.value;
@@ -464,8 +500,10 @@ class TollPlazaTab extends StatelessWidget {
     }
     final motorway = OtherConsts.mwNameList[selectedMotorwayIndex];
     final vehicle = OtherConsts.vehicleList[selectedVehicleIndex];
-    final isSpecialMotorway =
-        motorway.motorwayID == 200 || motorway.motorwayID == 300;
+    final isSpecialMotorway = motorway.motorwayID == 200 ||
+        motorway.motorwayID == 300 ||
+        motorway.motorwayID == 19005 ||
+        motorway.motorwayID == 7015;
     final toll = _getTollValue(
       controller,
       motorway.motorwayID,
@@ -486,7 +524,7 @@ class TollPlazaTab extends StatelessWidget {
               child: TollDisplay(
                 padding: padding,
                 isCalculating:
-                    controller.isCalculatingPlaza.value && !isSpecialMotorway,
+                controller.isCalculatingPlaza.value && !isSpecialMotorway,
                 entry: isSpecialMotorway ? null : controller.entryStation.value,
                 exit: isSpecialMotorway ? null : controller.exitStation.value,
                 vehicleName: vehicle.name,
@@ -501,24 +539,29 @@ class TollPlazaTab extends StatelessWidget {
   }
 
   String? _getTollValue(
-    MotorwayStaticController controller,
-    int? motorwayID,
-    int vehicleIndex,
-  ) {
+      MotorwayStaticController controller,
+      int? motorwayID,
+      int vehicleIndex,
+      ) {
     if (vehicleIndex == -1) return null;
 
-    return motorwayID == 200
-        ? _tollMapMurree[OtherConsts.vehicleList[vehicleIndex].id]?.toString()
-        : motorwayID == 300
-        ? _tollMapEasternBypass[OtherConsts.vehicleList[vehicleIndex].id]
-              ?.toString()
-        : controller.calculatedTollPlaza.value;
+    if (motorwayID == 200) {
+      return _tollMapMurree[OtherConsts.vehicleList[vehicleIndex].id]?.toString();
+    } else if (motorwayID == 300) {
+      return _tollMapEasternBypass[OtherConsts.vehicleList[vehicleIndex].id]
+          ?.toString();
+    } else if (motorwayID == 19005) {
+      return _govtOfPunjab[OtherConsts.vehicleList[vehicleIndex].id]?.toString();
+    } else if (motorwayID == 7015) {
+      return _babuSabu[OtherConsts.vehicleList[vehicleIndex].id]?.toString();
+    }
+    return controller.calculatedTollPlaza.value;
   }
 
   Widget _section(BuildContext context, {Widget? child}) {
     return Container(
       decoration: BoxDecoration(
-      gradient: Theme.of(context).extension<AppGradients>()!.background,
+        gradient: Theme.of(context).extension<AppGradients>()!.background,
         borderRadius: BorderRadius.circular(12),
       ),
       child: child,
