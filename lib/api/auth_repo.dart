@@ -109,7 +109,7 @@ class AuthRepo {
         "MobileNum": mobileNumber,
         "meta_data": metaData,
         "fcmToken": fcmToken,
-        "device_id": deviceId,
+        "device_id": deviceId ?? "",
         // "sim_operator":operator
       },
     );
@@ -188,9 +188,9 @@ class AuthRepo {
         "Code": code,
         "is_login": islogin,
         "fcmToken": fcmToken,
-        "device_id": release['deviceId'],
         "meta_data":
-            '"${Platform.isAndroid ? "Android" : 'iOS'} ""__"${release['release']} "__"${release['manufacturer']}""${release['model']} "__"${release['deviceId']}"__"fcmToken"__"${release['appVersion']}"',
+            '${Platform.isAndroid ? "Android" : 'iOS'}__${release['release']}__${release['manufacturer']} ${release['model']}__${release['deviceId']}__fcmToken__${release['appVersion']}',
+        "device_id": release['deviceId'] ?? "",
       },
     );
 
@@ -327,10 +327,10 @@ class AuthRepo {
         "cnic": cnic,
         "mobile_num": mobileNum,
         "pin": pin,
-        "device_id": release['deviceId'],
         "meta_data":
-            '"${Platform.isAndroid ? "Android" : 'iOS'} ""__"${release['release']} "__"${release['manufacturer']}""${release['model']} "__"${release['deviceId']}"__"fcmToken"__"${release['appVersion']}"',
+            '${Platform.isAndroid ? "Android" : 'iOS'}__${release['release']}__${release['manufacturer']} ${release['model']}__${release['deviceId']}__fcmToken__${release['appVersion']}',
         "fcmToken": fcm,
+        "device_id": release['deviceId'] ?? "",
       },
     );
     return await safeRequest(api: api, showLoader: true);

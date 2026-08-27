@@ -9,9 +9,9 @@ class ApplicationUrl {
     return _instance;
   }
 
-  // static const String _BASE_URL = 'http://10.0.1.127:5001';
+  static const String _BASE_URL = 'http://10.0.1.127:5001';
 
-  static const String _BASE_URL = 'https://ocotapp.com';
+  // static const String _BASE_URL = 'https://ocotapp.com';
 
   // static const String _BASE_URL = 'https://ocottapp.com';
 

@@ -334,7 +334,7 @@ class AuthPage extends StatelessWidget {
                                                   await DeviceInfo.getDeviceInfo();
                                               if (controller.authIndex.value ==
                                                   0) {
-                                                String metaData = '"${Platform.isAndroid ? "Android" : 'iOS'} ""__"${release['release']} "__"${release['manufacturer']}""${release['model']} "__"android_id"__"fcmToken"__"${release['appVersion']}"';
+                                                String metaData = '${Platform.isAndroid ? "Android" : 'iOS'}__${release['release']}__${release['manufacturer']} ${release['model']}__${release['deviceId']}__fcmToken__${release['appVersion']}';
                                                 print("MetaData: $metaData");
                                                 Get.find<AuthController>().login(
                                                   cnic: controller

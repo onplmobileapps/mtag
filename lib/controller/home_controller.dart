@@ -274,29 +274,28 @@ class HomeController extends GetxController implements GetxService {
     }
     return false;
   }
-
+  //new function to get expiry date from backend and convert into years months and days
   String expiryDate(ActiveMtags mtag) {
-    String? issuedate = mtag.issuedate;
-    String? tagExpiryDate = mtag.tag_expiry_date;
-    if (issuedate == null || issuedate.isEmpty) return "";
-    try {
-      DateTime? issueDate = DateTime.tryParse(issuedate);
+    final String? tagExpiryDate = mtag.tag_expiry_date;
+    if (tagExpiryDate == null || tagExpiryDate.trim().isEmpty) return "";
 
-      if (issueDate == null) {
+    try {
+      DateTime? expiryDate = DateTime.tryParse(tagExpiryDate);
+
+      if (expiryDate == null) {
         try {
-          issueDate = DateFormat("dd-MMM-yyyy").parse(issuedate);
+          expiryDate = DateFormat("dd-MMM-yyyy").parse(tagExpiryDate);
         } catch (_) {
-          // Fallback for numeric dd-MM-yyyy or yyyy-MM-dd
-          List<String> parts = issuedate.split('-');
+          final List<String> parts = tagExpiryDate.split('-');
           if (parts.length == 3) {
             if (parts[2].length == 4) {
-              issueDate = DateTime(
+              expiryDate = DateTime(
                 int.parse(parts[2]),
                 int.parse(parts[1]),
                 int.parse(parts[0]),
               );
             } else if (parts[0].length == 4) {
-              issueDate = DateTime(
+              expiryDate = DateTime(
                 int.parse(parts[0]),
                 int.parse(parts[1]),
                 int.parse(parts[2]),
@@ -306,54 +305,45 @@ class HomeController extends GetxController implements GetxService {
         }
       }
 
-      if (issueDate != null) {
-        // Expiry is 5 years after issue date
-        DateTime expiryDate = DateTime(
-          issueDate.year + 5,
-          issueDate.month,
-          issueDate.day,
-        );
-        DateTime now = DateTime.now();
+      if (expiryDate != null) {
+        final DateTime now = DateTime.now();
 
-        if (expiryDate.isBefore(now) || mtag.is_expired == true || mtag.isactive == 9) {
-          return tagExpiryDate ?? "Expired";
+        DateTime today = DateTime(now.year, now.month, now.day);
+        DateTime expiry = DateTime(expiryDate.year, expiryDate.month, expiryDate.day);
+
+        if (expiry.isBefore(today) || mtag.is_expired == true || mtag.isactive == 9) {
+          return "Expired";
         }
 
-        int years = expiryDate.year - now.year;
-        int months = expiryDate.month - now.month;
-        int days = expiryDate.day - now.day;
+        int years = expiry.year - today.year;
+        int months = expiry.month - today.month;
+        int days = expiry.day - today.day;
 
         if (days < 0) {
-          months -= 1;
-          // Get last day of previous month
-          DateTime previousMonth = DateTime(now.year, now.month, 0);
-          days += previousMonth.day;
+          months--;
+          final DateTime prevMonth = DateTime(expiry.year, expiry.month - 1, 1);
+          final int daysInPrevMonth = DateTime(prevMonth.year, prevMonth.month + 1, 0).day;
+          days += daysInPrevMonth;
         }
 
         if (months < 0) {
-          years -= 1;
+          years--;
           months += 12;
         }
 
-        List<String> parts = [];
-        if (years > 0) parts.add("$years ${years == 1 ? 'Year' : 'Years'}");
-        if (months > 0) {
-          parts.add("$months ${months == 1 ? 'Month' : 'Months'}");
-        }
-        if (days > 0) parts.add("$days ${days == 1 ? 'Day' : 'Days'}");
+        final List<String> resultParts = [];
+        if (years > 0) resultParts.add("$years ${years == 1 ? 'Year' : 'Years'}");
+        if (months > 0) resultParts.add("$months ${months == 1 ? 'Month' : 'Months'}");
+        if (days > 0) resultParts.add("$days ${days == 1 ? 'Day' : 'Days'}");
 
-        String result = parts.join(", ");
-        debugPrint(
-          "Issue Date: $issuedate, Expiry Date: ${DateFormat("dd MMMM, yyyy").format(expiryDate)}, Expires in: $result",
-        );
-        return result;
+        return resultParts.isEmpty ? "Expiring Today" : resultParts.join(", ");
       }
     } catch (e) {
-      debugPrint("Error parsing date: $e");
+      debugPrint("Error parsing tag expiry date: $e");
     }
+
     return "";
   }
-
   void _handleError(Map<String, dynamic> response) {
     final message = response.containsKey(APIRESPONSE.ERROR)
         ? response[APIRESPONSE.ERROR]['Message']

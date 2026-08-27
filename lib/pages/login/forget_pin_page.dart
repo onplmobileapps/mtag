@@ -129,7 +129,7 @@ class ForgetPinPage extends StatelessWidget {
                                 isForgetPin: 1,
                                 deviceId: release['deviceId'],
                                 metaData:
-                                    '"${Platform.isAndroid ? "Android" : 'iOS'} ""__"${release['release']} "__"${release['manufacturer']}""${release['model']} "__"android_id"__"fcmToken"__"${release['appVersion']}"',
+                                    '${Platform.isAndroid ? "Android" : 'iOS'}__${release['release']}__${release['manufacturer']} ${release['model']}__${release['deviceId']}__fcmToken__${release['appVersion']}',
                               );
                             }
                           },
