@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:android_id/android_id.dart';
+import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
 
@@ -27,6 +27,8 @@ sealed class AmountList {
 }
 
 sealed class DeviceInfo {
+  static const _channel = MethodChannel('com.ls.onenetwork.mtag/get_device_id');
+
   static Future<Map<String, dynamic>> getDeviceInfo() async {
     final deviceInfoPlugin = DeviceInfoPlugin();
     final packageInfo = await PackageInfo.fromPlatform();
@@ -37,8 +39,7 @@ sealed class DeviceInfo {
     try {
       if (Platform.isAndroid) {
         AndroidDeviceInfo androidInfo = await deviceInfoPlugin.androidInfo;
-        const androidIdPlugin = AndroidId();
-        final String? androidId = await androidIdPlugin.getId();
+        final String? androidId = await _channel.invokeMethod<String>('getDeviceId');
         
         deviceData['manufacturer'] = androidInfo.manufacturer;
         deviceData['model'] = androidInfo.model;
