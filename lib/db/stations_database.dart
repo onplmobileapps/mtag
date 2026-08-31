@@ -14,7 +14,7 @@ class StationsDatabase {
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB('veh_toll_cal_7.db');
+    _database = await _initDB('stations_db_v1.db');
     return _database!;
   }
 
@@ -91,31 +91,33 @@ class StationsDatabase {
       log('Old data cleared.');
 
       final csvString = await rootBundle.loadString('assets/data/stations.csv');
-      final csvData = CsvToListConverter(
-        eol: '\n',
+      final csvData = const CsvToListConverter(
         shouldParseNumbers: true,
       ).convert(csvString);
 
       final dataRows = csvData
           .where((row) => row.isNotEmpty && !row[0].toString().startsWith('#'))
-          .toList()
-          .sublist(1); // skip header
+          .toList();
+
+      // Find header row to skip it and anything before it (like version)
+      int headerIndex = dataRows.indexWhere((row) => row[0].toString().toLowerCase() == 'id');
+      final validDataRows = headerIndex != -1 ? dataRows.sublist(headerIndex + 1) : dataRows;
 
       await db.transaction((txn) async {
         final batch = txn.batch();
 
-        for (final row in dataRows) {
+        for (final row in validDataRows) {
           if (row.length < 12) continue;
 
           batch.insert(
             'motorway_kms',
             {
               'id': row[0],
-              'motorway_name': row[1]?.toString(),
+              'motorway_name': row[1]?.toString().trim(),
               'motorway_id': row[2],
-              'station_name': row[3]?.toString(),
+              'station_name': row[3]?.toString().trim(),
               'station_id': row[4],
-              'is_sta_active': row[11].toString().toLowerCase() == 'true' ? 1 : 0,
+              'is_sta_active': row[11].toString().trim().toLowerCase() == 'true' ? 1 : 0,
             },
             conflictAlgorithm: ConflictAlgorithm.replace,
           );
@@ -135,10 +137,12 @@ class StationsDatabase {
       final db = await database;
       String mwidQuery;
 
-      if ([6, 7, 11, 5].contains(mwid)) {
+      if ([6, 7, 11, 5, 7015].contains(mwid)) {
         mwidQuery = 'IN (7, 6, 11, 5)';
       } else if ([4, 10, 14].contains(mwid)) {
         mwidQuery = 'IN (4, 10, 14)';
+      } else if (mwid == 19005) {
+        mwidQuery = '= 19';
       } else {
         mwidQuery = '= $mwid';
       }

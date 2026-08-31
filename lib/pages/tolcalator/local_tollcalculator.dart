@@ -16,12 +16,12 @@ class TollPlazaTab extends StatelessWidget {
   final Animation<double> fadeAnimation;
 
   static const Map<int, int> _tollMapMurree = {
-    1: 200,
-    2: 200,
-    3: 200,
-    4: 350,
-    5: 400,
-    6: 800,
+    1: 300,
+    2: 300,
+    3: 300,
+    4: 450,
+    5: 500,
+    6: 1000,
   };
   static const Map<int, int> _tollMapEasternBypass = {
     1: 70,

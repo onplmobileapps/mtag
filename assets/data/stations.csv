@@ -1,4 +1,4 @@
-#version=26
+#version=34
 id,motorway_name,motorway_id,station_name,station_id,station_km,total_lane,seq_id,img_server,entry_lane,lat_long,is_sta_active
 44,M9,1,Lucky,61,55.9,null,6,null,null,"25.095195749259727, 67.58379637677696",FALSE
 96,M4,11,M4-Shershah,11090,297,6,11090,192.168.124.105,5,"30.0801814249053, 71.40608053891242",TRUE

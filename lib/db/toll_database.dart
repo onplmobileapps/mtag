@@ -13,7 +13,7 @@ class TollDatabase {
   TollDatabase._init();
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB('veh_toll_cal_7.db');
+    _database = await _initDB('tolls_db_v1.db');
     return _database!;
   }
 
@@ -70,19 +70,28 @@ class TollDatabase {
 
   Future<void> _loadDataFromCsvAndInsert(Database db) async {
     try {
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS veh_toll_cal_7 (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          e_sta_id INTEGER,
+          x_sta_id INTEGER,
+          v_cat INTEGER,
+          t_toll_r INTEGER DEFAULT 0
+        )
+      ''');
       await db.delete('veh_toll_cal_7');
       log('Existing toll data deleted');
 
       final csvString = await rootBundle.loadString('assets/data/data.csv');
 
-      final rows = const CsvToListConverter(eol: '\n').convert(csvString);
+      final rows = const CsvToListConverter().convert(csvString);
 
       // Skip version and header lines
       final dataRows = rows
           .where((row) =>
       row.isNotEmpty &&
           !row[0].toString().startsWith('#') &&
-          row[0].toString() != 'e_sta_id')
+          row[0].toString().toLowerCase() != 'e_sta_id')
           .toList();
 
       if (dataRows.isEmpty) {
@@ -97,10 +106,10 @@ class TollDatabase {
         for (final row in dataRows) {
           if (row.length < 4) continue;
 
-          final eStaId = int.tryParse(row[0].toString());
-          final xStaId = int.tryParse(row[1].toString());
-          final vCat = int.tryParse(row[2].toString());
-          final tTollR = int.tryParse(row[3].toString()) ?? 0;
+          final eStaId = int.tryParse(row[0].toString().trim());
+          final xStaId = int.tryParse(row[1].toString().trim());
+          final vCat = int.tryParse(row[2].toString().trim());
+          final tTollR = int.tryParse(row[3].toString().trim()) ?? 0;
 
           if (eStaId != null && xStaId != null && vCat != null) {
             batch.insert(
