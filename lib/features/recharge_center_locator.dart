@@ -8,6 +8,7 @@ import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../api/auth_controller.dart';
 import '../controller/home_controller.dart';
@@ -513,11 +514,10 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                           return const SizedBox.shrink();
                         }
                         return TileLayer(
-                          urlTemplate:
-                              'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-                          subdomains: const ['a', 'b', 'c', 'd'],
+                          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                           userAgentPackageName: 'com.playdev.mtagapp',
-                          maxNativeZoom: 18,
+                          tileProvider: CachedTileProvider(),
+                          maxNativeZoom: 19,
                           maxZoom: 18,
                           keepBuffer: 2,
                           tileUpdateTransformer:
@@ -735,7 +735,7 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
                   ),
                 ),
                 child: Text(
-                  '© OpenStreetMap © CARTO',
+                  '© OpenStreetMap contributors',
                   style: TextStyle(
                     fontSize: 9,
                     color: Theme.of(
@@ -794,5 +794,17 @@ class _RechargeMapScreenState extends State<RechargeMapScreen>
     } catch (e) {
       debugPrint('Error showing bottom sheet: $e');
     }
+  }
+}
+
+class CachedTileProvider extends TileProvider {
+  @override
+  ImageProvider getImage(TileCoordinates coordinates, TileLayer options) {
+    return CachedNetworkImageProvider(
+      getTileUrl(coordinates, options),
+      headers: const {
+        'User-Agent': 'com.playdev.mtagapp',
+      },
+    );
   }
 }

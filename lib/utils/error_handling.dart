@@ -36,6 +36,7 @@ final class GlobalErrorHandler {
       // Real errors go here
       if (kDebugMode) {
         _debug('Flutter error', ex, details.stack);
+        FirebaseCrashlytics.instance.recordFlutterError(details);
         return;
       }
 

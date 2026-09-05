@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,13 +29,16 @@ import 'utils/utils.dart';
 const bool showAdSplash = false;
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
   await AppData.initialize();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-    name: 'mtagFlutter',
-  );
 
+
+  );
+  //test crashes
+  // FirebaseCrashlytics.instance.crash();
   GlobalErrorHandler.initialize();
 
   final sharedPreferences = await SharedPreferences.getInstance();
