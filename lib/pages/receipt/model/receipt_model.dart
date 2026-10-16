@@ -25,9 +25,13 @@ class ReceiptModel {
   set message(String? message) => _message = message;
 
   ReceiptModel.fromJson(Map<String, dynamic> json) {
-    _code = json['Code'];
-    _data = json['Data'] != null ? Data.fromJson(json['Data']) : null;
-    _message = json['Message'];
+    _code = json['Code']?.toString();
+    if (json['Data'] != null && json['Data'] is Map<String, dynamic>) {
+      _data = Data.fromJson(json['Data']);
+    } else {
+      _data = null;
+    }
+    _message = json['Message']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -129,18 +133,20 @@ class Data {
   set uID(String? uID) => _uID = uID;
 
   Data.fromJson(Map<String, dynamic> json) {
-    _amount = json['Amount'];
-    _fare = json['FARE'];
-    _entryStation = json['ENTRY_STATION_NAME'];
-    _exitStation = json['EXIT_STATION_NAME'];
-    _time = json['TRANS_TIME'];
-    _boothName = json['Booth_Name'];
-    _cR = json['CR'];
-    _mTagID = json['MTag_ID'];
-    _paymentOption = json['Payment_Option'];
-    _rechargeDate = json['RechargeDate'];
-    _registration = json['Registration'];
-    _uID = json['U_ID'];
+    _amount = json['Amount'] is int
+        ? json['Amount']
+        : int.tryParse(json['Amount']?.toString() ?? '');
+    _fare = json['FARE']?.toString();
+    _entryStation = json['ENTRY_STATION_NAME']?.toString();
+    _exitStation = json['EXIT_STATION_NAME']?.toString();
+    _time = json['TRANS_TIME']?.toString();
+    _boothName = json['Booth_Name']?.toString();
+    _cR = json['CR']?.toString();
+    _mTagID = json['MTag_ID']?.toString();
+    _paymentOption = json['Payment_Option']?.toString();
+    _rechargeDate = json['RechargeDate']?.toString();
+    _registration = json['Registration']?.toString();
+    _uID = json['U_ID']?.toString();
   }
 
   Map<String, dynamic> toJson() {

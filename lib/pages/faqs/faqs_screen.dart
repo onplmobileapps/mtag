@@ -69,11 +69,13 @@ class FaqsScreen extends StatelessWidget {
                     if (expanded && isLast) {
                       // Scroll to bottom to make last item visible
                       Future.delayed(const Duration(milliseconds: 200), () {
-                        _scrollController.animateTo(
-                          _scrollController.position.maxScrollExtent,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
+                        if (_scrollController.hasClients) {
+                          _scrollController.animateTo(
+                            _scrollController.position.maxScrollExtent,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        }
                       });
                     }
                   },

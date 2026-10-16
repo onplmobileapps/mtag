@@ -7,7 +7,7 @@ import '../../pages/dashboard/model/dashboard_model.dart';
 import '../dashboard_widget.dart';
 import '../elevated_button.dart';
 
-class ChassisNumberDialog extends StatelessWidget {
+class ChassisNumberDialog extends StatefulWidget {
   final String registration;
   final String mobileNumber;
   final String tokenNo;
@@ -15,7 +15,7 @@ class ChassisNumberDialog extends StatelessWidget {
   final String cnicNumber;
   final String? chassissNo;
 
-  ChassisNumberDialog({
+  const ChassisNumberDialog({
     super.key,
     required this.registration,
     required this.tokenNo,
@@ -25,14 +25,31 @@ class ChassisNumberDialog extends StatelessWidget {
     this.chassissNo,
   });
 
-  final TextEditingController _controller = TextEditingController();
+  @override
+  State<ChassisNumberDialog> createState() => _ChassisNumberDialogState();
+}
+
+class _ChassisNumberDialogState extends State<ChassisNumberDialog> {
+  late final TextEditingController _controller;
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.chassissNo ?? '');
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final homeController = Get.find<HomeController>();
     final mtag = homeController.dashboradData.value.activeMtags?.firstWhere(
-          (element) => element.tokenno == tokenNo,
+      (element) => element.tokenno == widget.tokenNo,
       orElse: () => ActiveMtags(),
     );
     final vehicleImagePath = getVehicleImage(mtag?.vehicletype ?? 'Car');
@@ -66,13 +83,14 @@ class ChassisNumberDialog extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
                     decoration: BoxDecoration(
-                      gradient: Theme.of(context).extension<AppGradients>()?.background,
+                      gradient:
+                          Theme.of(context).extension<AppGradients>()?.background,
                     ),
                     child: Row(
                       children: [
                         if (vehicleImagePath.isNotEmpty)
                           Hero(
-                            tag: 'vehicle_$tokenNo',
+                            tag: 'vehicle_${widget.tokenNo}',
                             child: Image.asset(
                               vehicleImagePath,
                               height: 80,
@@ -85,19 +103,22 @@ class ChassisNumberDialog extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                registration.toUpperCase(),
-                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 0.8,
-                                  fontFamily: 'biotifbold',
-                                  fontSize: 20,
-                                ),
+                                widget.registration.toUpperCase(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w900,
+                                      letterSpacing: 0.8,
+                                      fontFamily: 'biotifbold',
+                                      fontSize: 20,
+                                    ),
                               ),
                               const SizedBox(height: 3),
                               Row(
                                 children: [
                                   Text(
-                                    "M-TAG ID: $tokenNo",
+                                    "M-TAG ID: ${widget.tokenNo}",
                                     style: TextStyle(
                                       color: Colors.grey.shade600,
                                       fontWeight: FontWeight.w600,
@@ -148,7 +169,7 @@ class ChassisNumberDialog extends StatelessWidget {
                       ),
                       const SizedBox(height: 10),
                       TextFormField(
-                        controller: _controller..text = chassissNo ?? '',
+                        controller: _controller,
                         maxLength: 17,
                         textCapitalization: TextCapitalization.characters,
                         style: const TextStyle(
@@ -166,31 +187,53 @@ class ChassisNumberDialog extends StatelessWidget {
                           ),
                           counterText: "",
                           filled: true,
-                          fillColor: ColorScheme.of(context).surfaceContainerLow.withValues(alpha: 0.5),
+                          fillColor: ColorScheme.of(context)
+                              .surfaceContainerLow
+                              .withValues(alpha: 0.5),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
-                            borderSide: BorderSide(color: Colors.grey.shade200, width: 1),
+                            borderSide: BorderSide(
+                              color: Colors.grey.shade200,
+                              width: 1,
+                            ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
-                            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+                            borderSide: BorderSide(
+                              color: Colors.grey.shade300,
+                              width: 1,
+                            ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
-                            borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                            borderSide: BorderSide(
+                              color: Theme.of(context).primaryColor,
+                              width: 2,
+                            ),
                           ),
                           errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
-                            borderSide: BorderSide(color: Colors.red.shade400, width: 1),
+                            borderSide: BorderSide(
+                              color: Colors.red.shade400,
+                              width: 1,
+                            ),
                           ),
                           focusedErrorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
-                            borderSide: BorderSide(color: Colors.red.shade400, width: 2),
+                            borderSide: BorderSide(
+                              color: Colors.red.shade400,
+                              width: 2,
+                            ),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 16,
+                          ),
                         ),
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9]')),
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'[A-Za-z0-9]'),
+                          ),
                           UpperCaseTextFormatter(),
                         ],
                         validator: (value) {
@@ -211,9 +254,9 @@ class ChassisNumberDialog extends StatelessWidget {
                           if (_formKey.currentState?.validate() ?? false) {
                             Get.back();
                             await Get.find<HomeController>().updateChassisCall(
-                              cnicNumber: cnicNumber,
-                              mobileNumber: mobileNumber,
-                              mtagID: tokenNo,
+                              cnicNumber: widget.cnicNumber,
+                              mobileNumber: widget.mobileNumber,
+                              mtagID: widget.tokenNo,
                               chassisNumber: text,
                             );
                           }
@@ -236,12 +279,17 @@ class ChassisNumberDialog extends StatelessWidget {
 class UpperCaseTextFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue,
-      TextEditingValue newValue,
-      ) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final String newText = newValue.text.toUpperCase();
     return newValue.copyWith(
-      text: newValue.text.toUpperCase(),
-      selection: newValue.selection,
+      text: newText,
+      selection: newValue.selection.isValid
+          ? TextSelection.collapsed(
+            offset: newValue.selection.end.clamp(0, newText.length),
+          )
+          : newValue.selection,
     );
   }
 }

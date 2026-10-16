@@ -18,20 +18,46 @@ void showChangePinDialog(
   );
 }
 
-class ChangePinDialog extends StatelessWidget {
+class ChangePinDialog extends StatefulWidget {
   final Function(String oldPin, String newPin) onSubmit;
 
-  ChangePinDialog({super.key, required this.onSubmit});
-  final _oldPinController = TextEditingController();
-  final _newPinController = TextEditingController();
-  final _reenterPinController = TextEditingController();
+  const ChangePinDialog({super.key, required this.onSubmit});
+
+  @override
+  State<ChangePinDialog> createState() => _ChangePinDialogState();
+}
+
+class _ChangePinDialogState extends State<ChangePinDialog> {
+  late final TextEditingController _oldPinController;
+  late final TextEditingController _newPinController;
+  late final TextEditingController _reenterPinController;
   final _formKey = GlobalKey<FormState>();
 
-  final _oldPinFocusNode = FocusNode();
-  final _newPinFocusNode = FocusNode();
-  final _reenterPinFocusNode = FocusNode();
+  late final FocusNode _oldPinFocusNode;
+  late final FocusNode _newPinFocusNode;
+  late final FocusNode _reenterPinFocusNode;
 
- 
+  @override
+  void initState() {
+    super.initState();
+    _oldPinController = TextEditingController();
+    _newPinController = TextEditingController();
+    _reenterPinController = TextEditingController();
+    _oldPinFocusNode = FocusNode();
+    _newPinFocusNode = FocusNode();
+    _reenterPinFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _oldPinController.dispose();
+    _newPinController.dispose();
+    _reenterPinController.dispose();
+    _oldPinFocusNode.dispose();
+    _newPinFocusNode.dispose();
+    _reenterPinFocusNode.dispose();
+    super.dispose();
+  }
 
   bool _isPinsMatching() {
     return _newPinController.text == _reenterPinController.text;
@@ -46,13 +72,17 @@ class ChangePinDialog extends StatelessWidget {
       canPop: false,
       child: Dialog(
         backgroundColor: colorScheme.surfaceContainerLowest,
-        surfaceTintColor:colorScheme.surfaceTint,
+        surfaceTintColor: colorScheme.surfaceTint,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            Container(decoration: BoxDecoration(borderRadius: .circular(8),
-              gradient:Theme.of(context).extension<AppGradients>()!.background),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                gradient:
+                    Theme.of(context).extension<AppGradients>()!.background,
+              ),
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -60,11 +90,12 @@ class ChangePinDialog extends StatelessWidget {
                   Image.asset('assets/padlock.png', height: 65, width: 65),
                   Text(
                     'Change PIN',
-                    style: TextTheme.of(
-                      context,
-                    ).bodyLarge?.copyWith(fontWeight: .w600,fontSize: 22),
+                    style: TextTheme.of(context).bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 22,
+                    ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Form(
                     key: _formKey,
                     child: Column(
@@ -74,27 +105,33 @@ class ChangePinDialog extends StatelessWidget {
                           controller: _oldPinController,
                           focusNode: _oldPinFocusNode,
                           floatingLabelNever: true,
-                          validator: (value) =>
-                              value == null || value.isEmpty || value.length < 4
-                              ? 'Please enter your old PIN'
-                              : null,
+                          validator:
+                              (value) =>
+                                  value == null ||
+                                          value.isEmpty ||
+                                          value.length < 4
+                                      ? 'Please enter your old PIN'
+                                      : null,
                         ),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 12),
                         PinTextField(
                           hintText: 'New Pin',
                           controller: _newPinController,
                           focusNode: _newPinFocusNode,
-                          validator: (value) =>
-                              value == null || value.isEmpty || value.length < 4
-                              ? 'Please enter a new PIN'
-                              : null,
+                          validator:
+                              (value) =>
+                                  value == null ||
+                                          value.isEmpty ||
+                                          value.length < 4
+                                      ? 'Please enter a new PIN'
+                                      : null,
                           onFieldSubmitted: (_) {
                             FocusScope.of(
                               context,
                             ).requestFocus(_reenterPinFocusNode);
                           },
                         ),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 12),
                         PinTextField(
                           hintText: 'Re-Enter New PIN',
                           controller: _reenterPinController,
@@ -112,7 +149,7 @@ class ChangePinDialog extends StatelessWidget {
                           },
                           onFieldSubmitted: (_) {
                             if (_formKey.currentState!.validate()) {
-                              onSubmit(
+                              widget.onSubmit(
                                 _oldPinController.text,
                                 _newPinController.text,
                               );
@@ -123,11 +160,11 @@ class ChangePinDialog extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   ElevatedButton1(
                     onclick: () async {
                       if (_formKey.currentState!.validate()) {
-                        onSubmit(
+                        widget.onSubmit(
                           _oldPinController.text,
                           _newPinController.text,
                         );
@@ -143,7 +180,6 @@ class ChangePinDialog extends StatelessWidget {
                         );
                       }
                     },
-
                     text: 'Submit',
                   ),
                 ],
@@ -155,8 +191,8 @@ class ChangePinDialog extends StatelessWidget {
               child: InkWell(
                 onTap: () => Navigator.pop(context),
                 borderRadius: BorderRadius.circular(20),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
                   child: CircleAvatar(
                     backgroundColor: Colors.red,
                     radius: 16,
@@ -201,13 +237,6 @@ class PinTextField extends StatefulWidget {
 
 class _PinTextFieldState extends State<PinTextField> {
   bool _obscureText = true;
-  @override
-  void dispose() {
-    widget.controller.dispose();
-    widget.focusNode.dispose();
-
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

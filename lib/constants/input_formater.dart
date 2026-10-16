@@ -6,6 +6,10 @@ class CnicMaskTextInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
+    if (newValue.text.isEmpty) {
+      return newValue.copyWith(text: '');
+    }
+
     // Remove everything except digits
     String digits = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
 
@@ -22,22 +26,28 @@ class CnicMaskTextInputFormatter extends TextInputFormatter {
     }
     final masked = buffer.toString();
 
-    // ---- CURSOR FIX ----
-    // Count how many '-' were inserted before the cursor
-   
-
-    // Calculate digits-only cursor position
-    int digitsCursorPos = 0;
-    for (int i = 0; i < newValue.selection.end; i++) {
-      if (newValue.text[i].contains(RegExp(r'[0-9]'))) {
-        digitsCursorPos++;
+    // Calculate selection
+    int finalCursorPos = 0;
+    if (newValue.selection.isValid) {
+      // Calculate how many digits are before the cursor in the unformatted text
+      int digitsCursorPos = 0;
+      final int end = newValue.selection.end.clamp(0, newValue.text.length);
+      for (int i = 0; i < end; i++) {
+        if (newValue.text[i].contains(RegExp(r'[0-9]'))) {
+          digitsCursorPos++;
+        }
       }
-    }
 
-    // Now calculate where cursor should be in masked text
-    int finalCursorPos = digitsCursorPos;
-    if (digitsCursorPos > 5) finalCursorPos++; // dash after 5th digit
-    if (digitsCursorPos > 12) finalCursorPos++; // dash after 12th digit
+      // Limit digits cursor pos to max digits
+      if (digitsCursorPos > 13) digitsCursorPos = 13;
+
+      // Calculate where cursor should be in masked text
+      finalCursorPos = digitsCursorPos;
+      if (digitsCursorPos > 5) finalCursorPos++; // dash after 5th digit
+      if (digitsCursorPos > 12) finalCursorPos++; // dash after 12th digit
+    } else {
+      finalCursorPos = masked.length;
+    }
 
     // Ensure bounds
     finalCursorPos = finalCursorPos.clamp(0, masked.length);

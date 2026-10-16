@@ -16,7 +16,12 @@ class ReceiptController extends GetxController implements GetxService {
         : await userRepo.getRechargeDetails(cr: cr, uID: uID);
     isTravel(false);
     if (response.containsKey(APIRESPONSE.SUCCESS)) {
-      receiptModel.value = ReceiptModel.fromJson(response[APIRESPONSE.SUCCESS]);
+      if (response[APIRESPONSE.SUCCESS] is Map<String, dynamic>) {
+        receiptModel.value = ReceiptModel.fromJson(response[APIRESPONSE.SUCCESS]);
+      } else {
+        // If success response is not a map, handle it gracefully
+        receiptModel.value = ReceiptModel();
+      }
     } else if (response.containsKey(APIRESPONSE.ERROR)) {
       showPopDialog(response[APIRESPONSE.ERROR]['Message'], () => Get.back());
     }
